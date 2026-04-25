@@ -1,0 +1,35 @@
+{
+  "fixture_name": "vscode_editor",
+  "timestamp": "2026-04-25T12:01:00+08:00",
+  "window": {
+    "hwnd": "0x000000000043021A",
+    "pid": 4312,
+    "process_name": "Code.exe",
+    "exe_path": "C:\\Users\\me\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+    "app_name": "Visual Studio Code",
+    "title": "test_capture.py - WinChronicle - Visual Studio Code",
+    "bounds": [50, 50, 1680, 950],
+    "elevated": false
+  },
+  "focused_element": {
+    "control_type": "Edit",
+    "name": "Editor",
+    "automation_id": "editor",
+    "class_name": "MonacoEditor",
+    "is_editable": true,
+    "is_password": false,
+    "value": null,
+    "text": "def test_capture_redacts_passwords():\n    assert \"CorrectHorseBatteryStaple!\" not in written_json"
+  },
+  "visible_text": "tests/test_capture.py\n\ndef test_capture_redacts_passwords():\n    assert \"CorrectHorseBatteryStaple!\" not in written_json\n\nProblems Terminal Output Debug Console",
+  "url": null,
+  "uia_tree": {
+    "role": "Window",
+    "children": [
+      {
+        "role": "Document",
+        "name": "test_capture.py"
+      }
+    ]
+  }
+}

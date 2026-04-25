@@ -1,0 +1,35 @@
+{
+  "fixture_name": "terminal_error",
+  "timestamp": "2026-04-25T12:02:00+08:00",
+  "window": {
+    "hwnd": "0x00000000009ABC01",
+    "pid": 8290,
+    "process_name": "WindowsTerminal.exe",
+    "exe_path": "C:\\Users\\me\\AppData\\Local\\Microsoft\\WindowsApps\\wt.exe",
+    "app_name": "Windows Terminal",
+    "title": "PowerShell - WinChronicle",
+    "bounds": [80, 80, 1400, 860],
+    "elevated": false
+  },
+  "focused_element": {
+    "control_type": "Document",
+    "name": "Terminal buffer",
+    "automation_id": "",
+    "class_name": "CASCADIA_HOSTING_WINDOW_CLASS",
+    "is_editable": true,
+    "is_password": false,
+    "value": null,
+    "text": "FAILED tests/test_capture.py::test_capture_redacts_secrets - AssertionError: token leaked in capture-buffer"
+  },
+  "visible_text": "PS D:\\WinChronicle> python -m pytest -q\nFAILED tests/test_capture.py::test_capture_redacts_secrets - AssertionError: token leaked in capture-buffer\n1 failed, 18 passed",
+  "url": null,
+  "uia_tree": {
+    "role": "Window",
+    "children": [
+      {
+        "role": "Document",
+        "name": "Terminal buffer"
+      }
+    ]
+  }
+}

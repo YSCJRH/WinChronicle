@@ -1,0 +1,35 @@
+{
+  "fixture_name": "edge_browser",
+  "timestamp": "2026-04-25T12:03:00+08:00",
+  "window": {
+    "hwnd": "0x0000000000BEEF42",
+    "pid": 5068,
+    "process_name": "msedge.exe",
+    "exe_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "app_name": "Microsoft Edge",
+    "title": "OpenChronicle - GitHub - Microsoft Edge",
+    "bounds": [0, 0, 1600, 900],
+    "elevated": false
+  },
+  "focused_element": {
+    "control_type": "Document",
+    "name": "OpenChronicle README",
+    "automation_id": "",
+    "class_name": "Chrome_RenderWidgetHostHWND",
+    "is_editable": false,
+    "is_password": false,
+    "value": null,
+    "text": "OpenChronicle is local-first memory for tool-capable agents."
+  },
+  "visible_text": "GitHub Einsia / OpenChronicle\nOpen-source, local-first memory for any tool-capable LLM agent.\nREADME Code Issues Pull requests",
+  "url": "https://github.com/Einsia/OpenChronicle",
+  "uia_tree": {
+    "role": "Window",
+    "children": [
+      {
+        "role": "Document",
+        "name": "GitHub page"
+      }
+    ]
+  }
+}

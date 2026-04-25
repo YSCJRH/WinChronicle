@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://winchronicle.local/specs/capture.schema.json",
+  "title": "WinChronicle Capture v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "timestamp",
+    "schema_version",
+    "platform",
+    "source",
+    "trigger",
+    "window_meta",
+    "focused_element",
+    "visible_text",
+    "url",
+    "uia_tree_hash",
+    "content_fingerprint",
+    "untrusted_observed_content",
+    "redactions",
+    "screenshot"
+  ],
+  "properties": {
+    "timestamp": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "platform": {
+      "const": "windows"
+    },
+    "source": {
+      "enum": ["fixture"]
+    },
+    "trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "event_type"],
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "event_type": {
+          "type": "string"
+        }
+      }
+    },
+    "window_meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hwnd",
+        "pid",
+        "process_name",
+        "exe_path",
+        "app_name",
+        "title",
+        "bounds",
+        "elevated"
+      ],
+      "properties": {
+        "hwnd": {
+          "type": "string"
+        },
+        "pid": {
+          "type": "integer"
+        },
+        "process_name": {
+          "type": "string"
+        },
+        "exe_path": {
+          "type": "string"
+        },
+        "app_name": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "bounds": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "elevated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "focused_element": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "control_type",
+        "name",
+        "automation_id",
+        "class_name",
+        "is_editable",
+        "is_password",
+        "value",
+        "text",
+        "value_length",
+        "text_length"
+      ],
+      "properties": {
+        "control_type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "automation_id": {
+          "type": "string"
+        },
+        "class_name": {
+          "type": "string"
+        },
+        "is_editable": {
+          "type": "boolean"
+        },
+        "is_password": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": ["string", "null"]
+        },
+        "text": {
+          "type": ["string", "null"]
+        },
+        "value_length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "text_length": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "visible_text": {
+      "type": "string"
+    },
+    "url": {
+      "type": ["string", "null"]
+    },
+    "uia_tree_hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "content_fingerprint": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "untrusted_observed_content": {
+      "const": true
+    },
+    "redactions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "count"],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "screenshot": {
+      "const": null
+    }
+  }
+}

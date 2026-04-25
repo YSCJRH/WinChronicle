@@ -1,0 +1,35 @@
+{
+  "fixture_name": "denylisted_app",
+  "timestamp": "2026-04-25T12:12:00+08:00",
+  "window": {
+    "hwnd": "0x0000000000BAD003",
+    "pid": 4560,
+    "process_name": "Bitwarden.exe",
+    "exe_path": "C:\\Program Files\\Bitwarden\\Bitwarden.exe",
+    "app_name": "Bitwarden",
+    "title": "Bitwarden Password Manager",
+    "bounds": [200, 160, 1120, 820],
+    "elevated": false
+  },
+  "focused_element": {
+    "control_type": "ListItem",
+    "name": "Production API token",
+    "automation_id": "",
+    "class_name": "",
+    "is_editable": false,
+    "is_password": false,
+    "value": null,
+    "text": "Do not write this vault content."
+  },
+  "visible_text": "Vault\nProduction API token\nsuper secret value",
+  "url": null,
+  "uia_tree": {
+    "role": "Window",
+    "children": [
+      {
+        "role": "List",
+        "name": "Vault items"
+      }
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "content_fingerprint": "sha256:0c45e53a8dec37c8972d08559c23cec4b6d6f9d2dee1608c6ddd5b53cdc68724",
+  "focused_element": {
+    "automation_id": "15",
+    "class_name": "RichEditD2DPT",
+    "control_type": "Edit",
+    "is_editable": true,
+    "is_password": false,
+    "name": "Text Editor",
+    "text": "Remember to draft the WinChronicle harness README before touching real UIA capture.",
+    "text_length": 83,
+    "value": null,
+    "value_length": 0
+  },
+  "platform": "windows",
+  "redactions": [],
+  "schema_version": 1,
+  "screenshot": null,
+  "source": "fixture",
+  "timestamp": "2026-04-25T12:00:00+08:00",
+  "trigger": {
+    "event_type": "capture_once",
+    "source": "manual"
+  },
+  "uia_tree_hash": "sha256:c98e1a335dd88f4cc43640545f80fb9803534e93a0e115f7e97beb8b225f6322",
+  "untrusted_observed_content": true,
+  "url": null,
+  "visible_text": "Remember to draft the WinChronicle harness README before touching real UIA capture.",
+  "window_meta": {
+    "app_name": "Notepad",
+    "bounds": [
+      120,
+      100,
+      1024,
+      768
+    ],
+    "elevated": false,
+    "exe_path": "C:\\Windows\\System32\\notepad.exe",
+    "hwnd": "0x000000000012034A",
+    "pid": 1204,
+    "process_name": "notepad.exe",
+    "title": "notes.txt - Notepad"
+  }
+}

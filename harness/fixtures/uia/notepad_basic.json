@@ -1,0 +1,35 @@
+{
+  "fixture_name": "notepad_basic",
+  "timestamp": "2026-04-25T12:00:00+08:00",
+  "window": {
+    "hwnd": "0x000000000012034A",
+    "pid": 1204,
+    "process_name": "notepad.exe",
+    "exe_path": "C:\\Windows\\System32\\notepad.exe",
+    "app_name": "Notepad",
+    "title": "notes.txt - Notepad",
+    "bounds": [120, 100, 1024, 768],
+    "elevated": false
+  },
+  "focused_element": {
+    "control_type": "Edit",
+    "name": "Text Editor",
+    "automation_id": "15",
+    "class_name": "RichEditD2DPT",
+    "is_editable": true,
+    "is_password": false,
+    "value": null,
+    "text": "Remember to draft the WinChronicle harness README before touching real UIA capture."
+  },
+  "visible_text": "Remember to draft the WinChronicle harness README before touching real UIA capture.",
+  "url": null,
+  "uia_tree": {
+    "role": "Window",
+    "children": [
+      {
+        "role": "Edit",
+        "name": "Text Editor"
+      }
+    ]
+  }
+}
