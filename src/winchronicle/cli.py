@@ -4,7 +4,9 @@ import argparse
 import json
 from pathlib import Path
 
-from .capture import capture_once_from_fixture, privacy_check_path
+from .capture import capture_frontmost_with_helper, capture_once_from_fixture, privacy_check_path
+from .events import dispatch_watcher_events, run_watcher_command
+from .mcp.server import run_stdio
 from .paths import ensure_state, state_paths
 from .storage import capture_count, init_db, search_captures
 
@@ -19,11 +21,49 @@ def build_parser() -> argparse.ArgumentParser:
     capture = subparsers.add_parser("capture-once", help="Capture a deterministic fixture once.")
     capture.add_argument("--fixture", required=True, type=Path)
 
+    frontmost = subparsers.add_parser(
+        "capture-frontmost",
+        help="Capture the foreground window through an explicit UIA helper.",
+    )
+    frontmost.add_argument("--helper", required=True, help="Path or command for win-uia-helper.")
+    frontmost.add_argument(
+        "--helper-arg",
+        action="append",
+        default=[],
+        help="Extra argument passed to the helper command before capture-frontmost.",
+    )
+    frontmost.add_argument("--depth", type=int, default=80)
+
     privacy = subparsers.add_parser("privacy-check", help="Dry-run redaction and privacy gates.")
     privacy.add_argument("path", type=Path)
 
     search = subparsers.add_parser("search-captures", help="Search locally indexed captures.")
     search.add_argument("query")
+
+    watch = subparsers.add_parser("watch", help="Dispatch watcher events from fixtures or a watcher command.")
+    watch_source = watch.add_mutually_exclusive_group(required=True)
+    watch_source.add_argument("--events", type=Path)
+    watch_source.add_argument("--watcher", help="Path or command for win-uia-watcher.")
+    watch.add_argument(
+        "--watcher-arg",
+        action="append",
+        default=[],
+        help="Extra argument passed to the watcher command before watch.",
+    )
+    watch.add_argument("--helper", help="Path or command for win-uia-helper.")
+    watch.add_argument(
+        "--helper-arg",
+        action="append",
+        default=[],
+        help="Extra argument passed to the helper command before capture-frontmost.",
+    )
+    watch.add_argument("--depth", type=int, default=80)
+    watch.add_argument("--duration", type=int, default=30)
+    watch.add_argument("--debounce-ms", type=int, default=750)
+    watch.add_argument("--heartbeat-ms", type=int, default=5000)
+    watch.add_argument("--capture-on-start", action="store_true")
+
+    subparsers.add_parser("mcp-stdio", help="Run the read-only MCP stdio server.")
 
     return parser
 
@@ -62,6 +102,26 @@ def main(argv: list[str] | None = None) -> int:
         print(str(result.path))
         return 0
 
+    if args.command == "capture-frontmost":
+        if not 0 <= args.depth <= 80:
+            parser.error("--depth must be between 0 and 80")
+        try:
+            result = capture_frontmost_with_helper(
+                [args.helper, *args.helper_arg],
+                depth=args.depth,
+            )
+        except RuntimeError as exc:
+            print(f"ERROR: {exc}")
+            return 1
+        except Exception:
+            print("ERROR: helper output could not be captured safely")
+            return 1
+        if result.skipped:
+            print(f"SKIPPED: {result.reason}")
+            return 0
+        print(str(result.path))
+        return 0
+
     if args.command == "privacy-check":
         result = privacy_check_path(args.path)
         for message in result.messages:
@@ -73,6 +133,40 @@ def main(argv: list[str] | None = None) -> int:
         results = search_captures(args.query, paths["home"])
         print(json.dumps(results, indent=2, sort_keys=True))
         return 0
+
+    if args.command == "watch":
+        paths = ensure_state()
+        if args.events:
+            result = dispatch_watcher_events(args.events, paths["home"])
+        else:
+            if not 0 <= args.depth <= 80:
+                parser.error("--depth must be between 0 and 80")
+            if args.duration < 0:
+                parser.error("--duration must be non-negative")
+            helper_command = [args.helper, *args.helper_arg] if args.helper else None
+            try:
+                result = run_watcher_command(
+                    [args.watcher, *args.watcher_arg],
+                    helper_command,
+                    depth=args.depth,
+                    duration_seconds=args.duration,
+                    debounce_ms=args.debounce_ms,
+                    heartbeat_ms=args.heartbeat_ms,
+                    capture_on_start=args.capture_on_start,
+                    home=paths["home"],
+                )
+            except RuntimeError as exc:
+                print(f"ERROR: {exc}")
+                return 1
+            except Exception:
+                print("ERROR: watcher output could not be captured safely")
+                return 1
+        print(json.dumps(result.to_json(), indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "mcp-stdio":
+        paths = state_paths()
+        return run_stdio(home=paths["home"])
 
     parser.error(f"unknown command: {args.command}")
     return 2

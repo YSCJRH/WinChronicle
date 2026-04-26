@@ -114,6 +114,67 @@ def search_captures(query: str, home: Path | str | None = None, limit: int = 10)
     return [_row_to_result(row, query) for row in rows]
 
 
+def list_captures(
+    home: Path | str | None = None,
+    *,
+    limit: int = 10,
+    app_name: str | None = None,
+    since: str | None = None,
+    until: str | None = None,
+) -> list[dict[str, str]]:
+    paths = state_paths(home)
+    if not paths["db"].exists():
+        return []
+
+    clauses: list[str] = []
+    params: list[str | int] = []
+    if app_name:
+        clauses.append("app_name = ?")
+        params.append(app_name)
+    if since:
+        clauses.append("timestamp >= ?")
+        params.append(since)
+    if until:
+        clauses.append("timestamp <= ?")
+        params.append(until)
+
+    where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+    params.append(max(0, limit))
+
+    with sqlite3.connect(paths["db"]) as conn:
+        conn.row_factory = sqlite3.Row
+        try:
+            rows = conn.execute(
+                f"""
+                SELECT path, timestamp, app_name, title, visible_text, focused_text, url
+                FROM captures
+                {where}
+                ORDER BY timestamp DESC, path ASC
+                LIMIT ?
+                """,
+                tuple(params),
+            ).fetchall()
+        except sqlite3.OperationalError:
+            return []
+
+    return [_capture_row_to_dict(row) for row in rows]
+
+
+def recent_capture(
+    home: Path | str | None = None,
+    *,
+    at: str | None = None,
+    app_name: str | None = None,
+) -> dict[str, str] | None:
+    rows = list_captures(
+        home,
+        limit=1,
+        app_name=app_name,
+        until=at,
+    )
+    return rows[0] if rows else None
+
+
 def _ensure_fts_table(conn: sqlite3.Connection) -> bool:
     try:
         conn.executescript(FTS_SCHEMA_SQL)
@@ -216,6 +277,18 @@ def _row_to_result(row: sqlite3.Row, query: str) -> dict[str, str]:
         "title": row["title"],
         "snippet": snippet,
         "path": row["path"],
+    }
+
+
+def _capture_row_to_dict(row: sqlite3.Row) -> dict[str, str]:
+    return {
+        "path": row["path"],
+        "timestamp": row["timestamp"],
+        "app_name": row["app_name"],
+        "title": row["title"],
+        "visible_text": row["visible_text"],
+        "focused_text": row["focused_text"],
+        "url": row["url"] or "",
     }
 
 

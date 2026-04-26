@@ -39,6 +39,20 @@ def test_denylisted_app_capture_is_skipped(tmp_path, monkeypatch):
     assert not (home / "capture-buffer").exists()
 
 
+def test_lock_app_capture_is_skipped(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    result = capture_once_from_fixture(
+        ROOT / "harness" / "fixtures" / "privacy" / "lock_app.json"
+    )
+
+    assert result.skipped is True
+    assert result.path is None
+    assert "LockApp.exe" in (result.reason or "")
+    assert not (home / "capture-buffer").exists()
+
+
 def test_fixture_capture_is_searchable(tmp_path, monkeypatch):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))

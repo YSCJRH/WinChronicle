@@ -1,52 +1,37 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://winchronicle.local/specs/capture.schema.json",
-  "title": "WinChronicle Capture v0.1",
+  "$id": "https://winchronicle.local/specs/uia-helper-output.schema.json",
+  "title": "WinChronicle UIA Helper Output v0.1",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "timestamp",
-    "schema_version",
-    "platform",
+    "helper_schema_version",
     "source",
-    "trigger",
-    "window_meta",
+    "command",
+    "timestamp",
+    "window",
     "focused_element",
     "visible_text",
     "url",
-    "uia_tree_hash",
-    "content_fingerprint",
-    "untrusted_observed_content",
-    "redactions",
-    "screenshot"
+    "uia_tree",
+    "limits",
+    "truncated",
+    "capture_surfaces"
   ],
   "properties": {
+    "helper_schema_version": {
+      "const": 1
+    },
+    "source": {
+      "const": "win-uia-helper"
+    },
+    "command": {
+      "const": "capture-frontmost"
+    },
     "timestamp": {
       "type": "string"
     },
-    "schema_version": {
-      "const": 1
-    },
-    "platform": {
-      "const": "windows"
-    },
-    "source": {
-      "enum": ["fixture", "uia_helper"]
-    },
-    "trigger": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["source", "event_type"],
-      "properties": {
-        "source": {
-          "type": "string"
-        },
-        "event_type": {
-          "type": "string"
-        }
-      }
-    },
-    "window_meta": {
+    "window": {
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -102,9 +87,7 @@
         "is_editable",
         "is_password",
         "value",
-        "text",
-        "value_length",
-        "text_length"
+        "text"
       ],
       "properties": {
         "control_type": {
@@ -130,53 +113,80 @@
         },
         "text": {
           "type": ["string", "null"]
-        },
-        "value_length": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "text_length": {
-          "type": "integer",
-          "minimum": 0
         }
       }
     },
     "visible_text": {
-      "type": "string"
+      "type": "string",
+      "maxLength": 20000
     },
     "url": {
       "type": ["string", "null"]
     },
-    "uia_tree_hash": {
-      "type": "string",
-      "pattern": "^sha256:[0-9a-f]{64}$"
+    "uia_tree": {
+      "type": "object"
     },
-    "content_fingerprint": {
-      "type": "string",
-      "pattern": "^sha256:[0-9a-f]{64}$"
-    },
-    "untrusted_observed_content": {
-      "const": true
-    },
-    "redactions": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["type", "count"],
-        "properties": {
-          "type": {
-            "type": "string"
-          },
-          "count": {
-            "type": "integer",
-            "minimum": 1
-          }
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["depth", "max_nodes", "max_text_chars", "node_count"],
+      "properties": {
+        "depth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 80
+        },
+        "max_nodes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000
+        },
+        "max_text_chars": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20000
+        },
+        "node_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5000
         }
       }
     },
-    "screenshot": {
-      "const": null
+    "truncated": {
+      "type": "boolean"
+    },
+    "capture_surfaces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "screenshots",
+        "ocr",
+        "audio",
+        "keyboard",
+        "clipboard",
+        "desktop_control"
+      ],
+      "properties": {
+        "screenshots": {
+          "const": false
+        },
+        "ocr": {
+          "const": false
+        },
+        "audio": {
+          "const": false
+        },
+        "keyboard": {
+          "const": false
+        },
+        "clipboard": {
+          "const": false
+        },
+        "desktop_control": {
+          "const": false
+        }
+      }
     }
   }
 }

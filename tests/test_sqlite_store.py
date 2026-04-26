@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
     ("fixture_name", "query", "expected_app"),
     [
         ("terminal_error.json", "AssertionError", "Windows Terminal"),
-        ("vscode_editor.json", "redacts", "Visual Studio Code"),
+        ("vscode_editor.json", "written_json", "Visual Studio Code"),
         ("edge_browser.json", "OpenChronicle", "Microsoft Edge"),
     ],
 )

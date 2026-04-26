@@ -10,9 +10,12 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_privacy_check_passes_password_and_secret_fixtures():
     password = privacy_check_path(ROOT / "harness" / "fixtures" / "privacy" / "password_field.json")
     secrets = privacy_check_path(ROOT / "harness" / "fixtures" / "privacy" / "secrets_visible_text.json")
+    lock_app = privacy_check_path(ROOT / "harness" / "fixtures" / "privacy" / "lock_app.json")
 
     assert password.ok is True
     assert secrets.ok is True
+    assert lock_app.ok is True
+    assert lock_app.messages == ["PASS: denylisted app capture would be skipped"]
 
 
 def test_privacy_check_fails_unredacted_capture_file(tmp_path):
