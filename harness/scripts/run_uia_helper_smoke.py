@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 
@@ -25,6 +26,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Extra argument passed to the helper command before capture-frontmost.",
     )
     parser.add_argument("--depth", type=int, default=2)
+    parser.add_argument(
+        "--delay-seconds",
+        type=float,
+        default=0,
+        help="Wait before capture so a human can focus the target app.",
+    )
     parser.add_argument("--expect-app", help="Substring expected in app/process/window metadata.")
     parser.add_argument("--expect-text", help="Substring expected in visible or focused text.")
     return parser
@@ -32,6 +39,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.delay_seconds < 0:
+        print("FAIL: delay-seconds must be non-negative")
+        return 1
+
     with tempfile.TemporaryDirectory(prefix="winchronicle-uia-smoke-") as temp_dir:
         env = os.environ.copy()
         env["WINCHRONICLE_HOME"] = str(Path(temp_dir) / "state")
@@ -47,6 +58,9 @@ def main(argv: list[str] | None = None) -> int:
         ]
         for helper_arg in args.helper_arg:
             command.extend(["--helper-arg", helper_arg])
+
+        if args.delay_seconds:
+            time.sleep(args.delay_seconds)
 
         completed = subprocess.run(
             command,

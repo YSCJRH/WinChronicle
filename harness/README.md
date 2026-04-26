@@ -29,11 +29,11 @@ live capture surface.
 For a manual foreground-window helper smoke, focus the target app first and run:
 
 ```powershell
-python harness/scripts/run_uia_helper_smoke.py --helper path\to\win-uia-helper.exe --expect-app Notepad --expect-text "some visible text"
+python harness/scripts/run_uia_helper_smoke.py --helper path\to\win-uia-helper.exe --delay-seconds 5 --expect-app Notepad --expect-text "some visible text"
 ```
 
-The smoke uses a temporary `WINCHRONICLE_HOME` and does not print observed
-content.
+The delay gives you time to focus the target app before capture. The smoke uses
+a temporary `WINCHRONICLE_HOME` and does not print observed content.
 
 Run the full local harness from the repository root:
 

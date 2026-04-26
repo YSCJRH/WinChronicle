@@ -107,6 +107,8 @@ def test_uia_helper_smoke_script_uses_fake_helper_without_printing_capture(tmp_p
             sys.executable,
             "--helper-arg",
             str(fake_helper),
+            "--delay-seconds",
+            "0",
             "--expect-app",
             "Notepad",
             "--expect-text",
