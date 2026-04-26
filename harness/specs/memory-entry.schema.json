@@ -22,7 +22,9 @@
     },
     "entry_type": {
       "enum": [
-        "event"
+        "event",
+        "project",
+        "tool"
       ]
     },
     "title": {

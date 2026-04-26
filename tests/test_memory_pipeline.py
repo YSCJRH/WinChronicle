@@ -23,13 +23,25 @@ def test_generate_memory_creates_markdown_and_searchable_entry(tmp_path, monkeyp
 
     results = generate_memory_entries(home)
 
-    assert len(results) == 1
-    result = results[0]
-    validate_memory_entry(result.entry)
-    assert result.path.name == "event-2026-04-25.md"
-    assert result.capture_count == 3
+    assert {result.path.name for result in results} == {
+        "event-2026-04-25.md",
+        "project-openchronicle.md",
+        "project-winchronicle.md",
+        "tool-microsoft-edge.md",
+        "tool-visual-studio-code.md",
+        "tool-windows-terminal.md",
+    }
+    for result in results:
+        validate_memory_entry(result.entry)
 
-    markdown = result.path.read_text(encoding="utf-8")
+    by_path = {result.path.name: result for result in results}
+    assert by_path["event-2026-04-25.md"].capture_count == 3
+    assert by_path["project-winchronicle.md"].capture_count == 2
+    assert by_path["project-openchronicle.md"].capture_count == 1
+    assert by_path["tool-visual-studio-code.md"].entry["entry_type"] == "tool"
+    assert by_path["project-winchronicle.md"].entry["entry_type"] == "project"
+
+    markdown = by_path["event-2026-04-25.md"].path.read_text(encoding="utf-8")
     assert "trust: untrusted_observed_content" in markdown
     assert "## Source Captures" in markdown
     assert "Windows Terminal" in markdown
@@ -43,9 +55,9 @@ def test_generate_memory_creates_markdown_and_searchable_entry(tmp_path, monkeyp
         ("OpenChronicle", "WinChronicle events for 2026-04-25"),
     ):
         matches = search_memory_entries(query, home)
-        assert len(matches) == 1
-        assert matches[0]["title"] == expected_title
-        assert query.lower() in matches[0]["snippet"].lower()
+        assert matches
+        assert expected_title in {match["title"] for match in matches}
+        assert any(query.lower() in match["snippet"].lower() for match in matches)
 
 
 def test_memory_entries_fts_table_created_when_available(tmp_path, monkeypatch):
@@ -56,14 +68,15 @@ def test_memory_entries_fts_table_created_when_available(tmp_path, monkeypatch):
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
     capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / "terminal_error.json", home)
 
-    generate_memory_entries(home)
+    results = generate_memory_entries(home)
 
     with sqlite3.connect(state_paths(home)["db"]) as conn:
         entry_row = conn.execute("SELECT COUNT(*) FROM entries").fetchone()
         fts_row = conn.execute("SELECT COUNT(*) FROM entries_fts").fetchone()
 
-    assert entry_row == (1,)
-    assert fts_row == (1,)
+    assert len(results) == 3
+    assert entry_row == (3,)
+    assert fts_row == (3,)
 
 
 def test_memory_generation_does_not_write_unredacted_secret_canaries(tmp_path, monkeypatch):
@@ -71,14 +84,15 @@ def test_memory_generation_does_not_write_unredacted_secret_canaries(tmp_path, m
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
     capture_once_from_fixture(ROOT / "harness" / "fixtures" / "privacy" / "secrets_visible_text.json", home)
 
-    result = generate_memory_entries(home)[0]
-    markdown = result.path.read_text(encoding="utf-8")
+    results = generate_memory_entries(home)
 
-    assert "sk-winchronicle-test-canary" not in markdown
-    assert "ghp_winchroniclecanary" not in markdown
-    assert "xoxb-winchronicle-canary-token" not in markdown
-    assert "-----BEGIN PRIVATE KEY-----" not in markdown
-    assert "[REDACTED:" in markdown
+    for result in results:
+        markdown = result.path.read_text(encoding="utf-8")
+        assert "sk-winchronicle-test-canary" not in markdown
+        assert "ghp_winchroniclecanary" not in markdown
+        assert "xoxb-winchronicle-canary-token" not in markdown
+        assert "-----BEGIN PRIVATE KEY-----" not in markdown
+        assert "[REDACTED:" in markdown
 
 
 def test_generate_memory_and_search_memory_cli(tmp_path, monkeypatch, capsys):
@@ -94,14 +108,14 @@ def test_generate_memory_and_search_memory_cli(tmp_path, monkeypatch, capsys):
 
     assert main(["generate-memory", "--date", "2026-04-25"]) == 0
     generated = json.loads(capsys.readouterr().out)
-    assert len(generated) == 1
-    assert generated[0]["capture_count"] == 1
+    assert {entry["entry_type"] for entry in generated} == {"event", "project", "tool"}
+    assert all(entry["capture_count"] == 1 for entry in generated)
 
     assert main(["search-memory", "OpenChronicle"]) == 0
     matches = json.loads(capsys.readouterr().out)
-    assert len(matches) == 1
-    assert matches[0]["entry_type"] == "event"
-    assert matches[0]["title"] == "WinChronicle events for 2026-04-25"
+    assert matches
+    assert {"event", "project", "tool"} <= {match["entry_type"] for match in matches}
+    assert "WinChronicle events for 2026-04-25" in {match["title"] for match in matches}
 
 
 def _sqlite_supports_fts5() -> bool:

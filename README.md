@@ -102,8 +102,9 @@ watcher JSONL without reading live UI content.
 marked with `trust = "untrusted_observed_content"` and no desktop control,
 screenshot, OCR, audio, keyboard, clipboard, or network tool is exposed.
 
-`generate-memory` creates deterministic Markdown entries from already-redacted
-local captures and indexes them in SQLite `entries` / `entries_fts`.
+`generate-memory` creates deterministic event, project, and tool Markdown
+entries from already-redacted local captures and indexes them in SQLite
+`entries` / `entries_fts`.
 `search-memory` searches those durable entries; raw capture search remains
 available through `search-captures`.
 
