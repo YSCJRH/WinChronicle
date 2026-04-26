@@ -38,7 +38,7 @@ static int Run(string[] args)
         Console.Error.WriteLine($"capture skipped: {exc.Message}");
         return 0;
     }
-    catch (Exception exc) when (exc is COMException or InvalidOperationException)
+    catch (Exception exc) when (exc is COMException or ElementNotAvailableException or InvalidOperationException)
     {
         Console.Error.WriteLine($"uia capture failed: {exc.Message}");
         return 1;
@@ -139,11 +139,11 @@ static class TreeExtractor
 
         if (depth < maxDepth && nodeCount < maxNodes)
         {
-            AutomationElement? child = TreeWalker.ControlViewWalker.GetFirstChild(element);
+            AutomationElement? child = TreeWalker.RawViewWalker.GetFirstChild(element);
             while (child is not null && nodeCount < maxNodes)
             {
                 children.Add(CaptureNode(child, depth + 1, maxDepth, maxNodes, maxTextChars, ref nodeCount, ref truncated));
-                child = TreeWalker.ControlViewWalker.GetNextSibling(child);
+                child = TreeWalker.RawViewWalker.GetNextSibling(child);
             }
         }
 
@@ -333,15 +333,29 @@ sealed record ElementSnapshot(
 
     private static bool SupportsPattern(AutomationElement element, AutomationPattern pattern)
     {
-        return element.TryGetCurrentPattern(pattern, out _);
+        try
+        {
+            return element.TryGetCurrentPattern(pattern, out _);
+        }
+        catch (Exception exc) when (exc is COMException or ElementNotAvailableException or InvalidOperationException)
+        {
+            return false;
+        }
     }
 
     private static string? TryValue(AutomationElement element, int maxTextChars)
     {
-        if (element.TryGetCurrentPattern(ValuePattern.Pattern, out object pattern)
-            && pattern is ValuePattern valuePattern)
+        try
         {
-            return TextCollector.Truncate(valuePattern.Current.Value ?? "", maxTextChars);
+            if (element.TryGetCurrentPattern(ValuePattern.Pattern, out object pattern)
+                && pattern is ValuePattern valuePattern)
+            {
+                return TextCollector.Truncate(valuePattern.Current.Value ?? "", maxTextChars);
+            }
+        }
+        catch (Exception exc) when (exc is COMException or ElementNotAvailableException or InvalidOperationException)
+        {
+            return null;
         }
 
         return null;
@@ -349,10 +363,17 @@ sealed record ElementSnapshot(
 
     private static string? TryText(AutomationElement element, int maxTextChars)
     {
-        if (element.TryGetCurrentPattern(TextPattern.Pattern, out object pattern)
-            && pattern is TextPattern textPattern)
+        try
         {
-            return TextCollector.Truncate(textPattern.DocumentRange.GetText(maxTextChars), maxTextChars);
+            if (element.TryGetCurrentPattern(TextPattern.Pattern, out object pattern)
+                && pattern is TextPattern textPattern)
+            {
+                return TextCollector.Truncate(textPattern.DocumentRange.GetText(maxTextChars), maxTextChars);
+            }
+        }
+        catch (Exception exc) when (exc is COMException or ElementNotAvailableException or InvalidOperationException)
+        {
+            return null;
         }
 
         return null;
@@ -360,20 +381,41 @@ sealed record ElementSnapshot(
 
     private static bool SafeBool(AutomationElement element, AutomationProperty property)
     {
-        object value = element.GetCurrentPropertyValue(property, true);
-        return value is bool result && result;
+        try
+        {
+            object value = element.GetCurrentPropertyValue(property, true);
+            return value is bool result && result;
+        }
+        catch (Exception exc) when (exc is COMException or ElementNotAvailableException or InvalidOperationException)
+        {
+            return false;
+        }
     }
 
     private static AutomationControlType SafeControlType(AutomationElement element)
     {
-        object value = element.GetCurrentPropertyValue(AutomationElement.ControlTypeProperty, true);
-        return value as AutomationControlType ?? AutomationControlType.Custom;
+        try
+        {
+            object value = element.GetCurrentPropertyValue(AutomationElement.ControlTypeProperty, true);
+            return value as AutomationControlType ?? AutomationControlType.Custom;
+        }
+        catch (Exception exc) when (exc is COMException or ElementNotAvailableException or InvalidOperationException)
+        {
+            return AutomationControlType.Custom;
+        }
     }
 
     private static T? SafeProperty<T>(AutomationElement element, AutomationProperty property)
     {
-        object value = element.GetCurrentPropertyValue(property, true);
-        return value is T typed ? typed : default;
+        try
+        {
+            object value = element.GetCurrentPropertyValue(property, true);
+            return value is T typed ? typed : default;
+        }
+        catch (Exception exc) when (exc is COMException or ElementNotAvailableException or InvalidOperationException)
+        {
+            return default;
+        }
     }
 }
 
