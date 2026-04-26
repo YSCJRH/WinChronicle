@@ -9,6 +9,7 @@ from typing import Any, Iterable, Sequence
 from .capture import normalize_uia_helper_output, persist_capture
 from .privacy import denylist_reason
 from .schema import validate_uia_helper_output, validate_watcher_event
+from .storage import capture_fingerprint_exists
 
 
 CAPTURE_EVENT_TYPES = {"foreground_changed", "name_changed", "value_changed"}
@@ -78,7 +79,7 @@ def dispatch_watcher_records(
 
         capture = normalize_uia_helper_output(output)
         fingerprint = capture["content_fingerprint"]
-        if fingerprint in seen_fingerprints:
+        if fingerprint in seen_fingerprints or capture_fingerprint_exists(fingerprint, home):
             counts["duplicates_skipped"] += 1
             continue
 

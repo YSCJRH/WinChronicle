@@ -33,6 +33,30 @@ def test_watcher_event_fixture_dispatches_one_capture_and_heartbeat(tmp_path, mo
     assert results[0]["app_name"] == "Notepad"
 
 
+def test_watcher_dispatch_skips_duplicate_fingerprint_already_indexed(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    event_path = ROOT / "harness" / "fixtures" / "watcher" / "notepad_burst.jsonl"
+
+    first = dispatch_watcher_events(event_path, home)
+    second = dispatch_watcher_events(event_path, home)
+    results = search_captures("deterministic capture", home)
+
+    assert first.to_json() == {
+        "captures_written": 1,
+        "duplicates_skipped": 1,
+        "denylisted_skipped": 0,
+        "heartbeats": 1,
+    }
+    assert second.to_json() == {
+        "captures_written": 0,
+        "duplicates_skipped": 2,
+        "denylisted_skipped": 0,
+        "heartbeats": 1,
+    }
+    assert len(results) == 1
+
+
 def test_watcher_dispatch_skips_denylisted_lock_app(tmp_path, monkeypatch):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))

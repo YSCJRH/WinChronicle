@@ -17,8 +17,15 @@ CREATE TABLE IF NOT EXISTS captures (
     title TEXT NOT NULL,
     visible_text TEXT NOT NULL,
     focused_text TEXT NOT NULL,
-    url TEXT
+    url TEXT,
+    content_fingerprint TEXT NOT NULL DEFAULT ''
 );
+"""
+
+CAPTURES_FINGERPRINT_INDEX_SQL = """
+CREATE INDEX IF NOT EXISTS captures_content_fingerprint_idx
+ON captures(content_fingerprint)
+WHERE content_fingerprint <> '';
 """
 
 FTS_SCHEMA_SQL = """
@@ -37,6 +44,8 @@ def init_db(db_path: Path) -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(db_path) as conn:
         conn.executescript(CAPTURES_SCHEMA_SQL)
+        _ensure_content_fingerprint_column(conn)
+        conn.executescript(CAPTURES_FINGERPRINT_INDEX_SQL)
         if _ensure_fts_table(conn):
             _backfill_fts(conn)
         conn.commit()
@@ -51,8 +60,8 @@ def index_capture(capture: dict[str, Any], capture_path: Path, home: Path | str 
         conn.execute(
             """
             INSERT OR REPLACE INTO captures
-                (path, timestamp, app_name, title, visible_text, focused_text, url)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+                (path, timestamp, app_name, title, visible_text, focused_text, url, content_fingerprint)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 str(capture_path),
@@ -62,6 +71,7 @@ def index_capture(capture: dict[str, Any], capture_path: Path, home: Path | str 
                 capture["visible_text"],
                 focused.get("text") or focused.get("value") or "",
                 capture.get("url"),
+                capture["content_fingerprint"],
             ),
         )
         if _fts_table_exists(conn):
@@ -94,6 +104,31 @@ def capture_count(home: Path | str | None = None) -> int:
         except sqlite3.OperationalError:
             return 0
     return int(row[0])
+
+
+def capture_fingerprint_exists(
+    content_fingerprint: str,
+    home: Path | str | None = None,
+) -> bool:
+    if not content_fingerprint:
+        return False
+
+    paths = state_paths(home)
+    if not paths["db"].exists():
+        return False
+
+    init_db(paths["db"])
+    with sqlite3.connect(paths["db"]) as conn:
+        row = conn.execute(
+            """
+            SELECT 1
+            FROM captures
+            WHERE content_fingerprint = ?
+            LIMIT 1
+            """,
+            (content_fingerprint,),
+        ).fetchone()
+    return row is not None
 
 
 def search_captures(query: str, home: Path | str | None = None, limit: int = 10) -> list[dict[str, str]]:
@@ -173,6 +208,37 @@ def recent_capture(
         until=at,
     )
     return rows[0] if rows else None
+
+
+def _ensure_content_fingerprint_column(conn: sqlite3.Connection) -> None:
+    columns = {
+        row[1]
+        for row in conn.execute("PRAGMA table_info(captures)").fetchall()
+    }
+    if "content_fingerprint" not in columns:
+        conn.execute("ALTER TABLE captures ADD COLUMN content_fingerprint TEXT NOT NULL DEFAULT ''")
+    _backfill_content_fingerprints(conn)
+
+
+def _backfill_content_fingerprints(conn: sqlite3.Connection) -> None:
+    rows = conn.execute(
+        """
+        SELECT path
+        FROM captures
+        WHERE content_fingerprint = ''
+        """
+    ).fetchall()
+    for (path,) in rows:
+        try:
+            capture = read_capture_file(Path(path))
+        except (OSError, json.JSONDecodeError):
+            continue
+        fingerprint = capture.get("content_fingerprint")
+        if isinstance(fingerprint, str) and fingerprint:
+            conn.execute(
+                "UPDATE captures SET content_fingerprint = ? WHERE path = ?",
+                (fingerprint, path),
+            )
 
 
 def _ensure_fts_table(conn: sqlite3.Connection) -> bool:
