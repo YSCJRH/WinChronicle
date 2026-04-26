@@ -39,6 +39,38 @@ CREATE VIRTUAL TABLE IF NOT EXISTS captures_fts USING fts5(
 );
 """
 
+ENTRIES_SCHEMA_SQL = """
+CREATE TABLE IF NOT EXISTS entries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    path TEXT NOT NULL UNIQUE,
+    entry_type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    start_timestamp TEXT NOT NULL,
+    end_timestamp TEXT NOT NULL,
+    app_names TEXT NOT NULL,
+    body TEXT NOT NULL,
+    trust TEXT NOT NULL,
+    source_capture_paths TEXT NOT NULL,
+    content_fingerprint TEXT NOT NULL
+);
+"""
+
+ENTRIES_FINGERPRINT_INDEX_SQL = """
+CREATE INDEX IF NOT EXISTS entries_content_fingerprint_idx
+ON entries(content_fingerprint)
+WHERE content_fingerprint <> '';
+"""
+
+ENTRIES_FTS_SCHEMA_SQL = """
+CREATE VIRTUAL TABLE IF NOT EXISTS entries_fts USING fts5(
+    path UNINDEXED,
+    entry_type,
+    title,
+    app_names,
+    body
+);
+"""
+
 
 def init_db(db_path: Path) -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
@@ -48,6 +80,10 @@ def init_db(db_path: Path) -> None:
         conn.executescript(CAPTURES_FINGERPRINT_INDEX_SQL)
         if _ensure_fts_table(conn):
             _backfill_fts(conn)
+        conn.executescript(ENTRIES_SCHEMA_SQL)
+        conn.executescript(ENTRIES_FINGERPRINT_INDEX_SQL)
+        if _ensure_entries_fts_table(conn):
+            _backfill_entries_fts(conn)
         conn.commit()
 
 
@@ -210,6 +246,97 @@ def recent_capture(
     return rows[0] if rows else None
 
 
+def index_memory_entry(
+    entry: dict[str, Any],
+    entry_path: Path,
+    home: Path | str | None = None,
+) -> None:
+    paths = state_paths(home)
+    init_db(paths["db"])
+    with sqlite3.connect(paths["db"]) as conn:
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO entries
+                (
+                    path,
+                    entry_type,
+                    title,
+                    start_timestamp,
+                    end_timestamp,
+                    app_names,
+                    body,
+                    trust,
+                    source_capture_paths,
+                    content_fingerprint
+                )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                str(entry_path),
+                entry["entry_type"],
+                entry["title"],
+                entry["start_timestamp"],
+                entry["end_timestamp"],
+                json.dumps(entry["app_names"], sort_keys=True),
+                entry["body"],
+                entry["trust"],
+                json.dumps(entry["source_capture_paths"], sort_keys=True),
+                entry["content_fingerprint"],
+            ),
+        )
+        if _entries_fts_table_exists(conn):
+            conn.execute("DELETE FROM entries_fts WHERE path = ?", (str(entry_path),))
+            conn.execute(
+                """
+                INSERT INTO entries_fts
+                    (path, entry_type, title, app_names, body)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (
+                    str(entry_path),
+                    entry["entry_type"],
+                    entry["title"],
+                    " ".join(entry["app_names"]),
+                    entry["body"],
+                ),
+            )
+        conn.commit()
+
+
+def memory_entry_count(home: Path | str | None = None) -> int:
+    paths = state_paths(home)
+    if not paths["db"].exists():
+        return 0
+    with sqlite3.connect(paths["db"]) as conn:
+        try:
+            row = conn.execute("SELECT COUNT(*) FROM entries").fetchone()
+        except sqlite3.OperationalError:
+            return 0
+    return int(row[0])
+
+
+def search_memory_entries(
+    query: str,
+    home: Path | str | None = None,
+    limit: int = 10,
+) -> list[dict[str, str]]:
+    if not query.strip():
+        return []
+
+    paths = state_paths(home)
+    if not paths["db"].exists():
+        return []
+
+    with sqlite3.connect(paths["db"]) as conn:
+        conn.row_factory = sqlite3.Row
+        if _entries_fts_table_exists(conn):
+            rows = _search_entries_fts(conn, query, limit)
+        else:
+            rows = _search_entries_like_fallback(conn, query, limit)
+
+    return [_entry_row_to_result(row, query) for row in rows]
+
+
 def _ensure_content_fingerprint_column(conn: sqlite3.Connection) -> None:
     columns = {
         row[1]
@@ -265,6 +392,34 @@ def _backfill_fts(conn: sqlite3.Connection) -> None:
         SELECT path, app_name, title, visible_text, focused_text, coalesce(url, '')
         FROM captures
         WHERE path NOT IN (SELECT path FROM captures_fts)
+        """
+    )
+
+
+def _ensure_entries_fts_table(conn: sqlite3.Connection) -> bool:
+    try:
+        conn.executescript(ENTRIES_FTS_SCHEMA_SQL)
+    except sqlite3.OperationalError as exc:
+        if _is_fts_unavailable(exc):
+            return False
+        raise
+    return _entries_fts_table_exists(conn)
+
+
+def _entries_fts_table_exists(conn: sqlite3.Connection) -> bool:
+    row = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'entries_fts'"
+    ).fetchone()
+    return row is not None
+
+
+def _backfill_entries_fts(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """
+        INSERT INTO entries_fts (path, entry_type, title, app_names, body)
+        SELECT path, entry_type, title, app_names, body
+        FROM entries
+        WHERE path NOT IN (SELECT path FROM entries_fts)
         """
     )
 
@@ -325,6 +480,56 @@ def _search_like_fallback(
         return []
 
 
+def _search_entries_fts(
+    conn: sqlite3.Connection, query: str, limit: int
+) -> list[sqlite3.Row]:
+    try:
+        return conn.execute(
+            """
+            SELECT
+                entries.path,
+                entries.entry_type,
+                entries.title,
+                entries.start_timestamp,
+                entries.end_timestamp,
+                entries.app_names,
+                entries.body
+            FROM entries_fts
+            JOIN entries ON entries.path = entries_fts.path
+            WHERE entries_fts MATCH ?
+            ORDER BY bm25(entries_fts), entries.start_timestamp DESC
+            LIMIT ?
+            """,
+            (_fts_query(query), limit),
+        ).fetchall()
+    except sqlite3.OperationalError as exc:
+        if _is_fts_unavailable(exc):
+            return _search_entries_like_fallback(conn, query, limit)
+        raise
+
+
+def _search_entries_like_fallback(
+    conn: sqlite3.Connection, query: str, limit: int
+) -> list[sqlite3.Row]:
+    like = f"%{query.lower()}%"
+    try:
+        return conn.execute(
+            """
+            SELECT path, entry_type, title, start_timestamp, end_timestamp, app_names, body
+            FROM entries
+            WHERE lower(body) LIKE ?
+               OR lower(title) LIKE ?
+               OR lower(app_names) LIKE ?
+               OR lower(entry_type) LIKE ?
+            ORDER BY start_timestamp DESC
+            LIMIT ?
+            """,
+            (like, like, like, like, limit),
+        ).fetchall()
+    except sqlite3.OperationalError:
+        return []
+
+
 def _is_fts_unavailable(exc: sqlite3.OperationalError) -> bool:
     message = str(exc).lower()
     return "fts" in message and (
@@ -355,6 +560,17 @@ def _capture_row_to_dict(row: sqlite3.Row) -> dict[str, str]:
         "visible_text": row["visible_text"],
         "focused_text": row["focused_text"],
         "url": row["url"] or "",
+    }
+
+
+def _entry_row_to_result(row: sqlite3.Row, query: str) -> dict[str, str]:
+    return {
+        "entry_type": row["entry_type"],
+        "title": row["title"],
+        "start_timestamp": row["start_timestamp"],
+        "end_timestamp": row["end_timestamp"],
+        "snippet": _snippet(row["body"], query),
+        "path": row["path"],
     }
 
 

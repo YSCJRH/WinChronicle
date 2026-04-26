@@ -72,6 +72,16 @@ def main() -> int:
             if _run([sys.executable, "-m", "winchronicle", "search-captures", query], env) != 0:
                 return 1
 
+        memory_commands = [
+            [sys.executable, "-m", "winchronicle", "generate-memory", "--date", "2026-04-25"],
+            [sys.executable, "-m", "winchronicle", "search-memory", "AssertionError"],
+            [sys.executable, "-m", "winchronicle", "search-memory", "written_json"],
+            [sys.executable, "-m", "winchronicle", "search-memory", "OpenChronicle"],
+        ]
+        for command in memory_commands:
+            if _run(command, env) != 0:
+                return 1
+
         watch_commands = [
             [
                 sys.executable,

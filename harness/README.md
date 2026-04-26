@@ -26,6 +26,11 @@ seeds a deterministic fixture capture, lists MCP tools, calls `privacy_status`,
 and verifies `search_captures` without exposing desktop control tools or any
 live capture surface.
 
+Phase 5 starts with a deterministic memory reducer. `generate-memory` reads
+already-redacted indexed captures, writes `memory/event-YYYY-MM-DD.md`, and
+indexes the Markdown in SQLite `entries` / `entries_fts`; `search-memory`
+queries that durable memory without changing raw capture search.
+
 For a manual foreground-window helper smoke, focus the target app first and run:
 
 ```powershell

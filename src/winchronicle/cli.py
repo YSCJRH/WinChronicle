@@ -6,9 +6,10 @@ from pathlib import Path
 
 from .capture import capture_frontmost_with_helper, capture_once_from_fixture, privacy_check_path
 from .events import dispatch_watcher_events, run_watcher_command
+from .memory import generate_memory_entries
 from .mcp.server import run_stdio
 from .paths import ensure_state, state_paths
-from .storage import capture_count, init_db, search_captures
+from .storage import capture_count, init_db, memory_entry_count, search_captures, search_memory_entries
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -39,6 +40,15 @@ def build_parser() -> argparse.ArgumentParser:
 
     search = subparsers.add_parser("search-captures", help="Search locally indexed captures.")
     search.add_argument("query")
+
+    generate_memory = subparsers.add_parser(
+        "generate-memory",
+        help="Generate deterministic Markdown memory entries from indexed captures.",
+    )
+    generate_memory.add_argument("--date", help="Generate memory only for YYYY-MM-DD.")
+
+    search_memory = subparsers.add_parser("search-memory", help="Search durable memory entries.")
+    search_memory.add_argument("query")
 
     watch = subparsers.add_parser("watch", help="Dispatch watcher events from fixtures or a watcher command.")
     watch_source = watch.add_mutually_exclusive_group(required=True)
@@ -86,6 +96,7 @@ def main(argv: list[str] | None = None) -> int:
             "capture_buffer": str(paths["capture_buffer"]),
             "db_exists": paths["db"].exists(),
             "capture_count": capture_count(paths["home"]),
+            "memory_entry_count": memory_entry_count(paths["home"]),
             "screenshots_enabled": False,
             "ocr_enabled": False,
             "audio_enabled": False,
@@ -131,6 +142,18 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "search-captures":
         paths = state_paths()
         results = search_captures(args.query, paths["home"])
+        print(json.dumps(results, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "generate-memory":
+        paths = ensure_state()
+        results = generate_memory_entries(paths["home"], date=args.date)
+        print(json.dumps([result.to_json() for result in results], indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "search-memory":
+        paths = state_paths()
+        results = search_memory_entries(args.query, paths["home"])
         print(json.dumps(results, indent=2, sort_keys=True))
         return 0
 

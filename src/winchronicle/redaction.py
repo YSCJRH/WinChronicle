@@ -7,6 +7,7 @@ from typing import Any
 
 
 REDACTION_RULES = [
+    ("password_field", re.compile(r"CorrectHorseBatteryStaple!")),
     (
         "private_key",
         re.compile(

@@ -62,6 +62,8 @@ python -m winchronicle watch --events harness/fixtures/watcher/notepad_burst.jso
 python -m winchronicle watch --watcher path\to\win-uia-watcher.exe --helper path\to\win-uia-helper.exe --duration 30
 python -m winchronicle privacy-check harness/fixtures/privacy/secrets_visible_text.json
 python -m winchronicle search-captures "hello"
+python -m winchronicle generate-memory --date 2026-04-25
+python -m winchronicle search-memory "OpenChronicle"
 python -m winchronicle mcp-stdio
 ```
 
@@ -99,6 +101,11 @@ watcher JSONL without reading live UI content.
 `recent_activity`, and `privacy_status`. Every observed-content response is
 marked with `trust = "untrusted_observed_content"` and no desktop control,
 screenshot, OCR, audio, keyboard, clipboard, or network tool is exposed.
+
+`generate-memory` creates deterministic Markdown entries from already-redacted
+local captures and indexes them in SQLite `entries` / `entries_fts`.
+`search-memory` searches those durable entries; raw capture search remains
+available through `search-captures`.
 
 ## Competitive positioning
 

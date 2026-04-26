@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WinChronicle deterministic memory entry",
+  "type": "object",
+  "required": [
+    "entry_schema_version",
+    "entry_type",
+    "title",
+    "start_timestamp",
+    "end_timestamp",
+    "app_names",
+    "source_capture_paths",
+    "trust",
+    "instruction",
+    "body",
+    "content_fingerprint"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "entry_schema_version": {
+      "const": 1
+    },
+    "entry_type": {
+      "enum": [
+        "event"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "start_timestamp": {
+      "type": "string",
+      "minLength": 1
+    },
+    "end_timestamp": {
+      "type": "string",
+      "minLength": 1
+    },
+    "app_names": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "source_capture_paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "trust": {
+      "const": "untrusted_observed_content"
+    },
+    "instruction": {
+      "type": "string",
+      "minLength": 1
+    },
+    "body": {
+      "type": "string",
+      "minLength": 1
+    },
+    "content_fingerprint": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  }
+}
