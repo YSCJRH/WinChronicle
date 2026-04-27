@@ -13,17 +13,20 @@ and no desktop control.
 
 ## Execution Cursor
 
-- Current stage: published `v0.1.0-beta.1` baseline planning.
-- Stage status: G - `v0.1.0-beta.1` is published; the next implementation
-  round starts at RC0.
+- Current stage: Stage RC1 - Install And CLI Packaging Smoke.
+- Stage status: C - Stage RC0 baseline audit is complete; the next
+  implementation step is RC1.
 - Last completed evidence: release
   `https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-beta.1`
-  targets `2caf922733693ff5c63e39375d1882b19dcd508f`; `main` Windows Harness
-  run `24987887814` passed on that target.
-- Last validation: GitHub release metadata and local tag resolution both point
-  to `2caf922733693ff5c63e39375d1882b19dcd508f`.
-- Next atomic task: start Stage RC0 on a new branch and perform a published
-  baseline audit without product behavior changes.
+  targets `2caf922733693ff5c63e39375d1882b19dcd508f`; latest `main` Windows
+  Harness run `24990257758` passed on
+  `51140bf8dfcb2cfcf65776653c927b9598d3247e`; release checklist, manual smoke
+  evidence template, watcher preview docs, MCP examples, Windows UIA smoke
+  docs, and known limitations docs are present under `docs/`.
+- Last validation: GitHub release metadata, local tag resolution, latest
+  `main` Windows Harness status, and required docs file presence checks passed.
+- Next atomic task: Stage RC1 should add or document a deterministic
+  fresh-environment install and CLI packaging smoke.
 - Known blockers: none.
 
 ## Phased Work
@@ -128,6 +131,10 @@ Manual Windows UIA gates remain manual and interactive:
   enrichment and would expand the capture surface.
 - Kept RC0 documentation-only because the first post-release task is to confirm
   the published baseline before changing behavior.
+- Treated file-level presence under `docs/` as sufficient for RC0
+  discoverability because RC2 explicitly owns README and operator quickstart
+  polish. README currently links the release checklist and watcher preview; the
+  broader docs index polish remains the next documentation-focused stage.
 
 ## Validation Log
 
@@ -137,3 +144,18 @@ Manual Windows UIA gates remain manual and interactive:
   `2caf922733693ff5c63e39375d1882b19dcd508f`.
 - GitHub Actions `Windows Harness` run `24987887814` passed on `main` at the
   published target.
+- Stage RC0 baseline audit:
+  - `gh release view v0.1.0-beta.1` confirmed the release is still a
+    prerelease, not a draft, and targets
+    `2caf922733693ff5c63e39375d1882b19dcd508f`.
+  - `git rev-parse v0.1.0-beta.1` resolved to
+    `2caf922733693ff5c63e39375d1882b19dcd508f`.
+  - `git rev-parse HEAD` resolved to
+    `51140bf8dfcb2cfcf65776653c927b9598d3247e` on the RC0 branch created from
+    latest `main`.
+  - GitHub Actions `Windows Harness` run `24990257758` passed on latest `main`
+    at `51140bf8dfcb2cfcf65776653c927b9598d3247e`.
+  - Presence checks passed for `docs/release-checklist.md`,
+    `docs/manual-smoke-evidence-template.md`, `docs/watcher-preview.md`,
+    `docs/mcp-readonly-examples.md`, `docs/windows-uia-smoke.md`, and
+    `docs/known-limitations.md`.
