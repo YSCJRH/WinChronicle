@@ -35,7 +35,8 @@ In v0.1:
 - Clipboard capture is not implemented.
 - Cloud upload of captured content is not implemented.
 - Desktop control tools are not implemented.
-- Real Windows UIA capture is not implemented yet.
+- Real Windows UIA capture is limited to an experimental helper; the default
+  CLI remains harness-first and fixture-driven.
 - LLM summarization is not implemented.
 
 ## Privacy stance
@@ -56,12 +57,56 @@ From the repository root:
 python -m winchronicle init
 python -m winchronicle status
 python -m winchronicle capture-once --fixture harness/fixtures/uia/notepad_basic.json
+python -m winchronicle capture-frontmost --helper path\to\win-uia-helper.exe --depth 80
+python -m winchronicle watch --events harness/fixtures/watcher/notepad_burst.jsonl
+python -m winchronicle watch --watcher path\to\win-uia-watcher.exe --helper path\to\win-uia-helper.exe --duration 30
 python -m winchronicle privacy-check harness/fixtures/privacy/secrets_visible_text.json
 python -m winchronicle search-captures "hello"
+python -m winchronicle generate-memory --date 2026-04-25
+python -m winchronicle search-memory "OpenChronicle"
+python -m winchronicle mcp-stdio
 ```
 
 State is stored in `%LOCALAPPDATA%\WinChronicle` on Windows. Tests and local
 harness runs can override this with `WINCHRONICLE_HOME`.
+
+The experimental .NET UIA helper contract can be compiled with:
+
+```powershell
+dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj
+```
+
+`capture-frontmost` is explicit opt-in and requires a helper path. It does not
+enable screenshots, OCR, audio, keyboard capture, clipboard capture, network
+calls, or desktop control.
+
+`watch --events` is currently a deterministic harness mode for JSONL watcher
+fixtures. It does not start a real WinEvent hook yet.
+`watch --watcher` is explicit opt-in and runs a caller-provided watcher command;
+its JSONL stream is consumed in memory and not saved as a raw event log.
+
+The experimental WinEvent watcher scaffold can be compiled with:
+
+```powershell
+dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj
+```
+
+The watcher emits JSONL and can invoke the UIA helper for foreground captures,
+but automated harness runs only compile it; they do not start a live watcher.
+The harness smoke uses `--capture-on-start` with a fake helper so it exercises
+watcher JSONL without reading live UI content.
+
+`mcp-stdio` exposes a minimal read-only MCP stdio surface for
+`current_context`, `search_captures`, `read_recent_capture`,
+`recent_activity`, and `privacy_status`. Every observed-content response is
+marked with `trust = "untrusted_observed_content"` and no desktop control,
+screenshot, OCR, audio, keyboard, clipboard, or network tool is exposed.
+
+`generate-memory` creates deterministic event, project, and tool Markdown
+entries from already-redacted local captures and indexes them in SQLite
+`entries` / `entries_fts`.
+`search-memory` searches those durable entries; raw capture search remains
+available through `search-captures`.
 
 ## Competitive positioning
 

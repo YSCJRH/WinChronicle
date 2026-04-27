@@ -31,6 +31,7 @@ Current app denylist:
 - `KeePass.exe`
 - `KeePassXC.exe`
 - `LastPass.exe`
+- `LockApp.exe`
 
 Captures with titles matching these case-insensitive signals must also be
 skipped:

@@ -1,0 +1,69 @@
+{
+  "helper_schema_version": 1,
+  "source": "win-uia-helper",
+  "command": "capture-frontmost",
+  "timestamp": "2026-04-25T13:20:00+08:00",
+  "window": {
+    "hwnd": "0x0000000000C0C002",
+    "pid": 7120,
+    "process_name": "LockApp.exe",
+    "exe_path": "C:\\Windows\\SystemApps\\Microsoft.LockApp_cw5n1h2txyewy\\LockApp.exe",
+    "app_name": "LockApp",
+    "title": "",
+    "bounds": [0, 0, 1920, 1080],
+    "elevated": false
+  },
+  "focused_element": {
+    "control_type": "Window",
+    "name": "Lock screen",
+    "automation_id": "",
+    "class_name": "Windows.UI.Core.CoreWindow",
+    "is_editable": false,
+    "is_password": false,
+    "value": null,
+    "text": null
+  },
+  "visible_text": "Lock screen content must never be stored.",
+  "url": null,
+  "uia_tree": {
+    "role": "Window",
+    "name": "Lock screen"
+  },
+  "limits": {
+    "depth": 2,
+    "max_nodes": 5000,
+    "max_text_chars": 20000,
+    "node_count": 1
+  },
+  "uia_stats": {
+    "nodes_visited": 1,
+    "nodes_skipped": 0,
+    "stale_nodes_skipped": 0,
+    "exceptions_skipped": 0,
+    "chars_collected": 41,
+    "elapsed_ms": 7,
+    "max_depth_observed": 0,
+    "time_budget_ms": 3000,
+    "time_budget_exceeded": false,
+    "max_nodes_reached": false,
+    "max_depth_reached": false,
+    "max_chars_reached": false
+  },
+  "capture_target": {
+    "kind": "frontmost",
+    "hwnd": "0x0000000000C0C002",
+    "requested_pid": null,
+    "resolved_pid": 7120,
+    "frontmost_at_capture": true,
+    "harness_only": false
+  },
+  "truncated": false,
+  "capture_surfaces": {
+    "screenshots": false,
+    "ocr": false,
+    "audio": false,
+    "keyboard": false,
+    "clipboard": false,
+    "desktop_control": false
+  }
+}

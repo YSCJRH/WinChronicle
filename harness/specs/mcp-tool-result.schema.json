@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WinChronicle read-only MCP tool result",
+  "type": "object",
+  "required": [
+    "tool",
+    "read_only",
+    "trust",
+    "instruction",
+    "result"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "tool": {
+      "type": "string",
+      "enum": [
+        "current_context",
+        "search_captures",
+        "read_recent_capture",
+        "recent_activity",
+        "privacy_status"
+      ]
+    },
+    "read_only": {
+      "const": true
+    },
+    "trust": {
+      "const": "untrusted_observed_content"
+    },
+    "instruction": {
+      "type": "string",
+      "minLength": 1
+    },
+    "result": {
+      "type": "object"
+    }
+  }
+}

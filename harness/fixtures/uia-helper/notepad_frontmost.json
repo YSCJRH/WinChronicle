@@ -1,0 +1,75 @@
+{
+  "helper_schema_version": 1,
+  "source": "win-uia-helper",
+  "command": "capture-frontmost",
+  "timestamp": "2026-04-25T13:00:00+08:00",
+  "window": {
+    "hwnd": "0x000000000012044B",
+    "pid": 1304,
+    "process_name": "notepad.exe",
+    "exe_path": "C:\\Windows\\System32\\notepad.exe",
+    "app_name": "Notepad",
+    "title": "helper-notes.txt - Notepad",
+    "bounds": [120, 100, 1024, 768],
+    "elevated": false
+  },
+  "focused_element": {
+    "control_type": "Edit",
+    "name": "Text Editor",
+    "automation_id": "15",
+    "class_name": "RichEditD2DPT",
+    "is_editable": true,
+    "is_password": false,
+    "value": null,
+    "text": "Phase 2 helper contract captures Notepad visible text without screenshots."
+  },
+  "visible_text": "Phase 2 helper contract captures Notepad visible text without screenshots.",
+  "url": null,
+  "uia_tree": {
+    "role": "Window",
+    "name": "helper-notes.txt - Notepad",
+    "children": [
+      {
+        "role": "Edit",
+        "name": "Text Editor"
+      }
+    ]
+  },
+  "limits": {
+    "depth": 80,
+    "max_nodes": 5000,
+    "max_text_chars": 20000,
+    "node_count": 2
+  },
+  "uia_stats": {
+    "nodes_visited": 2,
+    "nodes_skipped": 0,
+    "stale_nodes_skipped": 0,
+    "exceptions_skipped": 0,
+    "chars_collected": 68,
+    "elapsed_ms": 12,
+    "max_depth_observed": 1,
+    "time_budget_ms": 3000,
+    "time_budget_exceeded": false,
+    "max_nodes_reached": false,
+    "max_depth_reached": false,
+    "max_chars_reached": false
+  },
+  "capture_target": {
+    "kind": "frontmost",
+    "hwnd": "0x000000000012044B",
+    "requested_pid": null,
+    "resolved_pid": 1304,
+    "frontmost_at_capture": true,
+    "harness_only": false
+  },
+  "truncated": false,
+  "capture_surfaces": {
+    "screenshots": false,
+    "ocr": false,
+    "audio": false,
+    "keyboard": false,
+    "clipboard": false,
+    "desktop_control": false
+  }
+}

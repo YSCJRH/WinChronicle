@@ -11,6 +11,7 @@ APP_DENYLIST = {
     "keepass.exe",
     "keepassxc.exe",
     "lastpass.exe",
+    "lockapp.exe",
 }
 
 TITLE_DENYLIST_REGEX = [

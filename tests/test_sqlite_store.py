@@ -6,7 +6,7 @@ import pytest
 from winchronicle.capture import capture_once_from_fixture
 from winchronicle.paths import state_paths
 from winchronicle import storage
-from winchronicle.storage import search_captures
+from winchronicle.storage import capture_fingerprint_exists, search_captures
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
     ("fixture_name", "query", "expected_app"),
     [
         ("terminal_error.json", "AssertionError", "Windows Terminal"),
-        ("vscode_editor.json", "redacts", "Visual Studio Code"),
+        ("vscode_editor.json", "written_json", "Visual Studio Code"),
         ("edge_browser.json", "OpenChronicle", "Microsoft Edge"),
     ],
 )
@@ -53,6 +53,28 @@ def test_capture_index_creates_fts_table(tmp_path, monkeypatch):
     assert fts_row == ("captures_fts",)
     assert capture_count == 1
     assert fts_count == 1
+
+
+def test_capture_index_persists_content_fingerprint(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    result = capture_once_from_fixture(
+        ROOT / "harness" / "fixtures" / "uia" / "terminal_error.json"
+    )
+    fingerprint = result.capture["content_fingerprint"]
+
+    with sqlite3.connect(state_paths(home)["db"]) as conn:
+        row = conn.execute(
+            """
+            SELECT content_fingerprint
+            FROM captures
+            WHERE path = ?
+            """,
+            (str(result.path),),
+        ).fetchone()
+
+    assert row == (fingerprint,)
+    assert capture_fingerprint_exists(fingerprint, home) is True
 
 
 def test_search_falls_back_when_fts5_is_unavailable(tmp_path, monkeypatch):
