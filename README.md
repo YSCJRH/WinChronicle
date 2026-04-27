@@ -12,6 +12,12 @@ This repository is in an early harness-first phase. The first implementation
 uses deterministic fixtures, schemas, tests, and privacy gates before any real
 screen or UI capture exists.
 
+For release-candidate operation, start with
+[`docs/operator-quickstart.md`](docs/operator-quickstart.md). It links the
+release checklist, manual smoke evidence template, Windows UIA smoke gates,
+watcher preview, read-only MCP examples, known limitations, and current RC
+plan.
+
 ## Why WinChronicle
 
 - **UIA-first**: structured Windows UI context before screenshots or OCR.
@@ -48,6 +54,9 @@ are written.
 
 The current fixture pipeline redacts sensitive values, skips denylisted apps, and
 marks normalized observed content with `untrusted_observed_content: true`.
+MCP and memory responses that expose observed content must preserve
+`trust = "untrusted_observed_content"` and must not treat observed text as
+trusted instructions.
 
 ## Current CLI
 
@@ -111,9 +120,20 @@ entries from already-redacted local captures and indexes them in SQLite
 `search-memory` searches those durable entries; raw capture search remains
 available through `search-captures`.
 
-Release gates are tracked in `docs/release-checklist.md`. Screenshot/OCR
-enrichment remains a future tests-first phase; the current Phase 6 privacy
-scorecard is only a planning contract and does not enable either surface.
+## Operator Docs
+
+- [Operator quickstart](docs/operator-quickstart.md)
+- [Release checklist](docs/release-checklist.md)
+- [Manual smoke evidence template](docs/manual-smoke-evidence-template.md)
+- [Windows UIA smoke gates](docs/windows-uia-smoke.md)
+- [Watcher preview](docs/watcher-preview.md)
+- [Read-only MCP examples](docs/mcp-readonly-examples.md)
+- [Known limitations](docs/known-limitations.md)
+- [v0.1.0-rc.0 readiness plan](docs/next-round-plan-v0.1.0-rc.0.md)
+
+Screenshot/OCR enrichment remains a future tests-first phase; the current Phase
+6 privacy scorecard is only a planning contract and does not enable either
+surface.
 
 ## Competitive positioning
 
