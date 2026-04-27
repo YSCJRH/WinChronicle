@@ -1,12 +1,14 @@
 # Release Checklist
 
-Use this checklist before publishing alpha or beta prereleases.
+Use this checklist before publishing alpha, beta, or release-candidate
+prereleases.
 
 ## Deterministic Gates
 
 - `python -m pytest -q`
 - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo`
 - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`
+- `python harness/scripts/run_install_cli_smoke.py`
 - `python harness/scripts/run_harness.py`
 - `git diff --check`
 

@@ -38,6 +38,7 @@ def main() -> int:
             ],
             [sys.executable, "harness/scripts/run_watcher_smoke.py"],
             [sys.executable, "harness/scripts/run_mcp_smoke.py"],
+            [sys.executable, "harness/scripts/run_install_cli_smoke.py"],
             [sys.executable, "-m", "winchronicle", "init"],
             [sys.executable, "-m", "winchronicle", "status"],
             [
