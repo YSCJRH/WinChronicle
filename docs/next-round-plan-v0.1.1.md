@@ -12,9 +12,8 @@ expanding the product boundary.
 ## Execution Cursor
 
 - Current stage: Stage N3 - Read-Only MCP Compatibility Polish.
-- Stage status: C - Stage N3 implementation is complete locally; branch
-  GitHub Actions validation must pass before merge, then the release checklist
-  is next.
+- Stage status: D - N0 through N3 are complete and merged to `main`; the full
+  release checklist for `v0.1.0-beta.1` is next.
 - Last completed evidence: `v0.1.0-beta.0` prerelease is published from
   `d1162151ae09f573a661bb5faf5899b9d52b0af4`; Stage N0 is merged to `main` at
   `cfcdf219c4b00b3e22d036d314bc16508f61aba4`; Stage N1 adds a manual smoke
@@ -25,12 +24,14 @@ expanding the product boundary.
   failure, malformed JSONL, timeout, denylist skip, and duplicate skip; Stage
   N2 is merged to `main` at `e0c19e483fe6a41f6eda53058abe1c0ddcb0a7c9`; Stage
   N3 adds read-only MCP compatibility examples for all exposed MCP tools and
-  updates the MCP scorecard.
+  updates the MCP scorecard; Stage N3 is merged to `main` at
+  `19a65a588428398c0a248109e850b8e17de0ceb1`.
 - Last validation: local Stage N3 validation passed with pytest, helper build,
-  watcher build, full harness, and diff check. Branch GitHub Actions validation
-  is required before merge.
-- Next atomic task: open and validate the Stage N3 PR, merge it when green, then
-  run the full release checklist for `v0.1.0-beta.1`.
+  watcher build, full harness, and diff check. PR #8 Windows Harness passed,
+  and `main` Windows Harness passed after merge.
+- Next atomic task: run the full release checklist for `v0.1.0-beta.1`,
+  including deterministic gates and manual smoke evidence review, then prepare
+  release notes and prerelease publication if the checklist passes.
 - Known blockers: none.
 
 ## Phased Work
@@ -206,3 +207,10 @@ expanding the product boundary.
     `recent_activity`, and `privacy_status`; preserve
     `trust = "untrusted_observed_content"`; and do not document write/control
     or prohibited capture tools.
+- Stage N3 PR validation:
+  - PR #8 Windows Harness run `24987007214` passed at
+    `d65af3553c13ed7a4408a6411ef1a27137afb8cb`.
+- Stage N3 merge validation:
+  - PR #8 merged to `main` at
+    `19a65a588428398c0a248109e850b8e17de0ceb1`.
+  - `main` Windows Harness run `24987126333` passed after the merge.
