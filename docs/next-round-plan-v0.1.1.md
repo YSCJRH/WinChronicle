@@ -11,20 +11,22 @@ expanding the product boundary.
 
 ## Execution Cursor
 
-- Current stage: Stage N1 - Manual Smoke Evidence.
-- Stage status: C - Stage N1 is complete and merged to `main`; Stage N2 is
-  next.
+- Current stage: Stage N2 - Watcher Preview Diagnostics.
+- Stage status: C - Stage N2 implementation is complete locally; branch
+  GitHub Actions validation must pass before merge, then Stage N3 is next.
 - Last completed evidence: `v0.1.0-beta.0` prerelease is published from
   `d1162151ae09f573a661bb5faf5899b9d52b0af4`; Stage N0 is merged to `main` at
   `cfcdf219c4b00b3e22d036d314bc16508f61aba4`; Stage N1 adds a manual smoke
   evidence template that records commands, results, artifact paths, timestamps,
   and environment notes without requiring observed-content artifacts; Stage N1
-  is merged to `main` at `1d3cb3f737344c0da90ae4fa2af7d7783d8a2a4c`.
-- Last validation: local Stage N1 validation passed with pytest, helper build,
-  watcher build, full harness, and diff check. PR #4 Windows Harness passed,
-  and `main` Windows Harness passed after merge.
-- Next atomic task: start Stage N2 on `codex/stage-n2-watcher-preview-docs` and
-  strengthen watcher preview diagnostics documentation only.
+  is merged to `main` at `1d3cb3f737344c0da90ae4fa2af7d7783d8a2a4c`; Stage N2
+  documents watcher preview diagnostics for nonzero watcher exit, helper
+  failure, malformed JSONL, timeout, denylist skip, and duplicate skip.
+- Last validation: local Stage N2 validation passed with pytest, helper build,
+  watcher build, full harness, and diff check. Branch GitHub Actions validation
+  is required before merge.
+- Next atomic task: open and validate the Stage N2 PR, merge it when green, then
+  start Stage N3 on a separate branch.
 - Known blockers: none.
 
 ## Phased Work
@@ -112,6 +114,10 @@ expanding the product boundary.
   behavior.
 - Kept real UIA smoke out of default CI; the N1 template records paths to local
   artifacts but explicitly says not to commit observed-content artifacts.
+- Expanded watcher preview diagnostics as documentation-only Stage N2 work
+  because existing tests already cover the planned failure and skip modes.
+- Kept Stage N2 out of product behavior: no daemon, service installer, polling
+  capture loop, or default background capture was added.
 
 ## Validation Log
 
@@ -153,3 +159,16 @@ expanding the product boundary.
   - PR #4 merged to `main` at
     `1d3cb3f737344c0da90ae4fa2af7d7783d8a2a4c`.
   - `main` Windows Harness run `24985464693` passed after the merge.
+- Stage N1 cursor validation:
+  - PR #5 merged to `main` at
+    `408c74b1f25657282501eee7d9962d68a46f8c3b`.
+  - `main` Windows Harness run `24985769635` passed after the cursor update.
+- Stage N2 local validation:
+  - `python -m pytest -q` - 60 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `git diff --check` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - Documentation inspection confirmed watcher preview still forbids daemon,
+    service installer, polling capture loop, default background capture, raw
+    watcher JSONL persistence, and observed-content echoing in diagnostics.
