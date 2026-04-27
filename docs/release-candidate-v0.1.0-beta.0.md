@@ -10,19 +10,17 @@ Current PR: <https://github.com/YSCJRH/WinChronicle/pull/2>
 
 ## Execution Cursor
 
-- Current stage: release candidate preparation for v0.1 beta hardening.
-- Stage status: F - release candidate conditions are met on the branch; do not
+- Current stage: post-merge release candidate validation for v0.1 beta
+  hardening.
+- Stage status: F - release candidate conditions are met on `main`; do not
   publish automatically.
-- Last completed evidence: PR #2 is ready, mergeable, and Windows Harness is
-  successful at `fc74acbc8e3bd3d3905316f7502d7586c06c7858`.
-- Last validation: local deterministic gates, manual UIA smoke gates, and
-  GitHub Actions deterministic harness passed, except VS Code strict editor
-  marker diagnostic failure.
-- Next atomic task: merge PR #2 to `main`, rerun the release checklist on
-  `main`, then wait for explicit approval before publishing
-  `v0.1.0-beta.0`.
-- Known blockers: none for merge; release publication still requires explicit
-  approval.
+- Last completed evidence: PR #2 merged to `main` as
+  `edec3633a95d209cd0b0f52bb7159fd2f0214d2a`.
+- Last validation: release checklist passed on `main`, except VS Code strict
+  editor marker diagnostic failure.
+- Next atomic task: wait for explicit approval, then publish
+  `v0.1.0-beta.0` from the validated `main` baseline.
+- Known blockers: release publication still requires explicit approval.
 
 ## Public Interfaces And Non-goals
 
@@ -47,6 +45,8 @@ Current PR: <https://github.com/YSCJRH/WinChronicle/pull/2>
 
 ## Validation Log
 
+- Post-merge `main` validation completed on
+  `edec3633a95d209cd0b0f52bb7159fd2f0214d2a`.
 - `python -m pytest -q`: 60 passed.
 - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo`: passed.
 - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`: passed.
@@ -70,6 +70,10 @@ Current PR: <https://github.com/YSCJRH/WinChronicle/pull/2>
   v0.1.
 - Phase 6 remains specification-only; screenshot/OCR implementation is still
   out of scope.
+- PR #2 was merged before publication because it was ready, mergeable, and the
+  Windows Harness check was green.
+- The release checklist was rerun on `main` after merge; no release was created
+  because publication still requires explicit approval.
 
 ## Rollback
 
