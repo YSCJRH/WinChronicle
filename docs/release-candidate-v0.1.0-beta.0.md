@@ -10,17 +10,16 @@ Current PR: <https://github.com/YSCJRH/WinChronicle/pull/2>
 
 ## Execution Cursor
 
-- Current stage: post-merge release candidate validation for v0.1 beta
-  hardening.
-- Stage status: F - release candidate conditions are met on `main`; do not
-  publish automatically.
-- Last completed evidence: PR #2 merged to `main` as
-  `edec3633a95d209cd0b0f52bb7159fd2f0214d2a`.
-- Last validation: release checklist passed on `main`, except VS Code strict
-  editor marker diagnostic failure.
-- Next atomic task: wait for explicit approval, then publish
-  `v0.1.0-beta.0` from the validated `main` baseline.
-- Known blockers: release publication still requires explicit approval.
+- Current stage: published v0.1 beta baseline.
+- Stage status: G - `v0.1.0-beta.0` is published; next work should establish
+  the next-round plan before coding.
+- Last completed evidence: `v0.1.0-beta.0` prerelease published from
+  `d1162151ae09f573a661bb5faf5899b9d52b0af4`.
+- Last validation: GitHub release metadata and local tag both point to
+  `d1162151ae09f573a661bb5faf5899b9d52b0af4`.
+- Next atomic task: read the published `main` baseline and plan the next round
+  of work without starting implementation.
+- Known blockers: none.
 
 ## Public Interfaces And Non-goals
 
@@ -45,6 +44,10 @@ Current PR: <https://github.com/YSCJRH/WinChronicle/pull/2>
 
 ## Validation Log
 
+- `v0.1.0-beta.0` release verification: GitHub prerelease exists and targets
+  `d1162151ae09f573a661bb5faf5899b9d52b0af4`.
+- Local tag verification: `v0.1.0-beta.0` resolves to
+  `d1162151ae09f573a661bb5faf5899b9d52b0af4`.
 - Post-merge `main` validation completed on
   `edec3633a95d209cd0b0f52bb7159fd2f0214d2a`.
 - `python -m pytest -q`: 60 passed.
@@ -74,6 +77,7 @@ Current PR: <https://github.com/YSCJRH/WinChronicle/pull/2>
   Windows Harness check was green.
 - The release checklist was rerun on `main` after merge; no release was created
   because publication still requires explicit approval.
+- `v0.1.0-beta.0` was published only after explicit user approval.
 
 ## Rollback
 
