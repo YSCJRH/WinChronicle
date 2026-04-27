@@ -15,6 +15,13 @@
 - Helper targeted capture is harness-only: it must require both `--harness`
   and `WINCHRONICLE_HARNESS=1`, write only stdout/artifacts, and must not
   activate, click, type, move, resize, or control windows.
+- Phase 2 targeted smoke release gates:
+  - Notepad targeted smoke is a hard gate and must capture its text marker.
+  - Edge targeted smoke is a hard gate and must capture its local HTML body
+    marker; URL extraction is best-effort.
+  - VS Code metadata smoke is a hard gate when `code.cmd` is available.
+  - VS Code strict Monaco editor marker capture is diagnostic and
+    non-blocking; strict failure must produce a diagnostic artifact.
 - Real foreground capture must be explicit opt-in through `capture-frontmost`
   with a caller-provided helper path; tests use fake-helper output by default.
 - Manual UIA helper smoke scripts must use temporary state and must not print

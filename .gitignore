@@ -45,3 +45,17 @@ Thumbs.db
 *.sqlite3
 *.tmp
 *.temp
+
+# Harness smoke artifacts and observed-content diagnostics
+/artifacts/
+/diagnostics/
+/smoke-artifacts/
+/uia-smoke-artifacts/
+/harness/artifacts/
+/harness/diagnostics/
+/harness/smoke-artifacts/
+/harness/uia-smoke-artifacts/
+/winchronicle-uia-*/
+/winchronicle-edge-*/
+/winchronicle-vscode-*/
+/winchronicle-notepad-*/
