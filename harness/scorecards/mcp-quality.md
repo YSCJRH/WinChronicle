@@ -20,3 +20,7 @@ Phase 4 MCP acceptance criteria:
 - The MCP smoke uses deterministic fixture captures and does not start real UIA
   capture, screenshots, OCR, audio, keyboard capture, clipboard capture,
   network calls, or desktop control.
+- MCP compatibility examples must cover every exposed read-only tool, show
+  `trust = "untrusted_observed_content"`, and must not document write tools,
+  arbitrary file reads, desktop control, screenshots, OCR, audio, keyboard,
+  clipboard, or network tools.
