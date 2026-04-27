@@ -12,8 +12,9 @@ expanding the product boundary.
 ## Execution Cursor
 
 - Current stage: Stage N3 - Read-Only MCP Compatibility Polish.
-- Stage status: D - N0 through N3 are complete and merged to `main`; the full
-  release checklist for `v0.1.0-beta.1` is next.
+- Stage status: F - N0 through N3 are complete and merged to `main`; the
+  `v0.1.0-beta.1` release checklist is complete; prerelease publication
+  requires explicit approval.
 - Last completed evidence: `v0.1.0-beta.0` prerelease is published from
   `d1162151ae09f573a661bb5faf5899b9d52b0af4`; Stage N0 is merged to `main` at
   `cfcdf219c4b00b3e22d036d314bc16508f61aba4`; Stage N1 adds a manual smoke
@@ -28,11 +29,11 @@ expanding the product boundary.
   `19a65a588428398c0a248109e850b8e17de0ceb1`.
 - Last validation: local Stage N3 validation passed with pytest, helper build,
   watcher build, full harness, and diff check. PR #8 Windows Harness passed,
-  and `main` Windows Harness passed after merge.
-- Next atomic task: run the full release checklist for `v0.1.0-beta.1`,
-  including deterministic gates and manual smoke evidence review, then prepare
-  release notes and prerelease publication if the checklist passes.
-- Known blockers: none.
+  and `main` Windows Harness passed after merge. Release-candidate validation
+  passed deterministic gates, main CI, and available manual smoke gates.
+- Next atomic task: publish `v0.1.0-beta.1` as a GitHub prerelease after
+  explicit approval, then verify the tag and release metadata.
+- Known blockers: publication approval is pending.
 
 ## Phased Work
 
@@ -214,3 +215,18 @@ expanding the product boundary.
   - PR #8 merged to `main` at
     `19a65a588428398c0a248109e850b8e17de0ceb1`.
   - `main` Windows Harness run `24987126333` passed after the merge.
+- Release candidate validation:
+  - `python -m pytest -q` - 60 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+  - GitHub Actions `Windows Harness` run `24987392882` passed on `main` at
+    `8ed3f866a04b86dc404e474e786ecafea5ca0854`.
+  - Notepad targeted UIA smoke passed.
+  - Edge targeted UIA smoke passed.
+  - VS Code metadata targeted UIA smoke passed when `code.cmd` was available;
+    editor marker was not exposed through UIA.
+  - VS Code strict Monaco marker smoke failed diagnostically, consistent with
+    the documented Monaco/UIA limitation and not a v0.1 release blocker.
+  - Watcher preview smoke passed with temporary `WINCHRONICLE_HOME`.
