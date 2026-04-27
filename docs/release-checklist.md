@@ -3,6 +3,9 @@
 Use this checklist before publishing alpha, beta, or release-candidate
 prereleases.
 
+For operator setup and the current documentation map, start with
+[Operator quickstart](operator-quickstart.md).
+
 ## Deterministic Gates
 
 - `python -m pytest -q`
@@ -26,6 +29,11 @@ Run these on an interactive Windows desktop with temporary state:
 Manual smoke scripts must not print observed content and must not activate,
 click, type, move, resize, or control windows.
 
+Record manual smoke evidence with
+[Manual smoke evidence template](manual-smoke-evidence-template.md). See
+[Windows UIA smoke gates](windows-uia-smoke.md) for hard, conditional, and
+diagnostic gate meanings.
+
 ## Privacy Boundary
 
 Before release, confirm the release notes state that screenshots, OCR, audio,
@@ -34,3 +42,9 @@ desktop control remain absent or disabled by default.
 
 Observed content returned through CLI, memory, and MCP must remain marked as
 `untrusted_observed_content`.
+
+Related docs:
+
+- [Watcher preview](watcher-preview.md)
+- [Read-only MCP compatibility examples](mcp-readonly-examples.md)
+- [Known limitations](known-limitations.md)

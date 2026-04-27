@@ -13,9 +13,9 @@ and no desktop control.
 
 ## Execution Cursor
 
-- Current stage: Stage RC2 - Operator Quickstart And Privacy Polish.
-- Stage status: C - Stage RC1 install and CLI packaging smoke is complete; the
-  next implementation step is RC2.
+- Current stage: Stage RC3 - Evidence Consolidation.
+- Stage status: C - Stage RC2 operator quickstart and privacy polish is
+  complete; the next implementation step is RC3.
 - Last completed evidence: release
   `https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-beta.1`
   targets `2caf922733693ff5c63e39375d1882b19dcd508f`; latest `main` Windows
@@ -24,12 +24,13 @@ and no desktop control.
   evidence template, watcher preview docs, MCP examples, Windows UIA smoke
   docs, and known limitations docs are present under `docs/`; RC1 adds
   `harness/scripts/run_install_cli_smoke.py` and includes it in the full
-  deterministic harness.
-- Last validation: RC1 passed standalone install/CLI smoke, pytest, helper
-  build, watcher build, full harness, and whitespace check locally.
-- Next atomic task: Stage RC2 should polish README/operator docs so the release
-  checklist, manual smoke template, Windows UIA smoke docs, watcher preview
-  docs, MCP examples, known limitations, and privacy posture are easy to find.
+  deterministic harness; RC2 adds `docs/operator-quickstart.md` and links it
+  from README and the release checklist.
+- Last validation: RC2 passed pytest, helper build, watcher build, full
+  harness, documentation link checks, and whitespace check locally.
+- Next atomic task: Stage RC3 should consolidate deterministic and manual
+  release evidence expectations for the RC path without committing observed
+  content artifacts.
 - Known blockers: none.
 
 ## Phased Work
@@ -145,6 +146,12 @@ Manual Windows UIA gates remain manual and interactive:
   installed gate dependencies and installed WinChronicle with `--no-deps`; this
   keeps the smoke local and avoids introducing a network dependency into the
   release gate.
+- Added a dedicated operator quickstart for RC2 instead of expanding README
+  into a long manual. README now points to the quickstart and the main docs,
+  while the quickstart owns the operator flow, privacy posture, and trust
+  boundary summary.
+- Kept RC2 documentation-only because the task was discoverability and privacy
+  posture, not a product interface change.
 
 ## Validation Log
 
@@ -183,3 +190,12 @@ Manual Windows UIA gates remain manual and interactive:
     - 0 warnings, 0 errors.
   - `python harness/scripts/run_harness.py` - passed, including the new
     install/CLI smoke.
+- Stage RC2 operator quickstart and privacy polish:
+  - Added `docs/operator-quickstart.md`.
+  - Updated README to link the operator quickstart, release checklist, manual
+    smoke template, Windows UIA smoke gates, watcher preview, MCP examples,
+    known limitations, and RC readiness plan.
+  - Updated `docs/release-checklist.md` to link the operator quickstart and
+    related manual/MCP/watcher docs.
+  - Re-stated the default privacy posture and
+    `trust = "untrusted_observed_content"` boundary in operator-facing docs.
