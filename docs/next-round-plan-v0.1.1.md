@@ -1,4 +1,4 @@
-# v0.1.1 Post-Beta Stabilization Plan
+# v0.1.0-beta.1 Post-Beta Stabilization Plan
 
 ## Summary
 
@@ -11,17 +11,21 @@ expanding the product boundary.
 
 ## Execution Cursor
 
-- Current stage: next-round planning from the published `v0.1.0-beta.0`
-  baseline.
-- Stage status: C - next-round plan is established; implementation should start
-  with Stage N0 only.
+- Current stage: Stage N0 - CI Node 24 maintenance.
+- Stage status: C - Stage N0 is complete and ready to merge after the PR
+  Windows Harness re-validates this evidence update; Stage N1 is next after
+  merge.
 - Last completed evidence: `v0.1.0-beta.0` prerelease is published from
   `d1162151ae09f573a661bb5faf5899b9d52b0af4`; `main` is green at
-  `b23b70d2e3152b8332e80e47fc2b6e1bfb01160e`.
-- Last validation: GitHub Actions `Windows Harness` succeeded on `main`; local
-  release/tag verification succeeded.
-- Next atomic task: create a branch for Stage N0 and address the GitHub Actions
-  Node 20 deprecation warning without changing product behavior.
+  `b7f83c9157d8d8f489f42963d6a002930cd8d322`; the Windows Harness workflow now
+  opts JavaScript actions into Node 24 without changing the deterministic gate
+  order.
+- Last validation: local Stage N0 validation passed with pytest, helper build,
+  watcher build, full harness, and diff check. PR #3 Windows Harness passed at
+  `e887066a21b3a1197d8032970da35005013dddfd` with no Node 20 deprecation
+  annotation in the checked log.
+- Next atomic task: merge the Stage N0 PR after this evidence update re-runs
+  green, then start Stage N1 on a separate branch.
 - Known blockers: none.
 
 ## Phased Work
@@ -78,9 +82,9 @@ expanding the product boundary.
 ## Assumptions
 
 - `v0.1.0-beta.0` remains the published beta baseline.
-- The next release target is a small `v0.1.1` or `v0.1.0-beta.1` maintenance
-  prerelease, chosen after Stage N0 depending on whether behavior changes are
-  needed.
+- The next release target is a small `v0.1.0-beta.1` maintenance prerelease
+  after the N0-N3 stabilization stages are complete or the user explicitly asks
+  for an earlier release.
 - Phase 6 remains specification-only until a future tests-first round.
 
 ## Decision Log
@@ -91,9 +95,36 @@ expanding the product boundary.
   GitHub Actions run reports a Node 20 deprecation annotation.
 - Kept manual UIA smoke outside default CI because it depends on an interactive
   Windows desktop.
+- Chose a workflow-level `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24` environment
+  variable
+  for Stage N0 because it is the smallest supported workflow opt-in and keeps
+  the existing deterministic gates unchanged.
+- Promoted the Node 24 opt-in from job-level to workflow-level after the first
+  PR run still emitted the Node 20 deprecation annotation while forcing actions
+  to Node 24.
+- Updated the three official setup actions to their Node 24-compatible major
+  versions after GitHub Actions continued to report Node 20 action metadata even
+  with the workflow-level opt-in. The deterministic gate order stayed unchanged.
+- Treated the first local `run_harness.py` watcher smoke failure as a local
+  short-duration flake after the identical watcher smoke passed on direct rerun
+  and the full harness passed on rerun; no watcher behavior was changed.
 
 ## Validation Log
 
 - `v0.1.0-beta.0` prerelease verified on GitHub.
 - Local `v0.1.0-beta.0` tag resolves to the published target commit.
 - Latest `main` Windows Harness run succeeded after the release baseline record.
+- Stage N0 local validation:
+  - `python -m pytest -q` - 60 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `git diff --check` - passed.
+  - First `python harness/scripts/run_harness.py` attempt hit a local watcher
+    smoke write/heartbeat flake; `python harness/scripts/run_watcher_smoke.py`
+    then passed, and `python harness/scripts/run_harness.py` passed on rerun.
+- Stage N0 PR validation:
+  - PR #3 Windows Harness run `24984285240` passed at
+    `e887066a21b3a1197d8032970da35005013dddfd`.
+  - Checked the run log for `Node.js 20`, `Node 20`, and deprecation matches;
+    no Node 20 deprecation annotation remained after upgrading the official
+    setup actions and keeping the Node 24 opt-in.
