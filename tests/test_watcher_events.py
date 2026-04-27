@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 from winchronicle.cli import main
-from winchronicle.events import dispatch_watcher_events
+from winchronicle.events import dispatch_watcher_events, run_watcher_command
 from winchronicle.schema import validate_watcher_event
 from winchronicle.storage import search_captures
 
@@ -170,6 +170,46 @@ def test_watch_cli_suppresses_failed_watcher_stderr(tmp_path, monkeypatch, capsy
 
     assert output.strip() == "ERROR: watcher failed with exit code 7"
     assert "Lock screen content" not in output
+
+
+def test_watch_cli_reports_malformed_watcher_jsonl(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(tmp_path / "state"))
+    fake_watcher = tmp_path / "fake_malformed_watcher.py"
+    fake_watcher.write_text("print('{not json')\n", encoding="utf-8")
+
+    assert main(
+        [
+            "watch",
+            "--watcher",
+            sys.executable,
+            "--watcher-arg",
+            str(fake_watcher),
+        ]
+    ) == 1
+    output = capsys.readouterr().out
+
+    assert output.strip() == "ERROR: watcher JSONL line 1 is malformed"
+
+
+def test_run_watcher_command_reports_timeout_without_stdout_leak(tmp_path):
+    fake_watcher = tmp_path / "fake_slow_watcher.py"
+    fake_watcher.write_text(
+        "import time\n"
+        "print('observed content must not echo')\n"
+        "time.sleep(5)\n",
+        encoding="utf-8",
+    )
+
+    try:
+        run_watcher_command(
+            [sys.executable, str(fake_watcher)],
+            duration_seconds=0,
+            timeout_seconds=0.1,
+        )
+    except RuntimeError as exc:
+        assert str(exc) == "watcher timed out"
+    else:
+        raise AssertionError("watcher timeout did not raise")
 
 
 def test_watcher_smoke_script_reports_missing_build_without_observed_content(tmp_path):

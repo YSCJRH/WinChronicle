@@ -16,6 +16,7 @@
       "enum": [
         "current_context",
         "search_captures",
+        "search_memory",
         "read_recent_capture",
         "recent_activity",
         "privacy_status"

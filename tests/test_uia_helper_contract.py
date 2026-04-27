@@ -9,6 +9,7 @@ import pytest
 from jsonschema.exceptions import ValidationError
 
 from winchronicle.capture import (
+    capture_frontmost_with_helper,
     capture_once_from_uia_helper_output,
     load_json,
     normalize_uia_helper_output,
@@ -78,6 +79,22 @@ def test_uia_helper_contract_rejects_unbounded_uia_stats():
 
     with pytest.raises(ValidationError):
         validate_uia_helper_output(output)
+
+
+def test_uia_helper_budget_fixture_records_stale_and_limit_diagnostics():
+    output = load_json(ROOT / "harness" / "fixtures" / "uia-helper" / "budgeted_frontmost.json")
+
+    validate_uia_helper_output(output)
+    capture = normalize_uia_helper_output(output)
+
+    validate_capture(capture)
+    assert output["truncated"] is True
+    assert output["uia_stats"]["stale_nodes_skipped"] == 2
+    assert output["uia_stats"]["exceptions_skipped"] == 4
+    assert output["uia_stats"]["time_budget_exceeded"] is True
+    assert output["uia_stats"]["max_nodes_reached"] is True
+    assert output["uia_stats"]["max_depth_reached"] is True
+    assert output["uia_stats"]["max_chars_reached"] is True
 
 
 def test_uia_helper_capture_indexes_searchable_redacted_output(tmp_path, monkeypatch):
@@ -150,6 +167,22 @@ def test_uia_helper_smoke_script_uses_fake_helper_without_printing_capture(tmp_p
 
     assert completed.returncode == 0
     assert completed.stdout.strip() == "PASS: UIA helper smoke passed"
+
+
+def test_capture_frontmost_wrapper_reports_timeout_without_stdout_leak(tmp_path):
+    fake_helper = tmp_path / "fake_slow_helper.py"
+    fake_helper.write_text(
+        "import time\n"
+        "print('observed content must not echo')\n"
+        "time.sleep(5)\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(RuntimeError, match="^helper timed out$"):
+        capture_frontmost_with_helper(
+            [sys.executable, str(fake_helper)],
+            timeout_seconds=0.1,
+        )
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="UIA helper is Windows-only.")

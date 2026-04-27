@@ -36,6 +36,8 @@ Thumbs.db
 /index.db-*
 /logs/
 /memory/
+/screenshot-cache/
+/ocr-cache/
 
 # SQLite and scratch artifacts
 *.db
@@ -55,6 +57,8 @@ Thumbs.db
 /harness/diagnostics/
 /harness/smoke-artifacts/
 /harness/uia-smoke-artifacts/
+/harness/screenshot-cache/
+/harness/ocr-cache/
 /winchronicle-uia-*/
 /winchronicle-edge-*/
 /winchronicle-vscode-*/

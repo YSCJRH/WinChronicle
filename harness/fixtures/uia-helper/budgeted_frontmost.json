@@ -1,0 +1,70 @@
+{
+  "helper_schema_version": 1,
+  "source": "win-uia-helper",
+  "command": "capture-frontmost",
+  "timestamp": "2026-04-25T13:05:00+08:00",
+  "window": {
+    "hwnd": "0x000000000012044C",
+    "pid": 1305,
+    "process_name": "notepad.exe",
+    "exe_path": "C:\\Windows\\System32\\notepad.exe",
+    "app_name": "Notepad",
+    "title": "budget-notes.txt - Notepad",
+    "bounds": [120, 100, 1024, 768],
+    "elevated": false
+  },
+  "focused_element": {
+    "control_type": "Edit",
+    "name": "Text Editor",
+    "automation_id": "15",
+    "class_name": "RichEditD2DPT",
+    "is_editable": true,
+    "is_password": false,
+    "value": null,
+    "text": "Budgeted helper fixture records stale and traversal budget diagnostics."
+  },
+  "visible_text": "Budgeted helper fixture records stale and traversal budget diagnostics.",
+  "url": null,
+  "uia_tree": {
+    "role": "Window",
+    "name": "budget-notes.txt - Notepad",
+    "children": []
+  },
+  "limits": {
+    "depth": 2,
+    "max_nodes": 10,
+    "max_text_chars": 120,
+    "node_count": 10
+  },
+  "uia_stats": {
+    "nodes_visited": 10,
+    "nodes_skipped": 3,
+    "stale_nodes_skipped": 2,
+    "exceptions_skipped": 4,
+    "chars_collected": 120,
+    "elapsed_ms": 3000,
+    "max_depth_observed": 2,
+    "time_budget_ms": 3000,
+    "time_budget_exceeded": true,
+    "max_nodes_reached": true,
+    "max_depth_reached": true,
+    "max_chars_reached": true
+  },
+  "capture_target": {
+    "kind": "frontmost",
+    "hwnd": "0x000000000012044C",
+    "requested_pid": null,
+    "resolved_pid": 1305,
+    "frontmost_at_capture": true,
+    "harness_only": false
+  },
+  "truncated": true,
+  "capture_surfaces": {
+    "screenshots": false,
+    "ocr": false,
+    "audio": false,
+    "keyboard": false,
+    "clipboard": false,
+    "desktop_control": false
+  }
+}
