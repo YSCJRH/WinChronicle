@@ -12,18 +12,19 @@ expanding the product boundary.
 ## Execution Cursor
 
 - Current stage: Stage N1 - Manual Smoke Evidence.
-- Stage status: C - Stage N1 implementation is complete locally; branch
-  GitHub Actions validation must pass before merge, then Stage N2 is next.
+- Stage status: C - Stage N1 is complete and merged to `main`; Stage N2 is
+  next.
 - Last completed evidence: `v0.1.0-beta.0` prerelease is published from
   `d1162151ae09f573a661bb5faf5899b9d52b0af4`; Stage N0 is merged to `main` at
   `cfcdf219c4b00b3e22d036d314bc16508f61aba4`; Stage N1 adds a manual smoke
   evidence template that records commands, results, artifact paths, timestamps,
-  and environment notes without requiring observed-content artifacts.
+  and environment notes without requiring observed-content artifacts; Stage N1
+  is merged to `main` at `1d3cb3f737344c0da90ae4fa2af7d7783d8a2a4c`.
 - Last validation: local Stage N1 validation passed with pytest, helper build,
-  watcher build, full harness, and diff check. Branch GitHub Actions validation
-  is required before merge.
-- Next atomic task: open and validate the Stage N1 PR, merge it when green, then
-  start Stage N2 on a separate branch.
+  watcher build, full harness, and diff check. PR #4 Windows Harness passed,
+  and `main` Windows Harness passed after merge.
+- Next atomic task: start Stage N2 on `codex/stage-n2-watcher-preview-docs` and
+  strengthen watcher preview diagnostics documentation only.
 - Known blockers: none.
 
 ## Phased Work
@@ -145,3 +146,10 @@ expanding the product boundary.
   - Template inspection confirmed it records commands, results, artifact paths,
     timestamps, and environment notes only, and explicitly forbids committing
     observed-content artifacts by default.
+- Stage N1 PR validation:
+  - PR #4 Windows Harness run `24985355077` passed at
+    `6c00405b242da190dd993949ed0d7e3c3f42d846`.
+- Stage N1 merge validation:
+  - PR #4 merged to `main` at
+    `1d3cb3f737344c0da90ae4fa2af7d7783d8a2a4c`.
+  - `main` Windows Harness run `24985464693` passed after the merge.
