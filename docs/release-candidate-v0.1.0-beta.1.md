@@ -1,26 +1,33 @@
-# v0.1.0-beta.1 Release Candidate
+# v0.1.0-beta.1 Published Release Baseline
 
 ## Summary
 
-This candidate promotes the post-beta stabilization slice after
-`v0.1.0-beta.0`. It keeps WinChronicle local-first, UIA-first,
-harness-first, and read-only MCP first.
+`v0.1.0-beta.1` is published as a GitHub prerelease. It promotes the
+post-beta stabilization slice after `v0.1.0-beta.0` while keeping
+WinChronicle local-first, UIA-first, harness-first, and read-only MCP first.
 
-Release content baseline before adding this candidate record:
+Published release:
+`https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-beta.1`.
+
+Published tag target:
+`2caf922733693ff5c63e39375d1882b19dcd508f`.
+
+Content baseline before adding this candidate record:
 `8ed3f866a04b86dc404e474e786ecafea5ca0854`.
 
 ## Execution Cursor
 
-- Current stage: `v0.1.0-beta.1` release candidate.
-- Stage status: F - release checklist is complete; prerelease publication
-  requires explicit user approval.
-- Last completed evidence: N0 through N3 are complete and merged to `main`.
-- Last validation: deterministic release gates, GitHub Actions, and available
-  manual smoke gates passed; VS Code strict Monaco marker remains diagnostic
-  and non-blocking.
-- Next atomic task: publish `v0.1.0-beta.1` as a GitHub prerelease after
-  explicit approval, then verify the tag and release metadata.
-- Known blockers: publication approval is pending.
+- Current stage: `v0.1.0-beta.1` published baseline.
+- Stage status: G - prerelease is published; establish the baseline and plan
+  the next round before starting new implementation.
+- Last completed evidence: N0 through N3 are complete and merged to `main`;
+  `v0.1.0-beta.1` is published as a prerelease targeting
+  `2caf922733693ff5c63e39375d1882b19dcd508f`.
+- Last validation: GitHub release metadata, local tag resolution, and the
+  latest `main` Windows Harness run passed on the published target.
+- Next atomic task: start the next-round plan from
+  `docs/next-round-plan-v0.1.0-rc.0.md`.
+- Known blockers: none.
 
 ## Public Interfaces And Non-goals
 
@@ -35,7 +42,7 @@ Release content baseline before adding this candidate record:
   upload, LLM calls, MCP write tools, service/daemon install, polling capture
   loop, default background capture, or desktop control were added.
 
-## Release Notes Draft
+## Release Notes
 
 Highlights:
 
@@ -60,6 +67,15 @@ Privacy/security notes:
   untrusted observed content.
 
 ## Validation Log
+
+Published release verification:
+
+- `gh release view v0.1.0-beta.1` - prerelease exists, is not a draft, and
+  targets `2caf922733693ff5c63e39375d1882b19dcd508f`.
+- `git rev-parse v0.1.0-beta.1` -
+  `2caf922733693ff5c63e39375d1882b19dcd508f`.
+- GitHub Actions `Windows Harness` run `24987887814` - passed on `main` at
+  `2caf922733693ff5c63e39375d1882b19dcd508f`.
 
 Deterministic gates on `8ed3f866a04b86dc404e474e786ecafea5ca0854`:
 
@@ -97,8 +113,9 @@ Manual smoke gates:
   the Phase 2 decision and known limitation.
 - Kept manual smoke artifacts outside git; only artifact paths and pass/fail
   metadata are recorded.
-- Did not publish the prerelease automatically because publication requires
-  explicit approval.
+- Published `v0.1.0-beta.1` only after explicit user authorization.
+- Kept the published baseline documentation-only; no product CLI, MCP, helper,
+  watcher, or memory behavior changed after publication.
 
 ## Rollback
 
