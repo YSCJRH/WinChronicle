@@ -11,21 +11,19 @@ expanding the product boundary.
 
 ## Execution Cursor
 
-- Current stage: Stage N0 - CI Node 24 maintenance.
-- Stage status: C - Stage N0 is complete and ready to merge after the PR
-  Windows Harness re-validates this evidence update; Stage N1 is next after
-  merge.
+- Current stage: Stage N1 - Manual Smoke Evidence.
+- Stage status: C - Stage N1 implementation is complete locally; branch
+  GitHub Actions validation must pass before merge, then Stage N2 is next.
 - Last completed evidence: `v0.1.0-beta.0` prerelease is published from
-  `d1162151ae09f573a661bb5faf5899b9d52b0af4`; `main` is green at
-  `b7f83c9157d8d8f489f42963d6a002930cd8d322`; the Windows Harness workflow now
-  opts JavaScript actions into Node 24 without changing the deterministic gate
-  order.
-- Last validation: local Stage N0 validation passed with pytest, helper build,
-  watcher build, full harness, and diff check. PR #3 Windows Harness passed at
-  `e887066a21b3a1197d8032970da35005013dddfd` with no Node 20 deprecation
-  annotation in the checked log.
-- Next atomic task: merge the Stage N0 PR after this evidence update re-runs
-  green, then start Stage N1 on a separate branch.
+  `d1162151ae09f573a661bb5faf5899b9d52b0af4`; Stage N0 is merged to `main` at
+  `cfcdf219c4b00b3e22d036d314bc16508f61aba4`; Stage N1 adds a manual smoke
+  evidence template that records commands, results, artifact paths, timestamps,
+  and environment notes without requiring observed-content artifacts.
+- Last validation: local Stage N1 validation passed with pytest, helper build,
+  watcher build, full harness, and diff check. Branch GitHub Actions validation
+  is required before merge.
+- Next atomic task: open and validate the Stage N1 PR, merge it when green, then
+  start Stage N2 on a separate branch.
 - Known blockers: none.
 
 ## Phased Work
@@ -108,6 +106,11 @@ expanding the product boundary.
 - Treated the first local `run_harness.py` watcher smoke failure as a local
   short-duration flake after the identical watcher smoke passed on direct rerun
   and the full harness passed on rerun; no watcher behavior was changed.
+- Added a Stage N1 manual smoke template instead of changing smoke scripts or
+  CI because the post-beta need is auditable evidence capture, not new product
+  behavior.
+- Kept real UIA smoke out of default CI; the N1 template records paths to local
+  artifacts but explicitly says not to commit observed-content artifacts.
 
 ## Validation Log
 
@@ -128,3 +131,17 @@ expanding the product boundary.
   - Checked the run log for `Node.js 20`, `Node 20`, and deprecation matches;
     no Node 20 deprecation annotation remained after upgrading the official
     setup actions and keeping the Node 24 opt-in.
+- Stage N0 merge validation:
+  - PR #3 merged to `main` at
+    `cfcdf219c4b00b3e22d036d314bc16508f61aba4`.
+  - `main` Windows Harness run `24984984249` passed with no Node 20 deprecation
+    annotation in the checked log.
+- Stage N1 local validation:
+  - `python -m pytest -q` - 60 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `git diff --check` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - Template inspection confirmed it records commands, results, artifact paths,
+    timestamps, and environment notes only, and explicitly forbids committing
+    observed-content artifacts by default.
