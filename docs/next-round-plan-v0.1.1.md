@@ -2,19 +2,18 @@
 
 ## Summary
 
-`v0.1.0-beta.0` is published and establishes the current baseline. The next
-round should be a narrow post-beta stabilization pass, not a redesign of the
-blueprint and not Phase 6 screenshot/OCR implementation.
+`v0.1.0-beta.1` is published and establishes the current maintenance baseline.
+This plan is complete and now serves as the historical record for the narrow
+post-beta stabilization pass after `v0.1.0-beta.0`.
 
-Goal: make the beta easier to maintain, verify, and manually smoke without
+Result: the beta is easier to maintain, verify, and manually smoke without
 expanding the product boundary.
 
 ## Execution Cursor
 
-- Current stage: Stage N3 - Read-Only MCP Compatibility Polish.
-- Stage status: F - N0 through N3 are complete and merged to `main`; the
-  `v0.1.0-beta.1` release checklist is complete; prerelease publication
-  requires explicit approval.
+- Current stage: `v0.1.0-beta.1` published baseline.
+- Stage status: G - N0 through N3 are complete, merged to `main`, and released
+  as `v0.1.0-beta.1`.
 - Last completed evidence: `v0.1.0-beta.0` prerelease is published from
   `d1162151ae09f573a661bb5faf5899b9d52b0af4`; Stage N0 is merged to `main` at
   `cfcdf219c4b00b3e22d036d314bc16508f61aba4`; Stage N1 adds a manual smoke
@@ -27,13 +26,12 @@ expanding the product boundary.
   N3 adds read-only MCP compatibility examples for all exposed MCP tools and
   updates the MCP scorecard; Stage N3 is merged to `main` at
   `19a65a588428398c0a248109e850b8e17de0ceb1`.
-- Last validation: local Stage N3 validation passed with pytest, helper build,
-  watcher build, full harness, and diff check. PR #8 Windows Harness passed,
-  and `main` Windows Harness passed after merge. Release-candidate validation
-  passed deterministic gates, main CI, and available manual smoke gates.
-- Next atomic task: publish `v0.1.0-beta.1` as a GitHub prerelease after
-  explicit approval, then verify the tag and release metadata.
-- Known blockers: publication approval is pending.
+- Last validation: release metadata and local tag verification passed for
+  `v0.1.0-beta.1`; `main` Windows Harness run `24987887814` passed on the
+  published target.
+- Next atomic task: start the `v0.1.0-rc.0` readiness plan in
+  `docs/next-round-plan-v0.1.0-rc.0.md`.
+- Known blockers: none.
 
 ## Phased Work
 
@@ -88,10 +86,9 @@ expanding the product boundary.
 
 ## Assumptions
 
-- `v0.1.0-beta.0` remains the published beta baseline.
-- The next release target is a small `v0.1.0-beta.1` maintenance prerelease
-  after the N0-N3 stabilization stages are complete or the user explicitly asks
-  for an earlier release.
+- `v0.1.0-beta.1` is now the published beta baseline.
+- The next release target should move toward `v0.1.0-rc.0` readiness without
+  expanding the v0.1 product boundary.
 - Phase 6 remains specification-only until a future tests-first round.
 
 ## Decision Log
@@ -129,6 +126,9 @@ expanding the product boundary.
 - Kept Stage N3 out of MCP implementation: no new tools, write paths, arbitrary
   file reads, desktop control, screenshots, OCR, audio, keyboard, clipboard, or
   network tools were added.
+- Published `v0.1.0-beta.1` only after explicit user authorization and verified
+  the GitHub release, tag, and `main` CI result before moving to the RC planning
+  baseline.
 
 ## Validation Log
 
@@ -230,3 +230,10 @@ expanding the product boundary.
   - VS Code strict Monaco marker smoke failed diagnostically, consistent with
     the documented Monaco/UIA limitation and not a v0.1 release blocker.
   - Watcher preview smoke passed with temporary `WINCHRONICLE_HOME`.
+- Published release validation:
+  - `gh release view v0.1.0-beta.1` confirmed the release is a prerelease, not a
+    draft, and targets `2caf922733693ff5c63e39375d1882b19dcd508f`.
+  - `git rev-parse v0.1.0-beta.1` resolved to
+    `2caf922733693ff5c63e39375d1882b19dcd508f`.
+  - GitHub Actions `Windows Harness` run `24987887814` passed on `main` at the
+    published target.
