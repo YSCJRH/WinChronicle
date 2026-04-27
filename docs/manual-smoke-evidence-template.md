@@ -32,7 +32,9 @@ paths, timestamps, and environment notes.
 | Unit tests | `python -m pytest -q` |  |  |
 | Helper build | `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` |  |  |
 | Watcher build | `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` |  |  |
+| Install CLI smoke | `python harness/scripts/run_install_cli_smoke.py` |  |  |
 | Deterministic harness | `python harness/scripts/run_harness.py` |  |  |
+| Whitespace check | `git diff --check` |  |  |
 
 ## Notepad Targeted Smoke
 

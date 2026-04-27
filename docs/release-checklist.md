@@ -5,6 +5,8 @@ prereleases.
 
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
+For release-candidate evidence shape, use
+[Release evidence guide](release-evidence.md).
 
 ## Deterministic Gates
 
@@ -48,3 +50,4 @@ Related docs:
 - [Watcher preview](watcher-preview.md)
 - [Read-only MCP compatibility examples](mcp-readonly-examples.md)
 - [Known limitations](known-limitations.md)
+- [Release evidence guide](release-evidence.md)

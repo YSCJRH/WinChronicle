@@ -124,6 +124,7 @@ available through `search-captures`.
 
 - [Operator quickstart](docs/operator-quickstart.md)
 - [Release checklist](docs/release-checklist.md)
+- [Release evidence guide](docs/release-evidence.md)
 - [Manual smoke evidence template](docs/manual-smoke-evidence-template.md)
 - [Windows UIA smoke gates](docs/windows-uia-smoke.md)
 - [Watcher preview](docs/watcher-preview.md)

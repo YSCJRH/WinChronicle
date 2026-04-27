@@ -13,9 +13,9 @@ and no desktop control.
 
 ## Execution Cursor
 
-- Current stage: Stage RC3 - Evidence Consolidation.
-- Stage status: C - Stage RC2 operator quickstart and privacy polish is
-  complete; the next implementation step is RC3.
+- Current stage: Stage RC4 - RC Candidate Preparation.
+- Stage status: C - Stage RC3 evidence consolidation is complete; the next
+  implementation step is RC4.
 - Last completed evidence: release
   `https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-beta.1`
   targets `2caf922733693ff5c63e39375d1882b19dcd508f`; latest `main` Windows
@@ -25,12 +25,13 @@ and no desktop control.
   docs, and known limitations docs are present under `docs/`; RC1 adds
   `harness/scripts/run_install_cli_smoke.py` and includes it in the full
   deterministic harness; RC2 adds `docs/operator-quickstart.md` and links it
-  from README and the release checklist.
-- Last validation: RC2 passed pytest, helper build, watcher build, full
+  from README and the release checklist; RC3 adds `docs/release-evidence.md`
+  and aligns the manual smoke template with deterministic gates.
+- Last validation: RC3 passed pytest, helper build, watcher build, full
   harness, documentation link checks, and whitespace check locally.
-- Next atomic task: Stage RC3 should consolidate deterministic and manual
-  release evidence expectations for the RC path without committing observed
-  content artifacts.
+- Next atomic task: Stage RC4 should prepare a `v0.1.0-rc.0`
+  release-candidate note with validation evidence, release notes, rollback
+  notes, and tag target. Do not publish without explicit approval.
 - Known blockers: none.
 
 ## Phased Work
@@ -152,6 +153,13 @@ Manual Windows UIA gates remain manual and interactive:
   boundary summary.
 - Kept RC2 documentation-only because the task was discoverability and privacy
   posture, not a product interface change.
+- Added a dedicated release evidence guide for RC3 so release-candidate records
+  have a single source for deterministic gates, manual smoke evidence,
+  artifact handling, privacy/scope confirmation, and VS Code strict diagnostic
+  treatment.
+- Updated the manual smoke evidence template to include the install/CLI smoke
+  and whitespace check so the manual evidence preflight mirrors the release
+  checklist.
 
 ## Validation Log
 
@@ -199,3 +207,12 @@ Manual Windows UIA gates remain manual and interactive:
     related manual/MCP/watcher docs.
   - Re-stated the default privacy posture and
     `trust = "untrusted_observed_content"` boundary in operator-facing docs.
+- Stage RC3 evidence consolidation:
+  - Added `docs/release-evidence.md`.
+  - Updated README, operator quickstart, and release checklist to link the
+    release evidence guide.
+  - Updated the manual smoke evidence template preflight with
+    `python harness/scripts/run_install_cli_smoke.py` and `git diff --check`.
+  - Preserved the Phase 2 decision that VS Code metadata smoke is conditional
+    hard when `code.cmd` exists, while VS Code strict Monaco marker capture is
+    diagnostic/non-blocking.
