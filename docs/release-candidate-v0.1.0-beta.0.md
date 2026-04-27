@@ -17,8 +17,9 @@ Current PR: <https://github.com/YSCJRH/WinChronicle/pull/2>
   `d1162151ae09f573a661bb5faf5899b9d52b0af4`.
 - Last validation: GitHub release metadata and local tag both point to
   `d1162151ae09f573a661bb5faf5899b9d52b0af4`.
-- Next atomic task: read the published `main` baseline and plan the next round
-  of work without starting implementation.
+- Next atomic task: start Stage N0 from
+  `docs/next-round-plan-v0.1.1.md` on a new branch; do not change product
+  behavior.
 - Known blockers: none.
 
 ## Public Interfaces And Non-goals
@@ -78,6 +79,8 @@ Current PR: <https://github.com/YSCJRH/WinChronicle/pull/2>
 - The release checklist was rerun on `main` after merge; no release was created
   because publication still requires explicit approval.
 - `v0.1.0-beta.0` was published only after explicit user approval.
+- Next-round planning was recorded in `docs/next-round-plan-v0.1.1.md`; no
+  implementation started during G-state baseline planning.
 
 ## Rollback
 
