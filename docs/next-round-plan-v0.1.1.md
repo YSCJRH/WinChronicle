@@ -11,9 +11,10 @@ expanding the product boundary.
 
 ## Execution Cursor
 
-- Current stage: Stage N2 - Watcher Preview Diagnostics.
-- Stage status: C - Stage N2 is complete and merged to `main`; Stage N3 is
-  next.
+- Current stage: Stage N3 - Read-Only MCP Compatibility Polish.
+- Stage status: C - Stage N3 implementation is complete locally; branch
+  GitHub Actions validation must pass before merge, then the release checklist
+  is next.
 - Last completed evidence: `v0.1.0-beta.0` prerelease is published from
   `d1162151ae09f573a661bb5faf5899b9d52b0af4`; Stage N0 is merged to `main` at
   `cfcdf219c4b00b3e22d036d314bc16508f61aba4`; Stage N1 adds a manual smoke
@@ -22,12 +23,14 @@ expanding the product boundary.
   is merged to `main` at `1d3cb3f737344c0da90ae4fa2af7d7783d8a2a4c`; Stage N2
   documents watcher preview diagnostics for nonzero watcher exit, helper
   failure, malformed JSONL, timeout, denylist skip, and duplicate skip; Stage
-  N2 is merged to `main` at `e0c19e483fe6a41f6eda53058abe1c0ddcb0a7c9`.
-- Last validation: local Stage N2 validation passed with pytest, helper build,
-  watcher build, full harness, and diff check. PR #6 Windows Harness passed,
-  and `main` Windows Harness passed after merge.
-- Next atomic task: start Stage N3 on `codex/stage-n3-mcp-examples` and add
-  read-only MCP compatibility examples only.
+  N2 is merged to `main` at `e0c19e483fe6a41f6eda53058abe1c0ddcb0a7c9`; Stage
+  N3 adds read-only MCP compatibility examples for all exposed MCP tools and
+  updates the MCP scorecard.
+- Last validation: local Stage N3 validation passed with pytest, helper build,
+  watcher build, full harness, and diff check. Branch GitHub Actions validation
+  is required before merge.
+- Next atomic task: open and validate the Stage N3 PR, merge it when green, then
+  run the full release checklist for `v0.1.0-beta.1`.
 - Known blockers: none.
 
 ## Phased Work
@@ -119,6 +122,11 @@ expanding the product boundary.
   because existing tests already cover the planned failure and skip modes.
 - Kept Stage N2 out of product behavior: no daemon, service installer, polling
   capture loop, or default background capture was added.
+- Added Stage N3 MCP compatibility examples as documentation-only work because
+  the six read-only tools and trust-boundary tests already exist.
+- Kept Stage N3 out of MCP implementation: no new tools, write paths, arbitrary
+  file reads, desktop control, screenshots, OCR, audio, keyboard, clipboard, or
+  network tools were added.
 
 ## Validation Log
 
@@ -180,3 +188,21 @@ expanding the product boundary.
   - PR #6 merged to `main` at
     `e0c19e483fe6a41f6eda53058abe1c0ddcb0a7c9`.
   - `main` Windows Harness run `24986258272` passed after the merge.
+- Stage N2 cursor validation:
+  - PR #7 merged to `main` at
+    `58d5375198048aac4b0d36110f9e87ddeb7de349`.
+  - `main` Windows Harness run `24986570863` passed after the cursor update.
+- Stage N3 local validation:
+  - `python -m pytest -q` - 60 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `git diff --check` - passed.
+  - First `python harness/scripts/run_harness.py` attempt hit the known local
+    short-duration watcher smoke write/heartbeat flake; `python
+    harness/scripts/run_watcher_smoke.py` then passed, and `python
+    harness/scripts/run_harness.py` passed on rerun.
+  - Documentation inspection confirmed MCP examples cover `current_context`,
+    `search_captures`, `search_memory`, `read_recent_capture`,
+    `recent_activity`, and `privacy_status`; preserve
+    `trust = "untrusted_observed_content"`; and do not document write/control
+    or prohibited capture tools.
