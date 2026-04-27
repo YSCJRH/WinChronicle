@@ -14,8 +14,9 @@ and no desktop control.
 ## Execution Cursor
 
 - Current stage: Stage RC4 - RC Candidate Preparation.
-- Stage status: C - Stage RC3 evidence consolidation is complete; the next
-  implementation step is RC4.
+- Stage status: B - Stage RC4 release-candidate record has been drafted and
+  local deterministic/manual evidence has been recorded; PR, CI, and post-merge
+  evidence are still pending.
 - Last completed evidence: release
   `https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-beta.1`
   targets `2caf922733693ff5c63e39375d1882b19dcd508f`; latest `main` Windows
@@ -27,11 +28,17 @@ and no desktop control.
   deterministic harness; RC2 adds `docs/operator-quickstart.md` and links it
   from README and the release checklist; RC3 adds `docs/release-evidence.md`
   and aligns the manual smoke template with deterministic gates.
-- Last validation: RC3 passed pytest, helper build, watcher build, full
-  harness, documentation link checks, and whitespace check locally.
-- Next atomic task: Stage RC4 should prepare a `v0.1.0-rc.0`
-  release-candidate note with validation evidence, release notes, rollback
-  notes, and tag target. Do not publish without explicit approval.
+- Last validation: RC4 local gates passed on
+  `codex/stage-rc4-rc-candidate`: pytest, helper build, watcher build, install
+  CLI smoke, full deterministic harness, `git diff --check`, Notepad targeted
+  smoke, Edge targeted smoke, VS Code metadata smoke, and a bounded depth 2
+  watcher preview. VS Code strict Monaco marker failed as a documented
+  diagnostic/non-blocking limitation, and a depth 80 watcher preview attempt
+  timed out as diagnostic evidence.
+- Next atomic task: review the RC4 diff, open a PR, record the PR Windows
+  Harness URL, merge after review, then record the post-merge `main` Windows
+  Harness URL and final tag target. Do not publish `v0.1.0-rc.0` without
+  explicit approval.
 - Known blockers: none.
 
 ## Phased Work
