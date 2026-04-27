@@ -15,6 +15,8 @@
     "url",
     "uia_tree",
     "limits",
+    "uia_stats",
+    "capture_target",
     "truncated",
     "capture_surfaces"
   ],
@@ -26,7 +28,7 @@
       "const": "win-uia-helper"
     },
     "command": {
-      "const": "capture-frontmost"
+      "enum": ["capture-frontmost", "capture"]
     },
     "timestamp": {
       "type": "string"
@@ -150,6 +152,113 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 5000
+        }
+      }
+    },
+    "uia_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nodes_visited",
+        "nodes_skipped",
+        "stale_nodes_skipped",
+        "exceptions_skipped",
+        "chars_collected",
+        "elapsed_ms",
+        "max_depth_observed",
+        "time_budget_ms",
+        "time_budget_exceeded",
+        "max_nodes_reached",
+        "max_depth_reached",
+        "max_chars_reached"
+      ],
+      "properties": {
+        "nodes_visited": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5000
+        },
+        "nodes_skipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stale_nodes_skipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exceptions_skipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "chars_collected": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20000
+        },
+        "elapsed_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_depth_observed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 80
+        },
+        "time_budget_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "time_budget_exceeded": {
+          "type": "boolean"
+        },
+        "max_nodes_reached": {
+          "type": "boolean"
+        },
+        "max_depth_reached": {
+          "type": "boolean"
+        },
+        "max_chars_reached": {
+          "type": "boolean"
+        }
+      }
+    },
+    "capture_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "hwnd",
+        "requested_pid",
+        "resolved_pid",
+        "frontmost_at_capture",
+        "harness_only"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "frontmost",
+            "hwnd",
+            "pid_window_title_regex",
+            "process_name_window_title_regex"
+          ]
+        },
+        "hwnd": {
+          "type": "string",
+          "pattern": "^0x[0-9A-Fa-f]{16}$"
+        },
+        "requested_pid": {
+          "type": ["integer", "null"]
+        },
+        "resolved_pid": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "frontmost_at_capture": {
+          "type": "boolean"
+        },
+        "harness_only": {
+          "type": "boolean"
         }
       }
     },

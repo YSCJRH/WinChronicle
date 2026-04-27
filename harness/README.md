@@ -40,6 +40,25 @@ python harness/scripts/run_uia_helper_smoke.py --helper path\to\win-uia-helper.e
 The delay gives you time to focus the target app before capture. The smoke uses
 a temporary `WINCHRONICLE_HOME` and does not print observed content.
 
+For Phase 2 app-specific smoke gates, use the harness-only targeted helper path:
+
+```powershell
+.\harness\scripts\smoke-uia-notepad.ps1
+.\harness\scripts\smoke-uia-edge.ps1
+.\harness\scripts\smoke-uia-vscode.ps1
+.\harness\scripts\smoke-uia-vscode.ps1 -Strict
+```
+
+These scripts set `WINCHRONICLE_HARNESS=1`, call only
+`win-uia-helper capture --harness ... --no-store`, and write temporary JSON
+artifacts. They do not activate, click, type, move, resize, or control windows,
+and the product CLI still captures only `GetForegroundWindow`.
+
+The VS Code smoke treats window metadata as the hard gate by default. Use
+`-Strict` to require the editor marker itself; if strict mode fails, keep the
+diagnostic artifact because some Monaco editor sessions do not expose buffer
+text through UIA even with `editor.accessibilitySupport` enabled.
+
 Run the full local harness from the repository root:
 
 ```powershell

@@ -12,6 +12,9 @@
   clipboard, and desktop control disabled and bounded.
 - UIA helper tree extraction may use UIA raw view to surface editor/browser
   text, but depth, node count, and text length limits must remain enforced.
+- Helper targeted capture is harness-only: it must require both `--harness`
+  and `WINCHRONICLE_HARNESS=1`, write only stdout/artifacts, and must not
+  activate, click, type, move, resize, or control windows.
 - Real foreground capture must be explicit opt-in through `capture-frontmost`
   with a caller-provided helper path; tests use fake-helper output by default.
 - Manual UIA helper smoke scripts must use temporary state and must not print
