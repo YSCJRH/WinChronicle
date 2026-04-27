@@ -31,6 +31,19 @@ already-redacted indexed captures, writes `memory/event-YYYY-MM-DD.md`, and
 indexes the Markdown in SQLite `entries` / `entries_fts`; `search-memory`
 queries that durable memory without changing raw capture search.
 
+The release-candidate install smoke creates a temporary virtual environment,
+installs the local package without fetching dependencies, and runs fixture-only
+CLI commands against a temporary `WINCHRONICLE_HOME`:
+
+```powershell
+python harness/scripts/run_install_cli_smoke.py
+```
+
+It verifies `python -m winchronicle --help`, `init`, `status`,
+`capture-once`, `search-captures`, `generate-memory`, and `search-memory`
+without invoking real UIA, screenshots, OCR, audio, keyboard capture, clipboard
+capture, network upload, or desktop control.
+
 For a manual foreground-window helper smoke, focus the target app first and run:
 
 ```powershell

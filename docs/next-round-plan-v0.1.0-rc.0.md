@@ -13,20 +13,23 @@ and no desktop control.
 
 ## Execution Cursor
 
-- Current stage: Stage RC1 - Install And CLI Packaging Smoke.
-- Stage status: C - Stage RC0 baseline audit is complete; the next
-  implementation step is RC1.
+- Current stage: Stage RC2 - Operator Quickstart And Privacy Polish.
+- Stage status: C - Stage RC1 install and CLI packaging smoke is complete; the
+  next implementation step is RC2.
 - Last completed evidence: release
   `https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-beta.1`
   targets `2caf922733693ff5c63e39375d1882b19dcd508f`; latest `main` Windows
   Harness run `24990257758` passed on
   `51140bf8dfcb2cfcf65776653c927b9598d3247e`; release checklist, manual smoke
   evidence template, watcher preview docs, MCP examples, Windows UIA smoke
-  docs, and known limitations docs are present under `docs/`.
-- Last validation: GitHub release metadata, local tag resolution, latest
-  `main` Windows Harness status, and required docs file presence checks passed.
-- Next atomic task: Stage RC1 should add or document a deterministic
-  fresh-environment install and CLI packaging smoke.
+  docs, and known limitations docs are present under `docs/`; RC1 adds
+  `harness/scripts/run_install_cli_smoke.py` and includes it in the full
+  deterministic harness.
+- Last validation: RC1 passed standalone install/CLI smoke, pytest, helper
+  build, watcher build, full harness, and whitespace check locally.
+- Next atomic task: Stage RC2 should polish README/operator docs so the release
+  checklist, manual smoke template, Windows UIA smoke docs, watcher preview
+  docs, MCP examples, known limitations, and privacy posture are easy to find.
 - Known blockers: none.
 
 ## Phased Work
@@ -135,6 +138,13 @@ Manual Windows UIA gates remain manual and interactive:
   discoverability because RC2 explicitly owns README and operator quickstart
   polish. README currently links the release checklist and watcher preview; the
   broader docs index polish remains the next documentation-focused stage.
+- Added the RC1 install/CLI smoke as a deterministic harness script rather than
+  a live UIA smoke because installability is the risk under test, not capture
+  breadth.
+- Created the RC1 smoke virtual environment with access to the already
+  installed gate dependencies and installed WinChronicle with `--no-deps`; this
+  keeps the smoke local and avoids introducing a network dependency into the
+  release gate.
 
 ## Validation Log
 
@@ -159,3 +169,17 @@ Manual Windows UIA gates remain manual and interactive:
     `docs/manual-smoke-evidence-template.md`, `docs/watcher-preview.md`,
     `docs/mcp-readonly-examples.md`, `docs/windows-uia-smoke.md`, and
     `docs/known-limitations.md`.
+- Stage RC1 install and CLI packaging smoke:
+  - Added `harness/scripts/run_install_cli_smoke.py`.
+  - Updated `harness/scripts/run_harness.py` so the full deterministic harness
+    runs the install/CLI smoke.
+  - Updated `docs/release-checklist.md` and `harness/README.md` to document the
+    install/CLI smoke.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python -m pytest -q` - 60 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo`
+    - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`
+    - 0 warnings, 0 errors.
+  - `python harness/scripts/run_harness.py` - passed, including the new
+    install/CLI smoke.
