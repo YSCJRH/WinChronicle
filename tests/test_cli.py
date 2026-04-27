@@ -109,3 +109,57 @@ def test_capture_frontmost_cli_skips_when_helper_returns_no_capture(tmp_path, mo
 
     assert capsys.readouterr().out.strip() == "SKIPPED: helper returned no capture"
     assert not (tmp_path / "state" / "capture-buffer").exists()
+
+
+def test_capture_frontmost_cli_reports_invalid_helper_json_without_stderr_leak(
+    tmp_path, monkeypatch, capsys
+):
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(tmp_path / "state"))
+    fake_helper = tmp_path / "fake_invalid_helper.py"
+    fake_helper.write_text(
+        "import sys\n"
+        "print('observed secret must not echo', file=sys.stderr)\n"
+        "print('{not json')\n",
+        encoding="utf-8",
+    )
+
+    assert main(
+        [
+            "capture-frontmost",
+            "--helper",
+            sys.executable,
+            "--helper-arg",
+            str(fake_helper),
+        ]
+    ) == 1
+
+    output = capsys.readouterr().out
+    assert output.strip() == "ERROR: helper returned invalid JSON"
+    assert "observed secret" not in output
+
+
+def test_capture_frontmost_cli_reports_nonzero_helper_without_stderr_leak(
+    tmp_path, monkeypatch, capsys
+):
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(tmp_path / "state"))
+    fake_helper = tmp_path / "fake_failed_helper.py"
+    fake_helper.write_text(
+        "import sys\n"
+        "print('visible password must not echo', file=sys.stderr)\n"
+        "raise SystemExit(9)\n",
+        encoding="utf-8",
+    )
+
+    assert main(
+        [
+            "capture-frontmost",
+            "--helper",
+            sys.executable,
+            "--helper-arg",
+            str(fake_helper),
+        ]
+    ) == 1
+
+    output = capsys.readouterr().out
+    assert output.strip() == "ERROR: helper failed with exit code 9"
+    assert "visible password" not in output

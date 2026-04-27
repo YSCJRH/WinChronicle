@@ -40,6 +40,25 @@ def main() -> int:
             print("FAIL: MCP smoke fixture capture failed")
             return capture.returncode
 
+        memory = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "winchronicle",
+                "generate-memory",
+                "--date",
+                "2026-04-25",
+            ],
+            cwd=ROOT,
+            env=env,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
+        if memory.returncode:
+            print("FAIL: MCP smoke memory generation failed")
+            return memory.returncode
+
         completed = subprocess.run(
             [sys.executable, "-m", "winchronicle", "mcp-stdio"],
             cwd=ROOT,
@@ -56,7 +75,7 @@ def main() -> int:
             return 1
 
         responses = _parse_response_stream(completed.stdout)
-        if len(responses) != 4:
+        if len(responses) != 5:
             print("FAIL: MCP stdio did not return the expected response count")
             return 1
 
@@ -82,6 +101,16 @@ def main() -> int:
             return 1
         if matches[0]["trust"] != "untrusted_observed_content":
             print("FAIL: MCP search result lacked the observed-content trust boundary")
+            return 1
+
+        memory_search = _tool_payload(responses[4])
+        validate_mcp_tool_result(memory_search)
+        memory_matches = memory_search["result"]["matches"]
+        if not memory_matches or memory_matches[0]["entry_type"] not in {"event", "project", "tool"}:
+            print("FAIL: MCP search_memory did not find deterministic memory")
+            return 1
+        if memory_matches[0]["trust"] != "untrusted_observed_content":
+            print("FAIL: MCP memory search result lacked the trust boundary")
             return 1
 
     print("PASS: MCP stdio smoke passed")
@@ -114,6 +143,15 @@ def _build_request_stream() -> bytes:
             "method": "tools/call",
             "params": {
                 "name": "search_captures",
+                "arguments": {"query": "AssertionError", "limit": 5},
+            },
+        },
+        {
+            "jsonrpc": "2.0",
+            "id": 5,
+            "method": "tools/call",
+            "params": {
+                "name": "search_memory",
                 "arguments": {"query": "AssertionError", "limit": 5},
             },
         },

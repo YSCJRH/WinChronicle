@@ -162,6 +162,7 @@ def capture_frontmost_with_helper(
     helper_command: Sequence[str | Path],
     depth: int = 80,
     home: Path | str | None = None,
+    timeout_seconds: float = 30,
 ) -> CaptureResult:
     if not 0 <= depth <= 80:
         raise ValueError("depth must be between 0 and 80")
@@ -170,13 +171,17 @@ def capture_frontmost_with_helper(
 
     command = [str(part) for part in helper_command]
     command.extend(["capture-frontmost", "--depth", str(depth)])
-    completed = subprocess.run(
-        command,
-        check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    try:
+        completed = subprocess.run(
+            command,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=timeout_seconds,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError("helper timed out") from exc
     if completed.returncode != 0:
         raise RuntimeError(f"helper failed with exit code {completed.returncode}")
     if not completed.stdout.strip():
@@ -187,7 +192,10 @@ def capture_frontmost_with_helper(
             reason="helper returned no capture",
         )
 
-    output = json.loads(completed.stdout)
+    try:
+        output = json.loads(completed.stdout)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("helper returned invalid JSON") from exc
     return capture_once_from_uia_helper_record(output, home, output.get("helper_name"))
 
 

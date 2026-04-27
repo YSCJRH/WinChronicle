@@ -42,7 +42,14 @@ def dispatch_watcher_event_lines(
     lines: Iterable[str],
     home: Path | str | None = None,
 ) -> DispatchResult:
-    events = [json.loads(line) for line in lines if line.strip()]
+    events = []
+    for line_number, line in enumerate(lines, start=1):
+        if not line.strip():
+            continue
+        try:
+            events.append(json.loads(line))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"watcher JSONL line {line_number} is malformed") from exc
     return dispatch_watcher_records(events, home)
 
 
@@ -100,6 +107,7 @@ def run_watcher_command(
     heartbeat_ms: int = 5000,
     capture_on_start: bool = False,
     home: Path | str | None = None,
+    timeout_seconds: float | None = None,
 ) -> DispatchResult:
     if not watcher_command:
         raise ValueError("watcher command is required")
@@ -130,17 +138,25 @@ def run_watcher_command(
     if capture_on_start:
         command.append("--capture-on-start")
 
-    completed = subprocess.run(
-        command,
-        check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    timeout = timeout_seconds if timeout_seconds is not None else max(duration_seconds + 10, 10)
+    try:
+        completed = subprocess.run(
+            command,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError("watcher timed out") from exc
     if completed.returncode != 0:
         raise RuntimeError(f"watcher failed with exit code {completed.returncode}")
 
-    return dispatch_watcher_event_lines(completed.stdout.splitlines(), home)
+    try:
+        return dispatch_watcher_event_lines(completed.stdout.splitlines(), home)
+    except ValueError as exc:
+        raise RuntimeError(str(exc)) from exc
 
 
 def _read_jsonl(path: Path | str) -> list[dict[str, Any]]:

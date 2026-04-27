@@ -23,8 +23,8 @@ without storing raw watcher JSONL.
 
 Phase 4 adds a read-only MCP stdio surface. `harness/scripts/run_mcp_smoke.py`
 seeds a deterministic fixture capture, lists MCP tools, calls `privacy_status`,
-and verifies `search_captures` without exposing desktop control tools or any
-live capture surface.
+verifies `search_captures`, and verifies `search_memory` without exposing
+desktop control tools or any live capture surface.
 
 Phase 5 starts with a deterministic memory reducer. `generate-memory` reads
 already-redacted indexed captures, writes `memory/event-YYYY-MM-DD.md`, and
@@ -68,3 +68,7 @@ python harness/scripts/run_harness.py
 
 The runner uses a temporary `WINCHRONICLE_HOME` so CLI smoke checks do not write
 to the user's normal WinChronicle state directory.
+
+Before publishing alpha or beta releases, use `docs/release-checklist.md`.
+Phase 6 screenshot/OCR enrichment is tracked only as a privacy scorecard until
+tests and explicit opt-in configuration exist.

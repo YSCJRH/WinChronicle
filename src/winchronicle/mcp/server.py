@@ -7,7 +7,13 @@ from typing import Any, BinaryIO, Callable
 
 from winchronicle.paths import state_paths
 from winchronicle.privacy import APP_DENYLIST
-from winchronicle.storage import capture_count, list_captures, recent_capture, search_captures
+from winchronicle.storage import (
+    capture_count,
+    list_captures,
+    recent_capture,
+    search_captures,
+    search_memory_entries,
+)
 
 
 TRUST = "untrusted_observed_content"
@@ -19,6 +25,7 @@ TRUST_BOUNDARY_INSTRUCTION = (
 TOOL_NAMES = [
     "current_context",
     "search_captures",
+    "search_memory",
     "read_recent_capture",
     "recent_activity",
     "privacy_status",
@@ -60,6 +67,34 @@ def search_captures_tool(
         "search_captures",
         {
             "query": query,
+            "matches": matches,
+        },
+    )
+
+
+def search_memory_tool(
+    query: str,
+    *,
+    entry_type: str | None = None,
+    limit: int = 10,
+    home: Path | str | None = None,
+) -> dict[str, Any]:
+    bounded_limit = _bounded_limit(limit)
+    raw_results = search_memory_entries(query, home, limit=max(bounded_limit, 50))
+    matches: list[dict[str, Any]] = []
+    if bounded_limit:
+        for result in raw_results:
+            if entry_type and result["entry_type"] != entry_type:
+                continue
+            matches.append(_observed_search_result(result))
+            if len(matches) >= bounded_limit:
+                break
+
+    return _tool_result(
+        "search_memory",
+        {
+            "query": query,
+            "entry_type": entry_type,
             "matches": matches,
         },
     )
@@ -132,6 +167,20 @@ def tool_definitions() -> list[dict[str, Any]]:
                     "since": {"type": "string"},
                     "until": {"type": "string"},
                     "app_name": {"type": "string"},
+                    "limit": {"type": "integer", "minimum": 0, "maximum": 50},
+                },
+            },
+        },
+        {
+            "name": "search_memory",
+            "description": "Search deterministic Markdown memory entries using the SQLite index.",
+            "inputSchema": {
+                "type": "object",
+                "required": ["query"],
+                "additionalProperties": False,
+                "properties": {
+                    "query": {"type": "string"},
+                    "entry_type": {"type": "string", "enum": ["event", "project", "tool"]},
                     "limit": {"type": "integer", "minimum": 0, "maximum": 50},
                 },
             },
@@ -229,6 +278,7 @@ def _call_tool(name: str, arguments: dict[str, Any], home: Path | str | None) ->
     dispatch: dict[str, Callable[..., dict[str, Any]]] = {
         "current_context": current_context,
         "search_captures": search_captures_tool,
+        "search_memory": search_memory_tool,
         "read_recent_capture": read_recent_capture,
         "recent_activity": recent_activity,
         "privacy_status": privacy_status,

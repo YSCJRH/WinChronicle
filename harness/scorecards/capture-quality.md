@@ -24,6 +24,9 @@
     non-blocking; strict failure must produce a diagnostic artifact.
 - Real foreground capture must be explicit opt-in through `capture-frontmost`
   with a caller-provided helper path; tests use fake-helper output by default.
+- Python helper wrapper failures must be diagnostic without echoing helper
+  stderr or observed content: timeout, invalid JSON, empty stdout, and nonzero
+  exit are covered by tests.
 - Manual UIA helper smoke scripts must use temporary state and must not print
   observed content.
 - Watcher work must start with deterministic JSONL event fixtures; `watch
@@ -31,6 +34,12 @@
   denylisted apps without starting a real WinEvent hook.
 - The experimental WinEvent watcher scaffold may be compiled in harness, but
   live watcher runs must remain manual and temporary-state only.
+- `watch --watcher --helper --duration` is a v0.1 preview path. It must remain
+  explicit opt-in, must not install a daemon/service, and must not save raw
+  watcher JSONL.
+- Watcher failure modes must return stable diagnostics without echoing observed
+  content: watcher nonzero exit, malformed JSONL, and timeout are covered by
+  tests.
 - Watcher smoke may run with `--capture-on-start` only when using a fake helper
   and temporary state, so no live observed UI content is read.
 - `watch --watcher` must consume watcher JSONL in memory and must not save raw

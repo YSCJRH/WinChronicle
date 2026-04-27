@@ -60,6 +60,41 @@ def test_generate_memory_creates_markdown_and_searchable_entry(tmp_path, monkeyp
         assert any(query.lower() in match["snippet"].lower() for match in matches)
 
 
+def test_event_memory_markdown_matches_golden_fixture(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    for fixture_name in ("terminal_error.json", "vscode_editor.json", "edge_browser.json"):
+        capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / fixture_name, home)
+
+    results = generate_memory_entries(home, date="2026-04-25")
+    event = next(result for result in results if result.path.name == "event-2026-04-25.md")
+    actual = _normalize_memory_markdown(event.path.read_text(encoding="utf-8"), home)
+    expected = (ROOT / "harness" / "golden" / "memory_event_2026_04_25.expected.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert actual == expected
+
+
+def test_generate_memory_is_idempotent_for_files_and_index(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    for fixture_name in ("terminal_error.json", "vscode_editor.json", "edge_browser.json"):
+        capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / fixture_name, home)
+
+    first = generate_memory_entries(home, date="2026-04-25")
+    first_bodies = {result.path.name: result.path.read_text(encoding="utf-8") for result in first}
+    second = generate_memory_entries(home, date="2026-04-25")
+    second_bodies = {result.path.name: result.path.read_text(encoding="utf-8") for result in second}
+
+    with sqlite3.connect(state_paths(home)["db"]) as conn:
+        entry_row = conn.execute("SELECT COUNT(*) FROM entries").fetchone()
+
+    assert [result.path.name for result in first] == [result.path.name for result in second]
+    assert first_bodies == second_bodies
+    assert entry_row == (6,)
+
+
 def test_memory_entries_fts_table_created_when_available(tmp_path, monkeypatch):
     if not _sqlite_supports_fts5():
         pytest.skip("SQLite FTS5 is unavailable in this Python build.")
@@ -126,3 +161,7 @@ def _sqlite_supports_fts5() -> bool:
             return False
 
     return True
+
+
+def _normalize_memory_markdown(markdown: str, home: Path) -> str:
+    return markdown.replace(str(home), "<STATE>").replace("\\", "/")

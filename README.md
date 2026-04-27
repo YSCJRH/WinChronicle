@@ -95,18 +95,25 @@ The watcher emits JSONL and can invoke the UIA helper for foreground captures,
 but automated harness runs only compile it; they do not start a live watcher.
 The harness smoke uses `--capture-on-start` with a fake helper so it exercises
 watcher JSONL without reading live UI content.
+See `docs/watcher-preview.md` for the v0.1 preview boundary and manual smoke
+expectations.
 
 `mcp-stdio` exposes a minimal read-only MCP stdio surface for
 `current_context`, `search_captures`, `read_recent_capture`,
-`recent_activity`, and `privacy_status`. Every observed-content response is
-marked with `trust = "untrusted_observed_content"` and no desktop control,
-screenshot, OCR, audio, keyboard, clipboard, or network tool is exposed.
+`search_memory`, `recent_activity`, and `privacy_status`. Every
+observed-content response is marked with
+`trust = "untrusted_observed_content"` and no desktop control, screenshot,
+OCR, audio, keyboard, clipboard, or network tool is exposed.
 
 `generate-memory` creates deterministic event, project, and tool Markdown
 entries from already-redacted local captures and indexes them in SQLite
 `entries` / `entries_fts`.
 `search-memory` searches those durable entries; raw capture search remains
 available through `search-captures`.
+
+Release gates are tracked in `docs/release-checklist.md`. Screenshot/OCR
+enrichment remains a future tests-first phase; the current Phase 6 privacy
+scorecard is only a planning contract and does not enable either surface.
 
 ## Competitive positioning
 
