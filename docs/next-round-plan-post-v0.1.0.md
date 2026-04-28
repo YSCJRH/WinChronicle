@@ -23,16 +23,19 @@ service install, and no default background capture.
 ## Execution Cursor
 
 - Current stage: Stage P2 - Watcher Preview Reliability Follow-Up.
-- Stage status: A - P1 is merged and validated; P2 has not started.
-- Last completed evidence: P1 operator diagnostics merged in PR #31 and
-  post-merge `main` Windows Harness run `25036973210` passed.
-- Last validation: `python -m pytest -q`, both .NET helper/watcher builds,
-  install CLI smoke, full deterministic harness, `git diff --check`, PR #31
-  Windows Harness, and post-merge `main` Windows Harness passed.
-- Next atomic task: audit existing watcher preview docs/tests for reliability
-  gaps around heartbeat-only live runs, timeout, malformed JSONL, helper
-  failure, duplicate skip, denylist skip, and raw JSONL persistence before
-  deciding whether any new fixture/test is needed.
+- Stage status: B - P2 deterministic watcher reliability coverage is
+  implemented locally; PR Windows Harness and post-merge `main` Windows Harness
+  are pending.
+- Last completed evidence: `watch --watcher` heartbeat-only CLI coverage now
+  asserts zero captures, heartbeat counts, and no raw watcher JSONL under
+  temporary `WINCHRONICLE_HOME`; watcher preview docs include a deterministic
+  reliability coverage matrix.
+- Last validation: watcher-focused tests, `python -m pytest -q`, both .NET
+  helper/watcher builds, install CLI smoke, full deterministic harness, and
+  `git diff --check` passed.
+- Next atomic task: open the P2 watcher reliability PR, wait for Windows
+  Harness, merge it, verify post-merge `main` Windows Harness, then start
+  Stage P3 UIA helper compatibility matrix refresh.
 - Known blockers: none.
 
 ## Phased Work
@@ -168,3 +171,11 @@ Stage-specific gates:
   - PR #31 merged to `main` at
     `cd7c159bf888ab5d5b4e25e786a7dc39e551aa65`.
   - Post-merge `main` Windows Harness run `25036973210` passed.
+- Stage P2 local validation:
+  - `python -m pytest tests/test_watcher_events.py -q` - 13 passed.
+  - `python -m pytest -q` - 76 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.

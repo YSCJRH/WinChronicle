@@ -16,6 +16,10 @@ from winchronicle.storage import search_captures
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def _raw_watcher_jsonl_files(home: Path) -> list[Path]:
+    return sorted(home.rglob("*.jsonl")) if home.exists() else []
+
+
 def test_watcher_event_fixture_dispatches_one_capture_and_heartbeat(tmp_path, monkeypatch):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
@@ -64,7 +68,7 @@ def test_watcher_dispatch_counts_heartbeat_only_without_capture(tmp_path, monkey
         "denylisted_skipped": 0,
         "heartbeats": 1,
     }
-    assert not (home / "capture-buffer").exists()
+    assert list((home / "capture-buffer").glob("*.json")) == []
 
 
 def test_watcher_dispatch_skips_duplicate_fingerprint_already_indexed(tmp_path, monkeypatch):
@@ -148,7 +152,8 @@ def test_watch_cli_dispatches_fixture_events(tmp_path, monkeypatch, capsys):
 
 
 def test_watch_cli_runs_fake_watcher_without_raw_event_file(tmp_path, monkeypatch, capsys):
-    monkeypatch.setenv("WINCHRONICLE_HOME", str(tmp_path / "state"))
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
     fake_watcher = tmp_path / "fake_watcher.py"
     event_path = ROOT / "harness" / "fixtures" / "watcher" / "notepad_burst.jsonl"
     fake_watcher.write_text(
@@ -179,6 +184,49 @@ def test_watch_cli_runs_fake_watcher_without_raw_event_file(tmp_path, monkeypatc
     }
     assert len(results) == 1
     assert results[0]["app_name"] == "Notepad"
+    assert _raw_watcher_jsonl_files(home) == []
+
+
+def test_watch_cli_counts_heartbeat_only_without_capture_or_raw_jsonl(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    fake_watcher = tmp_path / "fake_heartbeat_watcher.py"
+    fake_watcher.write_text(
+        "import json\n"
+        "print(json.dumps({\n"
+        "  'event_schema_version': 1,\n"
+        "  'source': 'win-uia-watcher',\n"
+        "  'event_id': 'heartbeat-only-cli',\n"
+        "  'event_type': 'heartbeat',\n"
+        "  'timestamp': '2026-04-25T13:30:01+08:00',\n"
+        "  'heartbeat_id': 'heartbeat-only-cli',\n"
+        "}, sort_keys=True))\n",
+        encoding="utf-8",
+    )
+
+    assert main(
+        [
+            "watch",
+            "--watcher",
+            sys.executable,
+            "--watcher-arg",
+            str(fake_watcher),
+            "--duration",
+            "1",
+        ]
+    ) == 0
+    output = json.loads(capsys.readouterr().out)
+
+    assert output == {
+        "captures_written": 0,
+        "duplicates_skipped": 0,
+        "denylisted_skipped": 0,
+        "heartbeats": 1,
+    }
+    assert list((home / "capture-buffer").glob("*.json")) == []
+    assert _raw_watcher_jsonl_files(home) == []
 
 
 def test_watch_cli_suppresses_failed_watcher_stderr(tmp_path, monkeypatch, capsys):
@@ -238,7 +286,8 @@ def test_watch_cli_suppresses_helper_failure_observed_content(tmp_path, monkeypa
 
 
 def test_watch_cli_reports_malformed_watcher_jsonl(tmp_path, monkeypatch, capsys):
-    monkeypatch.setenv("WINCHRONICLE_HOME", str(tmp_path / "state"))
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
     fake_watcher = tmp_path / "fake_malformed_watcher.py"
     fake_watcher.write_text("print('{not json')\n", encoding="utf-8")
 
@@ -254,6 +303,7 @@ def test_watch_cli_reports_malformed_watcher_jsonl(tmp_path, monkeypatch, capsys
     output = capsys.readouterr().out
 
     assert output.strip() == "ERROR: watcher JSONL line 1 is malformed"
+    assert _raw_watcher_jsonl_files(home) == []
 
 
 def test_run_watcher_command_reports_timeout_without_stdout_leak(tmp_path):
@@ -295,3 +345,27 @@ def test_watcher_smoke_script_reports_missing_build_without_observed_content(tmp
 
     assert completed.returncode == 1
     assert completed.stdout.strip() == "FAIL: watcher DLL does not exist; run dotnet build first"
+
+
+def test_watcher_preview_docs_cover_reliability_modes_and_boundaries():
+    docs = (ROOT / "docs" / "watcher-preview.md").read_text(encoding="utf-8")
+
+    for reliability_mode in (
+        "Watcher exits nonzero",
+        "Helper failure surfaced by watcher",
+        "Malformed watcher JSONL",
+        "Watcher timeout",
+        "Heartbeat-only run",
+        "Denylisted app or lock screen",
+        "Duplicate content fingerprint",
+        "Raw watcher JSONL persistence",
+    ):
+        assert reliability_mode in docs
+
+    for boundary in (
+        "does not save raw watcher JSONL",
+        "explicit, time-bounded, and operator-started",
+        "must not add screenshot, OCR, audio, keyboard capture, clipboard",
+        "daemon, service installer, startup task",
+    ):
+        assert boundary in docs
