@@ -7,26 +7,28 @@ observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.1` is prepared but not published. Publishing requires explicit release
-approval.
+`v0.1.1` was published after explicit approval. The release tag targets the
+latest release-approved `main` SHA whose Windows Harness passed.
 
 If any product behavior, schema, CLI/MCP JSON shape, privacy behavior,
 helper/watcher behavior, or capture-surface change is required before
 publication, do not publish `v0.1.1` directly. Prepare a release candidate
 instead.
 
-Publication status: not published.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.1` |
-| Stage | Post-v0.1 maintenance release preparation |
+| Stage | Published maintenance release |
 | Evidence date | 2026-04-28, Asia/Shanghai |
 | Current candidate `main` SHA before this record | `4a1ac5abc57b8e01b499eadd329ed880aa09cefa` |
-| Planned tag target | Latest release-approved `main` SHA at publication time, after confirming the latest `main` Windows Harness passed |
-| Publication status | Not published |
+| Final tag target | `8ac594176d251c867e34c2a139a1029a3fc474da` |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.1 |
+| Published at | 2026-04-28T08:25:38Z |
 | Previous stable release | `v0.1.0` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0 |
 | `v0.1.0` tag target | `6d22462c0da185d163cf1b7219e05439ff4666ff` |
@@ -145,8 +147,8 @@ This maintenance release does not expand the capture surface from `v0.1.0`.
 
 ## Release Decision Summary
 
-- Release path: compatible `v0.1.1` maintenance release is prepared but not
-  published.
+- Release path: compatible `v0.1.1` maintenance release was published after
+  explicit approval.
 - Fallback path: release candidate if any product or contract change is
   required.
 - Deterministic gates: passed locally and in GitHub Actions for the P0-P5
@@ -155,4 +157,6 @@ This maintenance release does not expand the capture surface from `v0.1.0`.
   batch; use the manual smoke evidence template if fresh manual evidence is
   required before publication.
 - Privacy/scope confirmation: unchanged and recorded above.
-- Publication approval: pending explicit user approval.
+- Publication approval: granted by the user message `允许发布 v0.1.1`.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.1.
+- Final tag target: `8ac594176d251c867e34c2a139a1029a3fc474da`.

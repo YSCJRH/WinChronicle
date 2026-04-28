@@ -22,22 +22,20 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Release Preparation - v0.1.1 maintenance.
-- Stage status: F - `v0.1.1` release preparation is merged and validated;
-  release publication is ready to request but has not been approved or
-  published.
-- Last completed evidence: release preparation and release-readiness docs are
-  merged; latest `main` validation before publication must be confirmed by
-  checking the newest Windows Harness run rather than by chasing a static SHA
-  inside this cursor.
-- Last validation: `python -m pytest -q`, both .NET helper/watcher builds,
-  install CLI smoke, full deterministic harness, `git diff --check`, PR #41
-  Windows Harness, post-merge `main` Windows Harness, PR #42 Windows Harness,
-  and post-merge `main` Windows Harness passed.
-- Next atomic task: wait for explicit release approval; if approved, publish
-  `v0.1.1` from the latest release-approved `main` SHA after confirming no
-  newer unvalidated commits exist, then reconcile the release URL, tag target,
-  and post-publication baseline.
+- Current stage: Post-publication reconciliation - v0.1.1 maintenance.
+- Stage status: B - `v0.1.1` is published and release evidence is updated
+  locally; reconciliation PR and post-merge Windows Harness validation are
+  pending.
+- Last completed evidence: `v0.1.1` was published at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.1 and targets
+  `8ac594176d251c867e34c2a139a1029a3fc474da`.
+- Last validation: latest release-approved `main` Windows Harness run
+  `25041902630` passed before publication; `gh release view v0.1.1` confirmed
+  the release is published, not a draft, not a prerelease, and targets
+  `8ac594176d251c867e34c2a139a1029a3fc474da`.
+- Next atomic task: open the post-publication reconciliation PR, wait for
+  Windows Harness, merge after it is green, verify post-merge `main`, then
+  establish the post-`v0.1.1` baseline and plan the next round.
 - Known blockers: none.
 
 ## Phased Work
@@ -259,3 +257,10 @@ Stage-specific gates:
     docs-only merge SHA.
   - Before publication, confirm the latest `main` SHA and latest `main`
     Windows Harness pass, then tag that release-approved SHA.
+- `v0.1.1` publication:
+  - User explicitly approved publication with `允许发布 v0.1.1`.
+  - `gh release create v0.1.1 --target 8ac594176d251c867e34c2a139a1029a3fc474da` published the release.
+  - Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.1.
+  - `gh release view v0.1.1` confirmed published status, non-draft,
+    non-prerelease, and target
+    `8ac594176d251c867e34c2a139a1029a3fc474da`.
