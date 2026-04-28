@@ -22,20 +22,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Post-publication reconciliation - v0.1.1 maintenance.
-- Stage status: B - `v0.1.1` is published and release evidence is updated
-  locally; reconciliation PR and post-merge Windows Harness validation are
-  pending.
-- Last completed evidence: `v0.1.1` was published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.1 and targets
-  `8ac594176d251c867e34c2a139a1029a3fc474da`.
-- Last validation: latest release-approved `main` Windows Harness run
-  `25041902630` passed before publication; `gh release view v0.1.1` confirmed
-  the release is published, not a draft, not a prerelease, and targets
-  `8ac594176d251c867e34c2a139a1029a3fc474da`.
-- Next atomic task: open the post-publication reconciliation PR, wait for
-  Windows Harness, merge after it is green, verify post-merge `main`, then
-  establish the post-`v0.1.1` baseline and plan the next round.
+- Current stage: Closed - `v0.1.1` published and reconciled.
+- Stage status: G - `v0.1.1` is published, release evidence is reconciled, and
+  post-reconciliation `main` Windows Harness passed.
+- Last completed evidence: post-publication reconciliation PR #45 merged to
+  `main` at `59c59e5ddae72edbb960fa2edc7d344c3b8c8ac0`, and post-merge
+  `main` Windows Harness run `25042403608` passed.
+- Last validation: `gh release view v0.1.1` confirmed the release is
+  published, not a draft, not a prerelease, and targets
+  `8ac594176d251c867e34c2a139a1029a3fc474da`; PR #45 Windows Harness and
+  post-merge `main` Windows Harness passed.
+- Next atomic task: establish a new post-`v0.1.1` next-round plan before any
+  further implementation.
 - Known blockers: none.
 
 ## Phased Work
@@ -264,3 +262,8 @@ Stage-specific gates:
   - `gh release view v0.1.1` confirmed published status, non-draft,
     non-prerelease, and target
     `8ac594176d251c867e34c2a139a1029a3fc474da`.
+- Post-publication reconciliation:
+  - PR #45 Windows Harness run `25042292493` passed.
+  - PR #45 merged to `main` at
+    `59c59e5ddae72edbb960fa2edc7d344c3b8c8ac0`.
+  - Post-merge `main` Windows Harness run `25042403608` passed.
