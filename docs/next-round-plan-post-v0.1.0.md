@@ -26,9 +26,10 @@ service install, and no default background capture.
 - Stage status: F - `v0.1.1` release preparation is merged and validated;
   release publication is ready to request but has not been approved or
   published.
-- Last completed evidence: release-preparation PR #41 merged to `main` at
-  `55197277d7c225b397aaeb3ca209d0ff9df8403b`, and post-merge `main` Windows
-  Harness run `25040838725` passed.
+- Last completed evidence: release preparation and release-readiness docs are
+  merged; latest `main` validation before publication must be confirmed by
+  checking the newest Windows Harness run rather than by chasing a static SHA
+  inside this cursor.
 - Last validation: `python -m pytest -q`, both .NET helper/watcher builds,
   install CLI smoke, full deterministic harness, `git diff --check`, PR #41
   Windows Harness, post-merge `main` Windows Harness, PR #42 Windows Harness,
@@ -253,3 +254,8 @@ Stage-specific gates:
   - PR #42 merged to `main` at
     `87363617591106997daca6c2a5f95c32a6e82c49`.
   - Post-merge `main` Windows Harness run `25041152756` passed.
+- Release target policy clarification:
+  - Do not keep updating release-readiness docs solely to chase their own
+    docs-only merge SHA.
+  - Before publication, confirm the latest `main` SHA and latest `main`
+    Windows Harness pass, then tag that release-approved SHA.
