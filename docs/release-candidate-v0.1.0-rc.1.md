@@ -13,8 +13,9 @@ metadata to CLI capture and memory search results and aligning CLI `status`
 with MCP `privacy_status`. Per the final-readiness rule, that change must go
 through a new release candidate rather than direct `v0.1.0` final.
 
-Publication is not approved by this document. Publish only after explicit
-approval and after the F5 PR and post-merge `main` Windows Harness pass.
+Publication is not approved by this document. The F5 PR and post-merge `main`
+Windows Harness have passed; publish only after explicit approval. The final
+tag target should be the `main` SHA verified immediately before publication.
 
 ## Candidate Metadata
 
@@ -25,12 +26,16 @@ approval and after the F5 PR and post-merge `main` Windows Harness pass.
 | Evidence date | 2026-04-28, Asia/Shanghai |
 | Evidence branch | `codex/final5-release-readiness` |
 | Current verified `main` SHA before F5 PR | `d381bcae2a2de66ebe9346ebf427dc3988b86323` |
-| Planned tag target | Pending F5 merge commit on `main` |
+| F5 merge commit on `main` | `236f57fb308393522323b3bb1139dd3fe1dbf24b` |
+| Planned tag target | The `main` SHA verified immediately before publication |
 | Publication status | Not published; approval pending |
 | Release URL | Pending |
 | Previous release-candidate baseline | `v0.1.0-rc.0` |
 | Previous release-candidate URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-rc.0 |
 | Latest post-merge `main` Windows Harness before F5 | Passed, run `25031913300`, https://github.com/YSCJRH/WinChronicle/actions/runs/25031913300 |
+| F5 release evidence PR | https://github.com/YSCJRH/WinChronicle/pull/22 |
+| F5 PR Windows Harness | Passed, run `25032173686`, https://github.com/YSCJRH/WinChronicle/actions/runs/25032173686 |
+| F5 post-merge `main` Windows Harness | Passed, run `25032281387`, https://github.com/YSCJRH/WinChronicle/actions/runs/25032281387 |
 
 Environment:
 
@@ -51,8 +56,9 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The F5 PR Windows Harness and post-merge `main` Windows Harness must be added
-before publication.
+The F5 PR Windows Harness and post-merge `main` Windows Harness both passed.
+Before publication, verify the current `main` SHA and use that SHA as the tag
+target.
 
 ## Manual UIA Smoke Gates
 
@@ -145,6 +151,10 @@ This release candidate does not expand the capture surface.
 - Deterministic gates: passed locally.
 - Latest verified `main` before F5 PR: `d381bcae2a2de66ebe9346ebf427dc3988b86323`.
 - Latest pre-F5 post-merge `main` Windows Harness: passed, run `25031913300`.
+- F5 PR: https://github.com/YSCJRH/WinChronicle/pull/22.
+- F5 PR Windows Harness: passed, run `25032173686`.
+- F5 merge commit on `main`: `236f57fb308393522323b3bb1139dd3fe1dbf24b`.
+- F5 post-merge `main` Windows Harness: passed, run `25032281387`.
 - Manual hard gates: Notepad passed; Edge passed.
 - Conditional hard gate: VS Code metadata passed because `code.cmd` is
   available.
