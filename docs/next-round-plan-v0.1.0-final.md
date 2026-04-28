@@ -18,20 +18,20 @@ desktop control, and no product targeted capture flags.
 ## Execution Cursor
 
 - Current stage: Stage F5 - Final Or rc.1 Release Decision.
-- Stage status: B - F5 release decision evidence is prepared locally; PR
-  Windows Harness and
-  post-merge `main` validation are still pending.
+- Stage status: F - F5 release decision evidence is merged and post-merge
+  `main` Windows Harness passed; `v0.1.0-rc.1` publication approval is still
+  pending.
 - Last completed evidence: `docs/release-candidate-v0.1.0-rc.1.md` records
   that F1 changed CLI/MCP JSON shape and privacy behavior, so the next public
   candidate must be `v0.1.0-rc.1` rather than direct final. Deterministic and
   manual smoke evidence are recorded without committing observed-content
   artifacts.
 - Last validation: local deterministic gates, manual Notepad/Edge/VS Code
-  smoke, watcher preview, and `git diff --check` passed or were recorded as
-  diagnostic where appropriate.
-- Next atomic task: open the F5 PR, wait for GitHub Actions Windows Harness,
-  merge when green, then reconcile the final tag target before requesting
-  publication approval.
+  smoke, watcher preview, PR Windows Harness, post-merge `main` Windows Harness,
+  and `git diff --check` passed or were recorded as diagnostic where
+  appropriate.
+- Next atomic task: request explicit approval to publish `v0.1.0-rc.1`; before
+  publishing, verify the current `main` SHA and use that SHA as the tag target.
 - Known blockers: none.
 
 ## Phased Work
@@ -271,3 +271,7 @@ Stage-specific gates:
   `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`.
 - F5 full harness passed: `python harness/scripts/run_harness.py`.
 - F5 whitespace check passed: `git diff --check`.
+- F5 PR Windows Harness passed:
+  https://github.com/YSCJRH/WinChronicle/actions/runs/25032173686.
+- F5 post-merge `main` Windows Harness passed:
+  https://github.com/YSCJRH/WinChronicle/actions/runs/25032281387.
