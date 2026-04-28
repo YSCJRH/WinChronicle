@@ -23,16 +23,19 @@ service install, and no default background capture.
 ## Execution Cursor
 
 - Current stage: Stage P5 - Phase 6 Privacy Spec Only.
-- Stage status: A - P4 is merged and validated; P5 has not started.
-- Last completed evidence: P4 MCP/memory contract-freeze tests merged in PR
-  #37 and post-merge `main` Windows Harness run `25039294143` passed.
-- Last validation: MCP/memory-focused tests, `python -m pytest -q`, both .NET
-  helper/watcher builds, install CLI smoke, full deterministic harness,
-  `git diff --check`, PR #37 Windows Harness, and post-merge `main` Windows
-  Harness passed.
-- Next atomic task: expand the Phase 6 screenshot/OCR privacy scorecard only as
-  specification work; do not implement screenshots, OCR, caches, or capture
-  code.
+- Stage status: B - P5 Phase 6 privacy scorecard/spec tests are implemented
+  and locally validated; PR and post-merge Windows Harness validation are
+  pending.
+- Last completed evidence: the Phase 6 privacy enrichment scorecard now
+  test-freezes spec-only boundaries, explicit opt-in, per-app allowlists, raw
+  screenshot cache prerequisites, OCR-derived text pipeline parity, MCP
+  default non-exposure, privacy regression prerequisites, and non-goals.
+- Last validation: Phase 6 scorecard tests, `python -m pytest -q`, both .NET
+  helper/watcher builds, install CLI smoke, full deterministic harness, and
+  `git diff --check` passed locally.
+- Next atomic task: open the P5 PR, wait for Windows Harness, merge after it is
+  green, verify post-merge `main`, then decide whether the compatible
+  maintenance batch is ready for `v0.1.1` release preparation.
 - Known blockers: none.
 
 ## Phased Work
@@ -148,6 +151,9 @@ Stage-specific gates:
 - Kept P4 as tests-only because the released MCP and memory behavior already
   matched the plan; the smallest useful maintenance step was freezing examples
   and SQLite/search contracts against drift.
+- Kept P5 as spec/test-only because Phase 6 remains optional future enrichment
+  and this maintenance round must not add screenshot/OCR implementation,
+  caches, or capture code.
 
 ## Validation Log
 
@@ -210,3 +216,11 @@ Stage-specific gates:
   - PR #37 merged to `main` at
     `c6f5a432eb817d8d8259404e942a1b1f71b60b85`.
   - Post-merge `main` Windows Harness run `25039294143` passed.
+- Stage P5 local validation:
+  - `python -m pytest tests/test_phase6_privacy_scorecard.py -q` - 4 passed.
+  - `python -m pytest -q` - 83 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
