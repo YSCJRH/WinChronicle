@@ -24,15 +24,20 @@ desktop control, and no product targeted capture flags.
 
 ## Execution Cursor
 
-- Current stage: Stage V0 - Post-rc.1 Baseline.
-- Stage status: A - final-release planning is being established from the
-  published rc.1 baseline.
-- Last completed evidence: `v0.1.0-rc.1` is published, latest `main` Windows
-  Harness passed, and `git diff v0.1.0-rc.1..main` is docs-only.
-- Last validation: `gh release view v0.1.0-rc.1`, latest `main` Windows Harness
-  run `25032840199`, and tag-to-main diff inspection.
-- Next atomic task: open this final-release plan PR and wait for Windows
-  Harness. After merge, start Stage V1 deterministic final gates.
+- Current stage: Stage V1 - Deterministic Final Gates.
+- Stage status: B - local deterministic final gates passed; V1 evidence PR and
+  PR/post-merge Windows Harness are pending.
+- Last completed evidence: Stage V0 final-release planning was merged in
+  PR #25, and post-merge `main` Windows Harness run `25033085206` passed.
+- Last validation: local Stage V1 deterministic gates passed on
+  `2026-04-28`: `python -m pytest -q`,
+  `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo`,
+  `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`,
+  `python harness/scripts/run_install_cli_smoke.py`,
+  `python harness/scripts/run_harness.py`, and `git diff --check`.
+- Next atomic task: open a V1 evidence PR, wait for Windows Harness, merge it,
+  and verify post-merge `main` Windows Harness before starting Stage V2 manual
+  smoke refresh.
 - Known blockers: none.
 
 ## Phased Work
@@ -149,3 +154,10 @@ Stage-specific gates:
 - `git diff v0.1.0-rc.1..main` showed only:
   - `docs/next-round-plan-v0.1.0-final.md`;
   - `docs/release-candidate-v0.1.0-rc.1.md`.
+- Stage V0 final-release plan merged through PR #25, and post-merge `main`
+  Windows Harness run `25033085206` passed on
+  `56747bed1a1039356b47200464db289032025b70`.
+- Local Stage V1 deterministic gates passed on `2026-04-28`: `72 passed` for
+  `python -m pytest -q`, both .NET helper/watcher builds succeeded with
+  `0` warnings and `0` errors, install CLI smoke passed, full deterministic
+  harness passed, and `git diff --check` passed.
