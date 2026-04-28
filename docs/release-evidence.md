@@ -95,6 +95,22 @@ Before release, confirm the evidence record says:
 - desktop control is not implemented;
 - observed content remains marked as `untrusted_observed_content`.
 
+## Compatibility Evidence
+
+Before release, record that:
+
+- version identity check passed for `pyproject.toml`,
+  `winchronicle.__version__`, and MCP `serverInfo.version`;
+- MCP tool list remains exactly `current_context`, `search_captures`,
+  `search_memory`, `read_recent_capture`, `recent_activity`, and
+  `privacy_status`;
+- MCP remains read-only with no write tools, arbitrary file reads, desktop
+  control tools, screenshot/OCR tools, audio tools, keyboard tools, clipboard
+  tools, network tools, or product targeted capture flags;
+- Phase 6 remains specification-only, and no screenshot capture code, OCR
+  engine integration, screenshot cache, cache cleanup path, or OCR-derived
+  storage path is introduced.
+
 ## Release Decision Summary
 
 The release-candidate record should end with:
