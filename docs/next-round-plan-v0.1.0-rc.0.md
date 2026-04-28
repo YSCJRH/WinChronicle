@@ -2,9 +2,12 @@
 
 ## Summary
 
-`v0.1.0-beta.1` is published and green. The next round should prepare a
-`v0.1.0-rc.0` candidate by tightening installation, operator documentation,
-and release evidence, not by adding new capture surfaces.
+`v0.1.0-beta.1` was published and green. This completed round prepared and
+published the `v0.1.0-rc.0` candidate by tightening installation, operator
+documentation, and release evidence, not by adding new capture surfaces.
+
+This plan is now closed. The active post-rc.0 execution cursor lives in
+[v0.1.0 Final Readiness Plan](next-round-plan-v0.1.0-final.md).
 
 This plan keeps the product boundary unchanged: local-first, UIA-first,
 harness-first, read-only MCP first, screenshots/OCR/audio/keyboard/clipboard
@@ -13,11 +16,15 @@ and no desktop control.
 
 ## Execution Cursor
 
-- Current stage: Stage RC4 - RC Candidate Preparation.
-- Stage status: B - Stage RC4 release-candidate record has been drafted and
-  local deterministic/manual evidence has been recorded; PR, CI, and post-merge
-  evidence are still pending.
+- Current stage: Closed - `v0.1.0-rc.0` published.
+- Stage status: Completed - Stage RC4 release-candidate evidence was reviewed,
+  merged, validated by PR and post-merge Windows Harness, and published as
+  `v0.1.0-rc.0`.
 - Last completed evidence: release
+  `https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-rc.0`
+  targets `069e8cff9434c83b00a7a857aaf9eee441cf16ff`; post-merge `main`
+  Windows Harness run `25022034701` passed on that SHA. Historical beta
+  baseline: release
   `https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-beta.1`
   targets `2caf922733693ff5c63e39375d1882b19dcd508f`; latest `main` Windows
   Harness run `24990257758` passed on
@@ -34,11 +41,13 @@ and no desktop control.
   smoke, Edge targeted smoke, VS Code metadata smoke, and a bounded depth 2
   watcher preview. VS Code strict Monaco marker failed as a documented
   diagnostic/non-blocking limitation, and a depth 80 watcher preview attempt
-  timed out as diagnostic evidence.
-- Next atomic task: review the RC4 diff, open a PR, record the PR Windows
-  Harness URL, merge after review, then record the post-merge `main` Windows
-  Harness URL and final tag target. Do not publish `v0.1.0-rc.0` without
-  explicit approval.
+  timed out as diagnostic evidence. PR Windows Harness run `25021868203`
+  passed, and post-merge `main` Windows Harness run `25022034701` passed on
+  `069e8cff9434c83b00a7a857aaf9eee441cf16ff`.
+- Next atomic task: continue from
+  [v0.1.0 Final Readiness Plan](next-round-plan-v0.1.0-final.md), with the
+  next implementation stage being F1 - Privacy Contract Parity after F0 lands
+  and `main` is green.
 - Known blockers: none.
 
 ## Phased Work
@@ -127,8 +136,11 @@ Manual Windows UIA gates remain manual and interactive:
 
 ## Assumptions
 
-- `v0.1.0-beta.1` remains the published beta baseline.
-- The next release target is `v0.1.0-rc.0`.
+- `v0.1.0-rc.0` is the published release-candidate baseline.
+- The next active target is governed by
+  [v0.1.0 Final Readiness Plan](next-round-plan-v0.1.0-final.md): final only
+  if no product/schema/CLI/MCP/privacy contract changes require another public
+  candidate; otherwise `v0.1.0-rc.1`.
 - Work proceeds as small PRs, with one stage per branch unless the user
   explicitly asks for a different batching strategy.
 - Manual UIA smoke continues to require an interactive Windows desktop and does

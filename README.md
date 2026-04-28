@@ -15,8 +15,8 @@ screen or UI capture exists.
 For release-candidate operation, start with
 [`docs/operator-quickstart.md`](docs/operator-quickstart.md). It links the
 release checklist, manual smoke evidence template, Windows UIA smoke gates,
-watcher preview, read-only MCP examples, known limitations, and current RC
-plan.
+watcher preview, read-only MCP examples, known limitations, and current
+final-readiness plan.
 
 ## Why WinChronicle
 
@@ -130,7 +130,8 @@ available through `search-captures`.
 - [Watcher preview](docs/watcher-preview.md)
 - [Read-only MCP examples](docs/mcp-readonly-examples.md)
 - [Known limitations](docs/known-limitations.md)
-- [v0.1.0-rc.0 readiness plan](docs/next-round-plan-v0.1.0-rc.0.md)
+- [v0.1.0 final-readiness plan](docs/next-round-plan-v0.1.0-final.md)
+- [v0.1.0-rc.0 release record](docs/release-candidate-v0.1.0-rc.0.md)
 
 Screenshot/OCR enrichment remains a future tests-first phase; the current Phase
 6 privacy scorecard is only a planning contract and does not enable either

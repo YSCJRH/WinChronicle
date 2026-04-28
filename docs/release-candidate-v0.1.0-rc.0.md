@@ -13,12 +13,15 @@ content artifacts.
 | Stage | Stage RC4 - RC Candidate Preparation |
 | Evidence date | 2026-04-28, Asia/Shanghai |
 | Evidence branch | `codex/stage-rc4-rc-candidate` |
-| Current verified `main` SHA | `d281b50623b21d1e6207c4001f77fb3d4dcaf7f6` |
-| Final tag target | Pending post-merge `main` SHA with green Windows Harness |
-| Publication status | Not published; explicit approval required |
+| Current verified `main` SHA | `069e8cff9434c83b00a7a857aaf9eee441cf16ff` |
+| Final tag target | `069e8cff9434c83b00a7a857aaf9eee441cf16ff` |
+| Publication status | Published prerelease |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-rc.0 |
 | Previous prerelease baseline | `v0.1.0-beta.1` |
 | Previous prerelease URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-beta.1 |
-| Latest `main` Windows Harness | Passed, run `24992361610`, https://github.com/YSCJRH/WinChronicle/actions/runs/24992361610 |
+| Release evidence PR | https://github.com/YSCJRH/WinChronicle/pull/16 |
+| PR Windows Harness | Passed, run `25021868203`, https://github.com/YSCJRH/WinChronicle/actions/runs/25021868203 |
+| Post-merge `main` Windows Harness | Passed, run `25022034701`, https://github.com/YSCJRH/WinChronicle/actions/runs/25022034701 |
 
 Environment:
 
@@ -39,9 +42,9 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The current `main` branch Windows Harness run is green at
-`d281b50623b21d1e6207c4001f77fb3d4dcaf7f6`. A new PR run and a post-merge
-`main` run are still required before publishing `v0.1.0-rc.0`.
+The published tag target is green on `main` at
+`069e8cff9434c83b00a7a857aaf9eee441cf16ff`. The PR Windows Harness and
+post-merge `main` Windows Harness both passed before publication.
 
 ## Manual UIA Smoke Gates
 
@@ -128,9 +131,12 @@ This release candidate does not expand the capture surface.
 ## Release Decision Summary
 
 - Deterministic gates: passed locally.
-- Latest `main` Windows Harness: passed on
-  `d281b50623b21d1e6207c4001f77fb3d4dcaf7f6`.
-- Required PR and post-merge Windows Harness evidence: pending.
+- Published tag target: `069e8cff9434c83b00a7a857aaf9eee441cf16ff`.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-rc.0
+- PR Windows Harness: passed on
+  `ac7ad33ebaf8648bc8dd2361c95d18ba4871a107`, run `25021868203`.
+- Post-merge `main` Windows Harness: passed on
+  `069e8cff9434c83b00a7a857aaf9eee441cf16ff`, run `25022034701`.
 - Manual hard gates: Notepad passed; Edge passed.
 - Conditional hard gate: VS Code metadata passed because `code.cmd` is
   available.
@@ -139,4 +145,5 @@ This release candidate does not expand the capture surface.
 - Watcher preview: deterministic and bounded depth 2 preview passed; depth 80
   short preview timed out and is recorded as diagnostic evidence.
 - Privacy/scope confirmation: unchanged and recorded above.
-- Publication approval: not granted in this record.
+- Publication approval: granted after RC4 evidence review; `v0.1.0-rc.0` was
+  published as a prerelease.

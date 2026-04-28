@@ -2,9 +2,13 @@
 
 ## Summary
 
-`v0.1.0-beta.1` is published and establishes the current maintenance baseline.
+`v0.1.0-beta.1` was published and established the post-beta maintenance
+baseline.
 This plan is complete and now serves as the historical record for the narrow
 post-beta stabilization pass after `v0.1.0-beta.0`.
+
+This plan has been superseded by the published `v0.1.0-rc.0` baseline and the
+active [v0.1.0 Final Readiness Plan](next-round-plan-v0.1.0-final.md).
 
 Result: the beta is easier to maintain, verify, and manually smoke without
 expanding the product boundary.

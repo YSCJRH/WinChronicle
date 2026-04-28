@@ -1,15 +1,15 @@
 # Release Evidence Guide
 
-Use this guide when preparing `v0.1.0-rc.0` release evidence. It consolidates
-what must be recorded for deterministic gates and manual smoke without
-committing observed-content artifacts.
+Use this guide when preparing release-candidate and final release evidence. It
+consolidates what must be recorded for deterministic gates, manual smoke, and
+post-publication reconciliation without committing observed-content artifacts.
 
 ## Evidence Location
 
-Release evidence should live in the release-candidate record or PR comment. Do
-not commit raw helper JSON, raw watcher JSONL, screenshots, OCR output,
-observed text, local HTML page contents, editor buffer contents, passwords,
-secrets, or token canaries.
+Release evidence should live in the release-candidate record, final release
+record, GitHub release notes, or PR comment. Do not commit raw helper JSON, raw
+watcher JSONL, screenshots, OCR output, observed text, local HTML page
+contents, editor buffer contents, passwords, secrets, or token canaries.
 
 Record only:
 
@@ -36,6 +36,22 @@ git diff --check
 
 Also record the GitHub Actions `Windows Harness` run URL for the PR and for
 `main` after merge.
+
+## Post-Publication Reconciliation
+
+After a prerelease or final release is published, reconcile the repository
+docs with the published facts:
+
+- release URL;
+- tag name and exact tag target SHA;
+- publication status;
+- PR Windows Harness URL and head SHA;
+- post-merge `main` Windows Harness URL and head SHA;
+- next active execution cursor.
+
+Do not retag an already published release to reconcile documentation. If a
+subsequent product, schema, CLI/MCP JSON shape, or privacy behavior change is
+needed, publish a new release candidate instead.
 
 ## Manual Evidence
 
