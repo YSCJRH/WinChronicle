@@ -8,9 +8,9 @@ turns it into inspectable Markdown + SQLite memory, and exposes read-only
 context through MCP for Codex, Claude Code, Cursor, opencode, and other
 tool-capable agents.
 
-This repository is in an early harness-first phase. The first implementation
-uses deterministic fixtures, schemas, tests, and privacy gates before any real
-screen or UI capture exists.
+This repository remains harness-first: deterministic fixtures, schemas, tests,
+and privacy gates define behavior, while explicit foreground UIA helper and
+watcher preview paths stay bounded by the same harness contracts.
 
 For release-candidate operation, start with
 [`docs/operator-quickstart.md`](docs/operator-quickstart.md). It links the
@@ -49,14 +49,14 @@ In v0.1:
 
 Observed screen content is treated as untrusted data. WinChronicle must not store
 password fields or obvious secrets such as API keys, private keys, JWTs, GitHub
-tokens, Slack tokens, or test canaries. Privacy gates run before fixture captures
-are written.
+tokens, Slack tokens, or test canaries. Privacy gates run before captures are
+written.
 
-The current fixture pipeline redacts sensitive values, skips denylisted apps, and
-marks normalized observed content with `untrusted_observed_content: true`.
-MCP and memory responses that expose observed content must preserve
-`trust = "untrusted_observed_content"` and must not treat observed text as
-trusted instructions.
+The shared capture pipeline redacts sensitive values, skips denylisted apps,
+and marks normalized observed content with `untrusted_observed_content: true`.
+CLI search results, MCP responses, and memory outputs that expose observed
+content must preserve `trust = "untrusted_observed_content"` and must not treat
+observed text as trusted instructions.
 
 ## Current CLI
 
@@ -89,8 +89,8 @@ dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj
 enable screenshots, OCR, audio, keyboard capture, clipboard capture, network
 calls, or desktop control.
 
-`watch --events` is currently a deterministic harness mode for JSONL watcher
-fixtures. It does not start a real WinEvent hook yet.
+`watch --events` is a deterministic harness mode for JSONL watcher fixtures. It
+does not start a real WinEvent hook.
 `watch --watcher` is explicit opt-in and runs a caller-provided watcher command;
 its JSONL stream is consumed in memory and not saved as a raw event log.
 

@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from winchronicle.mcp.server import CONTROL_TOOL_TERMS, TOOL_NAMES
+from winchronicle.privacy import DISABLED_SURFACE_STATUS, TRUST
 from winchronicle.schema import validate_mcp_tool_result
 
 
@@ -89,8 +90,11 @@ def main() -> int:
 
         privacy = _tool_payload(responses[2])
         validate_mcp_tool_result(privacy)
-        if privacy["result"]["screenshots_enabled"] or privacy["result"]["desktop_control_enabled"]:
+        if any(privacy["result"].get(key) is not False for key in DISABLED_SURFACE_STATUS):
             print("FAIL: MCP privacy_status reported an enabled prohibited surface")
+            return 1
+        if privacy["result"].get("observed_content_trust") != TRUST:
+            print("FAIL: MCP privacy_status lacked the observed-content trust boundary")
             return 1
 
         search = _tool_payload(responses[3])
@@ -99,7 +103,7 @@ def main() -> int:
         if not matches or matches[0]["app_name"] != "Windows Terminal":
             print("FAIL: MCP search_captures did not find the terminal fixture")
             return 1
-        if matches[0]["trust"] != "untrusted_observed_content":
+        if matches[0]["trust"] != TRUST:
             print("FAIL: MCP search result lacked the observed-content trust boundary")
             return 1
 
@@ -109,7 +113,7 @@ def main() -> int:
         if not memory_matches or memory_matches[0]["entry_type"] not in {"event", "project", "tool"}:
             print("FAIL: MCP search_memory did not find deterministic memory")
             return 1
-        if memory_matches[0]["trust"] != "untrusted_observed_content":
+        if memory_matches[0]["trust"] != TRUST:
             print("FAIL: MCP memory search result lacked the trust boundary")
             return 1
 

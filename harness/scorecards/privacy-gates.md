@@ -6,6 +6,10 @@
 - Denylisted apps must not write observed content.
 - Lock screen captures must be skipped.
 - Prompt injection text may be stored only as untrusted observed content.
+- CLI `status` and MCP `privacy_status` must report the same disabled privacy
+  surfaces and the same observed-content trust boundary.
+- CLI capture and memory search results that include observed snippets must
+  include `trust = "untrusted_observed_content"`.
 - Memory Markdown and MCP results must preserve the untrusted observed-content
   boundary and must not reintroduce redacted secret canaries.
 - Phase 6 screenshot/OCR work is not accepted until opt-in configuration,

@@ -17,17 +17,16 @@ desktop control, and no product targeted capture flags.
 
 ## Execution Cursor
 
-- Current stage: Stage F0 - Published Baseline Reconciliation.
-- Stage status: C - F0 documentation reconciliation is complete in this
-  repository snapshot; after this docs-only PR lands and `main` is green, move
-  to F1.
-- Last completed evidence: `v0.1.0-rc.0` is published as a prerelease at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-rc.0 and targets
-  `069e8cff9434c83b00a7a857aaf9eee441cf16ff`; post-merge Windows Harness run
-  `25022034701` passed on that SHA.
-- Last validation: post-merge `main` Windows Harness run `25022034701` passed.
-- Next atomic task: start F1 - Privacy Contract Parity after the F0 PR and
-  post-merge `main` Windows Harness pass.
+- Current stage: Stage F1 - Privacy Contract Parity.
+- Stage status: B - F1 implementation is complete and locally validated on the
+  branch; PR Windows Harness and post-merge `main` validation are still pending.
+- Last completed evidence: CLI `status` and MCP `privacy_status` now share the
+  same disabled-surface and trust-boundary contract; CLI capture and memory
+  search results now include `trust = "untrusted_observed_content"`.
+- Last validation: local `python -m pytest -q`, both .NET builds,
+  `python harness/scripts/run_install_cli_smoke.py`,
+  `python harness/scripts/run_harness.py`, and `git diff --check` passed.
+- Next atomic task: open the F1 PR and wait for GitHub Actions Windows Harness.
 - Known blockers: none.
 
 ## Phased Work
@@ -139,6 +138,17 @@ Stage-specific gates:
   instructions.
 - Decided that CLI search trust metadata, if implemented in F1, requires
   `v0.1.0-rc.1` because it changes the CLI JSON shape.
+- Extended the F1 trust metadata change to CLI `search-memory` as well as
+  `search-captures`, because memory search snippets also contain observed
+  content and operator docs already require CLI, memory, and MCP parity.
+- Generated default config privacy flags from the shared disabled-surface
+  contract so `config.toml`, CLI `status`, and MCP `privacy_status` do not drift.
+- Added `--no-build-isolation` to the install smoke because the script is a
+  no-dependency packaging smoke; this avoids network build-dependency fetches
+  while using the already-available local build backend.
+- Added `wheel` to the dev dependency set because the no-build-isolation
+  editable install smoke needs the local `bdist_wheel` command on GitHub
+  Windows runners.
 - Kept Phase 6 out of this round because screenshot/OCR enrichment would expand
   the capture surface.
 
@@ -152,3 +162,15 @@ Stage-specific gates:
   pending rc.0 publication, unpublished rc.0 status, or the old rc.0 execution
   cursor.
 - F0 `git diff --check` passed with no whitespace errors.
+- F1 targeted tests passed:
+  `python -m pytest tests/test_paths.py tests/test_cli.py tests/test_mcp_tools.py tests/test_memory_pipeline.py tests/test_sqlite_store.py -q`
+  reported 28 passed.
+- F1 full unit suite passed: `python -m pytest -q` reported 61 passed.
+- F1 helper build passed:
+  `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo`.
+- F1 watcher build passed:
+  `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`.
+- F1 install CLI smoke passed:
+  `python harness/scripts/run_install_cli_smoke.py`.
+- F1 full harness passed: `python harness/scripts/run_harness.py`.
+- F1 whitespace check passed: `git diff --check`.

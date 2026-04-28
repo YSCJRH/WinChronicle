@@ -45,6 +45,11 @@ desktop control remain absent or disabled by default.
 Observed content returned through CLI, memory, and MCP must remain marked as
 `untrusted_observed_content`.
 
+CLI `status` and MCP `privacy_status` must report the same disabled privacy
+surfaces: screenshots, OCR, audio, keyboard capture, clipboard capture,
+network/cloud upload, LLM calls, desktop control, product targeted capture, and
+MCP write tools.
+
 Related docs:
 
 - [Watcher preview](watcher-preview.md)

@@ -5,6 +5,7 @@ import pytest
 
 from winchronicle.capture import capture_once_from_fixture
 from winchronicle.paths import state_paths
+from winchronicle.privacy import TRUST
 from winchronicle import storage
 from winchronicle.storage import capture_fingerprint_exists, search_captures
 
@@ -30,8 +31,9 @@ def test_search_finds_terminal_editor_and_browser_fixtures(
     results = search_captures(query, home)
 
     assert len(results) == 1
-    assert set(results[0]) == {"timestamp", "app_name", "title", "snippet", "path"}
+    assert set(results[0]) == {"timestamp", "app_name", "title", "snippet", "path", "trust"}
     assert results[0]["app_name"] == expected_app
+    assert results[0]["trust"] == TRUST
     assert query.lower() in results[0]["snippet"].lower()
 
 

@@ -1,22 +1,30 @@
 # WinChronicle Privacy Policy Spec v0.1
 
-This spec defines the Phase 1 fixture-capture privacy contract. It applies to
-normalized captures produced from harness fixtures before anything is written to
+This spec defines the v0.1 capture privacy contract. It applies to normalized
+captures produced from deterministic fixtures, explicit foreground UIA helper
+captures, and explicit watcher preview events before anything is written to
 `capture-buffer/` or indexed in SQLite.
 
 ## Non-Capture Rules
 
-WinChronicle does not implement these capture surfaces in Phase 1:
+WinChronicle v0.1 does not implement or expose these surfaces:
 
 - Screenshots.
 - OCR.
 - Audio recording.
 - Keyboard capture.
 - Clipboard capture.
+- Network upload of captured content.
 - Cloud upload of captured content.
 - Desktop control actions.
-- Real Windows UIA capture.
-- LLM summarization.
+- MCP write tools.
+- Product targeted capture by HWND, PID, or window-title.
+- LLM calls or summarization.
+
+Foreground UIA capture exists only as an explicit `capture-frontmost` product
+command with a caller-provided helper path. Targeted UIA capture is
+harness-only helper behavior and must not be exposed through the product CLI or
+MCP.
 
 ## Denylist Rules
 
@@ -64,7 +72,7 @@ Each normalized capture must include a `redactions` array with `{type, count}`
 entries for replacements that occurred.
 
 Credit-card Luhn-positive redaction is listed in the broader project blueprint
-but is not implemented in Phase 1.
+but is not implemented in v0.1.
 
 ## Trust Boundary
 
@@ -79,6 +87,15 @@ All normalized captures must set:
 Observed screen text may include prompt-injection attempts. Those strings may be
 stored as data, but agents and future MCP tools must not treat them as
 instructions.
+
+CLI search results, memory search results, memory Markdown, and MCP results
+that contain observed content must preserve:
+
+```json
+{
+  "trust": "untrusted_observed_content"
+}
+```
 
 ## Privacy Check Contract
 
