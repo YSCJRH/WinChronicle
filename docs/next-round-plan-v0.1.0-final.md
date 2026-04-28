@@ -17,17 +17,18 @@ desktop control, and no product targeted capture flags.
 
 ## Execution Cursor
 
-- Current stage: Stage F3 - Watcher Reliability Contract.
-- Stage status: B - F3 deterministic watcher reliability tests and docs are
-  complete and locally validated on the branch; PR Windows Harness and
+- Current stage: Stage F4 - State, Memory, MCP Freeze.
+- Stage status: B - F4 state, memory, and MCP freeze tests/docs are complete
+  and locally validated on the branch; PR Windows Harness and
   post-merge `main` validation are still pending.
-- Last completed evidence: watcher tests now cover heartbeat-only runs and
-  helper-failure-adjacent nonzero exits without echoing helper stdout/stderr;
-  watcher docs and scorecards describe the reliability modes.
-- Last validation: local watcher-focused pytest, full `python -m pytest -q`,
-  both .NET builds, `python harness/scripts/run_harness.py`, and
+- Last completed evidence: CLI tests now cover idempotent init/status, empty
+  search/memory behavior, and synthetic rc.0 local state compatibility; MCP
+  tests freeze the exact read-only tool list and reject non-contract tool names;
+  memory generation has a manifest golden.
+- Last validation: local F4 focused pytest, full `python -m pytest -q`, both
+  .NET builds, `python harness/scripts/run_harness.py`, and
   `git diff --check` passed.
-- Next atomic task: open the F3 PR and wait for GitHub Actions Windows Harness.
+- Next atomic task: open the F4 PR and wait for GitHub Actions Windows Harness.
 - Known blockers: none.
 
 ## Phased Work
@@ -159,6 +160,17 @@ Stage-specific gates:
   change explicitly promotes them.
 - Treated heartbeat-only runs as a liveness diagnostic: they increment
   `heartbeats`, write no captures, and do not save raw watcher JSONL.
+- Kept F4 docs/tests-only: the state, memory, and MCP freeze adds no new MCP
+  tools, CLI commands, schemas, capture surfaces, or product behavior.
+- Covered rc.0 local state compatibility with a runtime-constructed synthetic
+  state tree rather than a committed SQLite database or observed-content
+  artifact.
+- Froze the MCP tool list against a literal expected list so future additions
+  cannot accidentally update the implementation constant and the test oracle at
+  the same time.
+- Added a memory manifest golden instead of additional Markdown body goldens so
+  the F4 slice freezes entry ordering and metadata without broadening the
+  reducer contract.
 - Kept Phase 6 out of this round because screenshot/OCR enrichment would expand
   the capture surface.
 
@@ -211,3 +223,20 @@ Stage-specific gates:
   `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`.
 - F3 full harness passed: `python harness/scripts/run_harness.py`.
 - F3 whitespace check passed: `git diff --check`.
+- F3 PR Windows Harness passed:
+  https://github.com/YSCJRH/WinChronicle/actions/runs/25031193780.
+- F3 post-merge `main` Windows Harness passed:
+  https://github.com/YSCJRH/WinChronicle/actions/runs/25031257910.
+- F4 focused tests passed:
+  `python -m pytest tests/test_cli.py tests/test_mcp_tools.py tests/test_memory_pipeline.py -q`
+  reported 23 passed.
+- F4 rc.0 compatibility focused test passed:
+  `python -m pytest tests/test_state_compatibility.py tests/test_cli.py tests/test_mcp_tools.py tests/test_memory_pipeline.py -q`
+  reported 24 passed.
+- F4 full unit suite passed: `python -m pytest -q` reported 72 passed.
+- F4 helper build passed:
+  `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo`.
+- F4 watcher build passed:
+  `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`.
+- F4 full harness passed: `python harness/scripts/run_harness.py`.
+- F4 whitespace check passed: `git diff --check`.

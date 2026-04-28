@@ -7,12 +7,14 @@ from winchronicle.memory import generate_memory_entries
 from winchronicle.mcp.server import (
     CONTROL_TOOL_TERMS,
     TOOL_NAMES,
+    current_context,
     privacy_status,
     read_recent_capture,
     recent_activity,
     run_stdio,
     search_captures_tool,
     search_memory_tool,
+    tool_definitions,
 )
 from winchronicle.privacy import DISABLED_SURFACE_STATUS, TRUST
 from winchronicle.schema import validate_mcp_tool_result
@@ -20,6 +22,102 @@ from winchronicle.storage import search_captures, search_memory_entries
 
 
 ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_TOOL_NAMES = [
+    "current_context",
+    "search_captures",
+    "search_memory",
+    "read_recent_capture",
+    "recent_activity",
+    "privacy_status",
+]
+FORBIDDEN_TOOL_TERMS = (
+    "click",
+    "type",
+    "press",
+    "key",
+    "clipboard",
+    "screenshot",
+    "ocr",
+    "audio",
+    "write",
+    "file",
+    "network",
+    "control",
+    "hwnd",
+    "pid",
+    "window_title",
+)
+
+
+def test_mcp_exact_read_only_tool_contract_is_frozen():
+    definitions = tool_definitions()
+    definition_names = [tool["name"] for tool in definitions]
+
+    assert TOOL_NAMES == EXPECTED_TOOL_NAMES
+    assert definition_names == EXPECTED_TOOL_NAMES
+    assert all(tool["inputSchema"]["additionalProperties"] is False for tool in definitions)
+    assert not any(term in name for name in TOOL_NAMES for term in CONTROL_TOOL_TERMS)
+    assert not any(term in name for name in TOOL_NAMES for term in FORBIDDEN_TOOL_TERMS)
+
+
+def test_mcp_stdio_rejects_non_contract_tool_names(tmp_path):
+    home = tmp_path / "state"
+    forbidden_names = (
+        "write_memory",
+        "read_file",
+        "screenshot",
+        "ocr",
+        "audio",
+        "keyboard",
+        "clipboard",
+        "network_upload",
+        "click",
+        "type",
+    )
+    stdin = BytesIO(
+        b"".join(
+            _encode(
+                {
+                    "jsonrpc": "2.0",
+                    "id": index,
+                    "method": "tools/call",
+                    "params": {"name": name, "arguments": {}},
+                }
+            )
+            for index, name in enumerate(forbidden_names, start=1)
+        )
+    )
+    stdout = BytesIO()
+
+    assert run_stdio(stdin, stdout, home=home) == 0
+
+    responses = _decode_stream(stdout.getvalue())
+    assert [response["id"] for response in responses] == list(range(1, len(forbidden_names) + 1))
+    for response, name in zip(responses, forbidden_names):
+        assert response["error"]["code"] == -32000
+        assert "observed" not in response["error"]["message"].lower()
+        assert name not in TOOL_NAMES
+
+
+def test_mcp_empty_state_tools_return_empty_read_only_results(tmp_path):
+    home = tmp_path / "state"
+
+    context = current_context(home=home)
+    capture_search = search_captures_tool("missing", home=home)
+    memory_search = search_memory_tool("missing", home=home)
+    recent = read_recent_capture(home=home)
+    activity = recent_activity(home=home)
+
+    for result in (context, capture_search, memory_search, recent, activity):
+        validate_mcp_tool_result(result)
+        assert result["read_only"] is True
+        assert result["trust"] == TRUST
+
+    assert context["result"]["capture"] is None
+    assert capture_search["result"]["matches"] == []
+    assert memory_search["result"]["matches"] == []
+    assert recent["result"]["capture"] is None
+    assert activity["result"]["captures"] == []
 
 
 def test_mcp_search_matches_cli_search_and_marks_untrusted(tmp_path):

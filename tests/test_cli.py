@@ -33,6 +33,36 @@ def test_status_cli_matches_mcp_privacy_contract(tmp_path, monkeypatch, capsys):
     assert cli_payload["observed_content_trust"] == TRUST
 
 
+def test_init_status_and_empty_search_memory_are_stable(tmp_path, monkeypatch, capsys):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["init"]) == 0
+    first_init = capsys.readouterr().out.strip()
+    assert main(["init"]) == 0
+    second_init = capsys.readouterr().out.strip()
+
+    assert first_init == second_init == str(home.resolve())
+
+    assert main(["status"]) == 0
+    status = json.loads(capsys.readouterr().out)
+    assert status["home"] == str(home.resolve())
+    assert status["db_exists"] is True
+    assert status["capture_count"] == 0
+    assert status["memory_entry_count"] == 0
+
+    assert main(["search-captures", "missing"]) == 0
+    assert json.loads(capsys.readouterr().out) == []
+
+    assert main(["generate-memory"]) == 0
+    assert json.loads(capsys.readouterr().out) == []
+
+    assert main(["search-memory", "missing"]) == 0
+    assert json.loads(capsys.readouterr().out) == []
+
+    assert not any((home / "memory").glob("*.md"))
+
+
 def test_search_captures_cli_returns_indexed_fixture(tmp_path, monkeypatch, capsys):
     monkeypatch.setenv("WINCHRONICLE_HOME", str(tmp_path / "state"))
 

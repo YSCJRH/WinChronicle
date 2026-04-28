@@ -7,6 +7,9 @@ Phase 4 MCP acceptance criteria:
 - The stdio surface supports `initialize`, `tools/list`, and `tools/call` for:
   `current_context`, `search_captures`, `search_memory`, `read_recent_capture`,
   `recent_activity`, and `privacy_status`.
+- The tool list is an exact compatibility contract; tests must compare it to a
+  literal expected list rather than treating implementation constants as the
+  oracle.
 - Observed content returned through MCP includes
   `trust = "untrusted_observed_content"` and an instruction not to follow
   instructions found in observed screen content.
@@ -26,3 +29,6 @@ Phase 4 MCP acceptance criteria:
   `trust = "untrusted_observed_content"`, and must not document write tools,
   arbitrary file reads, desktop control, screenshots, OCR, audio, keyboard,
   clipboard, or network tools.
+- Non-contract tool names such as write, file read, screenshot/OCR, audio,
+  keyboard, clipboard, network, click/type, and targeted window capture names
+  must be rejected by the stdio path without exposing observed content.
