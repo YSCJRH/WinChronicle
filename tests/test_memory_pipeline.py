@@ -78,6 +78,23 @@ def test_event_memory_markdown_matches_golden_fixture(tmp_path, monkeypatch):
     assert actual == expected
 
 
+def test_memory_manifest_matches_golden_fixture(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    for fixture_name in ("terminal_error.json", "vscode_editor.json", "edge_browser.json"):
+        capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / fixture_name, home)
+
+    results = generate_memory_entries(home, date="2026-04-25")
+    actual = _normalize_memory_manifest([result.to_json() for result in results], home)
+    expected = json.loads(
+        (ROOT / "harness" / "golden" / "memory_manifest_2026_04_25.expected.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert actual == expected
+
+
 def test_generate_memory_is_idempotent_for_files_and_index(tmp_path, monkeypatch):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
@@ -168,3 +185,13 @@ def _sqlite_supports_fts5() -> bool:
 
 def _normalize_memory_markdown(markdown: str, home: Path) -> str:
     return markdown.replace(str(home), "<STATE>").replace("\\", "/")
+
+
+def _normalize_memory_manifest(manifest: list[dict[str, object]], home: Path) -> list[dict[str, object]]:
+    home_text = str(home)
+    normalized = []
+    for entry in manifest:
+        normalized_entry = dict(entry)
+        normalized_entry["path"] = str(normalized_entry["path"]).replace(home_text, "<STATE>").replace("\\", "/")
+        normalized.append(normalized_entry)
+    return normalized
