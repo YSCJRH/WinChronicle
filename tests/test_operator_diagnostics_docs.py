@@ -54,6 +54,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
 
     assert "next-round-plan-post-v0.1.1.md" in current_section
+    assert "release-v0.1.2.md" in current_section
     assert "release-v0.1.1.md" in current_section
     assert "next-round-plan-v0.1.0-final.md" not in current_section
     assert "next-round-plan-v0.1.0-final.md" in historical_section

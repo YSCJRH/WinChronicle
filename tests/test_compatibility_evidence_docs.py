@@ -8,6 +8,7 @@ CHECKLIST = ROOT / "docs" / "release-checklist.md"
 EVIDENCE = ROOT / "docs" / "release-evidence.md"
 MCP_SCORECARD = ROOT / "harness" / "scorecards" / "mcp-quality.md"
 PHASE6_SCORECARD = ROOT / "harness" / "scorecards" / "phase6-privacy-enrichment.md"
+V012_RELEASE = ROOT / "docs" / "release-v0.1.2.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -52,6 +53,26 @@ def test_scorecards_remain_the_evidence_oracles_for_mcp_and_phase6():
     assert "tool list is an exact compatibility contract" in mcp
     assert "does not authorize implementing" in phase6
     assert "No screenshot capture code, OCR engine integration" in phase6
+
+
+def test_v012_release_record_is_pending_and_compatible():
+    text = V012_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Publication status: pending explicit approval.",
+        "must report `0.1.2`",
+        "exact read-only MCP tool list remains unchanged",
+        "Phase 6 remains specification-only",
+        "no new capture surfaces",
+        "no helper/watcher behavior changes",
+        "no screenshot capture code",
+        "no OCR engine integration",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
 
 
 def _normalized(text: str) -> str:
