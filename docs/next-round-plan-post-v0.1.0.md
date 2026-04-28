@@ -22,20 +22,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Stage P2 - Watcher Preview Reliability Follow-Up.
-- Stage status: B - P2 deterministic watcher reliability coverage is
-  implemented locally; PR Windows Harness and post-merge `main` Windows Harness
-  are pending.
-- Last completed evidence: `watch --watcher` heartbeat-only CLI coverage now
-  asserts zero captures, heartbeat counts, and no raw watcher JSONL under
-  temporary `WINCHRONICLE_HOME`; watcher preview docs include a deterministic
-  reliability coverage matrix.
+- Current stage: Stage P3 - UIA Helper Compatibility Matrix Refresh.
+- Stage status: A - P2 is merged and validated; P3 has not started.
+- Last completed evidence: P2 watcher reliability follow-up merged in PR #33
+  and post-merge `main` Windows Harness run `25037802382` passed.
 - Last validation: watcher-focused tests, `python -m pytest -q`, both .NET
-  helper/watcher builds, install CLI smoke, full deterministic harness, and
-  `git diff --check` passed.
-- Next atomic task: open the P2 watcher reliability PR, wait for Windows
-  Harness, merge it, verify post-merge `main` Windows Harness, then start
-  Stage P3 UIA helper compatibility matrix refresh.
+  helper/watcher builds, install CLI smoke, full deterministic harness,
+  `git diff --check`, PR #33 Windows Harness, and post-merge `main` Windows
+  Harness passed.
+- Next atomic task: audit the UIA helper quality matrix and manual smoke docs
+  against post-v0.1 evidence; refresh current results and artifact policy
+  without adding new app coverage or changing helper behavior.
 - Known blockers: none.
 
 ## Phased Work
@@ -179,3 +176,8 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Stage P2 PR validation:
+  - PR #33 Windows Harness run `25037700519` passed.
+  - PR #33 merged to `main` at
+    `91edc4ccf881328bcf639d9e9687d24479cc12ae`.
+  - Post-merge `main` Windows Harness run `25037802382` passed.
