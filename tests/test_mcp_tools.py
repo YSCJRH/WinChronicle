@@ -1,4 +1,5 @@
 import json
+import re
 from io import BytesIO
 from pathlib import Path
 
@@ -22,6 +23,7 @@ from winchronicle.storage import search_captures, search_memory_entries
 
 
 ROOT = Path(__file__).resolve().parents[1]
+MCP_EXAMPLES = ROOT / "docs" / "mcp-readonly-examples.md"
 EXPECTED_TOOL_NAMES = [
     "current_context",
     "search_captures",
@@ -58,6 +60,20 @@ def test_mcp_exact_read_only_tool_contract_is_frozen():
     assert all(tool["inputSchema"]["additionalProperties"] is False for tool in definitions)
     assert not any(term in name for name in TOOL_NAMES for term in CONTROL_TOOL_TERMS)
     assert not any(term in name for name in TOOL_NAMES for term in FORBIDDEN_TOOL_TERMS)
+
+
+def test_mcp_compatibility_examples_freeze_exact_read_only_tool_list():
+    text = MCP_EXAMPLES.read_text(encoding="utf-8")
+    tool_list = _extract_expected_tool_list(text)
+
+    assert tool_list == EXPECTED_TOOL_NAMES
+    for tool_name in EXPECTED_TOOL_NAMES:
+        assert f"## `{tool_name}`" in text
+    assert 'trust": "untrusted_observed_content"' in text
+    assert "There are no MCP tools for click, type, key press" in text
+    documented_call_names = re.findall(r'"name":\s*"([^"]+)"', text)
+    assert set(documented_call_names) == set(EXPECTED_TOOL_NAMES)
+    assert all(name in EXPECTED_TOOL_NAMES for name in documented_call_names)
 
 
 def test_mcp_stdio_rejects_non_contract_tool_names(tmp_path):
@@ -234,6 +250,12 @@ def test_mcp_stdio_smoke_lists_and_calls_read_only_search(tmp_path):
 def _encode(message):
     payload = json.dumps(message, separators=(",", ":"), sort_keys=True).encode("utf-8")
     return b"Content-Length: " + str(len(payload)).encode("ascii") + b"\r\n\r\n" + payload
+
+
+def _extract_expected_tool_list(text: str) -> list[str]:
+    section = text.split("Expected read-only tools:", 1)[1]
+    block = section.split("```text", 1)[1].split("```", 1)[0]
+    return [line.strip() for line in block.splitlines() if line.strip()]
 
 
 def _decode_stream(stream):
