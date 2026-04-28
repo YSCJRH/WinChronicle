@@ -23,18 +23,18 @@ service install, and no default background capture.
 ## Execution Cursor
 
 - Current stage: Release Preparation - v0.1.1 maintenance.
-- Stage status: B - `v0.1.1` release-preparation docs and version metadata
-  are implemented and locally validated; PR and post-merge Windows Harness
-  validation are pending; no release has been published.
-- Last completed evidence: `pyproject.toml` version is prepared as `0.1.1`,
-  and `docs/release-v0.1.1.md` records release notes, rollback notes, test
-  evidence, manual-smoke decision, and unchanged privacy/scope boundaries.
+- Stage status: F - `v0.1.1` release preparation is merged and validated;
+  release publication is ready to request but has not been approved or
+  published.
+- Last completed evidence: release-preparation PR #41 merged to `main` at
+  `55197277d7c225b397aaeb3ca209d0ff9df8403b`, and post-merge `main` Windows
+  Harness run `25040838725` passed.
 - Last validation: `python -m pytest -q`, both .NET helper/watcher builds,
-  install CLI smoke, full deterministic harness, and `git diff --check` passed
-  locally on the release-preparation branch.
-- Next atomic task: open the release-preparation PR, wait for Windows Harness,
-  merge after it is green, verify post-merge `main`, then wait for explicit
-  release approval before publishing `v0.1.1`.
+  install CLI smoke, full deterministic harness, `git diff --check`, PR #41
+  Windows Harness, and post-merge `main` Windows Harness passed.
+- Next atomic task: wait for explicit release approval; if approved, publish
+  `v0.1.1` at `55197277d7c225b397aaeb3ca209d0ff9df8403b`, then reconcile the
+  release URL, tag target, and post-publication baseline.
 - Known blockers: none.
 
 ## Phased Work
@@ -241,3 +241,8 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Release-preparation PR validation:
+  - PR #41 Windows Harness run `25040716853` passed.
+  - PR #41 merged to `main` at
+    `55197277d7c225b397aaeb3ca209d0ff9df8403b`.
+  - Post-merge `main` Windows Harness run `25040838725` passed.

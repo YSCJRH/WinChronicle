@@ -8,8 +8,7 @@ observed-content artifacts.
 ## Release Decision
 
 `v0.1.1` is prepared but not published. Publishing requires explicit release
-approval after this release-preparation PR and its post-merge `main` Windows
-Harness pass.
+approval.
 
 If any product behavior, schema, CLI/MCP JSON shape, privacy behavior,
 helper/watcher behavior, or capture-surface change is required before
@@ -26,7 +25,7 @@ Publication status: not published.
 | Stage | Post-v0.1 maintenance release preparation |
 | Evidence date | 2026-04-28, Asia/Shanghai |
 | Current candidate `main` SHA before this record | `4a1ac5abc57b8e01b499eadd329ed880aa09cefa` |
-| Planned tag target | TBD after release-preparation PR merge |
+| Planned tag target | `55197277d7c225b397aaeb3ca209d0ff9df8403b` |
 | Publication status | Not published |
 | Previous stable release | `v0.1.0` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0 |
@@ -43,6 +42,9 @@ Publication status: not published.
 | Stage P5 post-merge `main` Windows Harness | Passed, run `25040068331`, https://github.com/YSCJRH/WinChronicle/actions/runs/25040068331 |
 | Completion cursor PR | https://github.com/YSCJRH/WinChronicle/pull/40 |
 | Completion cursor post-merge `main` Windows Harness | Passed, run `25040334839`, https://github.com/YSCJRH/WinChronicle/actions/runs/25040334839 |
+| Release-preparation PR | https://github.com/YSCJRH/WinChronicle/pull/41 |
+| Release-preparation PR Windows Harness | Passed, run `25040716853`, https://github.com/YSCJRH/WinChronicle/actions/runs/25040716853 |
+| Release-preparation post-merge `main` Windows Harness | Passed, run `25040838725`, https://github.com/YSCJRH/WinChronicle/actions/runs/25040838725 |
 
 Environment:
 
@@ -66,7 +68,7 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The release-preparation PR must also pass Windows Harness before publication.
+The release-preparation PR and post-merge `main` Windows Harness passed.
 
 ## Release Notes
 
