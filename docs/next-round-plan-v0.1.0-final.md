@@ -17,18 +17,21 @@ desktop control, and no product targeted capture flags.
 
 ## Execution Cursor
 
-- Current stage: Stage F4 - State, Memory, MCP Freeze.
-- Stage status: B - F4 state, memory, and MCP freeze tests/docs are complete
-  and locally validated on the branch; PR Windows Harness and
+- Current stage: Stage F5 - Final Or rc.1 Release Decision.
+- Stage status: B - F5 release decision evidence is prepared locally; PR
+  Windows Harness and
   post-merge `main` validation are still pending.
-- Last completed evidence: CLI tests now cover idempotent init/status, empty
-  search/memory behavior, and synthetic rc.0 local state compatibility; MCP
-  tests freeze the exact read-only tool list and reject non-contract tool names;
-  memory generation has a manifest golden.
-- Last validation: local F4 focused pytest, full `python -m pytest -q`, both
-  .NET builds, `python harness/scripts/run_harness.py`, and
-  `git diff --check` passed.
-- Next atomic task: open the F4 PR and wait for GitHub Actions Windows Harness.
+- Last completed evidence: `docs/release-candidate-v0.1.0-rc.1.md` records
+  that F1 changed CLI/MCP JSON shape and privacy behavior, so the next public
+  candidate must be `v0.1.0-rc.1` rather than direct final. Deterministic and
+  manual smoke evidence are recorded without committing observed-content
+  artifacts.
+- Last validation: local deterministic gates, manual Notepad/Edge/VS Code
+  smoke, watcher preview, and `git diff --check` passed or were recorded as
+  diagnostic where appropriate.
+- Next atomic task: open the F5 PR, wait for GitHub Actions Windows Harness,
+  merge when green, then reconcile the final tag target before requesting
+  publication approval.
 - Known blockers: none.
 
 ## Phased Work
@@ -171,6 +174,13 @@ Stage-specific gates:
 - Added a memory manifest golden instead of additional Markdown body goldens so
   the F4 slice freezes entry ordering and metadata without broadening the
   reducer contract.
+- Decided F5 must prepare `v0.1.0-rc.1`, not direct final, because F1 changed
+  CLI search JSON shape and privacy behavior after the published `rc.0`.
+- Recorded manual rc.1 smoke evidence as paths and pass/fail results only; raw
+  helper JSON artifacts remain local under the temporary artifact root.
+- Treated the live depth 2 watcher run with zero captures and six heartbeats as
+  heartbeat-only liveness diagnostic evidence, while deterministic watcher and
+  fake-helper preview remain the automated gate.
 - Kept Phase 6 out of this round because screenshot/OCR enrichment would expand
   the capture surface.
 
@@ -240,3 +250,24 @@ Stage-specific gates:
   `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`.
 - F4 full harness passed: `python harness/scripts/run_harness.py`.
 - F4 whitespace check passed: `git diff --check`.
+- F4 PR Windows Harness passed:
+  https://github.com/YSCJRH/WinChronicle/actions/runs/25031822924.
+- F4 post-merge `main` Windows Harness passed:
+  https://github.com/YSCJRH/WinChronicle/actions/runs/25031913300.
+- F5 manual Notepad targeted smoke passed; artifact path recorded in
+  `docs/release-candidate-v0.1.0-rc.1.md`.
+- F5 manual Edge targeted smoke passed; artifact path recorded in
+  `docs/release-candidate-v0.1.0-rc.1.md`.
+- F5 manual VS Code metadata smoke passed with diagnostic Monaco warning;
+  artifact path recorded in `docs/release-candidate-v0.1.0-rc.1.md`.
+- F5 manual VS Code strict Monaco marker produced the known diagnostic failure;
+  artifact path recorded in `docs/release-candidate-v0.1.0-rc.1.md`.
+- F5 live watcher preview at depth 2 returned heartbeat-only liveness evidence:
+  `captures_written = 0`, `heartbeats = 6`.
+- F5 full unit suite passed: `python -m pytest -q` reported 72 passed.
+- F5 helper build passed:
+  `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo`.
+- F5 watcher build passed:
+  `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`.
+- F5 full harness passed: `python harness/scripts/run_harness.py`.
+- F5 whitespace check passed: `git diff --check`.
