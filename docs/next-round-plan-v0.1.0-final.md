@@ -1,0 +1,154 @@
+# v0.1.0 Final Readiness Plan
+
+## Summary
+
+`v0.1.0-rc.0` is published and green at
+`069e8cff9434c83b00a7a857aaf9eee441cf16ff`. The next round prepares
+WinChronicle for `v0.1.0` final by reconciling published evidence, tightening
+privacy contracts, and freezing UIA helper, watcher, MCP, memory, and local
+state behavior. If any product behavior, schema, CLI/MCP JSON shape, privacy
+contract, or `src/`/`resources/` code changes, the next public release must be
+`v0.1.0-rc.1` rather than final.
+
+The product boundary remains unchanged: local-first, UIA-first, harness-first,
+read-only MCP first, no screenshot/OCR implementation, no audio recording, no
+keyboard capture, no clipboard capture, no network upload, no LLM calls, no
+desktop control, and no product targeted capture flags.
+
+## Execution Cursor
+
+- Current stage: Stage F0 - Published Baseline Reconciliation.
+- Stage status: C - F0 documentation reconciliation is complete in this
+  repository snapshot; after this docs-only PR lands and `main` is green, move
+  to F1.
+- Last completed evidence: `v0.1.0-rc.0` is published as a prerelease at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-rc.0 and targets
+  `069e8cff9434c83b00a7a857aaf9eee441cf16ff`; post-merge Windows Harness run
+  `25022034701` passed on that SHA.
+- Last validation: post-merge `main` Windows Harness run `25022034701` passed.
+- Next atomic task: start F1 - Privacy Contract Parity after the F0 PR and
+  post-merge `main` Windows Harness pass.
+- Known blockers: none.
+
+## Phased Work
+
+### Stage F0 - Published Baseline Reconciliation
+
+- Update rc.0 records to reflect the actual published prerelease, tag target,
+  release URL, PR Windows Harness, and post-merge Windows Harness.
+- Create this post-rc.0 final-readiness plan so the rc.0 readiness plan no
+  longer carries the next execution cursor.
+- Do not modify product code, schemas, fixtures, helper/watcher behavior, CLI
+  JSON shape, MCP shape, or scorecards.
+
+### Stage F1 - Privacy Contract Parity
+
+- Add tests before behavior or doc changes.
+- Align CLI `status`, MCP `privacy_status`, scorecards, operator docs, and
+  privacy specs on the same disabled surfaces and trust boundary.
+- Update stale privacy language that still describes WinChronicle as
+  fixture-only; rc.0 includes explicit `capture-frontmost` and watcher preview
+  paths.
+- Add `trust = "untrusted_observed_content"` to CLI search outputs if the
+  contract is changed to expose trust metadata. This changes CLI JSON shape and
+  therefore requires `v0.1.0-rc.1`.
+
+### Stage F2 - UIA Helper Quality Matrix
+
+- Build a helper quality matrix for existing helper contract and manual smoke
+  coverage without expanding product capture surfaces.
+- Include gate type, app, expected signal, current result, artifact policy,
+  privacy risk, and blocking status.
+- Keep Notepad and Edge targeted smoke as hard gates; keep VS Code metadata as
+  conditional hard when `code.cmd` exists; keep VS Code strict Monaco marker
+  diagnostic and non-blocking.
+- Treat any new app coverage as diagnostic unless explicitly promoted in a
+  future scorecard update.
+
+### Stage F3 - Watcher Reliability Contract
+
+- Harden only the explicit, time-bounded watcher preview path.
+- Cover timeout, malformed JSONL, helper failure, heartbeat-only behavior,
+  duplicate skip, denylist skip, and no observed-content echo with
+  deterministic tests and docs.
+- Keep depth 80 live watcher timeout diagnostic until the helper quality
+  matrix explains and stabilizes it.
+- Do not add daemon/service install, polling capture loop, startup task, or
+  default background capture.
+
+### Stage F4 - State, Memory, MCP Freeze
+
+- Freeze local state lifecycle, memory, and MCP compatibility after F1.
+- Cover fresh init, idempotent init/status, temporary `WINCHRONICLE_HOME`,
+  empty search/memory behavior, memory goldens, and rc.0 local state
+  compatibility.
+- Assert the exact read-only MCP tool list and deny write/control/file read,
+  screenshot/OCR, audio, keyboard, clipboard, and network tools.
+
+### Stage F5 - Final Or rc.1 Release Decision
+
+- Complete release evidence, known limitations, rollback notes, and manual
+  smoke evidence.
+- Publish `v0.1.0` final only if all hard gates pass and F1-F4 introduced no
+  product behavior, schema, CLI/MCP JSON shape, privacy behavior, or
+  `src`/`resources` changes requiring another public candidate.
+- Publish `v0.1.0-rc.1` if any such change occurred.
+- Do not retag `v0.1.0-rc.0`.
+
+## Test Plan
+
+Every implementation stage should run:
+
+- `python -m pytest -q`
+- `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo`
+- `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`
+- `python harness/scripts/run_harness.py`
+- `git diff --check`
+- GitHub Actions `Windows Harness` on PR and after merge to `main`
+
+Stage-specific gates:
+
+- F0: `git diff --check`, documentation consistency grep, PR Windows Harness,
+  post-merge Windows Harness.
+- F1: privacy/status/MCP/search trust-boundary tests.
+- F2: helper contract tests and manual smoke matrix evidence.
+- F3: watcher failure-mode tests.
+- F4: MCP exact tool-list tests and memory golden tests.
+- F5: full release checklist, manual Notepad/Edge/VS Code metadata smoke,
+  watcher preview evidence, and final release evidence review.
+
+## Public Interfaces And Non-goals
+
+- CLI remains:
+  `init/status/capture-once/capture-frontmost/watch/privacy-check/search-captures/generate-memory/search-memory/mcp-stdio`.
+- Product CLI still does not expose targeted `--hwnd`, `--pid`, or
+  `--window-title` capture.
+- MCP remains read-only.
+- No screenshot capture, OCR, audio recording, keyboard capture, clipboard
+  capture, network upload, LLM calls, MCP write tools, arbitrary file reads,
+  service/daemon install, polling capture loop, default background capture, or
+  desktop control.
+- Phase 6 remains specification-only until a future tests-first round.
+
+## Decision Log
+
+- Chose F0 first because the repository docs still contained pre-publication
+  rc.0 language after the prerelease was published.
+- Chose a new final-readiness plan file instead of continuing to mutate the
+  rc.0 readiness plan, so future agents do not follow stale release-candidate
+  instructions.
+- Decided that CLI search trust metadata, if implemented in F1, requires
+  `v0.1.0-rc.1` because it changes the CLI JSON shape.
+- Kept Phase 6 out of this round because screenshot/OCR enrichment would expand
+  the capture surface.
+
+## Validation Log
+
+- `gh release view v0.1.0-rc.0` confirmed the release is a prerelease, not a
+  draft, and targets `069e8cff9434c83b00a7a857aaf9eee441cf16ff`.
+- `gh run view 25022034701` confirmed the post-merge Windows Harness passed on
+  `069e8cff9434c83b00a7a857aaf9eee441cf16ff`.
+- F0 documentation consistency grep found no stale active references to
+  pending rc.0 publication, unpublished rc.0 status, or the old rc.0 execution
+  cursor.
+- F0 `git diff --check` passed with no whitespace errors.

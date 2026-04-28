@@ -1,7 +1,7 @@
 # Release Checklist
 
-Use this checklist before publishing alpha, beta, or release-candidate
-prereleases.
+Use this checklist before publishing alpha, beta, release-candidate, or final
+releases.
 
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
@@ -51,3 +51,10 @@ Related docs:
 - [Read-only MCP compatibility examples](mcp-readonly-examples.md)
 - [Known limitations](known-limitations.md)
 - [Release evidence guide](release-evidence.md)
+
+## Post-Publication Reconciliation
+
+After publishing, confirm the repository records the release URL, exact tag
+target, PR Windows Harness URL, post-merge `main` Windows Harness URL, and
+next active execution cursor. Do not commit observed-content artifacts while
+reconciling release evidence.
