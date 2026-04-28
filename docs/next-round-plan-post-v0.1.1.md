@@ -22,18 +22,18 @@ service install, and no default background capture.
 ## Execution Cursor
 
 - Current stage: V4 - v0.1.2 Release Readiness.
-- Stage status: A - V3 compatibility evidence sweep is locally complete; V4 is
-  the next active implementation stage after V3 lands.
-- Last completed evidence: V3 added release checklist and release evidence
-  requirements for version identity, exact read-only MCP tools, and Phase 6
-  spec-only status.
-- Last validation: V3 local validation passed with compatibility evidence docs
-  tests, MCP tests, Phase 6 scorecard tests, full pytest, helper build, watcher
-  build, install CLI smoke, and full harness. The latest post-reconciliation
-  `main` Windows Harness run `25042828969` passed on
-  `5d8d69c9be8f32a333e7f1aa6a5a6bc49f8ae867`.
-- Next atomic task: start V4 by preparing `v0.1.2` release readiness evidence
-  and version metadata alignment.
+- Stage status: B - V4 release readiness is locally complete; the Stage V4
+  pull request, PR Windows Harness, post-merge `main` Windows Harness, and
+  explicit publication approval remain pending.
+- Last completed evidence: V4 aligned package/runtime/MCP version metadata to
+  `0.1.2`, added the `v0.1.2` release readiness record, and kept publication
+  status pending explicit approval.
+- Last validation: V4 local validation passed with version/release-evidence
+  docs tests, full pytest, helper build, watcher build, install CLI smoke,
+  full harness, and `git diff --check`.
+- Next atomic task: open the Stage V4 pull request, wait for PR Windows
+  Harness, merge after review if green, then wait for post-merge `main`
+  Windows Harness. Do not publish `v0.1.2` without explicit approval.
 - Known blockers: none.
 
 ## Phased Work
@@ -159,6 +159,12 @@ Stage-specific gates:
 - During V3, treated MCP and Phase 6 scorecards as the compatibility evidence
   oracles and added release checklist/evidence requirements instead of changing
   product behavior.
+- During V4, treated the `0.1.2` version bump as release metadata alignment
+  only. It does not change MCP wire shape, tool schema, CLI JSON fields,
+  capture schema, helper/watcher behavior, or privacy behavior.
+- During V4, kept PR and post-merge Windows Harness fields in the release
+  record pending until the Stage V4 PR and merge exist, so the release record
+  does not chase its own SHA before publication approval.
 
 ## Validation Log
 
@@ -199,3 +205,11 @@ Stage-specific gates:
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
+- Stage V4 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - 8 passed after clarifying the `v0.1.2` release record's no-OCR evidence wording.
+  - `python -m pytest -q` - 89 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
