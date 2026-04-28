@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 from typing import Any, BinaryIO, Callable
 
+from winchronicle._version import __version__
 from winchronicle.paths import state_paths
 from winchronicle.privacy import (
     TRUST,
@@ -288,7 +289,7 @@ def _handle_json_rpc(message: dict[str, Any], home: Path | str | None) -> dict[s
             result = {
                 "protocolVersion": params.get("protocolVersion", "2024-11-05"),
                 "capabilities": {"tools": {}},
-                "serverInfo": {"name": "winchronicle-readonly", "version": "0.1.0"},
+                "serverInfo": {"name": "winchronicle-readonly", "version": __version__},
             }
         elif method == "tools/list":
             result = {"tools": tool_definitions()}

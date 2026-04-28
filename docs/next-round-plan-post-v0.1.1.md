@@ -21,19 +21,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: V1 - Version Identity Parity.
-- Stage status: A - V0 baseline cursor work is locally complete; V1 is the next
-  active implementation stage after V0 lands.
-- Last completed evidence: V0 added this post-v0.1.1 active cursor and updated
-  README/operator quickstart links. `v0.1.1` was published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.1, targets
-  `8ac594176d251c867e34c2a139a1029a3fc474da`, and was reconciled on `main`.
-- Last validation: V0 local validation passed with pytest, helper build,
-  watcher build, install CLI smoke, full harness, and active-cursor grep. The
-  latest post-reconciliation `main` Windows Harness run `25042828969` passed on
-  `5d8d69c9be8f32a333e7f1aa6a5a6bc49f8ae867`.
-- Next atomic task: start V1 by adding version identity tests for package
-  metadata, `winchronicle.__version__`, and MCP `serverInfo.version`.
+- Current stage: V2 - Operator Entry Refresh.
+- Stage status: A - V1 version identity work is locally complete; V2 is the
+  next active implementation stage after V1 lands.
+- Last completed evidence: V1 added version identity coverage for
+  `pyproject.toml`, `winchronicle.__version__`, and MCP `serverInfo.version`;
+  package runtime and MCP server identity now report `0.1.1`.
+- Last validation: V1 local validation passed with targeted version/MCP tests,
+  full pytest, helper build, watcher build, install CLI smoke, and full
+  harness. The latest post-reconciliation `main` Windows Harness run
+  `25042828969` passed on `5d8d69c9be8f32a333e7f1aa6a5a6bc49f8ae867`.
+- Next atomic task: start V2 by refreshing operator documentation entries that
+  still describe old release-readiness plans as current.
 - Known blockers: none.
 
 ## Phased Work
@@ -148,6 +147,11 @@ Stage-specific gates:
   without an active post-v0.1.1 plan.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
+- During V1, chose a shared `winchronicle._version` module instead of importing
+  `__version__` from the package root inside MCP. The first approach broke the
+  repository-root bootstrap package used by `python -m winchronicle` from a
+  fresh checkout; the shared module keeps source, bootstrap, and MCP metadata
+  aligned without changing MCP tools or response shape.
 
 ## Validation Log
 
@@ -158,6 +162,17 @@ Stage-specific gates:
 - Stage V0 local validation:
   - `rg -n "Post-v0\.1\.1 maintenance plan|next-round-plan-post-v0\.1\.1|Current stage: V0|Stage status: A|v0\.1\.1 maintenance release record" README.md docs\operator-quickstart.md docs\next-round-plan-post-v0.1.1.md` - passed before the cursor was advanced to V1.
   - `python -m pytest -q` - 83 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+- Stage V1 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_mcp_tools.py -q` - 10 passed.
+  - `python -m pytest tests/test_uia_helper_contract.py::test_uia_helper_smoke_script_uses_fake_helper_without_printing_capture -q` - 1 passed after moving version metadata into the shared module.
+  - First `python -m pytest -q` attempt failed because importing `__version__`
+    from the package root in MCP broke the repository-root bootstrap package;
+    this was fixed before final validation.
+  - `python -m pytest -q` - 84 passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
