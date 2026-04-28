@@ -4,7 +4,11 @@ import sys
 from pathlib import Path
 
 from winchronicle.cli import main
-from winchronicle.events import dispatch_watcher_events, run_watcher_command
+from winchronicle.events import (
+    dispatch_watcher_event_lines,
+    dispatch_watcher_events,
+    run_watcher_command,
+)
 from winchronicle.schema import validate_watcher_event
 from winchronicle.storage import search_captures
 
@@ -31,6 +35,36 @@ def test_watcher_event_fixture_dispatches_one_capture_and_heartbeat(tmp_path, mo
     }
     assert len(results) == 1
     assert results[0]["app_name"] == "Notepad"
+
+
+def test_watcher_dispatch_counts_heartbeat_only_without_capture(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    result = dispatch_watcher_event_lines(
+        [
+            json.dumps(
+                {
+                    "event_schema_version": 1,
+                    "source": "win-uia-watcher",
+                    "event_id": "heartbeat-only",
+                    "event_type": "heartbeat",
+                    "timestamp": "2026-04-25T13:30:01+08:00",
+                    "heartbeat_id": "heartbeat-only",
+                },
+                sort_keys=True,
+            )
+        ],
+        home,
+    )
+
+    assert result.to_json() == {
+        "captures_written": 0,
+        "duplicates_skipped": 0,
+        "denylisted_skipped": 0,
+        "heartbeats": 1,
+    }
+    assert not (home / "capture-buffer").exists()
 
 
 def test_watcher_dispatch_skips_duplicate_fingerprint_already_indexed(tmp_path, monkeypatch):
@@ -170,6 +204,37 @@ def test_watch_cli_suppresses_failed_watcher_stderr(tmp_path, monkeypatch, capsy
 
     assert output.strip() == "ERROR: watcher failed with exit code 7"
     assert "Lock screen content" not in output
+
+
+def test_watch_cli_suppresses_helper_failure_observed_content(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(tmp_path / "state"))
+    fake_watcher = tmp_path / "fake_helper_failure_watcher.py"
+    fake_watcher.write_text(
+        "import sys\n"
+        "print('helper stdout observed text must not echo')\n"
+        "print('helper stderr observed text must not echo', file=sys.stderr)\n"
+        "raise SystemExit(12)\n",
+        encoding="utf-8",
+    )
+
+    assert main(
+        [
+            "watch",
+            "--watcher",
+            sys.executable,
+            "--watcher-arg",
+            str(fake_watcher),
+            "--helper",
+            sys.executable,
+            "--helper-arg",
+            "unused-helper-arg",
+        ]
+    ) == 1
+    output = capsys.readouterr().out
+
+    assert output.strip() == "ERROR: watcher failed with exit code 12"
+    assert "helper stdout observed text" not in output
+    assert "helper stderr observed text" not in output
 
 
 def test_watch_cli_reports_malformed_watcher_jsonl(tmp_path, monkeypatch, capsys):
