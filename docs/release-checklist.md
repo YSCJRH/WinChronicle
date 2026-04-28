@@ -61,6 +61,24 @@ Related docs:
 - [Known limitations](known-limitations.md)
 - [Release evidence guide](release-evidence.md)
 
+## Compatibility Evidence
+
+Before release, confirm the evidence record says:
+
+- `pyproject.toml`, `winchronicle.__version__`, and MCP `serverInfo.version`
+  report the same version.
+- The exact read-only MCP tool list is unchanged:
+  `current_context`, `search_captures`, `search_memory`,
+  `read_recent_capture`, `recent_activity`, and `privacy_status`.
+- No MCP write tools, arbitrary file reads, desktop control tools,
+  screenshot/OCR tools, audio tools, keyboard tools, clipboard tools, network
+  tools, or product targeted capture flags are exposed.
+- Phase 6 screenshot/OCR work remains specification-only unless a future
+  tests-first plan explicitly changes that boundary.
+- No screenshot capture code, OCR engine integration, screenshot cache, cache
+  cleanup path, or OCR-derived storage path is introduced by a maintenance
+  release.
+
 ## Post-Publication Reconciliation
 
 After publishing, confirm the repository records the release URL, exact tag

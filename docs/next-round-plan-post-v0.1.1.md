@@ -21,19 +21,19 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: V3 - Compatibility Evidence Sweep.
-- Stage status: A - V2 operator entry refresh is locally complete; V3 is the
-  next active implementation stage after V2 lands.
-- Last completed evidence: V2 split operator quickstart references into current
-  maintenance docs and historical release records, pointed release checklist and
-  release evidence docs at this active post-v0.1.1 cursor, and refreshed helper
-  quality matrix release wording for the `v0.1.2` readiness round.
-- Last validation: V2 local validation passed with operator docs tests, helper
-  matrix tests, full pytest, helper build, watcher build, install CLI smoke,
-  and full harness. The latest post-reconciliation `main` Windows Harness run
-  `25042828969` passed on `5d8d69c9be8f32a333e7f1aa6a5a6bc49f8ae867`.
-- Next atomic task: start V3 by sweeping compatibility evidence for exact
-  read-only MCP tools and Phase 6 spec-only status.
+- Current stage: V4 - v0.1.2 Release Readiness.
+- Stage status: A - V3 compatibility evidence sweep is locally complete; V4 is
+  the next active implementation stage after V3 lands.
+- Last completed evidence: V3 added release checklist and release evidence
+  requirements for version identity, exact read-only MCP tools, and Phase 6
+  spec-only status.
+- Last validation: V3 local validation passed with compatibility evidence docs
+  tests, MCP tests, Phase 6 scorecard tests, full pytest, helper build, watcher
+  build, install CLI smoke, and full harness. The latest post-reconciliation
+  `main` Windows Harness run `25042828969` passed on
+  `5d8d69c9be8f32a333e7f1aa6a5a6bc49f8ae867`.
+- Next atomic task: start V4 by preparing `v0.1.2` release readiness evidence
+  and version metadata alignment.
 - Known blockers: none.
 
 ## Phased Work
@@ -156,6 +156,9 @@ Stage-specific gates:
 - During V2, kept old final-readiness and post-v0.1.0 documents linked as
   historical records instead of removing them, because they remain useful
   release evidence but should not be presented as the active cursor.
+- During V3, treated MCP and Phase 6 scorecards as the compatibility evidence
+  oracles and added release checklist/evidence requirements instead of changing
+  product behavior.
 
 ## Validation Log
 
@@ -184,6 +187,14 @@ Stage-specific gates:
 - Stage V2 local validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_uia_helper_quality_matrix.py -q` - 7 passed.
   - `python -m pytest -q` - 85 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+- Stage V3 local validation:
+  - First `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py -q` attempt failed because two documentation phrases were wrapped differently than the assertions expected; the tests now normalize whitespace while still locking the required evidence language.
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py -q` - 16 passed.
+  - `python -m pytest -q` - 88 passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
