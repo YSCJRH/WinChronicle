@@ -34,7 +34,9 @@ click, type, move, resize, or control windows.
 Record manual smoke evidence with
 [Manual smoke evidence template](manual-smoke-evidence-template.md). See
 [Windows UIA smoke gates](windows-uia-smoke.md) for hard, conditional, and
-diagnostic gate meanings.
+diagnostic gate meanings, and
+[UIA helper quality matrix](uia-helper-quality-matrix.md) for expected signals,
+artifact policy, privacy risk, and blocking status.
 
 ## Privacy Boundary
 
@@ -53,6 +55,7 @@ MCP write tools.
 Related docs:
 
 - [Watcher preview](watcher-preview.md)
+- [UIA helper quality matrix](uia-helper-quality-matrix.md)
 - [Read-only MCP compatibility examples](mcp-readonly-examples.md)
 - [Known limitations](known-limitations.md)
 - [Release evidence guide](release-evidence.md)
