@@ -47,10 +47,27 @@ Expected diagnostics:
 | Heartbeat-only run | JSON counts show `captures_written = 0` and `heartbeats > 0`. | Do not create a capture artifact or save raw watcher JSONL; investigate helper/window conditions from the diagnostic only. |
 | Denylisted app or lock screen | JSON counts show `denylisted_skipped` incrementing and `captures_written` unchanged. | No observed content should be written or searched. |
 | Duplicate content fingerprint | JSON counts show `duplicates_skipped` incrementing. | Duplicate captures should not be written again. |
+| Raw watcher JSONL persistence | No `.jsonl` event stream is written under `WINCHRONICLE_HOME` by `watch --watcher`. | Treat live watcher JSONL as transient observed-adjacent data consumed in memory only. |
 
 Deterministic coverage exists for these failure and skip modes in the watcher
 tests and harness fixtures. Live watcher smoke remains manual because it depends
 on an interactive Windows desktop.
+
+## Deterministic Coverage
+
+The post-v0.1 reliability contract is covered without starting a live desktop
+watcher:
+
+| Mode | Deterministic coverage |
+| --- | --- |
+| Heartbeat-only run | CLI fake-watcher test asserts `captures_written = 0`, `heartbeats > 0`, no capture buffer, and no raw watcher JSONL under temporary state. |
+| Duplicate content fingerprint | Fixture dispatch test replays the same watcher events and asserts duplicate skips without extra captures. |
+| Denylisted app or lock screen | Lock-screen helper fixture dispatch asserts `denylisted_skipped` and no searchable observed content. |
+| Watcher exits nonzero | Fake watcher exits with a code; CLI reports only the stable exit-code diagnostic. |
+| Helper failure surfaced by watcher | Fake watcher emits helper-adjacent stdout/stderr and exits; CLI suppresses observed-adjacent output. |
+| Malformed watcher JSONL | Fake watcher emits malformed JSONL; CLI reports the line number and does not persist raw JSONL. |
+| Watcher timeout | Slow fake watcher times out; wrapper reports `watcher timed out` without printing partial stdout. |
+| Raw watcher JSONL persistence | Fake watcher tests assert no raw `.jsonl` stream is persisted under `WINCHRONICLE_HOME`. |
 
 ## Boundaries
 
