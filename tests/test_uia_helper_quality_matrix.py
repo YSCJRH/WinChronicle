@@ -66,6 +66,27 @@ def test_uia_helper_quality_matrix_preserves_privacy_boundary():
         assert boundary in text
 
 
+def test_uia_helper_quality_matrix_uses_post_v010_evidence():
+    text = MATRIX.read_text(encoding="utf-8")
+    rows = _matrix_rows()
+
+    assert "post-v0.1 helper-quality contract" in text
+    assert "Before a compatible `v0.1.1` maintenance release" in text
+    assert "Last recorded `v0.1.0` final: pass" in rows["Notepad"]["Current result"]
+    assert "Last recorded `v0.1.0` final: pass" in rows["Microsoft Edge"]["Current result"]
+    assert "Last recorded `v0.1.0` final: pass with diagnostic warning" in rows[
+        "VS Code metadata"
+    ]["Current result"]
+    assert "Last recorded `v0.1.0` final: diagnostic failure" in rows[
+        "VS Code strict Monaco marker"
+    ]["Current result"]
+    assert "SKIPPED: helper returned no capture" in rows["Operator-selected foreground app"][
+        "Current result"
+    ]
+    assert "`v0.1.0-rc.0`" not in text
+    assert "Do not promote a new application to a hard gate from this matrix alone." in text
+
+
 def _matrix_rows() -> dict[str, dict[str, str]]:
     lines = MATRIX.read_text(encoding="utf-8").splitlines()
     table_lines = [line for line in lines if line.startswith("|")]
