@@ -22,18 +22,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Stage P4 - MCP / Memory Contract Maintenance.
-- Stage status: B - P4 contract-freeze tests are implemented and locally
-  validated; PR and post-merge Windows Harness validation are pending.
-- Last completed evidence: MCP examples now have a test-backed exact read-only
-  tool-list contract, and memory SQLite entries now have test-backed
-  source-capture-path/trust persistence plus public search-result shape
-  coverage.
+- Current stage: Stage P5 - Phase 6 Privacy Spec Only.
+- Stage status: A - P4 is merged and validated; P5 has not started.
+- Last completed evidence: P4 MCP/memory contract-freeze tests merged in PR
+  #37 and post-merge `main` Windows Harness run `25039294143` passed.
 - Last validation: MCP/memory-focused tests, `python -m pytest -q`, both .NET
-  helper/watcher builds, install CLI smoke, full deterministic harness, and
-  `git diff --check` passed locally.
-- Next atomic task: open the P4 PR, wait for Windows Harness, merge after it is
-  green, verify post-merge `main`, then advance the cursor to Stage P5.
+  helper/watcher builds, install CLI smoke, full deterministic harness,
+  `git diff --check`, PR #37 Windows Harness, and post-merge `main` Windows
+  Harness passed.
+- Next atomic task: expand the Phase 6 screenshot/OCR privacy scorecard only as
+  specification work; do not implement screenshots, OCR, caches, or capture
+  code.
 - Known blockers: none.
 
 ## Phased Work
@@ -206,3 +205,8 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Stage P4 PR validation:
+  - PR #37 Windows Harness run `25039162443` passed.
+  - PR #37 merged to `main` at
+    `c6f5a432eb817d8d8259404e942a1b1f71b60b85`.
+  - Post-merge `main` Windows Harness run `25039294143` passed.
