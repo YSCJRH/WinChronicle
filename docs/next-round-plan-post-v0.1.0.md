@@ -22,18 +22,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Stage P3 - UIA Helper Compatibility Matrix Refresh.
-- Stage status: B - P3 docs/tests are implemented and locally validated; PR
-  and post-merge Windows Harness validation are pending.
-- Last completed evidence: the UIA helper quality matrix now references
-  `v0.1.0` final smoke evidence, keeps Notepad/Edge hard gates, keeps VS Code
-  metadata conditional hard and strict Monaco diagnostic, and preserves
-  artifact-path-only handling for observed-content diagnostics.
+- Current stage: Stage P4 - MCP / Memory Contract Maintenance.
+- Stage status: A - P3 is merged and validated; P4 has not started.
+- Last completed evidence: P3 UIA helper compatibility matrix refresh merged
+  in PR #35 and post-merge `main` Windows Harness run `25038515262` passed.
 - Last validation: matrix-focused tests, `python -m pytest -q`, both .NET
-  helper/watcher builds, install CLI smoke, full deterministic harness, and
-  `git diff --check` passed locally.
-- Next atomic task: open the P3 PR, wait for Windows Harness, merge after it is
-  green, verify post-merge `main`, then advance the cursor to Stage P4.
+  helper/watcher builds, install CLI smoke, full deterministic harness,
+  `git diff --check`, PR #35 Windows Harness, and post-merge `main` Windows
+  Harness passed.
+- Next atomic task: recheck exact read-only MCP tool list and memory contract
+  evidence against the released contract; add only narrow docs/tests needed to
+  freeze the current behavior.
 - Known blockers: none.
 
 ## Phased Work
@@ -190,3 +189,8 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Stage P3 PR validation:
+  - PR #35 Windows Harness run `25038410329` passed.
+  - PR #35 merged to `main` at
+    `d669552751255da8a3561287c7af5c018487e66c`.
+  - Post-merge `main` Windows Harness run `25038515262` passed.
