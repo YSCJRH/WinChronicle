@@ -22,15 +22,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Stage P0 - Post-v0.1 Baseline.
-- Stage status: G - `v0.1.0` final is published and post-final reconciliation
-  is complete; this plan is the next active cursor.
-- Last completed evidence: `v0.1.0` release URL, tag target, and post-final
-  `main` Windows Harness run `25033992786` are recorded.
-- Last validation: `gh release view v0.1.0`, local tag verification, PR #29,
-  and post-merge `main` Windows Harness all passed.
-- Next atomic task: start Stage P1 with a docs/tests-first operator diagnostics
-  audit for frontmost/helper/watcher heartbeat-only outcomes.
+- Current stage: Stage P1 - Operator Diagnostics Audit.
+- Stage status: B - P1 docs/tests-first diagnostics are implemented locally;
+  PR Windows Harness and post-merge `main` Windows Harness are pending.
+- Last completed evidence: `docs/operator-diagnostics.md` now documents stable
+  frontmost helper, watcher preview, and VS Code Monaco diagnostics without
+  requiring observed-content artifacts.
+- Last validation: `python -m pytest -q`, both .NET helper/watcher builds,
+  install CLI smoke, full deterministic harness, and `git diff --check` passed.
+- Next atomic task: open the P1 diagnostics PR, wait for Windows Harness, merge
+  it, verify post-merge `main` Windows Harness, then start Stage P2 watcher
+  preview reliability follow-up.
 - Known blockers: none.
 
 ## Phased Work
@@ -153,3 +155,11 @@ Stage-specific gates:
 - Post-final reconciliation PR #29 merged to `main` at
   `52c0dde74b369e8afa86c2c12481aa50f5baa95f`.
 - Post-final `main` Windows Harness run `25033992786` passed.
+- Stage P1 local validation:
+  - `python -m pytest tests/test_operator_diagnostics_docs.py -q` - 2 passed.
+  - `python -m pytest -q` - 74 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.

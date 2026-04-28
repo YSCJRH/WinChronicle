@@ -100,6 +100,11 @@ Read [Watcher preview](watcher-preview.md) before manual watcher smoke. All
 watcher events continue through the same normalize, privacy, redaction, schema,
 and SQLite pipeline used by fixture and frontmost captures.
 
+For no-capture, heartbeat-only, timeout, invalid JSON, nonzero exit, or VS Code
+strict Monaco diagnostics, use [Operator diagnostics](operator-diagnostics.md).
+Record stable diagnostic lines and local artifact paths only; do not paste raw
+observed content.
+
 ## Read-Only MCP
 
 `mcp-stdio` exposes only read-only context tools:
@@ -138,6 +143,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Manual smoke evidence template](manual-smoke-evidence-template.md)
 - [Windows UIA smoke gates](windows-uia-smoke.md)
 - [UIA helper quality matrix](uia-helper-quality-matrix.md)
+- [Operator diagnostics](operator-diagnostics.md)
 - [Watcher preview](watcher-preview.md)
 - [Read-only MCP compatibility examples](mcp-readonly-examples.md)
 - [Known limitations](known-limitations.md)
