@@ -24,20 +24,21 @@ desktop control, and no product targeted capture flags.
 
 ## Execution Cursor
 
-- Current stage: Stage V1 - Deterministic Final Gates.
-- Stage status: B - local deterministic final gates passed; V1 evidence PR and
-  PR/post-merge Windows Harness are pending.
-- Last completed evidence: Stage V0 final-release planning was merged in
-  PR #25, and post-merge `main` Windows Harness run `25033085206` passed.
-- Last validation: local Stage V1 deterministic gates passed on
-  `2026-04-28`: `python -m pytest -q`,
-  `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo`,
-  `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`,
-  `python harness/scripts/run_install_cli_smoke.py`,
-  `python harness/scripts/run_harness.py`, and `git diff --check`.
-- Next atomic task: open a V1 evidence PR, wait for Windows Harness, merge it,
-  and verify post-merge `main` Windows Harness before starting Stage V2 manual
-  smoke refresh.
+- Current stage: Stage V3 - Final Release Decision.
+- Stage status: B - V2 manual hard gates passed; final release evidence,
+  approval, publication, and post-publication reconciliation are pending.
+- Last completed evidence: Stage V1 deterministic evidence was merged in
+  PR #26, post-merge `main` Windows Harness run `25033323560` passed, and V2
+  manual smoke refresh completed on the local interactive Windows machine.
+- Last validation: Notepad targeted UIA smoke passed, Edge targeted UIA smoke
+  passed, `code.cmd` was available, VS Code metadata smoke passed with the known
+  Monaco editor-marker diagnostic warning, VS Code strict mode failed as the
+  documented non-blocking diagnostic, and live watcher preview returned
+  heartbeat-only liveness using temporary `WINCHRONICLE_HOME`.
+- Next atomic task: create `docs/release-v0.1.0.md` with deterministic gate
+  evidence, manual smoke evidence, release notes, known limitations, rollback
+  notes, and privacy/scope confirmation; do not publish `v0.1.0` final without
+  explicit approval.
 - Known blockers: none.
 
 ## Phased Work
@@ -161,3 +162,29 @@ Stage-specific gates:
   `python -m pytest -q`, both .NET helper/watcher builds succeeded with
   `0` warnings and `0` errors, install CLI smoke passed, full deterministic
   harness passed, and `git diff --check` passed.
+- Stage V1 evidence merged through PR #26, and post-merge `main` Windows
+  Harness run `25033323560` passed on
+  `55ba9cc321b5e9d9153af792286ca91dfab51d04`.
+- Stage V2 manual smoke refresh used artifact root
+  `C:\Users\34793\AppData\Local\Temp\winchronicle-final-v2-smoke-20260428-0410`
+  and temporary watcher state
+  `C:\Users\34793\AppData\Local\Temp\winchronicle-final-v2-watch-state-20260428-0410`.
+- Notepad targeted UIA smoke passed; artifact path:
+  `C:\Users\34793\AppData\Local\Temp\winchronicle-final-v2-smoke-20260428-0410\notepad\notepad-capture.json`.
+- Edge targeted UIA smoke passed; artifact path:
+  `C:\Users\34793\AppData\Local\Temp\winchronicle-final-v2-smoke-20260428-0410\edge\edge-capture.json`.
+- `code.cmd` was available at
+  `C:\Users\34793\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd`.
+- VS Code metadata smoke passed with the known Monaco editor-marker diagnostic
+  warning; artifact path:
+  `C:\Users\34793\AppData\Local\Temp\winchronicle-final-v2-smoke-20260428-0410\vscode-metadata\vscode-capture.json`.
+- VS Code strict Monaco marker failed as the documented diagnostic/non-blocking
+  limitation; artifact path:
+  `C:\Users\34793\AppData\Local\Temp\winchronicle-final-v2-smoke-20260428-0410\vscode-strict\vscode-capture.json`.
+- Live watcher preview with real watcher/helper returned `captures_written: 0`,
+  `denylisted_skipped: 0`, `duplicates_skipped: 0`, and `heartbeats: 10` over a
+  5-second run with temporary `WINCHRONICLE_HOME`. A direct frontmost capture
+  smoke in this agent-hosted desktop returned `SKIPPED: helper returned no
+  capture`, so the live watcher result remains heartbeat-only diagnostic
+  evidence; deterministic watcher and fake-helper preview gates remain covered
+  by `python harness/scripts/run_harness.py`.
