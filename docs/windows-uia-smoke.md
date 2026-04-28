@@ -6,6 +6,8 @@ and have different release meanings.
 For the release gate matrix, app-specific expected signals, artifact policy,
 privacy risk, and blocking status, see
 [UIA helper quality matrix](uia-helper-quality-matrix.md).
+For the last recorded final-release smoke evidence, see
+[v0.1.0 final release readiness record](release-v0.1.0.md).
 
 ## 1. Deterministic Fixture Tests
 
@@ -56,6 +58,10 @@ Diagnostic, non-blocking gate:
 - VS Code strict Monaco editor marker capture is diagnostic only. If strict mode
   fails, keep the emitted artifact for investigation, but it is not a v0.1
   release blocker.
+
+Any new application smoke coverage is diagnostic by default until fixtures,
+privacy review, manual smoke evidence, and scorecard updates explicitly promote
+it.
 
 ## 3. Manual Frontmost Smoke
 
