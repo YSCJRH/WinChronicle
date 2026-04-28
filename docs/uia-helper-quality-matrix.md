@@ -28,8 +28,8 @@ targeted capture.
 
 ## Maintenance Use
 
-Before a compatible `v0.1.1` maintenance release, release evidence should cite
-this matrix and record:
+For compatible maintenance releases after `v0.1.1`, including the current
+`v0.1.2` readiness round, release evidence should cite this matrix and record:
 
 - Notepad targeted smoke result.
 - Edge targeted smoke result.

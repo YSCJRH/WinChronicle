@@ -40,3 +40,24 @@ def test_operator_quickstart_links_diagnostics_playbook():
 
     assert "[Operator diagnostics](operator-diagnostics.md)" in quickstart
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
+
+
+def test_operator_entry_points_distinguish_current_cursor_from_history():
+    quickstart = (ROOT / "docs" / "operator-quickstart.md").read_text(encoding="utf-8")
+    checklist = (ROOT / "docs" / "release-checklist.md").read_text(encoding="utf-8")
+    evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
+    matrix = (ROOT / "docs" / "uia-helper-quality-matrix.md").read_text(encoding="utf-8")
+
+    current_section = quickstart.split("## Current Maintenance Docs", 1)[1].split(
+        "## Historical Release Records", 1
+    )[0]
+    historical_section = quickstart.split("## Historical Release Records", 1)[1]
+
+    assert "next-round-plan-post-v0.1.1.md" in current_section
+    assert "release-v0.1.1.md" in current_section
+    assert "next-round-plan-v0.1.0-final.md" not in current_section
+    assert "next-round-plan-v0.1.0-final.md" in historical_section
+    assert "next-round-plan-post-v0.1.1.md" in checklist
+    assert "next-round-plan-post-v0.1.1.md" in evidence
+    assert "Before a compatible `v0.1.1` maintenance release" not in matrix
+    assert "`v0.1.2` readiness round" in matrix

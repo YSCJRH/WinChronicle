@@ -21,18 +21,19 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: V2 - Operator Entry Refresh.
-- Stage status: A - V1 version identity work is locally complete; V2 is the
-  next active implementation stage after V1 lands.
-- Last completed evidence: V1 added version identity coverage for
-  `pyproject.toml`, `winchronicle.__version__`, and MCP `serverInfo.version`;
-  package runtime and MCP server identity now report `0.1.1`.
-- Last validation: V1 local validation passed with targeted version/MCP tests,
-  full pytest, helper build, watcher build, install CLI smoke, and full
-  harness. The latest post-reconciliation `main` Windows Harness run
+- Current stage: V3 - Compatibility Evidence Sweep.
+- Stage status: A - V2 operator entry refresh is locally complete; V3 is the
+  next active implementation stage after V2 lands.
+- Last completed evidence: V2 split operator quickstart references into current
+  maintenance docs and historical release records, pointed release checklist and
+  release evidence docs at this active post-v0.1.1 cursor, and refreshed helper
+  quality matrix release wording for the `v0.1.2` readiness round.
+- Last validation: V2 local validation passed with operator docs tests, helper
+  matrix tests, full pytest, helper build, watcher build, install CLI smoke,
+  and full harness. The latest post-reconciliation `main` Windows Harness run
   `25042828969` passed on `5d8d69c9be8f32a333e7f1aa6a5a6bc49f8ae867`.
-- Next atomic task: start V2 by refreshing operator documentation entries that
-  still describe old release-readiness plans as current.
+- Next atomic task: start V3 by sweeping compatibility evidence for exact
+  read-only MCP tools and Phase 6 spec-only status.
 - Known blockers: none.
 
 ## Phased Work
@@ -152,6 +153,9 @@ Stage-specific gates:
   repository-root bootstrap package used by `python -m winchronicle` from a
   fresh checkout; the shared module keeps source, bootstrap, and MCP metadata
   aligned without changing MCP tools or response shape.
+- During V2, kept old final-readiness and post-v0.1.0 documents linked as
+  historical records instead of removing them, because they remain useful
+  release evidence but should not be presented as the active cursor.
 
 ## Validation Log
 
@@ -173,6 +177,13 @@ Stage-specific gates:
     from the package root in MCP broke the repository-root bootstrap package;
     this was fixed before final validation.
   - `python -m pytest -q` - 84 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+- Stage V2 local validation:
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_uia_helper_quality_matrix.py -q` - 7 passed.
+  - `python -m pytest -q` - 85 passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
