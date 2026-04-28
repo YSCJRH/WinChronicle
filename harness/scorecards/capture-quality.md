@@ -23,6 +23,9 @@
   - VS Code metadata smoke is a hard gate when `code.cmd` is available.
   - VS Code strict Monaco editor marker capture is diagnostic and
     non-blocking; strict failure must produce a diagnostic artifact.
+- `docs/uia-helper-quality-matrix.md` must describe each helper gate's gate
+  type, app/scope, expected signal, current result, artifact policy, privacy
+  risk, and blocking status.
 - Real foreground capture must be explicit opt-in through `capture-frontmost`
   with a caller-provided helper path; tests use fake-helper output by default.
 - Python helper wrapper failures must be diagnostic without echoing helper

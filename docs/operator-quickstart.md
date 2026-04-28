@@ -137,6 +137,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Release evidence guide](release-evidence.md)
 - [Manual smoke evidence template](manual-smoke-evidence-template.md)
 - [Windows UIA smoke gates](windows-uia-smoke.md)
+- [UIA helper quality matrix](uia-helper-quality-matrix.md)
 - [Watcher preview](watcher-preview.md)
 - [Read-only MCP compatibility examples](mcp-readonly-examples.md)
 - [Known limitations](known-limitations.md)

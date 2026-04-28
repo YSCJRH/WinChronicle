@@ -3,6 +3,10 @@
 WinChronicle uses three UIA validation layers. They serve different purposes
 and have different release meanings.
 
+For the release gate matrix, app-specific expected signals, artifact policy,
+privacy risk, and blocking status, see
+[UIA helper quality matrix](uia-helper-quality-matrix.md).
+
 ## 1. Deterministic Fixture Tests
 
 Fixture tests are the default automated baseline. They use JSON fixtures under
