@@ -25,9 +25,9 @@ desktop control, and no product targeted capture flags.
 ## Execution Cursor
 
 - Current stage: Stage V4 - Post-Final Reconciliation.
-- Stage status: B - `v0.1.0` final is published; post-final documentation
-  reconciliation, PR Windows Harness, and post-merge `main` Windows Harness are
-  pending.
+- Stage status: Closed - `v0.1.0` final is published and post-final
+  reconciliation is complete. The active next-round cursor now lives in
+  [WinChronicle Post-v0.1.0 Maintenance Plan](next-round-plan-post-v0.1.0.md).
 - Last completed evidence: Stage V3 release evidence merged in PR #28,
   post-merge `main` Windows Harness run `25033779063` passed, and
   `v0.1.0` final was published at
@@ -36,9 +36,8 @@ desktop control, and no product targeted capture flags.
   draft, not a prerelease, targets
   `6d22462c0da185d163cf1b7219e05439ff4666ff`, and was published at
   `2026-04-28T04:26:43Z`.
-- Next atomic task: open the post-final reconciliation PR, wait for Windows
-  Harness, merge it, verify post-merge `main` Windows Harness, then establish
-  the post-v0.1 baseline before planning any new capability work.
+- Next atomic task: follow Stage P1 in
+  [WinChronicle Post-v0.1.0 Maintenance Plan](next-round-plan-post-v0.1.0.md).
 - Known blockers: none.
 
 ## Phased Work
@@ -195,3 +194,6 @@ Stage-specific gates:
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0. It is not a
   draft, not a prerelease, and targets
   `6d22462c0da185d163cf1b7219e05439ff4666ff`.
+- Stage V4 post-final reconciliation merged through PR #29, and post-merge
+  `main` Windows Harness run `25033992786` passed on
+  `52c0dde74b369e8afa86c2c12481aa50f5baa95f`.
