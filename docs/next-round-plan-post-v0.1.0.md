@@ -31,10 +31,12 @@ service install, and no default background capture.
   Harness run `25040838725` passed.
 - Last validation: `python -m pytest -q`, both .NET helper/watcher builds,
   install CLI smoke, full deterministic harness, `git diff --check`, PR #41
-  Windows Harness, and post-merge `main` Windows Harness passed.
+  Windows Harness, post-merge `main` Windows Harness, PR #42 Windows Harness,
+  and post-merge `main` Windows Harness passed.
 - Next atomic task: wait for explicit release approval; if approved, publish
-  `v0.1.1` at `55197277d7c225b397aaeb3ca209d0ff9df8403b`, then reconcile the
-  release URL, tag target, and post-publication baseline.
+  `v0.1.1` from the latest release-approved `main` SHA after confirming no
+  newer unvalidated commits exist, then reconcile the release URL, tag target,
+  and post-publication baseline.
 - Known blockers: none.
 
 ## Phased Work
@@ -246,3 +248,8 @@ Stage-specific gates:
   - PR #41 merged to `main` at
     `55197277d7c225b397aaeb3ca209d0ff9df8403b`.
   - Post-merge `main` Windows Harness run `25040838725` passed.
+- Release-readiness correction validation:
+  - PR #42 Windows Harness run `25041035841` passed.
+  - PR #42 merged to `main` at
+    `87363617591106997daca6c2a5f95c32a6e82c49`.
+  - Post-merge `main` Windows Harness run `25041152756` passed.
