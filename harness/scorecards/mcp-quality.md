@@ -15,8 +15,10 @@ Phase 4 MCP acceptance criteria:
 - `search_memory` reads from the same SQLite memory index as the CLI
   `search-memory` path and returns only deterministic entry metadata,
   snippets, paths, and the observed-content trust boundary.
-- `privacy_status` reports screenshots, OCR, audio, keyboard capture,
-  clipboard capture, cloud upload, and desktop control as disabled.
+- `privacy_status` reports the same disabled privacy surfaces as CLI
+  `status`: screenshots, OCR, audio, keyboard capture, clipboard capture,
+  network upload, cloud upload, LLM calls, desktop control, product targeted
+  capture, and MCP write tools.
 - The MCP smoke uses deterministic fixture captures and does not start real UIA
   capture, screenshots, OCR, audio, keyboard capture, clipboard capture,
   network calls, or desktop control.

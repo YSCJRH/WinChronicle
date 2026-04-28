@@ -48,8 +48,9 @@ git diff --check
 ```
 
 The install smoke creates a temporary virtual environment, installs the local
-package without fetching dependencies, and runs fixture-only CLI commands. The
-full harness uses temporary state and deterministic fixtures.
+package without fetching dependencies, and runs deterministic CLI commands. The
+full harness uses temporary state, deterministic fixtures, fake helper smoke,
+and read-only MCP smoke.
 
 ## Basic CLI Flow
 
@@ -64,9 +65,11 @@ python -m winchronicle generate-memory --date 2026-04-25
 python -m winchronicle search-memory "AssertionError"
 ```
 
-`status` should report screenshots, OCR, audio, and keyboard capture disabled.
-`capture-once` and memory generation write only already-redacted fixture-derived
-content through the shared privacy pipeline.
+`status` should report screenshots, OCR, audio, keyboard capture, clipboard
+capture, network/cloud upload, LLM calls, desktop control, product targeted
+capture, and MCP write tools disabled. `capture-once` and memory generation
+write only already-redacted fixture-derived content through the shared privacy
+pipeline.
 
 ## Manual UIA Smoke
 

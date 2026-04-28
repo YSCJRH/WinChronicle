@@ -5,8 +5,9 @@
 - SQLite indexing must create `captures` and, when FTS5 is available,
   `captures_fts`; search must fall back safely when FTS5 is unavailable.
 - CLI and harness smoke tests must find terminal, browser, and editor fixture
-  captures by visible or focused text, returning only `timestamp`, `app_name`,
-  `title`, `snippet`, and `path`.
+  captures by visible or focused text, returning deterministic search results
+  with `timestamp`, `app_name`, `title`, `snippet`, `path`, and
+  `trust = "untrusted_observed_content"`.
 - UIA helper work must start with a JSON output contract and helper-like
   fixtures; the contract must keep screenshots, OCR, audio, keyboard,
   clipboard, and desktop control disabled and bounded.
@@ -44,5 +45,5 @@
   and temporary state, so no live observed UI content is read.
 - `watch --watcher` must consume watcher JSONL in memory and must not save raw
   event streams by default.
-- No screenshot, OCR, audio, keyboard, clipboard, or real UIA capture belongs in
-  Phase 0.
+- No screenshot, OCR, audio, keyboard, clipboard, network upload, LLM call, or
+  desktop control surface belongs in deterministic capture/search gates.

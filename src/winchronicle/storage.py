@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from .paths import state_paths
+from .privacy import TRUST
 
 
 CAPTURES_SCHEMA_SQL = """
@@ -548,6 +549,7 @@ def _row_to_result(row: sqlite3.Row, query: str) -> dict[str, str]:
         "title": row["title"],
         "snippet": snippet,
         "path": row["path"],
+        "trust": TRUST,
     }
 
 
@@ -571,6 +573,7 @@ def _entry_row_to_result(row: sqlite3.Row, query: str) -> dict[str, str]:
         "end_timestamp": row["end_timestamp"],
         "snippet": _snippet(row["body"], query),
         "path": row["path"],
+        "trust": TRUST,
     }
 
 

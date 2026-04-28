@@ -8,6 +8,7 @@ from winchronicle.capture import capture_once_from_fixture
 from winchronicle.cli import main
 from winchronicle.memory import generate_memory_entries
 from winchronicle.paths import state_paths
+from winchronicle.privacy import TRUST
 from winchronicle.schema import validate_memory_entry
 from winchronicle.storage import search_memory_entries
 
@@ -57,6 +58,7 @@ def test_generate_memory_creates_markdown_and_searchable_entry(tmp_path, monkeyp
         matches = search_memory_entries(query, home)
         assert matches
         assert expected_title in {match["title"] for match in matches}
+        assert all(match["trust"] == TRUST for match in matches)
         assert any(query.lower() in match["snippet"].lower() for match in matches)
 
 
@@ -151,6 +153,7 @@ def test_generate_memory_and_search_memory_cli(tmp_path, monkeypatch, capsys):
     assert matches
     assert {"event", "project", "tool"} <= {match["entry_type"] for match in matches}
     assert "WinChronicle events for 2026-04-25" in {match["title"] for match in matches}
+    assert all(match["trust"] == TRUST for match in matches)
 
 
 def _sqlite_supports_fts5() -> bool:

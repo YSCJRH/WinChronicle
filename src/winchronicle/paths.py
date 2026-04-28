@@ -3,14 +3,12 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from .privacy import DISABLED_SURFACE_STATUS
 
-CONFIG_TEXT = """# WinChronicle local configuration
-screenshots_enabled = false
-ocr_enabled = false
-audio_enabled = false
-keyboard_capture_enabled = false
-clipboard_capture_enabled = false
-"""
+
+CONFIG_TEXT = "# WinChronicle local configuration\n" + "".join(
+    f"{key} = false\n" for key in DISABLED_SURFACE_STATUS
+)
 
 
 def default_home(environ: dict[str, str] | None = None) -> Path:

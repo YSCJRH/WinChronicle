@@ -9,6 +9,7 @@ from .events import dispatch_watcher_events, run_watcher_command
 from .memory import generate_memory_entries
 from .mcp.server import run_stdio
 from .paths import ensure_state, state_paths
+from .privacy import privacy_contract_payload
 from .storage import capture_count, init_db, memory_entry_count, search_captures, search_memory_entries
 
 
@@ -97,10 +98,7 @@ def main(argv: list[str] | None = None) -> int:
             "db_exists": paths["db"].exists(),
             "capture_count": capture_count(paths["home"]),
             "memory_entry_count": memory_entry_count(paths["home"]),
-            "screenshots_enabled": False,
-            "ocr_enabled": False,
-            "audio_enabled": False,
-            "keyboard_capture_enabled": False,
+            **privacy_contract_payload(),
         }
         print(json.dumps(payload, indent=2, sort_keys=True))
         return 0

@@ -10,7 +10,20 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SEARCH_RESULT_KEYS = {"timestamp", "app_name", "title", "snippet", "path"}
+SEARCH_RESULT_KEYS = {"timestamp", "app_name", "title", "snippet", "path", "trust"}
+DISABLED_SURFACE_KEYS = (
+    "screenshots_enabled",
+    "ocr_enabled",
+    "audio_enabled",
+    "keyboard_capture_enabled",
+    "clipboard_capture_enabled",
+    "network_upload_enabled",
+    "cloud_upload_enabled",
+    "llm_calls_enabled",
+    "desktop_control_enabled",
+    "product_targeted_capture_enabled",
+    "mcp_write_tools_enabled",
+)
 
 
 def main() -> int:
@@ -35,6 +48,7 @@ def main() -> int:
                     "pip",
                     "install",
                     "--disable-pip-version-check",
+                    "--no-build-isolation",
                     "--no-deps",
                     "-e",
                     str(ROOT),
@@ -51,13 +65,12 @@ def main() -> int:
 
             status = json.loads(_run([str(python), "-m", "winchronicle", "status"], env=env))
             _require(status["db_exists"] is True, "status did not initialize SQLite")
-            for key in (
-                "screenshots_enabled",
-                "ocr_enabled",
-                "audio_enabled",
-                "keyboard_capture_enabled",
-            ):
+            for key in DISABLED_SURFACE_KEYS:
                 _require(status[key] is False, f"status reported enabled prohibited surface: {key}")
+            _require(
+                status["observed_content_trust"] == "untrusted_observed_content",
+                "status did not report the observed-content trust boundary",
+            )
 
             capture_path = Path(
                 _run(
@@ -87,6 +100,10 @@ def main() -> int:
                 capture_matches[0]["app_name"] == "Windows Terminal",
                 "search-captures returned the wrong fixture app",
             )
+            _require(
+                capture_matches[0]["trust"] == "untrusted_observed_content",
+                "search-captures did not report the observed-content trust boundary",
+            )
 
             generated = json.loads(
                 _run(
@@ -115,6 +132,10 @@ def main() -> int:
                 "WinChronicle events for 2026-04-25"
                 in {match["title"] for match in memory_matches},
                 "search-memory did not return the deterministic event entry",
+            )
+            _require(
+                all(match["trust"] == "untrusted_observed_content" for match in memory_matches),
+                "search-memory did not report the observed-content trust boundary",
             )
     except SmokeFailure as exc:
         print(f"FAIL: {exc}")

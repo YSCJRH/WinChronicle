@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from winchronicle.paths import default_home, ensure_state
+from winchronicle.privacy import DISABLED_SURFACE_STATUS
 
 
 def test_default_home_uses_winchronicle_home(tmp_path, monkeypatch):
@@ -21,6 +22,9 @@ def test_ensure_state_creates_expected_paths(tmp_path, monkeypatch):
     assert paths["capture_buffer"].is_dir()
     assert paths["memory"].is_dir()
     assert paths["logs"].is_dir()
+    config = paths["config"].read_text(encoding="utf-8")
+    for key in DISABLED_SURFACE_STATUS:
+        assert f"{key} = false" in config
 
 
 def test_default_home_uses_localappdata_when_no_override(tmp_path, monkeypatch):

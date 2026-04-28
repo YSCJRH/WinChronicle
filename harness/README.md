@@ -1,14 +1,15 @@
 # WinChronicle Harness
 
 The harness contains deterministic contracts, fixtures, scorecards, and scripts
-used before real Windows UIA capture is implemented.
+that keep fixture capture, explicit foreground UIA helper capture, watcher
+preview, memory, and MCP behavior inside the v0.1 privacy boundary.
 
-Phase 0 covers fixture-only capture, redaction, schema validation, local storage,
-and search.
+Phase 0 covers fixture capture, redaction, schema validation, local storage,
+and search. Deterministic fixtures remain the default CI substrate.
 
 Phase 2 starts with helper output contracts in `harness/specs/` and
-helper-like JSON fixtures in `harness/fixtures/uia-helper/`; these do not invoke
-real Windows UIA capture. The harness also compiles the experimental
+helper-like JSON fixtures in `harness/fixtures/uia-helper/`; default CI does
+not invoke live Windows UIA capture. The harness also compiles the experimental
 `resources/win-uia-helper` .NET helper without running it.
 
 Phase 3 starts with watcher event contracts and JSONL fixtures in
@@ -32,7 +33,7 @@ indexes the Markdown in SQLite `entries` / `entries_fts`; `search-memory`
 queries that durable memory without changing raw capture search.
 
 The release-candidate install smoke creates a temporary virtual environment,
-installs the local package without fetching dependencies, and runs fixture-only
+installs the local package without fetching dependencies, and runs deterministic
 CLI commands against a temporary `WINCHRONICLE_HOME`:
 
 ```powershell

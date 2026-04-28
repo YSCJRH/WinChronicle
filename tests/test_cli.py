@@ -3,11 +3,34 @@ import sys
 from pathlib import Path
 
 from winchronicle.cli import main
+from winchronicle.mcp.server import privacy_status
+from winchronicle.privacy import DISABLED_SURFACE_STATUS, TRUST
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
-SEARCH_RESULT_KEYS = {"timestamp", "app_name", "title", "snippet", "path"}
+SEARCH_RESULT_KEYS = {"timestamp", "app_name", "title", "snippet", "path", "trust"}
+
+
+def test_status_cli_matches_mcp_privacy_contract(tmp_path, monkeypatch, capsys):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["status"]) == 0
+    cli_payload = json.loads(capsys.readouterr().out)
+    mcp_payload = privacy_status(home=home)["result"]
+
+    for key in DISABLED_SURFACE_STATUS:
+        assert cli_payload[key] is False
+        assert mcp_payload[key] is False
+    for key in (
+        "observed_content_trust",
+        "trust_boundary_instruction",
+        "denylisted_apps",
+        "redaction_summary",
+    ):
+        assert cli_payload[key] == mcp_payload[key]
+    assert cli_payload["observed_content_trust"] == TRUST
 
 
 def test_search_captures_cli_returns_indexed_fixture(tmp_path, monkeypatch, capsys):
@@ -55,6 +78,7 @@ def test_search_captures_cli_returns_deterministic_json_shape(tmp_path, monkeypa
         assert len(results) == 1
         assert set(results[0]) == SEARCH_RESULT_KEYS
         assert results[0]["app_name"] == expected_app
+        assert results[0]["trust"] == TRUST
         assert query.lower() in results[0]["snippet"].lower()
 
 
