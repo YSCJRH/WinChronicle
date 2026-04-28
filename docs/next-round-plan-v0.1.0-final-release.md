@@ -24,20 +24,21 @@ desktop control, and no product targeted capture flags.
 
 ## Execution Cursor
 
-- Current stage: Stage V3 - Final Release Decision.
-- Stage status: F - deterministic gates and V2 manual hard gates passed; final
-  release evidence is prepared and publication requires explicit approval.
-- Last completed evidence: Stage V1 deterministic evidence was merged in
-  PR #26, post-merge `main` Windows Harness run `25033323560` passed, and V2
-  manual smoke refresh completed on the local interactive Windows machine.
-- Last validation: Notepad targeted UIA smoke passed, Edge targeted UIA smoke
-  passed, `code.cmd` was available, VS Code metadata smoke passed with the known
-  Monaco editor-marker diagnostic warning, VS Code strict mode failed as the
-  documented non-blocking diagnostic, and live watcher preview returned
-  heartbeat-only liveness using temporary `WINCHRONICLE_HOME`.
-- Next atomic task: open the `docs/release-v0.1.0.md` evidence PR, wait for
-  Windows Harness, merge it, and verify post-merge `main` Windows Harness; do
-  not publish `v0.1.0` final without explicit approval.
+- Current stage: Stage V4 - Post-Final Reconciliation.
+- Stage status: B - `v0.1.0` final is published; post-final documentation
+  reconciliation, PR Windows Harness, and post-merge `main` Windows Harness are
+  pending.
+- Last completed evidence: Stage V3 release evidence merged in PR #28,
+  post-merge `main` Windows Harness run `25033779063` passed, and
+  `v0.1.0` final was published at
+  `6d22462c0da185d163cf1b7219e05439ff4666ff`.
+- Last validation: `gh release view v0.1.0` confirmed the release is not a
+  draft, not a prerelease, targets
+  `6d22462c0da185d163cf1b7219e05439ff4666ff`, and was published at
+  `2026-04-28T04:26:43Z`.
+- Next atomic task: open the post-final reconciliation PR, wait for Windows
+  Harness, merge it, verify post-merge `main` Windows Harness, then establish
+  the post-v0.1 baseline before planning any new capability work.
 - Known blockers: none.
 
 ## Phased Work
@@ -187,3 +188,10 @@ Stage-specific gates:
   capture`, so the live watcher result remains heartbeat-only diagnostic
   evidence; deterministic watcher and fake-helper preview gates remain covered
   by `python harness/scripts/run_harness.py`.
+- Stage V3 release evidence merged through PR #28, and post-merge `main`
+  Windows Harness run `25033779063` passed on
+  `6d22462c0da185d163cf1b7219e05439ff4666ff`.
+- `v0.1.0` final was published at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0. It is not a
+  draft, not a prerelease, and targets
+  `6d22462c0da185d163cf1b7219e05439ff4666ff`.

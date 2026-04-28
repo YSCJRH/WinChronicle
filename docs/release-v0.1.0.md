@@ -7,16 +7,15 @@ observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.0` final is ready for explicit publication approval if the release-record
-PR and its post-merge `main` Windows Harness pass without requiring product
-code, schema, CLI/MCP JSON shape, privacy behavior, helper/watcher behavior, or
-capture-surface changes.
+`v0.1.0` final was published after the release-record PR and its post-merge
+`main` Windows Harness passed without requiring product code, schema, CLI/MCP
+JSON shape, privacy behavior, helper/watcher behavior, or capture-surface
+changes.
 
 If any such change is required before publication, do not publish final. Prepare
 `v0.1.0-rc.2` instead.
 
-Publication status: pending explicit approval. Do not tag or publish final from
-this record alone.
+Publication status: published final release.
 
 ## Candidate Metadata
 
@@ -26,8 +25,10 @@ this record alone.
 | Stage | Stage V3 - Final Release Decision |
 | Evidence date | 2026-04-28, Asia/Shanghai |
 | Current candidate `main` SHA before this record | `355aaf5b88c09cd87db60b1f3215136dff5e8c07` |
-| Final tag target | Pending explicit approval; use the latest verified `main` SHA after the release-record PR and post-merge Windows Harness pass |
-| Publication status | Not published |
+| Final tag target | `6d22462c0da185d163cf1b7219e05439ff4666ff` |
+| Publication status | Published final release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0 |
+| Published at | 2026-04-28T04:26:43Z |
 | Previous release-candidate baseline | `v0.1.0-rc.1` |
 | Previous release-candidate URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-rc.1 |
 | `v0.1.0-rc.1` tag target | `ad2c33feffb151ffe6c52d651c05ace5e007db97` |
@@ -37,6 +38,8 @@ this record alone.
 | Stage V1 post-merge `main` Windows Harness | Passed, run `25033323560`, https://github.com/YSCJRH/WinChronicle/actions/runs/25033323560 |
 | Stage V2 PR | https://github.com/YSCJRH/WinChronicle/pull/27 |
 | Stage V2 post-merge `main` Windows Harness | Passed, run `25033575875`, https://github.com/YSCJRH/WinChronicle/actions/runs/25033575875 |
+| Stage V3 PR | https://github.com/YSCJRH/WinChronicle/pull/28 |
+| Stage V3 post-merge `main` Windows Harness | Passed, run `25033779063`, https://github.com/YSCJRH/WinChronicle/actions/runs/25033779063 |
 
 Environment:
 
@@ -152,8 +155,9 @@ This final release does not expand the capture surface beyond `v0.1.0-rc.1`.
 
 ## Rollback Notes
 
-- If final publication is not approved, keep `v0.1.0-rc.1` as the latest
-  published release-candidate baseline.
+- If final publication is withdrawn, keep `v0.1.0-rc.1` as the latest
+  published release-candidate baseline and publish a replacement candidate
+  before any replacement final.
 - Do not retag `v0.1.0-rc.1`; publish `v0.1.0-rc.2` if a replacement candidate
   is needed.
 - If a regression is found before final publication and requires product code,
@@ -164,8 +168,8 @@ This final release does not expand the capture surface beyond `v0.1.0-rc.1`.
 
 ## Release Decision Summary
 
-- Release path: direct `v0.1.0` final is allowed after explicit approval if the
-  release-record PR and post-merge `main` Windows Harness pass.
+- Release path: direct `v0.1.0` final was published after explicit approval,
+  the release-record PR, and post-merge `main` Windows Harness passed.
 - Fallback path: `v0.1.0-rc.2` if any product or contract change is required.
 - Deterministic gates: passed locally and in GitHub Actions.
 - Manual hard gates: Notepad passed; Edge passed.
@@ -176,4 +180,7 @@ This final release does not expand the capture surface beyond `v0.1.0-rc.1`.
 - Watcher preview: deterministic and fake-helper preview passed; live preview
   produced heartbeat-only liveness evidence.
 - Privacy/scope confirmation: unchanged and recorded above.
-- Publication approval: pending.
+- Publication approval: granted by the `continue` instruction after final
+  readiness evidence was complete.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0.
+- Final tag target: `6d22462c0da185d163cf1b7219e05439ff4666ff`.
