@@ -25,7 +25,8 @@ Publication status: not published.
 | Stage | Post-v0.1 maintenance release preparation |
 | Evidence date | 2026-04-28, Asia/Shanghai |
 | Current candidate `main` SHA before this record | `4a1ac5abc57b8e01b499eadd329ed880aa09cefa` |
-| Planned tag target | `55197277d7c225b397aaeb3ca209d0ff9df8403b` |
+| Planned tag target | Latest release-approved `main` SHA at publication time |
+| Current release-readiness `main` SHA | `87363617591106997daca6c2a5f95c32a6e82c49` |
 | Publication status | Not published |
 | Previous stable release | `v0.1.0` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0 |
@@ -45,6 +46,9 @@ Publication status: not published.
 | Release-preparation PR | https://github.com/YSCJRH/WinChronicle/pull/41 |
 | Release-preparation PR Windows Harness | Passed, run `25040716853`, https://github.com/YSCJRH/WinChronicle/actions/runs/25040716853 |
 | Release-preparation post-merge `main` Windows Harness | Passed, run `25040838725`, https://github.com/YSCJRH/WinChronicle/actions/runs/25040838725 |
+| Release-readiness correction PR | https://github.com/YSCJRH/WinChronicle/pull/42 |
+| Release-readiness correction PR Windows Harness | Passed, run `25041035841`, https://github.com/YSCJRH/WinChronicle/actions/runs/25041035841 |
+| Release-readiness correction post-merge `main` Windows Harness | Passed, run `25041152756`, https://github.com/YSCJRH/WinChronicle/actions/runs/25041152756 |
 
 Environment:
 
