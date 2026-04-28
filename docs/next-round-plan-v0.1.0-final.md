@@ -18,20 +18,18 @@ desktop control, and no product targeted capture flags.
 ## Execution Cursor
 
 - Current stage: Stage F5 - Final Or rc.1 Release Decision.
-- Stage status: F - F5 release decision evidence is merged and post-merge
-  `main` Windows Harness passed; `v0.1.0-rc.1` publication approval is still
-  pending.
-- Last completed evidence: `docs/release-candidate-v0.1.0-rc.1.md` records
-  that F1 changed CLI/MCP JSON shape and privacy behavior, so the next public
-  candidate must be `v0.1.0-rc.1` rather than direct final. Deterministic and
-  manual smoke evidence are recorded without committing observed-content
-  artifacts.
+- Stage status: G - `v0.1.0-rc.1` is published and the release record is being
+  reconciled with the published facts.
+- Last completed evidence: `v0.1.0-rc.1` is published as a prerelease at
+  `ad2c33feffb151ffe6c52d651c05ace5e007db97`; the release record confirms the
+  release URL, tag target, and post-merge Windows Harness evidence.
 - Last validation: local deterministic gates, manual Notepad/Edge/VS Code
   smoke, watcher preview, PR Windows Harness, post-merge `main` Windows Harness,
   and `git diff --check` passed or were recorded as diagnostic where
   appropriate.
-- Next atomic task: request explicit approval to publish `v0.1.0-rc.1`; before
-  publishing, verify the current `main` SHA and use that SHA as the tag target.
+- Next atomic task: merge the post-publication reconciliation PR, then establish
+  the post-rc.1 baseline before deciding whether the next public release can be
+  `v0.1.0` final or needs another candidate.
 - Known blockers: none.
 
 ## Phased Work
@@ -275,3 +273,9 @@ Stage-specific gates:
   https://github.com/YSCJRH/WinChronicle/actions/runs/25032173686.
 - F5 post-merge `main` Windows Harness passed:
   https://github.com/YSCJRH/WinChronicle/actions/runs/25032281387.
+- F5 reconciliation PR Windows Harness passed:
+  https://github.com/YSCJRH/WinChronicle/actions/runs/25032422643.
+- F5 reconciliation post-merge `main` Windows Harness passed:
+  https://github.com/YSCJRH/WinChronicle/actions/runs/25032505353.
+- `gh release view v0.1.0-rc.1` confirmed the release is a prerelease, not a
+  draft, and targets `ad2c33feffb151ffe6c52d651c05ace5e007db97`.
