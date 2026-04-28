@@ -147,6 +147,8 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Watcher preview](watcher-preview.md)
 - [Read-only MCP compatibility examples](mcp-readonly-examples.md)
 - [Known limitations](known-limitations.md)
+- [Post-v0.1.1 maintenance plan](next-round-plan-post-v0.1.1.md)
+- [v0.1.1 maintenance release record](release-v0.1.1.md)
 - [v0.1.0 final-readiness plan](next-round-plan-v0.1.0-final.md)
 - [v0.1.0 final-release plan](next-round-plan-v0.1.0-final-release.md)
 - [v0.1.0 final release readiness record](release-v0.1.0.md)

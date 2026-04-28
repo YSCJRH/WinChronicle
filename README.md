@@ -12,11 +12,11 @@ This repository remains harness-first: deterministic fixtures, schemas, tests,
 and privacy gates define behavior, while explicit foreground UIA helper and
 watcher preview paths stay bounded by the same harness contracts.
 
-For release-candidate operation, start with
+For current maintenance operation, start with
 [`docs/operator-quickstart.md`](docs/operator-quickstart.md). It links the
 release checklist, manual smoke evidence template, Windows UIA smoke gates,
 watcher preview, read-only MCP examples, known limitations, and current
-final-readiness plan.
+post-v0.1.1 maintenance plan.
 
 ## Why WinChronicle
 
@@ -131,6 +131,8 @@ available through `search-captures`.
 - [Watcher preview](docs/watcher-preview.md)
 - [Read-only MCP examples](docs/mcp-readonly-examples.md)
 - [Known limitations](docs/known-limitations.md)
+- [Post-v0.1.1 maintenance plan](docs/next-round-plan-post-v0.1.1.md)
+- [v0.1.1 maintenance release record](docs/release-v0.1.1.md)
 - [v0.1.0 final-readiness plan](docs/next-round-plan-v0.1.0-final.md)
 - [v0.1.0 final-release plan](docs/next-round-plan-v0.1.0-final-release.md)
 - [v0.1.0 final release readiness record](docs/release-v0.1.0.md)
