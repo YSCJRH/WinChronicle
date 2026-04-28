@@ -133,6 +133,7 @@ available through `search-captures`.
 - [v0.1.0 final-readiness plan](docs/next-round-plan-v0.1.0-final.md)
 - [v0.1.0 final-release plan](docs/next-round-plan-v0.1.0-final-release.md)
 - [v0.1.0 final release readiness record](docs/release-v0.1.0.md)
+- [Post-v0.1.0 maintenance plan](docs/next-round-plan-post-v0.1.0.md)
 - [v0.1.0-rc.0 release record](docs/release-candidate-v0.1.0-rc.0.md)
 
 Screenshot/OCR enrichment remains a future tests-first phase; the current Phase

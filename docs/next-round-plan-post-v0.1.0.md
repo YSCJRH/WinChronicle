@@ -1,0 +1,155 @@
+# WinChronicle Post-v0.1.0 Maintenance Plan
+
+## Summary
+
+`v0.1.0` final is published at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0. The tag targets
+`6d22462c0da185d163cf1b7219e05439ff4666ff`, and the latest post-final
+reconciliation `main` Windows Harness run `25033992786` passed on
+`52c0dde74b369e8afa86c2c12481aa50f5baa95f`.
+
+The next round should be a conservative post-final maintenance pass, not a new
+capture-surface expansion. The target release can be `v0.1.1` if the work stays
+compatible and small. If any change alters product behavior, schema, CLI/MCP
+JSON shape, privacy behavior, helper/watcher behavior, or capture surface in a
+material way, publish a release candidate first.
+
+Keep the v0.1 product boundary unchanged: local-first, UIA-first,
+harness-first, read-only MCP first, no screenshot/OCR implementation, no audio
+recording, no keyboard capture, no clipboard capture, no network upload, no
+LLM calls, no desktop control, no product targeted capture flags, no daemon or
+service install, and no default background capture.
+
+## Execution Cursor
+
+- Current stage: Stage P0 - Post-v0.1 Baseline.
+- Stage status: G - `v0.1.0` final is published and post-final reconciliation
+  is complete; this plan is the next active cursor.
+- Last completed evidence: `v0.1.0` release URL, tag target, and post-final
+  `main` Windows Harness run `25033992786` are recorded.
+- Last validation: `gh release view v0.1.0`, local tag verification, PR #29,
+  and post-merge `main` Windows Harness all passed.
+- Next atomic task: start Stage P1 with a docs/tests-first operator diagnostics
+  audit for frontmost/helper/watcher heartbeat-only outcomes.
+- Known blockers: none.
+
+## Phased Work
+
+### Stage P0 - Post-v0.1 Baseline
+
+- Close the final-release cursor as historical.
+- Confirm the final release URL, tag target, and latest post-final `main`
+  Windows Harness.
+- Establish this document as the active next-round cursor.
+- Do not implement new product behavior in this stage.
+
+### Stage P1 - Operator Diagnostics Audit
+
+- Improve docs and tests for common operator-facing diagnostics:
+  - `capture-frontmost` helper returns no capture;
+  - watcher live preview returns heartbeat-only liveness;
+  - helper timeout, invalid JSON, empty stdout, or nonzero exit;
+  - VS Code strict Monaco marker remains diagnostic.
+- Prefer docs, examples, fixtures, and narrow tests before any code change.
+- If code is needed, keep it limited to clearer error surfaces without adding
+  capture surfaces or observed-content echoing.
+
+### Stage P2 - Watcher Preview Reliability Follow-Up
+
+- Keep `watch --watcher --helper --duration` explicit and time-bounded.
+- Add deterministic coverage only where current fixture tests do not already
+  express the failure mode.
+- Clarify heartbeat-only live runs as diagnostic and environment-dependent.
+- Do not add daemon/service install, polling capture loops, startup tasks, or
+  default background capture.
+
+### Stage P3 - UIA Helper Compatibility Matrix Refresh
+
+- Refresh the helper quality matrix with post-v0.1 evidence.
+- Keep Notepad and Edge as hard targeted smoke gates.
+- Keep VS Code metadata as conditional hard gate when `code.cmd` exists.
+- Keep VS Code strict Monaco marker diagnostic and non-blocking.
+- Any new application coverage is diagnostic by default until it has fixtures,
+  privacy analysis, and manual smoke evidence.
+
+### Stage P4 - MCP / Memory Contract Maintenance
+
+- Recheck exact read-only MCP tool list and examples against the released
+  contract.
+- Recheck memory Markdown and SQLite entries for deterministic rerun behavior,
+  trust boundary text, source capture paths, and secret-canary exclusion.
+- Do not add MCP write tools, arbitrary file reads, desktop control tools, or
+  new capture tools.
+
+### Stage P5 - Phase 6 Privacy Spec Only
+
+- Expand the screenshot/OCR privacy scorecard only as specification work.
+- Keep screenshot and OCR implementation absent.
+- Document tests-first prerequisites for any future optional enrichment:
+  explicit opt-in, per-app allowlist, short-TTL raw cache, clear cleanup path,
+  redaction/privacy pipeline parity, and MCP default non-exposure of raw
+  screenshots.
+- Do not implement screenshot capture, OCR, audio, keyboard capture, clipboard
+  capture, network upload, LLM calls, or desktop control.
+
+## Test Plan
+
+Every implementation stage should run:
+
+- `python -m pytest -q`
+- `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo`
+- `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`
+- `python harness/scripts/run_install_cli_smoke.py`
+- `python harness/scripts/run_harness.py`
+- `git diff --check`
+- GitHub Actions `Windows Harness` on PR and after merge to `main`
+
+Stage-specific gates:
+
+- P1: diagnostic text must not echo observed content.
+- P2: watcher changes must keep raw watcher JSONL out of persistent storage.
+- P3: manual smoke updates must record artifact paths only, not observed
+  content.
+- P4: MCP tool list must remain exactly read-only.
+- P5: Phase 6 work must remain spec/scorecard only.
+
+## Public Interfaces And Non-goals
+
+- CLI remains:
+  `init/status/capture-once/capture-frontmost/watch/privacy-check/search-captures/generate-memory/search-memory/mcp-stdio`.
+- Product CLI still does not expose targeted `--hwnd`, `--pid`, or
+  `--window-title` capture.
+- MCP remains read-only.
+- No screenshot capture, OCR, audio recording, keyboard capture, clipboard
+  capture, network upload, LLM calls, MCP write tools, arbitrary file reads,
+  service/daemon install, polling capture loop, default background capture, or
+  desktop control.
+
+## Assumptions
+
+- `v0.1.0` is the current stable baseline.
+- The next release target is maintenance-oriented `v0.1.1`, not a Phase 6
+  feature release.
+- Phase 6 remains specification-only until a future tests-first round.
+- Manual UIA smoke remains outside default CI because it depends on an
+  interactive Windows desktop.
+
+## Decision Log
+
+- Chose maintenance before Phase 6 because `v0.1.0` already shipped the core
+  local memory baseline and the clearest gap is operator diagnostics around
+  live helper/watcher environments.
+- Chose docs/tests-first diagnostics because product capture boundaries should
+  not expand merely to make smoke easier to pass.
+- Kept `v0.1.1` as a compatible maintenance target, with release-candidate
+  fallback for any material product or contract change.
+
+## Validation Log
+
+- `gh release view v0.1.0` confirmed the release is published, not a draft, not
+  a prerelease, and targets `6d22462c0da185d163cf1b7219e05439ff4666ff`.
+- Local tag `v0.1.0` resolves to
+  `6d22462c0da185d163cf1b7219e05439ff4666ff`.
+- Post-final reconciliation PR #29 merged to `main` at
+  `52c0dde74b369e8afa86c2c12481aa50f5baa95f`.
+- Post-final `main` Windows Harness run `25033992786` passed.
