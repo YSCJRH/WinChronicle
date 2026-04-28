@@ -114,6 +114,53 @@ def test_generate_memory_is_idempotent_for_files_and_index(tmp_path, monkeypatch
     assert entry_row == (6,)
 
 
+def test_memory_sqlite_entries_preserve_source_paths_and_public_search_shape(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    for fixture_name in ("terminal_error.json", "vscode_editor.json", "edge_browser.json"):
+        capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / fixture_name, home)
+
+    generate_memory_entries(home, date="2026-04-25")
+
+    with sqlite3.connect(state_paths(home)["db"]) as conn:
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute(
+            """
+            SELECT entry_type, title, body, trust, source_capture_paths
+            FROM entries
+            ORDER BY entry_type, title
+            """
+        ).fetchall()
+
+    assert len(rows) == 6
+    for row in rows:
+        source_paths = json.loads(row["source_capture_paths"])
+        assert row["trust"] == TRUST
+        assert source_paths
+        assert all((Path(path).exists() and "capture-buffer" in path) for path in source_paths)
+        assert all(path in row["body"] for path in source_paths)
+
+    event_row = next(row for row in rows if row["entry_type"] == "event")
+    assert len(json.loads(event_row["source_capture_paths"])) == 3
+
+    matches = search_memory_entries("OpenChronicle", home)
+    assert matches
+    assert all(
+        set(match)
+        == {
+            "entry_type",
+            "title",
+            "start_timestamp",
+            "end_timestamp",
+            "snippet",
+            "path",
+            "trust",
+        }
+        for match in matches
+    )
+    assert all(match["trust"] == TRUST for match in matches)
+
+
 def test_memory_entries_fts_table_created_when_available(tmp_path, monkeypatch):
     if not _sqlite_supports_fts5():
         pytest.skip("SQLite FTS5 is unavailable in this Python build.")

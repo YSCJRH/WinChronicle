@@ -23,16 +23,17 @@ service install, and no default background capture.
 ## Execution Cursor
 
 - Current stage: Stage P4 - MCP / Memory Contract Maintenance.
-- Stage status: A - P3 is merged and validated; P4 has not started.
-- Last completed evidence: P3 UIA helper compatibility matrix refresh merged
-  in PR #35 and post-merge `main` Windows Harness run `25038515262` passed.
-- Last validation: matrix-focused tests, `python -m pytest -q`, both .NET
-  helper/watcher builds, install CLI smoke, full deterministic harness,
-  `git diff --check`, PR #35 Windows Harness, and post-merge `main` Windows
-  Harness passed.
-- Next atomic task: recheck exact read-only MCP tool list and memory contract
-  evidence against the released contract; add only narrow docs/tests needed to
-  freeze the current behavior.
+- Stage status: B - P4 contract-freeze tests are implemented and locally
+  validated; PR and post-merge Windows Harness validation are pending.
+- Last completed evidence: MCP examples now have a test-backed exact read-only
+  tool-list contract, and memory SQLite entries now have test-backed
+  source-capture-path/trust persistence plus public search-result shape
+  coverage.
+- Last validation: MCP/memory-focused tests, `python -m pytest -q`, both .NET
+  helper/watcher builds, install CLI smoke, full deterministic harness, and
+  `git diff --check` passed locally.
+- Next atomic task: open the P4 PR, wait for Windows Harness, merge after it is
+  green, verify post-merge `main`, then advance the cursor to Stage P5.
 - Known blockers: none.
 
 ## Phased Work
@@ -145,6 +146,9 @@ Stage-specific gates:
   not expand merely to make smoke easier to pass.
 - Kept `v0.1.1` as a compatible maintenance target, with release-candidate
   fallback for any material product or contract change.
+- Kept P4 as tests-only because the released MCP and memory behavior already
+  matched the plan; the smallest useful maintenance step was freezing examples
+  and SQLite/search contracts against drift.
 
 ## Validation Log
 
@@ -194,3 +198,11 @@ Stage-specific gates:
   - PR #35 merged to `main` at
     `d669552751255da8a3561287c7af5c018487e66c`.
   - Post-merge `main` Windows Harness run `25038515262` passed.
+- Stage P4 local validation:
+  - `python -m pytest tests/test_mcp_tools.py tests/test_memory_pipeline.py -q` - 17 passed.
+  - `python -m pytest -q` - 79 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
