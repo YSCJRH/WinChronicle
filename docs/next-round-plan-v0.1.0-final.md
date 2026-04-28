@@ -18,8 +18,9 @@ desktop control, and no product targeted capture flags.
 ## Execution Cursor
 
 - Current stage: Stage F5 - Final Or rc.1 Release Decision.
-- Stage status: G - `v0.1.0-rc.1` is published and the release record is being
-  reconciled with the published facts.
+- Stage status: Closed - `v0.1.0-rc.1` is published and reconciled. The active
+  final-release cursor now lives in
+  [WinChronicle v0.1.0 Final Release Plan](next-round-plan-v0.1.0-final-release.md).
 - Last completed evidence: `v0.1.0-rc.1` is published as a prerelease at
   `ad2c33feffb151ffe6c52d651c05ace5e007db97`; the release record confirms the
   release URL, tag target, and post-merge Windows Harness evidence.
@@ -27,9 +28,8 @@ desktop control, and no product targeted capture flags.
   smoke, watcher preview, PR Windows Harness, post-merge `main` Windows Harness,
   and `git diff --check` passed or were recorded as diagnostic where
   appropriate.
-- Next atomic task: merge the post-publication reconciliation PR, then establish
-  the post-rc.1 baseline before deciding whether the next public release can be
-  `v0.1.0` final or needs another candidate.
+- Next atomic task: follow Stage V0 in
+  [WinChronicle v0.1.0 Final Release Plan](next-round-plan-v0.1.0-final-release.md).
 - Known blockers: none.
 
 ## Phased Work
