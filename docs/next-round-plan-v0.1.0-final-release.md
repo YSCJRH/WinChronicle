@@ -25,8 +25,8 @@ desktop control, and no product targeted capture flags.
 ## Execution Cursor
 
 - Current stage: Stage V3 - Final Release Decision.
-- Stage status: B - V2 manual hard gates passed; final release evidence,
-  approval, publication, and post-publication reconciliation are pending.
+- Stage status: F - deterministic gates and V2 manual hard gates passed; final
+  release evidence is prepared and publication requires explicit approval.
 - Last completed evidence: Stage V1 deterministic evidence was merged in
   PR #26, post-merge `main` Windows Harness run `25033323560` passed, and V2
   manual smoke refresh completed on the local interactive Windows machine.
@@ -35,10 +35,9 @@ desktop control, and no product targeted capture flags.
   Monaco editor-marker diagnostic warning, VS Code strict mode failed as the
   documented non-blocking diagnostic, and live watcher preview returned
   heartbeat-only liveness using temporary `WINCHRONICLE_HOME`.
-- Next atomic task: create `docs/release-v0.1.0.md` with deterministic gate
-  evidence, manual smoke evidence, release notes, known limitations, rollback
-  notes, and privacy/scope confirmation; do not publish `v0.1.0` final without
-  explicit approval.
+- Next atomic task: open the `docs/release-v0.1.0.md` evidence PR, wait for
+  Windows Harness, merge it, and verify post-merge `main` Windows Harness; do
+  not publish `v0.1.0` final without explicit approval.
 - Known blockers: none.
 
 ## Phased Work
