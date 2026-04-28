@@ -22,20 +22,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Stage P5 - Phase 6 Privacy Spec Only.
-- Stage status: B - P5 Phase 6 privacy scorecard/spec tests are implemented
-  and locally validated; PR and post-merge Windows Harness validation are
-  pending.
-- Last completed evidence: the Phase 6 privacy enrichment scorecard now
-  test-freezes spec-only boundaries, explicit opt-in, per-app allowlists, raw
-  screenshot cache prerequisites, OCR-derived text pipeline parity, MCP
-  default non-exposure, privacy regression prerequisites, and non-goals.
+- Current stage: Release Preparation - v0.1.1 maintenance.
+- Stage status: F - all P0-P5 maintenance stages are merged and validated;
+  compatible release preparation can start, but no release has been published.
+- Last completed evidence: P5 Phase 6 privacy spec scorecard merged in PR #39
+  and post-merge `main` Windows Harness run `25040068331` passed.
 - Last validation: Phase 6 scorecard tests, `python -m pytest -q`, both .NET
   helper/watcher builds, install CLI smoke, full deterministic harness, and
-  `git diff --check` passed locally.
-- Next atomic task: open the P5 PR, wait for Windows Harness, merge after it is
-  green, verify post-merge `main`, then decide whether the compatible
-  maintenance batch is ready for `v0.1.1` release preparation.
+  `git diff --check`, PR #39 Windows Harness, and post-merge `main` Windows
+  Harness passed.
+- Next atomic task: prepare `v0.1.1` release evidence, release notes, rollback
+  notes, and any required manual-smoke decision record; do not publish without
+  explicit release approval.
 - Known blockers: none.
 
 ## Phased Work
@@ -154,6 +152,9 @@ Stage-specific gates:
 - Kept P5 as spec/test-only because Phase 6 remains optional future enrichment
   and this maintenance round must not add screenshot/OCR implementation,
   caches, or capture code.
+- Determined the P0-P5 maintenance batch stayed compatible: it changed docs,
+  tests, and scorecards only, with no product behavior, schema, CLI/MCP JSON
+  shape, helper/watcher behavior, capture surface, or privacy behavior change.
 
 ## Validation Log
 
@@ -224,3 +225,8 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Stage P5 PR validation:
+  - PR #39 Windows Harness run `25039920238` passed.
+  - PR #39 merged to `main` at
+    `3986be837302d590696b6fc42b7451a7a30d4020`.
+  - Post-merge `main` Windows Harness run `25040068331` passed.
