@@ -146,6 +146,9 @@ Stage-specific gates:
 - Added `--no-build-isolation` to the install smoke because the script is a
   no-dependency packaging smoke; this avoids network build-dependency fetches
   while using the already-available local build backend.
+- Added `wheel` to the dev dependency set because the no-build-isolation
+  editable install smoke needs the local `bdist_wheel` command on GitHub
+  Windows runners.
 - Kept Phase 6 out of this round because screenshot/OCR enrichment would expand
   the capture surface.
 
