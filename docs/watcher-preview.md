@@ -25,6 +25,7 @@ Expected observations:
 - short typing bursts are debounced into fewer captures;
 - duplicate content fingerprints are skipped;
 - denylisted apps and lock-screen captures do not write observed content;
+- heartbeat-only runs report liveness without writing captures;
 - watcher/helper failures return diagnostic errors without echoing observed content.
 
 ## Operator-Facing Diagnostics
@@ -43,6 +44,7 @@ Expected diagnostics:
 | Helper failure surfaced by watcher | The watcher exits nonzero and Python reports the watcher exit code. | Treat helper stderr/stdout as observed-adjacent; do not copy it into evidence. |
 | Malformed watcher JSONL | `ERROR: watcher JSONL line <n> is malformed` | Do not save or paste the malformed raw line. |
 | Watcher timeout | `watcher timed out` from the watcher runner. | Do not print partial stdout; rerun with a temporary state directory and shorter repro notes. |
+| Heartbeat-only run | JSON counts show `captures_written = 0` and `heartbeats > 0`. | Do not create a capture artifact or save raw watcher JSONL; investigate helper/window conditions from the diagnostic only. |
 | Denylisted app or lock screen | JSON counts show `denylisted_skipped` incrementing and `captures_written` unchanged. | No observed content should be written or searched. |
 | Duplicate content fingerprint | JSON counts show `duplicates_skipped` incrementing. | Duplicate captures should not be written again. |
 

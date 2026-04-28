@@ -41,9 +41,10 @@
 - `watch --watcher --helper --duration` is a v0.1 preview path. It must remain
   explicit opt-in, must not install a daemon/service, and must not save raw
   watcher JSONL.
-- Watcher failure modes must return stable diagnostics without echoing observed
-  content: watcher nonzero exit, malformed JSONL, and timeout are covered by
-  tests.
+- Watcher reliability modes must be deterministic and must not echo observed
+  content: watcher nonzero exit, helper failure surfaced by watcher, malformed
+  JSONL, timeout, heartbeat-only runs, duplicate skip, and denylist skip are
+  covered by tests or watcher fixtures.
 - Watcher smoke may run with `--capture-on-start` only when using a fake helper
   and temporary state, so no live observed UI content is read.
 - `watch --watcher` must consume watcher JSONL in memory and must not save raw

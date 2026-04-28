@@ -17,16 +17,17 @@ desktop control, and no product targeted capture flags.
 
 ## Execution Cursor
 
-- Current stage: Stage F2 - UIA Helper Quality Matrix.
-- Stage status: B - F2 matrix documentation and doc-contract tests are complete
-  and locally validated on the branch; PR Windows Harness and post-merge `main`
-  validation are still pending.
-- Last completed evidence: `docs/uia-helper-quality-matrix.md` documents helper
-  gate type, app/scope, expected signal, current result, artifact policy,
-  privacy risk, and blocking status without changing helper behavior.
-- Last validation: local `python -m pytest -q`, both .NET builds,
-  `python harness/scripts/run_harness.py`, and `git diff --check` passed.
-- Next atomic task: open the F2 PR and wait for GitHub Actions Windows Harness.
+- Current stage: Stage F3 - Watcher Reliability Contract.
+- Stage status: B - F3 deterministic watcher reliability tests and docs are
+  complete and locally validated on the branch; PR Windows Harness and
+  post-merge `main` validation are still pending.
+- Last completed evidence: watcher tests now cover heartbeat-only runs and
+  helper-failure-adjacent nonzero exits without echoing helper stdout/stderr;
+  watcher docs and scorecards describe the reliability modes.
+- Last validation: local watcher-focused pytest, full `python -m pytest -q`,
+  both .NET builds, `python harness/scripts/run_harness.py`, and
+  `git diff --check` passed.
+- Next atomic task: open the F3 PR and wait for GitHub Actions Windows Harness.
 - Known blockers: none.
 
 ## Phased Work
@@ -152,6 +153,12 @@ Stage-specific gates:
 - Kept F2 docs/tests-only: the helper quality matrix records current automated
   and manual gates but does not change product CLI, MCP, helper, watcher, schema,
   or capture behavior.
+- Kept F3 docs/tests-only: helper failure is covered as a watcher nonzero
+  failure path that suppresses helper-adjacent stdout/stderr, while live helper
+  failure semantics remain diagnostic until a future watcher implementation
+  change explicitly promotes them.
+- Treated heartbeat-only runs as a liveness diagnostic: they increment
+  `heartbeats`, write no captures, and do not save raw watcher JSONL.
 - Kept Phase 6 out of this round because screenshot/OCR enrichment would expand
   the capture surface.
 
@@ -191,3 +198,16 @@ Stage-specific gates:
   `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`.
 - F2 full harness passed: `python harness/scripts/run_harness.py`.
 - F2 whitespace check passed: `git diff --check`.
+- F2 PR Windows Harness passed:
+  https://github.com/YSCJRH/WinChronicle/actions/runs/25030816117.
+- F2 post-merge `main` Windows Harness passed:
+  https://github.com/YSCJRH/WinChronicle/actions/runs/25030896768.
+- F3 watcher-focused tests passed:
+  `python -m pytest tests/test_watcher_events.py -q` reported 11 passed.
+- F3 full unit suite passed: `python -m pytest -q` reported 66 passed.
+- F3 helper build passed:
+  `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo`.
+- F3 watcher build passed:
+  `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo`.
+- F3 full harness passed: `python harness/scripts/run_harness.py`.
+- F3 whitespace check passed: `git diff --check`.
