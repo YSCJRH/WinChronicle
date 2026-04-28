@@ -13,9 +13,9 @@ metadata to CLI capture and memory search results and aligning CLI `status`
 with MCP `privacy_status`. Per the final-readiness rule, that change must go
 through a new release candidate rather than direct `v0.1.0` final.
 
-Publication is not approved by this document. The F5 PR and post-merge `main`
-Windows Harness have passed; publish only after explicit approval. The final
-tag target should be the `main` SHA verified immediately before publication.
+Publication was approved after the F5 PR and post-merge `main` Windows Harness
+passed. `v0.1.0-rc.1` is published as a prerelease at the tag target recorded
+below.
 
 ## Candidate Metadata
 
@@ -27,9 +27,10 @@ tag target should be the `main` SHA verified immediately before publication.
 | Evidence branch | `codex/final5-release-readiness` |
 | Current verified `main` SHA before F5 PR | `d381bcae2a2de66ebe9346ebf427dc3988b86323` |
 | F5 merge commit on `main` | `236f57fb308393522323b3bb1139dd3fe1dbf24b` |
-| Planned tag target | The `main` SHA verified immediately before publication |
-| Publication status | Not published; approval pending |
-| Release URL | Pending |
+| Final tag target | `ad2c33feffb151ffe6c52d651c05ace5e007db97` |
+| Publication status | Published prerelease |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-rc.1 |
+| Published at | 2026-04-28T03:41:03Z |
 | Previous release-candidate baseline | `v0.1.0-rc.0` |
 | Previous release-candidate URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-rc.0 |
 | Latest post-merge `main` Windows Harness before F5 | Passed, run `25031913300`, https://github.com/YSCJRH/WinChronicle/actions/runs/25031913300 |
@@ -57,8 +58,8 @@ Environment:
 | `git diff --check` | Pass | no whitespace errors |
 
 The F5 PR Windows Harness and post-merge `main` Windows Harness both passed.
-Before publication, verify the current `main` SHA and use that SHA as the tag
-target.
+The published tag targets
+`ad2c33feffb151ffe6c52d651c05ace5e007db97`.
 
 ## Manual UIA Smoke Gates
 
@@ -149,6 +150,8 @@ This release candidate does not expand the capture surface.
 - Release path: `v0.1.0-rc.1`, not direct final.
 - Reason: post-rc.0 F1 changed CLI/MCP JSON shape and privacy behavior.
 - Deterministic gates: passed locally.
+- Published tag target: `ad2c33feffb151ffe6c52d651c05ace5e007db97`.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.0-rc.1
 - Latest verified `main` before F5 PR: `d381bcae2a2de66ebe9346ebf427dc3988b86323`.
 - Latest pre-F5 post-merge `main` Windows Harness: passed, run `25031913300`.
 - F5 PR: https://github.com/YSCJRH/WinChronicle/pull/22.
@@ -163,4 +166,5 @@ This release candidate does not expand the capture surface.
 - Watcher preview: deterministic and fake-helper preview passed; live depth 2
   preview produced heartbeat-only liveness evidence.
 - Privacy/scope confirmation: unchanged and recorded above.
-- Publication approval: pending.
+- Publication approval: granted after F5 evidence review; `v0.1.0-rc.1` was
+  published as a prerelease.
