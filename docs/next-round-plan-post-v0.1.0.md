@@ -22,17 +22,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Stage P1 - Operator Diagnostics Audit.
-- Stage status: B - P1 docs/tests-first diagnostics are implemented locally;
-  PR Windows Harness and post-merge `main` Windows Harness are pending.
-- Last completed evidence: `docs/operator-diagnostics.md` now documents stable
-  frontmost helper, watcher preview, and VS Code Monaco diagnostics without
-  requiring observed-content artifacts.
+- Current stage: Stage P2 - Watcher Preview Reliability Follow-Up.
+- Stage status: A - P1 is merged and validated; P2 has not started.
+- Last completed evidence: P1 operator diagnostics merged in PR #31 and
+  post-merge `main` Windows Harness run `25036973210` passed.
 - Last validation: `python -m pytest -q`, both .NET helper/watcher builds,
-  install CLI smoke, full deterministic harness, and `git diff --check` passed.
-- Next atomic task: open the P1 diagnostics PR, wait for Windows Harness, merge
-  it, verify post-merge `main` Windows Harness, then start Stage P2 watcher
-  preview reliability follow-up.
+  install CLI smoke, full deterministic harness, `git diff --check`, PR #31
+  Windows Harness, and post-merge `main` Windows Harness passed.
+- Next atomic task: audit existing watcher preview docs/tests for reliability
+  gaps around heartbeat-only live runs, timeout, malformed JSONL, helper
+  failure, duplicate skip, denylist skip, and raw JSONL persistence before
+  deciding whether any new fixture/test is needed.
 - Known blockers: none.
 
 ## Phased Work
@@ -163,3 +163,8 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Stage P1 PR validation:
+  - PR #31 Windows Harness run `25036877035` passed.
+  - PR #31 merged to `main` at
+    `cd7c159bf888ab5d5b4e25e786a7dc39e551aa65`.
+  - Post-merge `main` Windows Harness run `25036973210` passed.
