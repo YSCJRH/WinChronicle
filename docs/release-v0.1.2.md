@@ -1,33 +1,34 @@
-# v0.1.2 Release Readiness Record
+# v0.1.2 Maintenance Release Record
 
-This record prepares a compatible `v0.1.2` maintenance release from the
+This record reconciles the compatible `v0.1.2` maintenance release from the
 published `v0.1.1` baseline. It records commands, results, commit identifiers,
 CI URLs, environment notes, and local artifact paths only. It does not commit
 observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.2` is not published yet. Publication requires explicit user approval
-after the V4 pull request and post-merge `main` Windows Harness pass.
+`v0.1.2` was published after explicit approval. The release tag targets the
+release-approved `main` SHA whose Windows Harness passed.
 
 If any product behavior, schema, CLI/MCP JSON shape, privacy behavior,
 helper/watcher behavior, or capture-surface change is required before
-publication, do not publish `v0.1.2` directly. Prepare a release candidate
-instead.
+publication, do not retag `v0.1.2`. Prepare a follow-up release candidate or
+maintenance release instead.
 
-Publication status: pending explicit approval.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.2` |
-| Stage | Release readiness; publication pending explicit approval |
-| Evidence date | 2026-04-28, Asia/Shanghai |
+| Stage | Published maintenance release |
+| Evidence date | 2026-04-29, Asia/Shanghai |
 | Current candidate `main` SHA before this record | `b97137e005107b157b9d28fff15e6dce910f58c8` |
-| Final tag target | Pending release-approved post-merge `main` SHA |
-| Publication status | Pending explicit approval |
-| Release URL | Pending |
+| Final tag target | `8bc8e9adf01e72031e5fb776007d4152a065ccb2` |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.2 |
+| Published at | 2026-04-29T00:05:57Z |
 | Previous stable release | `v0.1.1` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.1 |
 | `v0.1.1` tag target | `8ac594176d251c867e34c2a139a1029a3fc474da` |
@@ -39,18 +40,18 @@ Publication status: pending explicit approval.
 | Stage V2 post-merge `main` Windows Harness | Passed, run `25052277331`, https://github.com/YSCJRH/WinChronicle/actions/runs/25052277331 |
 | Stage V3 PR | https://github.com/YSCJRH/WinChronicle/pull/50 |
 | Stage V3 post-merge `main` Windows Harness | Passed, run `25052943017`, https://github.com/YSCJRH/WinChronicle/actions/runs/25052943017 |
-| Stage V4 PR | Pending |
-| Stage V4 PR Windows Harness | Pending |
-| Stage V4 post-merge `main` Windows Harness | Pending |
+| Stage V4 PR | https://github.com/YSCJRH/WinChronicle/pull/51 |
+| Stage V4 PR Windows Harness | Passed, run `25053694479`, https://github.com/YSCJRH/WinChronicle/actions/runs/25053694479 |
+| Stage V4 post-merge `main` Windows Harness | Passed, run `25053851860`, https://github.com/YSCJRH/WinChronicle/actions/runs/25053851860 |
 
 Environment:
 
 - Windows PowerShell.
 - Python: `3.11`.
 - .NET SDK: `8.0`.
-- Manual UIA smoke is not required for this release-readiness record unless
+- Manual UIA smoke was not required for this release record because no
   helper/smoke behavior or smoke documentation materially changes. This V4
-  change updates version metadata and release evidence only. If release
+  change updated version metadata and release evidence only. If future release
   approval requires fresh manual smoke evidence, use
   [Manual smoke evidence template](manual-smoke-evidence-template.md) and keep
   artifacts local.
@@ -66,15 +67,13 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The Stage V4 PR Windows Harness and post-merge `main` Windows Harness must pass
-before publication. Do not keep amending this record solely to chase its own PR
-or post-merge SHA; reconcile the published release facts after explicit
-publication approval.
+The Stage V4 PR Windows Harness and post-merge `main` Windows Harness passed
+before publication.
 
-## Release Notes Draft
+## Release Notes
 
 - Aligns package, runtime, and MCP server version identity to `0.1.2`.
-- Records `v0.1.2` release readiness evidence from the post-v0.1.1 maintenance
+- Records `v0.1.2` release evidence from the post-v0.1.1 maintenance
   round.
 - Keeps the v0.1 product boundary unchanged: no new capture surfaces, no new
   MCP tools, no helper/watcher behavior changes, and no Phase 6 implementation.
@@ -137,8 +136,8 @@ This maintenance release does not expand the capture surface from `v0.1.1`.
 
 ## Rollback Notes
 
-- If publication is not approved, keep `v0.1.1` as the latest stable release.
-- Do not retag `v0.1.1`; publish a replacement candidate if a product or
+- If publication is withdrawn, keep `v0.1.1` as the latest stable release.
+- Do not retag `v0.1.2`; publish a replacement candidate if a product or
   contract change is required.
 - If a regression is found before publication and requires product code,
   schema, CLI/MCP JSON shape, privacy behavior, helper/watcher behavior, or
@@ -150,16 +149,16 @@ This maintenance release does not expand the capture surface from `v0.1.1`.
 
 ## Release Decision Summary
 
-- Release path: compatible `v0.1.2` maintenance release, pending explicit
-  approval.
+- Release path: compatible `v0.1.2` maintenance release was published after
+  explicit approval.
 - Fallback path: release candidate if any product or contract change is
   required.
-- Deterministic gates: local V4 validation passed; GitHub Actions evidence is
-  pending the Stage V4 pull request and post-merge `main` run.
+- Deterministic gates: local V4 validation, PR Windows Harness, and post-merge
+  `main` Windows Harness passed.
 - Manual UIA gates: not rerun for this version/evidence-only maintenance step;
   use the manual smoke evidence template if fresh manual evidence is required
   before publication.
 - Privacy/scope confirmation: unchanged and recorded above.
-- Publication approval: pending.
-- Release URL: pending.
-- Final tag target: pending release-approved post-merge `main` SHA.
+- Publication approval: granted by the user message `允许发布 v0.1.2`.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.2.
+- Final tag target: `8bc8e9adf01e72031e5fb776007d4152a065ccb2`.

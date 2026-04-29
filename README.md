@@ -132,7 +132,7 @@ available through `search-captures`.
 - [Read-only MCP examples](docs/mcp-readonly-examples.md)
 - [Known limitations](docs/known-limitations.md)
 - [Post-v0.1.1 maintenance plan](docs/next-round-plan-post-v0.1.1.md)
-- [v0.1.2 release readiness record](docs/release-v0.1.2.md)
+- [v0.1.2 maintenance release record](docs/release-v0.1.2.md)
 - [v0.1.1 maintenance release record](docs/release-v0.1.1.md)
 - [v0.1.0 final-readiness plan](docs/next-round-plan-v0.1.0-final.md)
 - [v0.1.0 final-release plan](docs/next-round-plan-v0.1.0-final-release.md)
