@@ -3,8 +3,8 @@
 Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
-artifacts. For the current post-v0.1.1 maintenance cursor, see
-[Post-v0.1.1 maintenance plan](next-round-plan-post-v0.1.1.md).
+artifacts. For the current post-v0.1.2 maintenance cursor, see
+[Post-v0.1.2 maintenance plan](next-round-plan-post-v0.1.2.md).
 
 ## Evidence Location
 

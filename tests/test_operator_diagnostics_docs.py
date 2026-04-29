@@ -53,12 +53,31 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )[0]
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
 
-    assert "next-round-plan-post-v0.1.1.md" in current_section
+    assert "next-round-plan-post-v0.1.2.md" in current_section
     assert "release-v0.1.2.md" in current_section
-    assert "release-v0.1.1.md" in current_section
+    assert "next-round-plan-post-v0.1.1.md" not in current_section
     assert "next-round-plan-v0.1.0-final.md" not in current_section
+    assert "next-round-plan-post-v0.1.1.md" in historical_section
+    assert "release-v0.1.1.md" in historical_section
     assert "next-round-plan-v0.1.0-final.md" in historical_section
-    assert "next-round-plan-post-v0.1.1.md" in checklist
-    assert "next-round-plan-post-v0.1.1.md" in evidence
+    assert "next-round-plan-post-v0.1.2.md" in checklist
+    assert "next-round-plan-post-v0.1.2.md" in evidence
     assert "Before a compatible `v0.1.1` maintenance release" not in matrix
-    assert "`v0.1.2` readiness round" in matrix
+    assert "`v0.1.3` readiness round" in matrix
+
+
+def test_post_v012_plan_is_active_without_expanding_scope():
+    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.2.md").read_text(
+        encoding="utf-8"
+    )
+
+    for expected in (
+        "Current stage: M1 - Release Evidence Freshness Guard.",
+        "post-publication reconciliation `main` Windows Harness run `25084360942`",
+        "compatible maintenance pass toward `v0.1.3`",
+        "Phase 6 remains privacy spec/scorecard work only",
+        "No screenshot capture, OCR, audio recording, keyboard capture, clipboard",
+        "Product CLI still does not expose targeted `--hwnd`, `--pid`, or",
+        "MCP remains read-only",
+    ):
+        assert expected in plan
