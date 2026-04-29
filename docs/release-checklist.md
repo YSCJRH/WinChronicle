@@ -20,6 +20,21 @@ evidence shape, use [Release evidence guide](release-evidence.md).
 
 These gates must pass on Windows CI and should be rerun locally before release.
 
+## Evidence Freshness
+
+Before release, confirm the evidence record distinguishes current evidence from
+inherited historical evidence:
+
+- the active execution cursor points to the current post-v0.1.2 plan until a
+  future plan supersedes it;
+- the stable baseline is `v0.1.2` unless release-readiness work explicitly
+  prepares another version;
+- manual UIA smoke inherited from an earlier release is labeled as inherited or
+  stale, not current;
+- stale manual smoke can support context, but a hard release gate needs fresh
+  evidence or an explicit documented decision to keep the older result;
+- no observed-content artifact is committed to refresh evidence.
+
 ## Manual UIA Smoke Gates
 
 Run these on an interactive Windows desktop with temporary state:
