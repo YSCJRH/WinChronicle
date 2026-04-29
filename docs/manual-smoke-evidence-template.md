@@ -2,7 +2,8 @@
 
 Use this template for release-candidate manual smoke notes. Keep the completed
 evidence in the release record or PR comment; do not commit observed-content
-artifacts by default.
+artifacts by default. For latest known manual evidence freshness, see
+[Manual smoke evidence ledger](manual-smoke-evidence-ledger.md).
 
 Do not paste observed text, screenshots, OCR output, raw helper JSON, raw
 watcher JSONL, secrets, passwords, local page contents, or editor buffer

@@ -33,8 +33,8 @@ Expected observations:
 The preview path is designed to fail closed and report a stable diagnostic
 without printing observed content. Operators should record the command, exit
 code, diagnostic line, and artifact path in the manual smoke evidence template,
-but should not paste raw watcher JSONL or helper capture output into release
-notes.
+and track freshness in the manual smoke evidence ledger, but should not paste
+raw watcher JSONL or helper capture output into release notes.
 
 Expected diagnostics:
 

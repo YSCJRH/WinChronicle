@@ -72,7 +72,7 @@ def test_post_v012_plan_is_active_without_expanding_scope():
     )
 
     for expected in (
-        "Current stage: M2 - Manual Smoke Evidence Ledger.",
+        "Current stage: M3 - Compatibility Contract Drift Sweep.",
         "post-publication reconciliation `main` Windows Harness run `25084360942`",
         "compatible maintenance pass toward `v0.1.3`",
         "Phase 6 remains privacy spec/scorecard work only",
@@ -108,3 +108,42 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         assert expected in evidence
 
     assert "older manual UIA smoke as inherited evidence" in plan
+
+
+def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
+    ledger = (ROOT / "docs" / "manual-smoke-evidence-ledger.md").read_text(
+        encoding="utf-8"
+    )
+    quickstart = (ROOT / "docs" / "operator-quickstart.md").read_text(encoding="utf-8")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    checklist = (ROOT / "docs" / "release-checklist.md").read_text(encoding="utf-8")
+    evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
+    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.2.md").read_text(
+        encoding="utf-8"
+    )
+
+    for gate in (
+        "Notepad targeted UIA smoke",
+        "Edge targeted UIA smoke",
+        "VS Code metadata smoke",
+        "VS Code strict Monaco marker",
+        "Watcher preview live smoke",
+    ):
+        assert gate in ledger
+
+    for expected in (
+        "Stable release baseline | `v0.1.2`",
+        "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
+        "Inherited from `v0.1.0`; stale for a new release unless rerun",
+        "Do not paste observed text",
+        "Do not save or commit raw watcher JSONL",
+        "not current evidence unless",
+    ):
+        assert expected in ledger
+
+    assert "[Manual smoke evidence ledger](manual-smoke-evidence-ledger.md)" in quickstart
+    assert "[Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)" in readme
+    assert "Manual smoke evidence ledger" in checklist
+    assert "Manual smoke evidence ledger" in evidence
+    assert "Current stage: M3 - Compatibility Contract Drift Sweep." in plan
+    assert "added a ledger instead of copying observed-content artifacts" in plan

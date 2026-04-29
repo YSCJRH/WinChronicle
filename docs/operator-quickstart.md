@@ -141,6 +141,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Release checklist](release-checklist.md)
 - [Release evidence guide](release-evidence.md)
 - [Manual smoke evidence template](manual-smoke-evidence-template.md)
+- [Manual smoke evidence ledger](manual-smoke-evidence-ledger.md)
 - [Windows UIA smoke gates](windows-uia-smoke.md)
 - [UIA helper quality matrix](uia-helper-quality-matrix.md)
 - [Operator diagnostics](operator-diagnostics.md)

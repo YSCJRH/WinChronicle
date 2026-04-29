@@ -8,6 +8,8 @@ privacy risk, and blocking status, see
 [UIA helper quality matrix](uia-helper-quality-matrix.md).
 For the last recorded final-release smoke evidence, see
 [v0.1.0 final release readiness record](release-v0.1.0.md).
+For current inherited/stale/manual refresh status, see
+[Manual smoke evidence ledger](manual-smoke-evidence-ledger.md).
 
 ## 1. Deterministic Fixture Tests
 

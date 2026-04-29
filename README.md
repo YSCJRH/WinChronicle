@@ -126,6 +126,7 @@ available through `search-captures`.
 - [Release checklist](docs/release-checklist.md)
 - [Release evidence guide](docs/release-evidence.md)
 - [Manual smoke evidence template](docs/manual-smoke-evidence-template.md)
+- [Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)
 - [Windows UIA smoke gates](docs/windows-uia-smoke.md)
 - [Operator diagnostics](docs/operator-diagnostics.md)
 - [Watcher preview](docs/watcher-preview.md)
