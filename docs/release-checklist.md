@@ -5,8 +5,8 @@ releases.
 
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
-The active post-v0.1.1 execution cursor lives in
-[Post-v0.1.1 maintenance plan](next-round-plan-post-v0.1.1.md). For release
+The active post-v0.1.2 execution cursor lives in
+[Post-v0.1.2 maintenance plan](next-round-plan-post-v0.1.2.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md).
 
 ## Deterministic Gates
