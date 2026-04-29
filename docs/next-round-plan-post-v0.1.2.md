@@ -22,17 +22,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: M1 - Release Evidence Freshness Guard.
-- Stage status: A - M0 post-v0.1.2 baseline cursor is being established; M1 is
-  the next active implementation stage after this docs-only cursor lands.
-- Last completed evidence: `v0.1.2` is published and reconciled; release URL,
-  tag target, PR Windows Harness, post-merge Windows Harness, and
-  post-publication Windows Harness are recorded in the `v0.1.2` release record
-  and the closed post-v0.1.1 plan.
-- Last validation: post-publication `main` Windows Harness run `25084360942`
-  passed on `62d935345746b42ed99fc612354f3f1190fea0f8`.
-- Next atomic task: start M1 by auditing release/checklist/evidence docs for
-  stale current-cursor, baseline, and manual-smoke evidence language.
+- Current stage: M2 - Manual Smoke Evidence Ledger.
+- Stage status: A - M1 release evidence freshness guard is locally complete;
+  M2 is the next active implementation stage after M1 lands.
+- Last completed evidence: M1 added release checklist and evidence-guide
+  language that distinguishes current evidence from inherited manual UIA smoke
+  evidence, while keeping `v0.1.2` as the stable baseline.
+- Last validation: M1 local validation passed with release/operator docs tests,
+  full pytest, full harness, and `git diff --check`.
+- Next atomic task: start M2 by adding or refreshing a manual smoke evidence
+  ledger that records latest known Notepad, Edge, VS Code metadata, VS Code
+  strict Monaco diagnostic, and watcher preview evidence status without
+  committing observed-content artifacts.
 - Known blockers: none.
 
 ## Phased Work
@@ -149,6 +150,9 @@ Stage-specific gates:
   from a closed historical plan.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
+- During M1, treated older manual UIA smoke as inherited evidence unless it is
+  freshly rerun and recorded. This avoids presenting stale observed-content
+  smoke as current release evidence.
 
 ## Validation Log
 
@@ -159,5 +163,10 @@ Stage-specific gates:
 - Stage M0 local validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_uia_helper_quality_matrix.py tests/test_compatibility_evidence_docs.py -q` - 12 passed.
   - `python -m pytest -q` - 90 passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage M1 local validation:
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_uia_helper_quality_matrix.py tests/test_compatibility_evidence_docs.py -q` - 13 passed.
+  - `python -m pytest -q` - 91 passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.

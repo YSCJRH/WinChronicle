@@ -72,7 +72,7 @@ def test_post_v012_plan_is_active_without_expanding_scope():
     )
 
     for expected in (
-        "Current stage: M1 - Release Evidence Freshness Guard.",
+        "Current stage: M2 - Manual Smoke Evidence Ledger.",
         "post-publication reconciliation `main` Windows Harness run `25084360942`",
         "compatible maintenance pass toward `v0.1.3`",
         "Phase 6 remains privacy spec/scorecard work only",
@@ -81,3 +81,30 @@ def test_post_v012_plan_is_active_without_expanding_scope():
         "MCP remains read-only",
     ):
         assert expected in plan
+
+
+def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
+    checklist = (ROOT / "docs" / "release-checklist.md").read_text(encoding="utf-8")
+    evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
+    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.2.md").read_text(
+        encoding="utf-8"
+    )
+
+    for expected in (
+        "## Evidence Freshness",
+        "stable baseline is `v0.1.2`",
+        "manual UIA smoke inherited from an earlier release is labeled as inherited or",
+        "no observed-content artifact is committed to refresh evidence",
+    ):
+        assert expected in checklist
+
+    for expected in (
+        "Release evidence must name which facts are current",
+        "manual UIA smoke evidence inherited from `v0.1.0`",
+        "must be labeled as inherited or stale",
+        "must not present inherited manual smoke as freshly run",
+        "never observed content",
+    ):
+        assert expected in evidence
+
+    assert "older manual UIA smoke as inherited evidence" in plan

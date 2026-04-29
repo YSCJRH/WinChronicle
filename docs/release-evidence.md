@@ -23,6 +23,21 @@ Record only:
 - GitHub Actions run URL;
 - local artifact path when an artifact exists.
 
+## Evidence Freshness
+
+Release evidence must name which facts are current and which are inherited from
+historical records. For the post-v0.1.2 maintenance round:
+
+- `v0.1.2` is the stable baseline until release-readiness work explicitly
+  prepares `v0.1.3`;
+- the active execution cursor is
+  [Post-v0.1.2 maintenance plan](next-round-plan-post-v0.1.2.md);
+- manual UIA smoke evidence inherited from `v0.1.0` or another older release
+  must be labeled as inherited or stale;
+- a release record must not present inherited manual smoke as freshly run;
+- refreshing manual smoke must record command/result/time/environment/local
+  artifact path only, never observed content.
+
 ## Deterministic Evidence
 
 Record the result for each deterministic gate:
