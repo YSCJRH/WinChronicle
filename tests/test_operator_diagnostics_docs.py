@@ -72,7 +72,8 @@ def test_post_v012_plan_is_active_without_expanding_scope():
     )
 
     for expected in (
-        "Current stage: M3 - Compatibility Contract Drift Sweep.",
+        "Current stage: M4 - v0.1.3 Release Readiness.",
+        "M3 added literal compatibility contract tests",
         "post-publication reconciliation `main` Windows Harness run `25084360942`",
         "compatible maintenance pass toward `v0.1.3`",
         "Phase 6 remains privacy spec/scorecard work only",
@@ -145,5 +146,5 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     assert "[Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)" in readme
     assert "Manual smoke evidence ledger" in checklist
     assert "Manual smoke evidence ledger" in evidence
-    assert "Current stage: M3 - Compatibility Contract Drift Sweep." in plan
+    assert "Current stage: M4 - v0.1.3 Release Readiness." in plan
     assert "added a ledger instead of copying observed-content artifacts" in plan

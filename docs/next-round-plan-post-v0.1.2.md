@@ -22,18 +22,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: M3 - Compatibility Contract Drift Sweep.
-- Stage status: A - M2 manual smoke evidence ledger is locally complete; M3 is
-  the next active implementation stage after M2 lands.
-- Last completed evidence: M2 added the manual smoke evidence ledger, linked it
-  from operator/release docs, and marked older Notepad, Edge, VS Code metadata,
-  VS Code strict Monaco, and watcher preview manual evidence as inherited or
-  stale unless refreshed for a future release.
-- Last validation: M2 local validation passed with manual-smoke docs tests,
-  full pytest, full harness, and `git diff --check`.
-- Next atomic task: start M3 by auditing exact read-only MCP tools, privacy
-  surface parity, memory/search trust boundaries, version identity, and Phase 6
-  spec-only status for drift.
+- Current stage: M4 - v0.1.3 Release Readiness.
+- Stage status: A - M3 compatibility contract drift sweep is locally complete;
+  M4 is the next active implementation stage after M3 lands.
+- Last completed evidence: M3 added literal compatibility contract tests for
+  disabled privacy surfaces, product CLI command/flag boundaries, MCP result
+  schema tool enum parity, and CLI capture/memory search trust-boundary shapes.
+- Last validation: M3 local validation passed with targeted compatibility
+  tests, full pytest, helper build, watcher build, install CLI smoke, full
+  harness, and `git diff --check`.
+- Next atomic task: after M3 lands, start M4 by preparing `v0.1.3` release
+  readiness evidence and version metadata on a release-readiness branch.
 - Known blockers: none.
 
 ## Phased Work
@@ -156,6 +155,9 @@ Stage-specific gates:
 - During M2, added a ledger instead of copying observed-content artifacts. The
   ledger records only source release records, command patterns, freshness
   status, and artifact handling policy.
+- During M3, treated the drift sweep as tests-only compatibility guardrail
+  work. No product behavior, schema shape, helper/watcher behavior, or capture
+  surface was changed.
 
 ## Validation Log
 
@@ -176,5 +178,13 @@ Stage-specific gates:
 - Stage M2 local validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_uia_helper_quality_matrix.py tests/test_compatibility_evidence_docs.py -q` - 14 passed.
   - `python -m pytest -q` - 92 passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage M3 local validation:
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_cli.py -q` - 21 passed.
+  - `python -m pytest -q` - 96 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
