@@ -48,7 +48,9 @@ Manual smoke scripts must not print observed content and must not activate,
 click, type, move, resize, or control windows.
 
 Record manual smoke evidence with
-[Manual smoke evidence template](manual-smoke-evidence-template.md). See
+[Manual smoke evidence template](manual-smoke-evidence-template.md). Track
+latest known freshness in
+[Manual smoke evidence ledger](manual-smoke-evidence-ledger.md). See
 [Windows UIA smoke gates](windows-uia-smoke.md) for hard, conditional, and
 diagnostic gate meanings, and
 [UIA helper quality matrix](uia-helper-quality-matrix.md) for expected signals,

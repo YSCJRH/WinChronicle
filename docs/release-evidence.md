@@ -73,8 +73,10 @@ needed, publish a new release candidate instead.
 ## Manual Evidence
 
 Use [Manual smoke evidence template](manual-smoke-evidence-template.md) for
-interactive Windows smoke. Manual evidence must use a temporary
-`WINCHRONICLE_HOME` and must not paste observed content.
+interactive Windows smoke. Use
+[Manual smoke evidence ledger](manual-smoke-evidence-ledger.md) to distinguish
+fresh evidence from inherited or stale evidence. Manual evidence must use a
+temporary `WINCHRONICLE_HOME` and must not paste observed content.
 
 Hard gates:
 

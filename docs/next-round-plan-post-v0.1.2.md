@@ -22,18 +22,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: M2 - Manual Smoke Evidence Ledger.
-- Stage status: A - M1 release evidence freshness guard is locally complete;
-  M2 is the next active implementation stage after M1 lands.
-- Last completed evidence: M1 added release checklist and evidence-guide
-  language that distinguishes current evidence from inherited manual UIA smoke
-  evidence, while keeping `v0.1.2` as the stable baseline.
-- Last validation: M1 local validation passed with release/operator docs tests,
+- Current stage: M3 - Compatibility Contract Drift Sweep.
+- Stage status: A - M2 manual smoke evidence ledger is locally complete; M3 is
+  the next active implementation stage after M2 lands.
+- Last completed evidence: M2 added the manual smoke evidence ledger, linked it
+  from operator/release docs, and marked older Notepad, Edge, VS Code metadata,
+  VS Code strict Monaco, and watcher preview manual evidence as inherited or
+  stale unless refreshed for a future release.
+- Last validation: M2 local validation passed with manual-smoke docs tests,
   full pytest, full harness, and `git diff --check`.
-- Next atomic task: start M2 by adding or refreshing a manual smoke evidence
-  ledger that records latest known Notepad, Edge, VS Code metadata, VS Code
-  strict Monaco diagnostic, and watcher preview evidence status without
-  committing observed-content artifacts.
+- Next atomic task: start M3 by auditing exact read-only MCP tools, privacy
+  surface parity, memory/search trust boundaries, version identity, and Phase 6
+  spec-only status for drift.
 - Known blockers: none.
 
 ## Phased Work
@@ -153,6 +153,9 @@ Stage-specific gates:
 - During M1, treated older manual UIA smoke as inherited evidence unless it is
   freshly rerun and recorded. This avoids presenting stale observed-content
   smoke as current release evidence.
+- During M2, added a ledger instead of copying observed-content artifacts. The
+  ledger records only source release records, command patterns, freshness
+  status, and artifact handling policy.
 
 ## Validation Log
 
@@ -168,5 +171,10 @@ Stage-specific gates:
 - Stage M1 local validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_uia_helper_quality_matrix.py tests/test_compatibility_evidence_docs.py -q` - 13 passed.
   - `python -m pytest -q` - 91 passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage M2 local validation:
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_uia_helper_quality_matrix.py tests/test_compatibility_evidence_docs.py -q` - 14 passed.
+  - `python -m pytest -q` - 92 passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
