@@ -60,7 +60,9 @@ def test_v012_release_record_is_pending_and_compatible():
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: pending explicit approval.",
+        "Publication status: published maintenance release.",
+        "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.2.",
+        "Final tag target: `8bc8e9adf01e72031e5fb776007d4152a065ccb2`.",
         "must report `0.1.2`",
         "exact read-only MCP tool list remains unchanged",
         "Phase 6 remains specification-only",

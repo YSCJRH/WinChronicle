@@ -2,16 +2,15 @@
 
 ## Summary
 
-`v0.1.1` is published and reconciled. The release URL is
-https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.1, the release tag
-targets `8ac594176d251c867e34c2a139a1029a3fc474da`, and the
-post-reconciliation `main` Windows Harness run `25042828969` passed on
-`5d8d69c9be8f32a333e7f1aa6a5a6bc49f8ae867`.
+`v0.1.2` is published at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.2. The release tag
+targets `8bc8e9adf01e72031e5fb776007d4152a065ccb2`, and the release-approved
+`main` Windows Harness run `25053851860` passed on that SHA.
 
-The next round is a conservative compatible maintenance pass toward `v0.1.2`.
-It should fix post-release baseline drift, version identity consistency,
-operator documentation entry points, and release evidence. It must not expand
-the capture surface or start Phase 6 implementation.
+This plan is closed as the historical post-v0.1.1 maintenance cursor. The next
+round must start with a new post-v0.1.2 plan before any implementation. It must
+not expand the capture surface or start Phase 6 implementation unless a future
+tests-first plan explicitly changes that boundary.
 
 Keep the v0.1 product boundary unchanged: local-first, UIA-first,
 harness-first, read-only MCP first, no screenshot/OCR implementation, no audio
@@ -21,19 +20,19 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: V4 - v0.1.2 Release Readiness.
-- Stage status: B - V4 release readiness is locally complete; the Stage V4
-  pull request, PR Windows Harness, post-merge `main` Windows Harness, and
-  explicit publication approval remain pending.
-- Last completed evidence: V4 aligned package/runtime/MCP version metadata to
-  `0.1.2`, added the `v0.1.2` release readiness record, and kept publication
-  status pending explicit approval.
-- Last validation: V4 local validation passed with version/release-evidence
-  docs tests, full pytest, helper build, watcher build, install CLI smoke,
-  full harness, and `git diff --check`.
-- Next atomic task: open the Stage V4 pull request, wait for PR Windows
-  Harness, merge after review if green, then wait for post-merge `main`
-  Windows Harness. Do not publish `v0.1.2` without explicit approval.
+- Current stage: Closed - `v0.1.2` published and reconciled.
+- Stage status: G - `v0.1.2` is published, release evidence is reconciled, and
+  the release-approved `main` Windows Harness passed.
+- Last completed evidence: Stage V4 PR #51 merged to `main` at
+  `8bc8e9adf01e72031e5fb776007d4152a065ccb2`, post-merge `main` Windows
+  Harness run `25053851860` passed, and `v0.1.2` was published at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.2.
+- Last validation: `gh release view v0.1.2` confirmed the release is
+  published, not a draft, not a prerelease, and targets
+  `8bc8e9adf01e72031e5fb776007d4152a065ccb2`; PR #51 Windows Harness and
+  post-merge `main` Windows Harness passed.
+- Next atomic task: establish a new post-`v0.1.2` next-round plan before any
+  further implementation.
 - Known blockers: none.
 
 ## Phased Work
@@ -165,6 +164,9 @@ Stage-specific gates:
 - During V4, kept PR and post-merge Windows Harness fields in the release
   record pending until the Stage V4 PR and merge exist, so the release record
   does not chase its own SHA before publication approval.
+- Published `v0.1.2` only after explicit user approval. The release targets the
+  release-approved `main` SHA `8bc8e9adf01e72031e5fb776007d4152a065ccb2`;
+  no retagging was performed.
 
 ## Validation Log
 
@@ -213,3 +215,9 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+  - PR #51 Windows Harness run `25053694479` passed.
+  - Post-merge `main` Windows Harness run `25053851860` passed on
+    `8bc8e9adf01e72031e5fb776007d4152a065ccb2`.
+- Post-publication validation:
+  - `gh release view v0.1.2 --json tagName,url,isDraft,isPrerelease,targetCommitish,publishedAt` - confirmed the release is published, not a draft, not a prerelease, targets `8bc8e9adf01e72031e5fb776007d4152a065ccb2`, and is available at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.2.
+  - `git fetch origin tag v0.1.2 && git rev-parse v0.1.2` - confirmed the local tag resolves to `8bc8e9adf01e72031e5fb776007d4152a065ccb2`.
