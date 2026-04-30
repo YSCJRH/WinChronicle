@@ -23,16 +23,17 @@ service install, and no default background capture.
 ## Execution Cursor
 
 - Current stage: M4 - v0.1.3 Release Readiness.
-- Stage status: A - M3 compatibility contract drift sweep is locally complete;
-  M4 is the next active implementation stage after M3 lands.
-- Last completed evidence: M3 added literal compatibility contract tests for
-  disabled privacy surfaces, product CLI command/flag boundaries, MCP result
-  schema tool enum parity, and CLI capture/memory search trust-boundary shapes.
-- Last validation: M3 local validation passed with targeted compatibility
-  tests, full pytest, helper build, watcher build, install CLI smoke, full
-  harness, and `git diff --check`.
-- Next atomic task: after M3 lands, start M4 by preparing `v0.1.3` release
-  readiness evidence and version metadata on a release-readiness branch.
+- Stage status: D - M4 release readiness is locally complete; PR Windows
+  Harness, merge, post-merge Windows Harness, and explicit publication approval
+  remain.
+- Last completed evidence: M4 aligned package/runtime/MCP version identity to
+  `0.1.3`, added the `v0.1.3` release-readiness record, linked it from
+  operator entry points, and kept publication pending explicit approval.
+- Last validation: M4 local validation passed with targeted release docs and
+  version tests, full pytest, helper build, watcher build, install CLI smoke,
+  full harness, and `git diff --check`.
+- Next atomic task: open the M4 PR, run PR Windows Harness, merge after review
+  and green CI, then wait for explicit approval before publishing `v0.1.3`.
 - Known blockers: none.
 
 ## Phased Work
@@ -158,6 +159,9 @@ Stage-specific gates:
 - During M3, treated the drift sweep as tests-only compatibility guardrail
   work. No product behavior, schema shape, helper/watcher behavior, or capture
   surface was changed.
+- During M4, treated the `0.1.3` version bump as release metadata alignment.
+  Publication remains blocked on explicit approval even after local and CI
+  gates pass.
 
 ## Validation Log
 
@@ -183,6 +187,14 @@ Stage-specific gates:
 - Stage M3 local validation:
   - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_cli.py -q` - 21 passed.
   - `python -m pytest -q` - 96 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage M4 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - 12 passed.
+  - `python -m pytest -q` - 97 passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.

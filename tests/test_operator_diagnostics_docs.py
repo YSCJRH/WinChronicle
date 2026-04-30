@@ -54,6 +54,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
 
     assert "next-round-plan-post-v0.1.2.md" in current_section
+    assert "release-v0.1.3.md" in current_section
     assert "release-v0.1.2.md" in current_section
     assert "next-round-plan-post-v0.1.1.md" not in current_section
     assert "next-round-plan-v0.1.0-final.md" not in current_section
@@ -73,7 +74,7 @@ def test_post_v012_plan_is_active_without_expanding_scope():
 
     for expected in (
         "Current stage: M4 - v0.1.3 Release Readiness.",
-        "M3 added literal compatibility contract tests",
+        "M4 aligned package/runtime/MCP version identity to",
         "post-publication reconciliation `main` Windows Harness run `25084360942`",
         "compatible maintenance pass toward `v0.1.3`",
         "Phase 6 remains privacy spec/scorecard work only",
