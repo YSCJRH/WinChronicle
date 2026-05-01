@@ -148,11 +148,12 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Watcher preview](watcher-preview.md)
 - [Read-only MCP compatibility examples](mcp-readonly-examples.md)
 - [Known limitations](known-limitations.md)
-- [Post-v0.1.2 maintenance plan](next-round-plan-post-v0.1.2.md)
+- [Post-v0.1.3 maintenance plan](next-round-plan-post-v0.1.3.md)
 - [v0.1.3 maintenance release record](release-v0.1.3.md)
 
 ## Historical Release Records
 
+- [Post-v0.1.2 maintenance plan](next-round-plan-post-v0.1.2.md)
 - [v0.1.2 maintenance release record](release-v0.1.2.md)
 - [Post-v0.1.1 maintenance plan](next-round-plan-post-v0.1.1.md)
 - [v0.1.1 maintenance release record](release-v0.1.1.md)

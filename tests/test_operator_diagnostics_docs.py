@@ -53,37 +53,42 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )[0]
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
 
-    assert "next-round-plan-post-v0.1.2.md" in current_section
+    assert "next-round-plan-post-v0.1.3.md" in current_section
     assert "release-v0.1.3.md" in current_section
+    assert "next-round-plan-post-v0.1.2.md" not in current_section
     assert "release-v0.1.2.md" not in current_section
     assert "next-round-plan-post-v0.1.1.md" not in current_section
     assert "next-round-plan-v0.1.0-final.md" not in current_section
+    assert "next-round-plan-post-v0.1.2.md" in historical_section
     assert "release-v0.1.2.md" in historical_section
     assert "next-round-plan-post-v0.1.1.md" in historical_section
     assert "release-v0.1.1.md" in historical_section
     assert "next-round-plan-v0.1.0-final.md" in historical_section
-    assert "next-round-plan-post-v0.1.2.md" in checklist
-    assert "next-round-plan-post-v0.1.2.md" in evidence
+    assert "next-round-plan-post-v0.1.3.md" in checklist
+    assert "next-round-plan-post-v0.1.3.md" in evidence
+    assert "post-v0.1.2 plan is closed historical evidence" in checklist
+    assert "post-v0.1.2 cursor is closed historical evidence" in evidence
     assert "Before a compatible `v0.1.1` maintenance release" not in matrix
     assert "`v0.1.3` readiness round" in matrix
 
 
-def test_post_v012_plan_is_active_without_expanding_scope():
-    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.2.md").read_text(
+def test_post_v013_plan_is_active_without_expanding_scope():
+    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.3.md").read_text(
         encoding="utf-8"
     )
 
     for expected in (
-        "Current stage: Closed - `v0.1.3` published.",
-        "Stage status: G - `v0.1.3` is published",
-        "M4 aligned package/runtime/MCP version identity to",
-        "published\n  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
-        "post-publication reconciliation `main` Windows Harness run `25084360942`",
-        "compatible maintenance pass toward `v0.1.3`",
+        "Current stage: P1 - Release Evidence And Entry Hygiene.",
+        "Stage status: C - P0 is complete",
+        "published at\n  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
+        "post-reconciliation\nWindows Harness run `25209330825` passed",
+        "compatible maintenance pass toward `v0.1.4`",
         "Phase 6 remains privacy spec/scorecard work only",
         "No screenshot capture, OCR, audio recording, keyboard capture, clipboard",
         "Product CLI still does not expose targeted `--hwnd`, `--pid`, or",
         "MCP remains read-only",
+        "Publication remains blocked on explicit user approval",
+        "Stage P0 local validation:",
     ):
         assert expected in plan
 
@@ -91,14 +96,14 @@ def test_post_v012_plan_is_active_without_expanding_scope():
 def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
     checklist = (ROOT / "docs" / "release-checklist.md").read_text(encoding="utf-8")
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
-    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.2.md").read_text(
+    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.3.md").read_text(
         encoding="utf-8"
     )
 
     for expected in (
         "## Evidence Freshness",
         "stable baseline is `v0.1.3`",
-        "new post-v0.1.3 execution cursor should be established",
+        "active post-v0.1.3 execution cursor must be followed",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
         "no observed-content artifact is committed to refresh evidence",
     ):
@@ -107,7 +112,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
     for expected in (
         "Release evidence must name which facts are current",
         "`v0.1.3` is the stable baseline",
-        "new post-v0.1.3 execution",
+        "active post-v0.1.3",
         "manual UIA smoke evidence inherited from `v0.1.0`",
         "must be labeled as inherited or stale",
         "must not present inherited manual smoke as freshly run",
@@ -115,7 +120,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
     ):
         assert expected in evidence
 
-    assert "older manual UIA smoke as inherited evidence" in plan
+    assert "manual smoke freshness before any release" in plan
 
 
 def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
@@ -126,7 +131,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     checklist = (ROOT / "docs" / "release-checklist.md").read_text(encoding="utf-8")
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
-    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.2.md").read_text(
+    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.3.md").read_text(
         encoding="utf-8"
     )
 
@@ -141,6 +146,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
 
     for expected in (
         "Stable release baseline | `v0.1.3`",
+        "Active maintenance plan | [Post-v0.1.3 maintenance plan]",
         "Latest published release record | [v0.1.3 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
         "Inherited from `v0.1.0`; stale for a new release unless rerun",
@@ -154,5 +160,5 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     assert "[Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)" in readme
     assert "Manual smoke evidence ledger" in checklist
     assert "Manual smoke evidence ledger" in evidence
-    assert "Current stage: Closed - `v0.1.3` published." in plan
-    assert "added a ledger instead of copying observed-content artifacts" in plan
+    assert "Current stage: P1 - Release Evidence And Entry Hygiene." in plan
+    assert "observed-content\n  artifacts remain uncommitted" in plan
