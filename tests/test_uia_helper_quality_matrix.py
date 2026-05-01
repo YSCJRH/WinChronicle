@@ -71,8 +71,10 @@ def test_uia_helper_quality_matrix_uses_post_v010_evidence():
     rows = _matrix_rows()
 
     assert "post-v0.1 helper-quality contract" in text
-    assert "For compatible maintenance releases after `v0.1.2`" in text
-    assert "`v0.1.3` readiness round" in text
+    assert "For compatible maintenance releases after `v0.1.3`" in text
+    assert "active\npost-v0.1.3 maintenance plan" in text
+    assert "future `v0.1.4` readiness round" in text
+    assert "current\n`v0.1.3` readiness round" not in text
     assert "Last recorded `v0.1.0` final: pass" in rows["Notepad"]["Current result"]
     assert "Last recorded `v0.1.0` final: pass" in rows["Microsoft Edge"]["Current result"]
     assert "Last recorded `v0.1.0` final: pass with diagnostic warning" in rows[

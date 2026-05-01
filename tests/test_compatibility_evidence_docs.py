@@ -56,7 +56,7 @@ def test_scorecards_remain_the_evidence_oracles_for_mcp_and_phase6():
     assert "No screenshot capture code, OCR engine integration" in phase6
 
 
-def test_v012_release_record_is_pending_and_compatible():
+def test_v012_release_record_is_published_and_compatible():
     text = V012_RELEASE.read_text(encoding="utf-8")
     normalized = _normalized(text)
 
