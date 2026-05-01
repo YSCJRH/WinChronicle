@@ -14,7 +14,7 @@ or token canaries.
 | Field | Value |
 | --- | --- |
 | Stable release baseline | `v0.1.3` |
-| Active maintenance plan | New post-v0.1.3 plan pending; [Post-v0.1.2 maintenance plan](next-round-plan-post-v0.1.2.md) is closed |
+| Active maintenance plan | [Post-v0.1.3 maintenance plan](next-round-plan-post-v0.1.3.md) |
 | Latest published release record | [v0.1.3 maintenance release record](release-v0.1.3.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
