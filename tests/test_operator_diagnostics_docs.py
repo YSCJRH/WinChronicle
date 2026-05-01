@@ -69,7 +69,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "post-v0.1.2 plan is closed historical evidence" in checklist
     assert "post-v0.1.2 cursor is closed historical evidence" in evidence
     assert "Before a compatible `v0.1.1` maintenance release" not in matrix
-    assert "`v0.1.3` readiness round" in matrix
+    assert "active\npost-v0.1.3 maintenance plan" in matrix
+    assert "future `v0.1.4` readiness round" in matrix
+    assert "current\n`v0.1.3` readiness round" not in matrix
 
 
 def test_post_v013_plan_is_active_without_expanding_scope():
@@ -78,8 +80,8 @@ def test_post_v013_plan_is_active_without_expanding_scope():
     )
 
     for expected in (
-        "Current stage: P1 - Release Evidence And Entry Hygiene.",
-        "Stage status: C - P0 is complete",
+        "Current stage: P2 - Manual Smoke Freshness Decision.",
+        "Stage status: C - P1 is complete",
         "published at\n  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
         "post-reconciliation\nWindows Harness run `25209330825` passed",
         "compatible maintenance pass toward `v0.1.4`",
@@ -89,6 +91,7 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "MCP remains read-only",
         "Publication remains blocked on explicit user approval",
         "Stage P0 local validation:",
+        "Stage P1 local validation:",
     ):
         assert expected in plan
 
@@ -160,5 +163,5 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     assert "[Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)" in readme
     assert "Manual smoke evidence ledger" in checklist
     assert "Manual smoke evidence ledger" in evidence
-    assert "Current stage: P1 - Release Evidence And Entry Hygiene." in plan
+    assert "Current stage: P2 - Manual Smoke Freshness Decision." in plan
     assert "observed-content\n  artifacts remain uncommitted" in plan

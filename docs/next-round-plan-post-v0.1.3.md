@@ -23,21 +23,23 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: P1 - Release Evidence And Entry Hygiene.
-- Stage status: C - P0 is complete; after this branch merges, continue with
-  P1 as the next maintenance step.
-- Last completed evidence: P0 added this post-v0.1.3 plan, updated README,
-  operator quickstart, release checklist, release evidence guide, manual smoke
-  ledger, and narrow docs tests so this plan is the active cursor. `v0.1.3`
-  was published at
+- Current stage: P2 - Manual Smoke Freshness Decision.
+- Stage status: C - P1 is complete; after this branch merges, continue with
+  P2 as the next maintenance step.
+- Last completed evidence: P1 refreshed stale UIA helper quality matrix wording
+  so it no longer presents the `v0.1.3` readiness round as current, kept
+  post-v0.1.3 as the active maintenance plan, and updated narrow docs tests.
+  P0 added this post-v0.1.3 plan, updated README, operator quickstart, release
+  checklist, release evidence guide, manual smoke ledger, and narrow docs tests
+  so this plan is the active cursor. `v0.1.3` was published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3 and targets
   `0aa5c1b6e1959ef6504e6d70e4aad79a60594926`; post-publication
   reconciliation merged at `917a1f4b70d6ae1527332fe97cad3e0cc0d9d520`.
-- Last validation: P0 local deterministic validation passed:
+- Last validation: P1 local deterministic validation passed:
   `python -m pytest -q`, both .NET builds, install CLI smoke, full harness, and
   `git diff --check`.
-- Next atomic task: start P1 by auditing stale current-release wording in
-  operator-facing docs and tests without changing product behavior.
+- Next atomic task: start P2 by deciding whether the next release can inherit
+  older manual UIA smoke evidence or requires a fresh manual run.
 - Known blockers: none.
 
 ## Phased Work
@@ -160,6 +162,12 @@ Stage-specific gates:
 - During P0, updated only documentation and docs tests. No product code,
   schemas, CLI/MCP JSON shape, helper/watcher behavior, capture surfaces, or
   privacy behavior changed.
+- During P1, treated the UIA helper quality matrix as an operator-facing
+  release evidence surface. The only stale current-release wording found was
+  the matrix reference to the `v0.1.3` readiness round; it now points to the
+  active post-v0.1.3 maintenance plan and future `v0.1.4` readiness work.
+- During P1, renamed a stale test function that still called the published
+  `v0.1.2` release record "pending"; this changed test naming only.
 
 ## Validation Log
 
@@ -172,6 +180,15 @@ Stage-specific gates:
   on `917a1f4b70d6ae1527332fe97cad3e0cc0d9d520`.
 - Stage P0 local validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - 11 passed.
+  - `python -m pytest -q` - 97 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage P1 local validation:
+  - `python -m pytest tests/test_uia_helper_quality_matrix.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - 15 passed.
+  - stale-current-cursor `rg` scan over README.md, docs, and tests - no matches for current `v0.1.3` readiness, `after v0.1.2`, pending post-v0.1.3 plan, or stale pending test names.
   - `python -m pytest -q` - 97 passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
