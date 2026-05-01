@@ -55,9 +55,10 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
 
     assert "next-round-plan-post-v0.1.2.md" in current_section
     assert "release-v0.1.3.md" in current_section
-    assert "release-v0.1.2.md" in current_section
+    assert "release-v0.1.2.md" not in current_section
     assert "next-round-plan-post-v0.1.1.md" not in current_section
     assert "next-round-plan-v0.1.0-final.md" not in current_section
+    assert "release-v0.1.2.md" in historical_section
     assert "next-round-plan-post-v0.1.1.md" in historical_section
     assert "release-v0.1.1.md" in historical_section
     assert "next-round-plan-v0.1.0-final.md" in historical_section
@@ -73,8 +74,10 @@ def test_post_v012_plan_is_active_without_expanding_scope():
     )
 
     for expected in (
-        "Current stage: M4 - v0.1.3 Release Readiness.",
+        "Current stage: Closed - `v0.1.3` published.",
+        "Stage status: G - `v0.1.3` is published",
         "M4 aligned package/runtime/MCP version identity to",
+        "published\n  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
         "post-publication reconciliation `main` Windows Harness run `25084360942`",
         "compatible maintenance pass toward `v0.1.3`",
         "Phase 6 remains privacy spec/scorecard work only",
@@ -94,7 +97,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "stable baseline is `v0.1.2`",
+        "stable baseline is `v0.1.3`",
+        "new post-v0.1.3 execution cursor should be established",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
         "no observed-content artifact is committed to refresh evidence",
     ):
@@ -102,6 +106,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
+        "`v0.1.3` is the stable baseline",
+        "new post-v0.1.3 execution",
         "manual UIA smoke evidence inherited from `v0.1.0`",
         "must be labeled as inherited or stale",
         "must not present inherited manual smoke as freshly run",
@@ -134,7 +140,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         assert gate in ledger
 
     for expected in (
-        "Stable release baseline | `v0.1.2`",
+        "Stable release baseline | `v0.1.3`",
+        "Latest published release record | [v0.1.3 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
         "Inherited from `v0.1.0`; stale for a new release unless rerun",
         "Do not paste observed text",
@@ -147,5 +154,5 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     assert "[Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)" in readme
     assert "Manual smoke evidence ledger" in checklist
     assert "Manual smoke evidence ledger" in evidence
-    assert "Current stage: M4 - v0.1.3 Release Readiness." in plan
+    assert "Current stage: Closed - `v0.1.3` published." in plan
     assert "added a ledger instead of copying observed-content artifacts" in plan

@@ -5,7 +5,9 @@ releases.
 
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
-The active post-v0.1.2 execution cursor lives in
+The latest published release record is
+[v0.1.3 maintenance release record](release-v0.1.3.md). The closed
+post-v0.1.2 execution cursor lives in
 [Post-v0.1.2 maintenance plan](next-round-plan-post-v0.1.2.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md).
 
@@ -25,10 +27,10 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the active execution cursor points to the current post-v0.1.2 plan until a
-  future plan supersedes it;
-- the stable baseline is `v0.1.2` unless release-readiness work explicitly
-  prepares another version;
+- the stable baseline is `v0.1.3` until a future plan explicitly prepares
+  another version;
+- a new post-v0.1.3 execution cursor should be established before any
+  implementation;
 - manual UIA smoke inherited from an earlier release is labeled as inherited or
   stale, not current;
 - stale manual smoke can support context, but a hard release gate needs fresh

@@ -13,9 +13,9 @@ or token canaries.
 
 | Field | Value |
 | --- | --- |
-| Stable release baseline | `v0.1.2` |
-| Active maintenance plan | [Post-v0.1.2 maintenance plan](next-round-plan-post-v0.1.2.md) |
-| Latest published release record | [v0.1.2 maintenance release record](release-v0.1.2.md) |
+| Stable release baseline | `v0.1.3` |
+| Active maintenance plan | New post-v0.1.3 plan pending; [Post-v0.1.2 maintenance plan](next-round-plan-post-v0.1.2.md) is closed |
+| Latest published release record | [v0.1.3 maintenance release record](release-v0.1.3.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
 
@@ -23,8 +23,8 @@ or token canaries.
 
 | Gate | Release meaning | Latest known result | Freshness | Evidence source | Refresh requirement | Artifact policy |
 | --- | --- | --- | --- | --- | --- | --- |
-| Notepad targeted UIA smoke | Hard manual release gate | Pass | Inherited from `v0.1.0`; stale for a new release unless rerun or explicitly accepted | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh before `v0.1.3` release readiness if manual hard gates are required | Local JSON artifact path only; do not commit capture JSON |
-| Edge targeted UIA smoke | Hard manual release gate | Pass | Inherited from `v0.1.0`; stale for a new release unless rerun or explicitly accepted | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh before `v0.1.3` release readiness if manual hard gates are required | Local JSON artifact path only; do not commit local HTML or capture JSON |
+| Notepad targeted UIA smoke | Hard manual release gate | Pass | Inherited from `v0.1.0`; stale for a new release unless rerun or explicitly accepted | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh before the next release readiness if manual hard gates are required | Local JSON artifact path only; do not commit capture JSON |
+| Edge targeted UIA smoke | Hard manual release gate | Pass | Inherited from `v0.1.0`; stale for a new release unless rerun or explicitly accepted | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh before the next release readiness if manual hard gates are required | Local JSON artifact path only; do not commit local HTML or capture JSON |
 | VS Code metadata smoke | Conditional hard manual release gate when `code.cmd` is available | Pass with diagnostic warning | Inherited from `v0.1.0`; stale for a new release unless rerun or explicitly accepted | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh when `code.cmd` is available and manual hard gates are required | Local JSON artifact path only; do not commit editor contents |
 | VS Code strict Monaco marker | Diagnostic, non-blocking for v0.1 | Diagnostic failure, known Monaco/UIA limitation | Inherited diagnostic from `v0.1.0` | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh only if investigating Monaco/UIA exposure or changing smoke docs/scripts | Local diagnostic artifact path only |
 | Watcher preview live smoke | Preview diagnostic/manual confidence gate | Heartbeat-only liveness diagnostic; deterministic watcher gates passed | Inherited diagnostic from `v0.1.0`; deterministic watcher coverage remains current through harness | [v0.1.0 final release readiness record](release-v0.1.0.md) and `python harness/scripts/run_harness.py` | Refresh only if watcher preview behavior, docs, or release checklist requires live evidence | Do not save or commit raw watcher JSONL |
@@ -56,4 +56,3 @@ smoke. These command patterns are evidence shapes only; replace
   readiness.
 - Do not use stale manual evidence to justify new capture surfaces or Phase 6
   implementation.
-
