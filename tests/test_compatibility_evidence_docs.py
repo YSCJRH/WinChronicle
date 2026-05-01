@@ -78,14 +78,17 @@ def test_v012_release_record_is_pending_and_compatible():
         assert f"`{tool_name}`" in text
 
 
-def test_v013_release_readiness_record_is_pending_and_compatible():
+def test_v013_release_record_is_published_and_compatible():
     text = V013_RELEASE.read_text(encoding="utf-8")
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: pending explicit approval; not published.",
+        "Publication status: published maintenance release.",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
+        "Final tag target | `0aa5c1b6e1959ef6504e6d70e4aad79a60594926`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.2",
         "M3 post-merge `main` Windows Harness | Passed, run `25106280110`",
+        "M4 post-merge `main` Windows Harness | Passed, run `25193726729`",
         "must report `0.1.3`",
         "exact read-only MCP tool list remains unchanged",
         "Phase 6 remains specification-only",
@@ -93,7 +96,7 @@ def test_v013_release_readiness_record_is_pending_and_compatible():
         "no helper/watcher behavior changes",
         "no screenshot capture code",
         "no OCR engine integration",
-        "Publication approval: not yet granted.",
+        "Publication approval: granted by the user message `approve publication`.",
     ):
         assert phrase in normalized
 

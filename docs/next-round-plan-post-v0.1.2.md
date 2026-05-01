@@ -22,18 +22,19 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: M4 - v0.1.3 Release Readiness.
-- Stage status: D - M4 release readiness is locally complete; PR Windows
-  Harness, merge, post-merge Windows Harness, and explicit publication approval
-  remain.
+- Current stage: Closed - `v0.1.3` published.
+- Stage status: G - `v0.1.3` is published, release evidence is reconciled, and
+  a new post-v0.1.3 plan should be established before any implementation.
 - Last completed evidence: M4 aligned package/runtime/MCP version identity to
-  `0.1.3`, added the `v0.1.3` release-readiness record, linked it from
-  operator entry points, and kept publication pending explicit approval.
-- Last validation: M4 local validation passed with targeted release docs and
-  version tests, full pytest, helper build, watcher build, install CLI smoke,
-  full harness, and `git diff --check`.
-- Next atomic task: open the M4 PR, run PR Windows Harness, merge after review
-  and green CI, then wait for explicit approval before publishing `v0.1.3`.
+  `0.1.3`, added the `v0.1.3` release record, merged PR #57, passed PR Windows
+  Harness run `25193581576`, passed post-merge `main` Windows Harness run
+  `25193726729`, and published
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3.
+- Last validation: `gh release view v0.1.3` confirmed the release is published,
+  not a draft, not a prerelease, and targets
+  `0aa5c1b6e1959ef6504e6d70e4aad79a60594926`.
+- Next atomic task: establish a new post-v0.1.3 next-round plan before any
+  implementation.
 - Known blockers: none.
 
 ## Phased Work
@@ -162,6 +163,8 @@ Stage-specific gates:
 - During M4, treated the `0.1.3` version bump as release metadata alignment.
   Publication remains blocked on explicit approval even after local and CI
   gates pass.
+- Published `v0.1.3` only after explicit user approval. The release targets the
+  already validated `main` SHA and does not retag `v0.1.2`.
 
 ## Validation Log
 
@@ -200,3 +203,9 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Stage M4 publication validation:
+  - PR #57 merged at `0aa5c1b6e1959ef6504e6d70e4aad79a60594926`.
+  - PR Windows Harness run `25193581576` passed.
+  - Post-merge `main` Windows Harness run `25193726729` passed.
+  - `gh release view v0.1.3 --json tagName,url,isDraft,isPrerelease,targetCommitish,publishedAt` confirmed the release is published, not a draft, not a prerelease, targets `0aa5c1b6e1959ef6504e6d70e4aad79a60594926`, and is available at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3.
+  - `git fetch origin tag v0.1.3 --force; git rev-parse v0.1.3` confirmed the tag resolves to `0aa5c1b6e1959ef6504e6d70e4aad79a60594926`.
