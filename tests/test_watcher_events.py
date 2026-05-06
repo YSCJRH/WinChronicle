@@ -355,6 +355,28 @@ def test_watcher_smoke_default_allows_capture_startup_before_heartbeat():
     assert args.heartbeat_ms == 250
 
 
+def test_watcher_smoke_accepts_capture_startup_without_heartbeat():
+    assert run_watcher_smoke._has_capture_smoke_signal(
+        {
+            "captures_written": 1,
+            "duplicates_skipped": 0,
+            "denylisted_skipped": 0,
+            "heartbeats": 0,
+        }
+    )
+
+
+def test_watcher_smoke_rejects_heartbeat_only_without_capture():
+    assert not run_watcher_smoke._has_capture_smoke_signal(
+        {
+            "captures_written": 0,
+            "duplicates_skipped": 0,
+            "denylisted_skipped": 0,
+            "heartbeats": 1,
+        }
+    )
+
+
 def test_watcher_preview_docs_cover_reliability_modes_and_boundaries():
     docs = (ROOT / "docs" / "watcher-preview.md").read_text(encoding="utf-8")
 

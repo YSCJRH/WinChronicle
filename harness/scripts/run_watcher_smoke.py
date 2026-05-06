@@ -74,10 +74,10 @@ def main(argv: list[str] | None = None) -> int:
             return dispatch.returncode
 
         counts = json.loads(dispatch.stdout)
-        if counts["captures_written"] < 1 or counts["heartbeats"] < 1:
+        if not _has_capture_smoke_signal(counts):
             event_types = [str(event.get("event_type", "<missing>")) for event in events]
             print(
-                "FAIL: watcher smoke did not write a capture and heartbeat "
+                "FAIL: watcher smoke did not write a capture "
                 f"(counts={json.dumps(counts, sort_keys=True)}, events={event_types})"
             )
             return 1
@@ -135,6 +135,10 @@ def _run_watcher(args: argparse.Namespace, fake_helper: Path) -> subprocess.Comp
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
     )
+
+
+def _has_capture_smoke_signal(counts: dict[str, int]) -> bool:
+    return counts["captures_written"] >= 1
 
 
 def _load_and_validate_events(event_path: Path) -> list[dict[str, object]]:
