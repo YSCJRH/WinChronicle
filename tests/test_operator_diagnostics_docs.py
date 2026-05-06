@@ -80,8 +80,8 @@ def test_post_v013_plan_is_active_without_expanding_scope():
     )
 
     for expected in (
-        "Current stage: P2 - Manual Smoke Freshness Decision.",
-        "Stage status: C - P1 is complete",
+        "Current stage: P3 - Compatibility Guardrail Maintenance.",
+        "Stage status: C - P2 is complete",
         "published at\n  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
         "post-reconciliation\nWindows Harness run `25209330825` passed",
         "compatible maintenance pass toward `v0.1.4`",
@@ -92,6 +92,7 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "Publication remains blocked on explicit user approval",
         "Stage P0 local validation:",
         "Stage P1 local validation:",
+        "Stage P2 local validation:",
     ):
         assert expected in plan
 
@@ -108,6 +109,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "stable baseline is `v0.1.3`",
         "active post-v0.1.3 execution cursor must be followed",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
+        "inherited `v0.1.0` manual",
+        "capture-surface\n  behavior changes",
         "no observed-content artifact is committed to refresh evidence",
     ):
         assert expected in checklist
@@ -119,6 +122,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "manual UIA smoke evidence inherited from `v0.1.0`",
         "must be labeled as inherited or stale",
         "must not present inherited manual smoke as freshly run",
+        "may explicitly accept inherited `v0.1.0` manual smoke",
+        "capture-surface behavior changed",
         "never observed content",
     ):
         assert expected in evidence
@@ -152,7 +157,10 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Active maintenance plan | [Post-v0.1.3 maintenance plan]",
         "Latest published release record | [v0.1.3 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
+        "P2 freshness decision | For the post-v0.1.3 compatible maintenance path",
         "Inherited from `v0.1.0`; stale for a new release unless rerun",
+        "accepted for `v0.1.4` only when",
+        "Fresh manual smoke is required if any helper, watcher, smoke script",
         "Do not paste observed text",
         "Do not save or commit raw watcher JSONL",
         "not current evidence unless",
@@ -163,5 +171,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     assert "[Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)" in readme
     assert "Manual smoke evidence ledger" in checklist
     assert "Manual smoke evidence ledger" in evidence
-    assert "Current stage: P2 - Manual Smoke Freshness Decision." in plan
+    assert "Current stage: P3 - Compatibility Guardrail Maintenance." in plan
+    assert "Stage status: C - P2 is complete" in plan
+    assert "During P2, decided" in plan
     assert "observed-content\n  artifacts remain uncommitted" in plan
