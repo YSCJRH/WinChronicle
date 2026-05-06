@@ -11,6 +11,7 @@ from winchronicle.events import (
 )
 from winchronicle.schema import validate_watcher_event
 from winchronicle.storage import search_captures
+from harness.scripts import run_watcher_smoke
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -345,6 +346,13 @@ def test_watcher_smoke_script_reports_missing_build_without_observed_content(tmp
 
     assert completed.returncode == 1
     assert completed.stdout.strip() == "FAIL: watcher DLL does not exist; run dotnet build first"
+
+
+def test_watcher_smoke_default_allows_capture_startup_before_heartbeat():
+    args = run_watcher_smoke.build_parser().parse_args([])
+
+    assert args.duration_ms >= 3000
+    assert args.heartbeat_ms == 250
 
 
 def test_watcher_preview_docs_cover_reliability_modes_and_boundaries():
