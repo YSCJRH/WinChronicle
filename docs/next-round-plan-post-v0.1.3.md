@@ -24,8 +24,9 @@ service install, and no default background capture.
 ## Execution Cursor
 
 - Current stage: P3 - Compatibility Guardrail Maintenance.
-- Stage status: C - P2 is complete; after this branch merges, continue with
-  P3 as the next maintenance step.
+- Stage status: A - P3 is in progress; post-merge `main` Windows Harness
+  exposed a deterministic watcher smoke timing flake that is being fixed as
+  harness-only guardrail maintenance.
 - Last completed evidence: P2 documented the manual smoke freshness decision:
   inherited `v0.1.0` manual smoke may be explicitly accepted for a compatible
   `v0.1.4` maintenance release only when no helper, watcher, smoke script,
@@ -39,12 +40,13 @@ service install, and no default background capture.
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3 and targets
   `0aa5c1b6e1959ef6504e6d70e4aad79a60594926`; post-publication
   reconciliation merged at `917a1f4b70d6ae1527332fe97cad3e0cc0d9d520`.
-- Last validation: P2 local deterministic validation passed:
+- Last validation: P3 local deterministic validation passed:
   `python -m pytest -q`, both .NET builds, install CLI smoke, full harness, and
   `git diff --check`.
-- Next atomic task: start P3 by running the compatibility drift sweep and
-  strengthening only tests for discovered contract drift.
-- Known blockers: none.
+- Next atomic task: push the harness-only smoke stability branch and confirm PR
+  plus post-merge Windows Harness.
+- Known blockers: post-merge `main` Windows Harness run `25410609944` failed in
+  `harness/scripts/run_watcher_smoke.py` until this P3 fix lands.
 
 ## Phased Work
 
@@ -178,6 +180,13 @@ Stage-specific gates:
   CLI/MCP shape, or capture-surface behavior changes. Fresh manual smoke is
   still required for any such behavior change or if the release approver
   requires fresh hard-gate evidence.
+- During P3, treated the post-merge `main` Windows Harness watcher smoke
+  failure as a harness timing stability issue: the fake-helper
+  `--capture-on-start` path can consume an 850 ms smoke budget before the
+  heartbeat loop runs on slower CI attempts. Increased only the harness smoke
+  default duration and added counts/event diagnostics. This does not change
+  product watcher/helper behavior, CLI/MCP shape, capture schema, privacy
+  behavior, or capture surface.
 
 ## Validation Log
 
@@ -209,6 +218,16 @@ Stage-specific gates:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_uia_helper_quality_matrix.py tests/test_compatibility_evidence_docs.py -q` - 15 passed.
   - manual-smoke freshness `rg` scan over docs and tests - found the expected P2 decision, `v0.1.4` acceptance policy, fresh-smoke requirement, and capture-surface guard references.
   - `python -m pytest -q` - 97 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage P3 watcher smoke stability validation:
+  - `python -m pytest tests/test_watcher_events.py -q` - 14 passed.
+  - `python harness/scripts/run_watcher_smoke.py` - passed.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_watcher_events.py -q` - 20 passed after updating docs-test cursor expectations.
+  - `python -m pytest -q` - 98 passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.

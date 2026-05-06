@@ -33,7 +33,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--watcher-dll", type=Path, default=DEFAULT_WATCHER_DLL)
     parser.add_argument("--fixture", type=Path, default=DEFAULT_HELPER_FIXTURE)
-    parser.add_argument("--duration-ms", type=int, default=850)
+    parser.add_argument("--duration-ms", type=int, default=3000)
     parser.add_argument("--heartbeat-ms", type=int, default=250)
     return parser
 
@@ -75,7 +75,11 @@ def main(argv: list[str] | None = None) -> int:
 
         counts = json.loads(dispatch.stdout)
         if counts["captures_written"] < 1 or counts["heartbeats"] < 1:
-            print("FAIL: watcher smoke did not write a capture and heartbeat")
+            event_types = [str(event.get("event_type", "<missing>")) for event in events]
+            print(
+                "FAIL: watcher smoke did not write a capture and heartbeat "
+                f"(counts={json.dumps(counts, sort_keys=True)}, events={event_types})"
+            )
             return 1
 
         search = subprocess.run(
