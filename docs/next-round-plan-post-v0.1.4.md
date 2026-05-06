@@ -32,10 +32,15 @@ service install, and no default background capture.
   Windows Harness run `25432718007` passed on that SHA. P0 added this
   post-v0.1.4 plan and updated README, operator quickstart, release checklist,
   release evidence guide, manual smoke ledger, and docs tests so this plan is
-  the active cursor and post-v0.1.3 is historical.
+  the active cursor and post-v0.1.3 is historical. The post-merge Windows
+  Harness run `25466653439` exposed a deterministic watcher-smoke harness
+  assertion issue after a capture was written before any heartbeat was emitted.
 - Last validation: P0 full local validation passed: `python -m pytest -q`,
   both .NET builds, `python harness/scripts/run_install_cli_smoke.py`,
-  `python harness/scripts/run_harness.py`, and `git diff --check`.
+  `python harness/scripts/run_harness.py`, and `git diff --check`. The
+  watcher-smoke stability fix also passed local `tests/test_watcher_events.py`,
+  full pytest, both .NET builds, install CLI smoke, full harness, and
+  `git diff --check`.
 - Next atomic task: start P1 by auditing docs and scorecards that still
   describe older release plans as current; update only operator-facing entry
   points and narrow docs tests for any discovered drift.
@@ -162,6 +167,13 @@ Stage-specific gates:
 - During P0, updated only documentation and docs tests. No product code,
   schemas, CLI/MCP JSON shape, helper/watcher behavior, capture surfaces, or
   privacy behavior changed.
+- After P0 merged, treated Windows Harness run `25466653439` as a harness-only
+  watcher-smoke stability failure: the fake-helper `--capture-on-start` path
+  wrote a valid capture before the short smoke emitted a heartbeat. The hard
+  deterministic smoke signal is now the persisted/searchable capture; heartbeat
+  remains a watcher liveness diagnostic covered by separate tests and docs. This
+  does not change product watcher/helper behavior, CLI/MCP shape, capture
+  schema, privacy behavior, or capture surface.
 
 ## Validation Log
 
@@ -175,6 +187,21 @@ Stage-specific gates:
 - Stage P0 local validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - 12 passed.
   - `python -m pytest -q` - 99 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Post-merge watcher-smoke stability validation:
+  - Windows Harness run `25466653439` failed on `main` because
+    `run_watcher_smoke.py` required both `captures_written >= 1` and
+    `heartbeats >= 1`; the run produced one `foreground_changed` capture and
+    zero heartbeats in the short smoke budget.
+  - `python -m pytest tests/test_watcher_events.py -q` - 16 passed after
+    adding coverage for capture-without-heartbeat acceptance and
+    heartbeat-only rejection in deterministic capture smoke.
+  - `python harness/scripts/run_watcher_smoke.py` - passed.
+  - `python -m pytest -q` - 101 passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
