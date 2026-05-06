@@ -36,6 +36,10 @@ inherited historical evidence:
   stale, not current;
 - stale manual smoke can support context, but a hard release gate needs fresh
   evidence or an explicit documented decision to keep the older result;
+- for the post-v0.1.3 compatible maintenance path, inherited `v0.1.0` manual
+  smoke can be explicitly accepted for `v0.1.4` only if no helper, watcher,
+  smoke script, capture, privacy, product CLI/MCP shape, or capture-surface
+  behavior changes;
 - no observed-content artifact is committed to refresh evidence.
 
 ## Manual UIA Smoke Gates

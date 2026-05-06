@@ -38,6 +38,10 @@ historical records. After the post-v0.1.3 reconciliation:
 - manual UIA smoke evidence inherited from `v0.1.0` or another older release
   must be labeled as inherited or stale;
 - a release record must not present inherited manual smoke as freshly run;
+- for the post-v0.1.3 compatible maintenance path, a `v0.1.4` release record
+  may explicitly accept inherited `v0.1.0` manual smoke only if no helper,
+  watcher, smoke script, capture, privacy, product CLI/MCP shape, or
+  capture-surface behavior changed;
 - refreshing manual smoke must record command/result/time/environment/local
   artifact path only, never observed content.
 

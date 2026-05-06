@@ -18,6 +18,7 @@ or token canaries.
 | Latest published release record | [v0.1.3 maintenance release record](release-v0.1.3.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
+| P2 freshness decision | For the post-v0.1.3 compatible maintenance path toward `v0.1.4`, inherited `v0.1.0` manual smoke may be explicitly accepted in the release record only if the release changes documentation, tests, version metadata, or compatibility evidence without changing helper behavior, watcher behavior, smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces. |
 
 ## Latest Known Manual Evidence
 
@@ -51,6 +52,13 @@ smoke. These command patterns are evidence shapes only; replace
   [Manual smoke evidence template](manual-smoke-evidence-template.md).
 - Inherited evidence can provide context, but it is not current evidence unless
   the release record explicitly accepts it for that release.
+- For the post-v0.1.3 path, inherited `v0.1.0` manual smoke can be explicitly
+  accepted for `v0.1.4` only when the release remains compatible and does not
+  change helper behavior, watcher behavior, smoke scripts, capture behavior,
+  privacy behavior, product CLI/MCP shape, or capture surfaces.
+- Fresh manual smoke is required if any helper, watcher, smoke script, capture,
+  privacy, product CLI/MCP shape, or capture-surface behavior changes, or if
+  the release approver requires fresh hard-gate evidence.
 - If helper/smoke scripts, watcher preview behavior, or manual smoke docs
   materially change, refresh the relevant manual smoke before release
   readiness.
