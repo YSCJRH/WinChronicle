@@ -168,7 +168,8 @@ Stage-specific gates:
 - During P1, treated the UIA helper quality matrix as an operator-facing
   release evidence surface. The only stale current-release wording found was
   the matrix reference to the `v0.1.3` readiness round; it now points to the
-  active post-v0.1.3 maintenance plan and future `v0.1.4` readiness work.
+  post-v0.1.3 maintenance plan that was current at the time and future
+  `v0.1.4` readiness work.
 - During P1, renamed a stale test function that still called the published
   `v0.1.2` release record "pending"; this changed test naming only.
 - During P2, decided that the post-v0.1.3 compatible maintenance path may

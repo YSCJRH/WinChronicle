@@ -6,13 +6,13 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.4 maintenance release record](release-v0.1.4.md). The post-v0.1.3
-execution cursor is recorded in
-[Post-v0.1.3 maintenance plan](next-round-plan-post-v0.1.3.md). The published
+[v0.1.4 maintenance release record](release-v0.1.4.md). The active
+post-v0.1.4 execution cursor lives in
+[Post-v0.1.4 maintenance plan](next-round-plan-post-v0.1.4.md). The published
 `v0.1.4` maintenance release record is
 [v0.1.4 maintenance release record](release-v0.1.4.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
-post-v0.1.2 plan is closed historical evidence.
+post-v0.1.3 plan is closed historical evidence.
 
 ## Deterministic Gates
 
@@ -30,20 +30,20 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.4` until a later maintenance plan explicitly
+- the stable baseline is `v0.1.4` until the active post-v0.1.4 plan explicitly
   prepares another version;
 - `v0.1.4` is the latest published release; its release URL, tag target, and
   post-merge evidence are recorded in the release record;
-- the active post-v0.1.3 execution cursor must be followed before any
+- the active post-v0.1.4 execution cursor must be followed before any
   implementation;
 - manual UIA smoke inherited from an earlier release is labeled as inherited or
   stale, not current;
 - stale manual smoke can support context, but a hard release gate needs fresh
   evidence or an explicit documented decision to keep the older result;
-- for the post-v0.1.3 compatible maintenance path, inherited `v0.1.0` manual
-  smoke can be explicitly accepted for `v0.1.4` only if no helper, watcher,
-  smoke script, capture, privacy, product CLI/MCP shape, or capture-surface
-  behavior changes;
+- for the post-v0.1.4 compatible maintenance path, inherited `v0.1.0` manual
+  smoke can be explicitly accepted for a future release only after a fresh P2
+  decision and only if no helper, watcher, smoke script, capture, privacy,
+  product CLI/MCP shape, or capture-surface behavior changes;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are
