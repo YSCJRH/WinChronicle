@@ -13,13 +13,13 @@ or token canaries.
 
 | Field | Value |
 | --- | --- |
-| Stable release baseline | `v0.1.3` |
-| Active maintenance plan | [Post-v0.1.3 maintenance plan](next-round-plan-post-v0.1.3.md) |
-| Pending release-readiness record | [v0.1.4 maintenance release readiness record](release-v0.1.4.md) |
-| Latest published release record | [v0.1.3 maintenance release record](release-v0.1.3.md) |
+| Stable release baseline | `v0.1.4` |
+| Latest maintenance plan | [Post-v0.1.3 maintenance plan](next-round-plan-post-v0.1.3.md) |
+| Published release record | [v0.1.4 maintenance release record](release-v0.1.4.md) |
+| Latest published release record | [v0.1.4 maintenance release record](release-v0.1.4.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
-| P2 freshness decision | For the post-v0.1.3 compatible maintenance path toward `v0.1.4`, inherited `v0.1.0` manual smoke may be explicitly accepted in the release record only if the release changes documentation, tests, version metadata, or compatibility evidence without changing helper behavior, watcher behavior, smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces. |
+| P2 freshness decision | For the post-v0.1.3 compatible maintenance path that produced `v0.1.4`, inherited `v0.1.0` manual smoke was explicitly accepted in the release record only because the release changed documentation, tests, version metadata, or compatibility evidence without changing helper behavior, watcher behavior, smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces. |
 
 ## Latest Known Manual Evidence
 

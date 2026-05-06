@@ -2,18 +2,18 @@
 
 ## Summary
 
-`v0.1.3` is published at
-https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3. The release tag
-targets `0aa5c1b6e1959ef6504e6d70e4aad79a60594926`. The post-publication
+`v0.1.4` is published at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4. The release tag
+targets `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`. The post-publication
 reconciliation `main` commit is
-`917a1f4b70d6ae1527332fe97cad3e0cc0d9d520`, and the post-reconciliation
-Windows Harness run `25209330825` passed on that SHA.
+`31164abe0a391a4cf4e2bf5741395fe7a8ae8750`, and the post-reconciliation
+Windows Harness run `25412257502` passed on that SHA.
 
-The next round should be a small compatible maintenance pass toward `v0.1.4`.
-It should keep release evidence current, preserve operator entry points, decide
-manual smoke freshness before any release, and maintain compatibility
-guardrails. It must not expand the capture surface or start Phase 6
-implementation.
+The post-v0.1.3 maintenance round is complete. The next round will be planned
+from the published `v0.1.4` baseline, keep release evidence current, preserve
+operator entry points, decide manual smoke freshness before any release, and
+maintain compatibility guardrails. It must not expand the capture surface or
+start Phase 6 implementation.
 
 Keep the v0.1 product boundary unchanged: local-first, UIA-first,
 harness-first, read-only MCP first, no screenshot/OCR implementation, no audio
@@ -23,9 +23,8 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: P4 - v0.1.4 Release Readiness.
-- Stage status: F - v0.1.4 release-readiness gates have passed; publication
-  requires explicit user approval.
+- Current stage: G - v0.1.4 Published Baseline Reconciliation.
+- Stage status: G - v0.1.4 published; baseline reconciliation complete.
 - Last completed evidence: P2 documented the manual smoke freshness decision:
   inherited `v0.1.0` manual smoke may be explicitly accepted for a compatible
   `v0.1.4` maintenance release only when no helper, watcher, smoke script,
@@ -34,18 +33,17 @@ service install, and no default background capture.
   the `v0.1.3` readiness round as current, kept post-v0.1.3 as the active
   maintenance plan, and updated narrow docs tests. P0 added this post-v0.1.3
   plan, updated README, operator quickstart, release checklist, release
-  evidence guide, manual smoke ledger, and narrow docs tests so this plan is
-  the active cursor. `v0.1.3` was published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3 and targets
-  `0aa5c1b6e1959ef6504e6d70e4aad79a60594926`; post-publication
-  reconciliation merged at `917a1f4b70d6ae1527332fe97cad3e0cc0d9d520`.
+  evidence guide, manual smoke ledger, and narrow docs tests so this plan was
+  the active cursor. `v0.1.4` is now published at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4 and targets
+  `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`; post-publication
+  reconciliation merged at `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`.
 - Last validation: P4 local deterministic validation, PR #64 Windows Harness
-  run `25411926176`, and post-merge `main` Windows Harness run `25411989748`
-  passed.
-- Next atomic task: wait for explicit publication approval; if approved,
-  publish `v0.1.4` and reconcile the release URL, tag target, and publication
-  evidence.
-- Known blockers: publication requires explicit user approval.
+  run `25411926176`, post-merge `main` Windows Harness run `25411989748`, and
+  `gh release view v0.1.4` passed.
+- Next atomic task: establish the post-v0.1.4 next-round plan from the
+  published baseline.
+- Known blockers: none.
 
 ## Phased Work
 
@@ -190,20 +188,20 @@ Stage-specific gates:
   post-merge `main` Windows Harness run `25410946398` then passed on
   `63547c9f4ba4c1a218913dca93dbdf3714879f7e`, restoring the mainline gate.
 - During P4, aligned package/runtime/MCP version identity to `0.1.4`, added
-  the pending `v0.1.4` release-readiness record, and kept `v0.1.3` as the
-  latest published release until explicit approval and release creation are
-  complete.
+  the `v0.1.4` release record, and kept `v0.1.3` as the latest published
+  release until explicit approval and release creation were complete.
 - During P4, addressed the P2 manual-smoke freshness policy by treating the P3
   deterministic watcher smoke timing change as requiring fresh deterministic
   gate evidence, not fresh manual UIA smoke, because product UIA behavior and
   manual UIA smoke scripts did not change.
 - During P4, merged PR #64 after PR Windows Harness run `25411926176` passed;
   post-merge `main` Windows Harness run `25411989748` passed on
-  `5b2b042459874e1197011b4c560c2c7cb93287cc`. The release remains unpublished
-  pending explicit approval.
+  `5b2b042459874e1197011b4c560c2c7cb93287cc`. The release was published after
+  explicit approval.
 - During P4 evidence follow-up, recorded the final PR #64 and post-merge
-  `main` Windows Harness evidence in the release-readiness record without
-  changing product behavior or publication status.
+  `main` Windows Harness evidence in the release record without changing
+  product behavior, and then published `v0.1.4` without changing product
+  behavior.
 
 ## Validation Log
 
@@ -214,6 +212,13 @@ Stage-specific gates:
 - `gh run view 25209330825 --json databaseId,conclusion,headSha,status,url,workflowName`
   confirmed the post-publication reconciliation `main` Windows Harness passed
   on `917a1f4b70d6ae1527332fe97cad3e0cc0d9d520`.
+- `gh release view v0.1.4 --json name,tagName,url,isDraft,isPrerelease,publishedAt,targetCommitish`
+  confirmed the release is published, not a draft, not a prerelease, targets
+  `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`, and is available at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4.
+- `gh run view 25412257502 --json databaseId,conclusion,headSha,status,url,workflowName`
+  confirmed the post-publication reconciliation `main` Windows Harness passed
+  on `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`.
 - Stage P0 local validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - 11 passed.
   - `python -m pytest -q` - 97 passed.

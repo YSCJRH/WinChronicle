@@ -1,37 +1,37 @@
-# v0.1.4 Maintenance Release Readiness Record
+# v0.1.4 Maintenance Release Record
 
-This record prepares the compatible `v0.1.4` maintenance release from the
-published `v0.1.3` baseline. It records commands, results, commit identifiers,
-CI URLs, environment notes, and local artifact paths only. It does not commit
-observed-content artifacts.
+This record captures the published compatible `v0.1.4` maintenance release
+from the published `v0.1.3` baseline. It records commands, results, commit
+identifiers, CI URLs, environment notes, and local artifact paths only. It
+does not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.4` is prepared but not published. The release-readiness PR and
-post-merge `main` Windows Harness passed. Publication remains blocked on
-explicit user approval.
+`v0.1.4` is published. The release-readiness PR and post-merge `main` Windows
+Harness passed. Publication completed after explicit user approval.
 
 If any product behavior, schema, CLI/MCP JSON shape, privacy behavior,
 helper/watcher behavior, or capture-surface change is required before
 publication, do not publish direct `v0.1.4`. Prepare a release candidate
 instead.
 
-Publication status: pending explicit approval.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.4` |
-| Stage | Release readiness, pending publication approval |
+| Stage | Published maintenance release |
 | Evidence date | 2026-05-06, Asia/Shanghai |
 | Base `main` SHA before P4 readiness | `6a9667eb216906cfdf8846c59b0a716296f25bde` |
 | Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/64 |
 | Candidate PR Windows Harness | Passed, run `25411926176`, https://github.com/YSCJRH/WinChronicle/actions/runs/25411926176 |
 | Candidate post-merge `main` Windows Harness | Passed, run `25411989748`, https://github.com/YSCJRH/WinChronicle/actions/runs/25411989748 |
-| Publication status | Pending explicit approval |
-| Release URL | Pending |
-| Final tag target | Pending |
+| Final post-publication `main` Windows Harness | Passed, run `25412257502`, https://github.com/YSCJRH/WinChronicle/actions/runs/25412257502 |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4 |
+| Final tag target | `31164abe0a391a4cf4e2bf5741395fe7a8ae8750` |
 | Previous stable release | `v0.1.3` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3 |
 | `v0.1.3` tag target | `0aa5c1b6e1959ef6504e6d70e4aad79a60594926` |
@@ -76,13 +76,14 @@ Environment:
 | `git diff --check` | Pass | no whitespace errors |
 
 The P4 PR Windows Harness and post-merge `main` Windows Harness passed.
-Publication still requires explicit user approval.
+The final post-publication `main` Windows Harness run `25412257502` also
+passed on `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`.
 
 ## Release Notes
 
 - Aligns package, runtime, and MCP server version identity to `0.1.4`.
-- Records `v0.1.4` release-readiness evidence from the post-v0.1.3 maintenance
-  round.
+- Records the published `v0.1.4` maintenance release evidence from the
+  post-v0.1.3 maintenance round.
 - Keeps the v0.1 product boundary unchanged: no new capture surfaces, no new
   MCP tools, no helper/watcher product behavior changes, and no Phase 6
   implementation.
@@ -147,29 +148,28 @@ This maintenance release does not expand the capture surface from `v0.1.3`.
 
 ## Rollback Notes
 
-- If publication is not approved, keep `v0.1.3` as the latest stable release.
+- Keep `v0.1.3` as the previous stable release.
 - Do not retag or modify `v0.1.3`.
-- If a regression is found before publication and requires product code,
+- If a regression is found after publication and requires product code,
   schema, CLI/MCP JSON shape, privacy behavior, helper/watcher behavior, or
-  capture-surface changes, stop the direct `v0.1.4` path and prepare a release
-  candidate.
+  capture-surface changes, publish a follow-up release candidate instead of
+  retagging `v0.1.4`.
 - If a regression is limited to release documentation, tests, or version
-  metadata, fix it on a small PR and rerun Windows Harness before requesting
-  publication approval.
+  metadata, fix it on a small PR and rerun Windows Harness before publishing a
+  follow-up maintenance release.
 
 ## Release Decision Summary
 
-- Release path: compatible `v0.1.4` maintenance release, pending explicit
-  approval.
+- Release path: compatible `v0.1.4` maintenance release, published.
 - Fallback path: release candidate if any product or contract change is
-  required.
-- Deterministic gates: local P4 validation, PR Windows Harness, and post-merge
-  `main` Windows Harness passed.
+  required after publication.
+- Deterministic gates: local P4 validation, PR Windows Harness, post-merge
+  `main` Windows Harness, and GitHub release publication passed.
 - Manual UIA gates: inherited `v0.1.0` Notepad, Edge, and VS Code metadata
-  evidence is accepted for readiness only because product UIA helper behavior
+  evidence was accepted for readiness only because product UIA helper behavior
   and manual UIA smoke scripts are unchanged; deterministic watcher smoke was
   refreshed through P3 local and Windows Harness evidence.
 - Privacy/scope confirmation: unchanged and recorded above.
-- Publication approval: pending explicit user approval.
-- Release URL: pending.
-- Final tag target: pending.
+- Publication approval: completed.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4.
+- Final tag target: `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`.

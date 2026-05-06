@@ -28,8 +28,8 @@ targeted capture.
 
 ## Maintenance Use
 
-For compatible maintenance releases after `v0.1.3`, including the active
-post-v0.1.3 maintenance plan and any future `v0.1.4` readiness round, release
+For compatible maintenance releases after `v0.1.4`, including the published
+`v0.1.4` maintenance release record and any later maintenance round, release
 evidence should cite this matrix and record:
 
 - Notepad targeted smoke result.

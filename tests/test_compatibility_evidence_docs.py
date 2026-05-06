@@ -105,14 +105,14 @@ def test_v013_release_record_is_published_and_compatible():
         assert f"`{tool_name}`" in text
 
 
-def test_v014_release_readiness_record_is_pending_and_compatible():
+def test_v014_release_record_is_published_and_compatible():
     text = V014_RELEASE.read_text(encoding="utf-8")
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: pending explicit approval.",
-        "Release URL | Pending",
-        "Final tag target | Pending",
+        "Publication status: published maintenance release.",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4",
+        "Final tag target | `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
         "Candidate PR Windows Harness | Passed, run `25411926176`",
         "Candidate post-merge `main` Windows Harness | Passed, run `25411989748`",
@@ -124,8 +124,8 @@ def test_v014_release_readiness_record_is_pending_and_compatible():
         "no helper/watcher product behavior changes",
         "no screenshot capture code",
         "no OCR engine integration",
-        "Publication approval: pending explicit user approval.",
-        "Deterministic gates: local P4 validation, PR Windows Harness, and post-merge `main` Windows Harness passed.",
+        "Publication approval: completed.",
+        "Deterministic gates: local P4 validation, PR Windows Harness, post-merge `main` Windows Harness, and GitHub release publication passed.",
         "deterministic watcher smoke was refreshed through P3 local and Windows Harness evidence",
     ):
         assert phrase in normalized

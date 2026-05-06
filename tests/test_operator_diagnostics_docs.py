@@ -72,28 +72,29 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "post-v0.1.2 plan is closed historical evidence" in checklist
     assert "post-v0.1.2 cursor is closed historical evidence" in evidence
     assert "Before a compatible `v0.1.1` maintenance release" not in matrix
-    assert "active\npost-v0.1.3 maintenance plan" in matrix
-    assert "future `v0.1.4` readiness round" in matrix
+    assert "For compatible maintenance releases after `v0.1.4`" in matrix
+    assert "published\n`v0.1.4` maintenance release record" in matrix
+    assert "any later maintenance round" in matrix
     assert "current\n`v0.1.3` readiness round" not in matrix
 
 
-def test_post_v013_plan_is_active_without_expanding_scope():
+def test_post_v013_plan_records_published_v014_without_expanding_scope():
     plan = (ROOT / "docs" / "next-round-plan-post-v0.1.3.md").read_text(
         encoding="utf-8"
     )
 
     for expected in (
-        "Current stage: P4 - v0.1.4 Release Readiness.",
-        "Stage status: F - v0.1.4 release-readiness gates have passed",
+        "Current stage: G - v0.1.4 Published Baseline Reconciliation.",
+        "Stage status: G - v0.1.4 published; baseline reconciliation complete.",
         "post-merge `main` Windows Harness run `25411989748`",
-        "published at\n  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
-        "post-reconciliation\nWindows Harness run `25209330825` passed",
-        "compatible maintenance pass toward `v0.1.4`",
+        "`v0.1.4` is published at\nhttps://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4",
+        "post-publication\nreconciliation `main` commit is",
+        "next round will be planned\nfrom the published `v0.1.4` baseline",
         "Phase 6 remains privacy spec/scorecard work only",
         "No screenshot capture, OCR, audio recording, keyboard capture, clipboard",
         "Product CLI still does not expose targeted `--hwnd`, `--pid`, or",
         "MCP remains read-only",
-        "Publication remains blocked on explicit user approval",
+        "Known blockers: none.",
         "Stage P0 local validation:",
         "Stage P1 local validation:",
         "Stage P2 local validation:",
@@ -111,8 +112,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "stable baseline is `v0.1.3`",
-        "`v0.1.4` readiness may align version metadata before publication",
+        "stable baseline is `v0.1.4`",
+        "`v0.1.4` is the latest published release",
         "active post-v0.1.3 execution cursor must be followed",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
         "inherited `v0.1.0` manual",
@@ -124,8 +125,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "`v0.1.3` is the stable baseline",
-        "`v0.1.4` readiness may align version metadata before publication",
+        "`v0.1.4` is the stable baseline",
+        "`v0.1.4` is the latest published release",
         "active post-v0.1.3",
         "manual UIA smoke evidence inherited from `v0.1.0`",
         "must be labeled as inherited or stale",
@@ -162,12 +163,12 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         assert gate in ledger
 
     for expected in (
-        "Stable release baseline | `v0.1.3`",
-        "Active maintenance plan | [Post-v0.1.3 maintenance plan]",
-        "Pending release-readiness record | [v0.1.4 maintenance release readiness record]",
-        "Latest published release record | [v0.1.3 maintenance release record]",
+        "Stable release baseline | `v0.1.4`",
+        "Latest maintenance plan | [Post-v0.1.3 maintenance plan]",
+        "Published release record | [v0.1.4 maintenance release record]",
+        "Latest published release record | [v0.1.4 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
-        "P2 freshness decision | For the post-v0.1.3 compatible maintenance path",
+        "P2 freshness decision | For the post-v0.1.3 compatible maintenance path that produced",
         "Inherited from `v0.1.0`; stale for a new release unless rerun",
         "accepted for `v0.1.4` only when",
         "Fresh manual smoke is required if any helper, watcher, smoke script",
@@ -182,9 +183,9 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     assert "[Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)" in readme
     assert "Manual smoke evidence ledger" in checklist
     assert "Manual smoke evidence ledger" in evidence
-    assert "Current stage: P4 - v0.1.4 Release Readiness." in plan
-    assert "Stage status: F - v0.1.4 release-readiness gates have passed" in plan
-    assert "post-merge `main` Windows Harness run `25411989748`" in plan
+    assert "Current stage: G - v0.1.4 Published Baseline Reconciliation." in plan
+    assert "Stage status: G - v0.1.4 published; baseline reconciliation complete." in plan
+    assert "post-reconciliation\nWindows Harness run `25412257502`" in plan
     assert "Stage P4 local release-readiness validation:" in plan
     assert "During P2, decided" in plan
     assert "observed-content\n  artifacts remain uncommitted" in plan
