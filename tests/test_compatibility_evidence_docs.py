@@ -114,6 +114,8 @@ def test_v014_release_readiness_record_is_pending_and_compatible():
         "Release URL | Pending",
         "Final tag target | Pending",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
+        "Candidate PR Windows Harness | Passed, run `25411926176`",
+        "Candidate post-merge `main` Windows Harness | Passed, run `25411989748`",
         "P3 completion post-merge `main` Windows Harness | Passed, run `25411231216`",
         "must report `0.1.4`",
         "exact read-only MCP tool list remains unchanged",
@@ -123,6 +125,7 @@ def test_v014_release_readiness_record_is_pending_and_compatible():
         "no screenshot capture code",
         "no OCR engine integration",
         "Publication approval: pending explicit user approval.",
+        "Deterministic gates: local P4 validation, PR Windows Harness, and post-merge `main` Windows Harness passed.",
         "deterministic watcher smoke was refreshed through P3 local and Windows Harness evidence",
     ):
         assert phrase in normalized
