@@ -7,9 +7,9 @@ observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.4` is prepared but not published. Publication remains blocked on explicit
-user approval after the release-readiness PR and post-merge `main` Windows
-Harness pass.
+`v0.1.4` is prepared but not published. The release-readiness PR and
+post-merge `main` Windows Harness passed. Publication remains blocked on
+explicit user approval.
 
 If any product behavior, schema, CLI/MCP JSON shape, privacy behavior,
 helper/watcher behavior, or capture-surface change is required before
@@ -27,8 +27,8 @@ Publication status: pending explicit approval.
 | Evidence date | 2026-05-06, Asia/Shanghai |
 | Base `main` SHA before P4 readiness | `6a9667eb216906cfdf8846c59b0a716296f25bde` |
 | Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/64 |
-| Candidate PR Windows Harness | Passed, run `25411799323`, https://github.com/YSCJRH/WinChronicle/actions/runs/25411799323 |
-| Candidate post-merge `main` Windows Harness | Pending |
+| Candidate PR Windows Harness | Passed, run `25411926176`, https://github.com/YSCJRH/WinChronicle/actions/runs/25411926176 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25411989748`, https://github.com/YSCJRH/WinChronicle/actions/runs/25411989748 |
 | Publication status | Pending explicit approval |
 | Release URL | Pending |
 | Final tag target | Pending |
@@ -75,8 +75,8 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The P4 PR Windows Harness passed. The post-merge `main` Windows Harness must
-also pass before publication approval is requested.
+The P4 PR Windows Harness and post-merge `main` Windows Harness passed.
+Publication still requires explicit user approval.
 
 ## Release Notes
 
@@ -163,8 +163,8 @@ This maintenance release does not expand the capture surface from `v0.1.3`.
   approval.
 - Fallback path: release candidate if any product or contract change is
   required.
-- Deterministic gates: pending local P4 validation, PR Windows Harness, and
-  post-merge `main` Windows Harness.
+- Deterministic gates: local P4 validation, PR Windows Harness, and post-merge
+  `main` Windows Harness passed.
 - Manual UIA gates: inherited `v0.1.0` Notepad, Edge, and VS Code metadata
   evidence is accepted for readiness only because product UIA helper behavior
   and manual UIA smoke scripts are unchanged; deterministic watcher smoke was

@@ -84,8 +84,8 @@ def test_post_v013_plan_is_active_without_expanding_scope():
 
     for expected in (
         "Current stage: P4 - v0.1.4 Release Readiness.",
-        "Stage status: B - P4 release-readiness metadata and evidence are prepared",
-        "P4 local deterministic validation passed",
+        "Stage status: F - v0.1.4 release-readiness gates have passed",
+        "post-merge `main` Windows Harness run `25411989748`",
         "published at\n  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
         "post-reconciliation\nWindows Harness run `25209330825` passed",
         "compatible maintenance pass toward `v0.1.4`",
@@ -183,7 +183,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     assert "Manual smoke evidence ledger" in checklist
     assert "Manual smoke evidence ledger" in evidence
     assert "Current stage: P4 - v0.1.4 Release Readiness." in plan
-    assert "Stage status: B - P4 release-readiness metadata and evidence are prepared" in plan
+    assert "Stage status: F - v0.1.4 release-readiness gates have passed" in plan
+    assert "post-merge `main` Windows Harness run `25411989748`" in plan
     assert "Stage P4 local release-readiness validation:" in plan
     assert "During P2, decided" in plan
     assert "observed-content\n  artifacts remain uncommitted" in plan

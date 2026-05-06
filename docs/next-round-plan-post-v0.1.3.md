@@ -24,9 +24,8 @@ service install, and no default background capture.
 ## Execution Cursor
 
 - Current stage: P4 - v0.1.4 Release Readiness.
-- Stage status: B - P4 release-readiness metadata and evidence are prepared
-  locally; PR and post-merge Windows Harness evidence are still pending, and
-  publication requires explicit user approval.
+- Stage status: F - v0.1.4 release-readiness gates have passed; publication
+  requires explicit user approval.
 - Last completed evidence: P2 documented the manual smoke freshness decision:
   inherited `v0.1.0` manual smoke may be explicitly accepted for a compatible
   `v0.1.4` maintenance release only when no helper, watcher, smoke script,
@@ -40,13 +39,13 @@ service install, and no default background capture.
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3 and targets
   `0aa5c1b6e1959ef6504e6d70e4aad79a60594926`; post-publication
   reconciliation merged at `917a1f4b70d6ae1527332fe97cad3e0cc0d9d520`.
-- Last validation: P4 local deterministic validation passed:
-  `python -m pytest -q`, both .NET builds, install CLI smoke, full harness,
-  `git diff --check`, and PR #64 Windows Harness run `25411799323`.
-- Next atomic task: merge the P4 release-readiness PR after review, then record
-  post-merge `main` Windows Harness before requesting publication approval.
-- Known blockers: publication requires explicit user approval after PR and
-  post-merge Windows Harness evidence is recorded.
+- Last validation: P4 local deterministic validation, PR #64 Windows Harness
+  run `25411926176`, and post-merge `main` Windows Harness run `25411989748`
+  passed.
+- Next atomic task: wait for explicit publication approval; if approved,
+  publish `v0.1.4` and reconcile the release URL, tag target, and publication
+  evidence.
+- Known blockers: publication requires explicit user approval.
 
 ## Phased Work
 
@@ -198,6 +197,13 @@ Stage-specific gates:
   deterministic watcher smoke timing change as requiring fresh deterministic
   gate evidence, not fresh manual UIA smoke, because product UIA behavior and
   manual UIA smoke scripts did not change.
+- During P4, merged PR #64 after PR Windows Harness run `25411926176` passed;
+  post-merge `main` Windows Harness run `25411989748` passed on
+  `5b2b042459874e1197011b4c560c2c7cb93287cc`. The release remains unpublished
+  pending explicit approval.
+- During P4 evidence follow-up, recorded the final PR #64 and post-merge
+  `main` Windows Harness evidence in the release-readiness record without
+  changing product behavior or publication status.
 
 ## Validation Log
 
@@ -234,7 +240,16 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-  - PR #64 Windows Harness run `25411799323` - passed.
+  - PR #64 Windows Harness run `25411926176` - passed.
+  - Post-merge `main` Windows Harness run `25411989748` on `5b2b042459874e1197011b4c560c2c7cb93287cc` - passed.
+- Stage P4 evidence follow-up validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - 12 passed.
+  - `python -m pytest -q` - 99 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
 - Stage P1 local validation:
   - `python -m pytest tests/test_uia_helper_quality_matrix.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - 15 passed.
   - stale-current-cursor `rg` scan over README.md, docs, and tests - no matches for current `v0.1.3` readiness, `after v0.1.2`, pending post-v0.1.3 plan, or stale pending test names.
