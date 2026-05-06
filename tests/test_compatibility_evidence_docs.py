@@ -10,6 +10,7 @@ MCP_SCORECARD = ROOT / "harness" / "scorecards" / "mcp-quality.md"
 PHASE6_SCORECARD = ROOT / "harness" / "scorecards" / "phase6-privacy-enrichment.md"
 V012_RELEASE = ROOT / "docs" / "release-v0.1.2.md"
 V013_RELEASE = ROOT / "docs" / "release-v0.1.3.md"
+V014_RELEASE = ROOT / "docs" / "release-v0.1.4.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -97,6 +98,32 @@ def test_v013_release_record_is_published_and_compatible():
         "no screenshot capture code",
         "no OCR engine integration",
         "Publication approval: granted by the user message `approve publication`.",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
+def test_v014_release_readiness_record_is_pending_and_compatible():
+    text = V014_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Publication status: pending explicit approval.",
+        "Release URL | Pending",
+        "Final tag target | Pending",
+        "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
+        "P3 completion post-merge `main` Windows Harness | Passed, run `25411231216`",
+        "must report `0.1.4`",
+        "exact read-only MCP tool list remains unchanged",
+        "Phase 6 remains specification-only",
+        "no new capture surfaces",
+        "no helper/watcher product behavior changes",
+        "no screenshot capture code",
+        "no OCR engine integration",
+        "Publication approval: pending explicit user approval.",
+        "deterministic watcher smoke was refreshed through P3 local and Windows Harness evidence",
     ):
         assert phrase in normalized
 

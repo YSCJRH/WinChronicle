@@ -8,7 +8,9 @@ For operator setup and the current documentation map, start with
 The latest published release record is
 [v0.1.3 maintenance release record](release-v0.1.3.md). The active
 post-v0.1.3 execution cursor lives in
-[Post-v0.1.3 maintenance plan](next-round-plan-post-v0.1.3.md). For release
+[Post-v0.1.3 maintenance plan](next-round-plan-post-v0.1.3.md). The pending
+`v0.1.4` release-readiness record is
+[v0.1.4 maintenance release readiness record](release-v0.1.4.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
 post-v0.1.2 plan is closed historical evidence.
 
@@ -30,6 +32,9 @@ inherited historical evidence:
 
 - the stable baseline is `v0.1.3` until the active post-v0.1.3 plan explicitly
   prepares another version;
+- `v0.1.4` readiness may align version metadata before publication, but
+  `v0.1.3` remains the latest published release until approval and release
+  creation are complete;
 - the active post-v0.1.3 execution cursor must be followed before any
   implementation;
 - manual UIA smoke inherited from an earlier release is labeled as inherited or
@@ -40,6 +45,10 @@ inherited historical evidence:
   smoke can be explicitly accepted for `v0.1.4` only if no helper, watcher,
   smoke script, capture, privacy, product CLI/MCP shape, or capture-surface
   behavior changes;
+- deterministic harness smoke changes require fresh deterministic gate
+  evidence, but do not by themselves refresh or invalidate manual UIA smoke
+  evidence when product UIA behavior and manual UIA smoke scripts are
+  unchanged;
 - no observed-content artifact is committed to refresh evidence.
 
 ## Manual UIA Smoke Gates
