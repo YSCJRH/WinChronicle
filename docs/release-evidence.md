@@ -6,7 +6,9 @@ smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
 [v0.1.3 maintenance release record](release-v0.1.3.md). The active
 post-v0.1.3 maintenance cursor is
-[Post-v0.1.3 maintenance plan](next-round-plan-post-v0.1.3.md). The
+[Post-v0.1.3 maintenance plan](next-round-plan-post-v0.1.3.md). The pending
+`v0.1.4` release-readiness record is
+[v0.1.4 maintenance release readiness record](release-v0.1.4.md). The
 post-v0.1.2 cursor is closed historical evidence.
 
 ## Evidence Location
@@ -33,6 +35,9 @@ historical records. After the post-v0.1.3 reconciliation:
 
 - `v0.1.3` is the stable baseline until the active post-v0.1.3 plan explicitly
   prepares another version;
+- `v0.1.4` readiness may align version metadata before publication, but
+  `v0.1.3` remains the latest published release until approval and release
+  creation are complete;
 - the post-v0.1.2 execution cursor is closed, and the active post-v0.1.3
   execution cursor must be followed before implementation continues;
 - manual UIA smoke evidence inherited from `v0.1.0` or another older release
@@ -42,6 +47,10 @@ historical records. After the post-v0.1.3 reconciliation:
   may explicitly accept inherited `v0.1.0` manual smoke only if no helper,
   watcher, smoke script, capture, privacy, product CLI/MCP shape, or
   capture-surface behavior changed;
+- deterministic harness smoke changes require fresh deterministic gate
+  evidence, but do not by themselves refresh or invalidate manual UIA smoke
+  evidence when product UIA behavior and manual UIA smoke scripts are
+  unchanged;
 - refreshing manual smoke must record command/result/time/environment/local
   artifact path only, never observed content.
 

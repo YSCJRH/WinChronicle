@@ -54,6 +54,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
 
     assert "next-round-plan-post-v0.1.3.md" in current_section
+    assert "release-v0.1.4.md" in current_section
     assert "release-v0.1.3.md" in current_section
     assert "next-round-plan-post-v0.1.2.md" not in current_section
     assert "release-v0.1.2.md" not in current_section
@@ -66,6 +67,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-v0.1.0-final.md" in historical_section
     assert "next-round-plan-post-v0.1.3.md" in checklist
     assert "next-round-plan-post-v0.1.3.md" in evidence
+    assert "release-v0.1.4.md" in checklist
+    assert "release-v0.1.4.md" in evidence
     assert "post-v0.1.2 plan is closed historical evidence" in checklist
     assert "post-v0.1.2 cursor is closed historical evidence" in evidence
     assert "Before a compatible `v0.1.1` maintenance release" not in matrix
@@ -81,8 +84,8 @@ def test_post_v013_plan_is_active_without_expanding_scope():
 
     for expected in (
         "Current stage: P4 - v0.1.4 Release Readiness.",
-        "Stage status: C - P3 is complete",
-        "post-merge `main` Windows Harness run\n  `25410946398` passed",
+        "Stage status: B - P4 release-readiness metadata and evidence are prepared",
+        "P4 local deterministic validation passed",
         "published at\n  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.3",
         "post-reconciliation\nWindows Harness run `25209330825` passed",
         "compatible maintenance pass toward `v0.1.4`",
@@ -94,6 +97,7 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "Stage P0 local validation:",
         "Stage P1 local validation:",
         "Stage P2 local validation:",
+        "Stage P4 local release-readiness validation:",
     ):
         assert expected in plan
 
@@ -108,17 +112,20 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
     for expected in (
         "## Evidence Freshness",
         "stable baseline is `v0.1.3`",
+        "`v0.1.4` readiness may align version metadata before publication",
         "active post-v0.1.3 execution cursor must be followed",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
         "inherited `v0.1.0` manual",
         "capture-surface\n  behavior changes",
         "no observed-content artifact is committed to refresh evidence",
+        "deterministic harness smoke changes require fresh deterministic gate",
     ):
         assert expected in checklist
 
     for expected in (
         "Release evidence must name which facts are current",
         "`v0.1.3` is the stable baseline",
+        "`v0.1.4` readiness may align version metadata before publication",
         "active post-v0.1.3",
         "manual UIA smoke evidence inherited from `v0.1.0`",
         "must be labeled as inherited or stale",
@@ -126,6 +133,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "may explicitly accept inherited `v0.1.0` manual smoke",
         "capture-surface behavior changed",
         "never observed content",
+        "deterministic harness smoke changes require fresh deterministic gate",
     ):
         assert expected in evidence
 
@@ -156,6 +164,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     for expected in (
         "Stable release baseline | `v0.1.3`",
         "Active maintenance plan | [Post-v0.1.3 maintenance plan]",
+        "Pending release-readiness record | [v0.1.4 maintenance release readiness record]",
         "Latest published release record | [v0.1.3 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
         "P2 freshness decision | For the post-v0.1.3 compatible maintenance path",
@@ -165,6 +174,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Do not paste observed text",
         "Do not save or commit raw watcher JSONL",
         "not current evidence unless",
+        "Deterministic harness smoke changes require fresh deterministic gate",
     ):
         assert expected in ledger
 
@@ -173,7 +183,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     assert "Manual smoke evidence ledger" in checklist
     assert "Manual smoke evidence ledger" in evidence
     assert "Current stage: P4 - v0.1.4 Release Readiness." in plan
-    assert "Stage status: C - P3 is complete" in plan
-    assert "post-merge `main` Windows Harness run\n  `25410946398` passed" in plan
+    assert "Stage status: B - P4 release-readiness metadata and evidence are prepared" in plan
+    assert "Stage P4 local release-readiness validation:" in plan
     assert "During P2, decided" in plan
     assert "observed-content\n  artifacts remain uncommitted" in plan

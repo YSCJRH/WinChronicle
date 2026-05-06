@@ -15,6 +15,7 @@ or token canaries.
 | --- | --- |
 | Stable release baseline | `v0.1.3` |
 | Active maintenance plan | [Post-v0.1.3 maintenance plan](next-round-plan-post-v0.1.3.md) |
+| Pending release-readiness record | [v0.1.4 maintenance release readiness record](release-v0.1.4.md) |
 | Latest published release record | [v0.1.3 maintenance release record](release-v0.1.3.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
@@ -59,6 +60,10 @@ smoke. These command patterns are evidence shapes only; replace
 - Fresh manual smoke is required if any helper, watcher, smoke script, capture,
   privacy, product CLI/MCP shape, or capture-surface behavior changes, or if
   the release approver requires fresh hard-gate evidence.
+- Deterministic harness smoke changes require fresh deterministic gate
+  evidence. They do not by themselves count as fresh manual UIA smoke and do
+  not invalidate inherited manual UIA smoke when product UIA behavior and
+  manual UIA smoke scripts are unchanged.
 - If helper/smoke scripts, watcher preview behavior, or manual smoke docs
   materially change, refresh the relevant manual smoke before release
   readiness.
