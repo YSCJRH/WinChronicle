@@ -24,20 +24,20 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: W2 - CI Runtime And Dependency Maintenance Scan.
-- Stage status: B - CI/runtime and dependency scan docs/tests are implemented
-  and local deterministic validation passed; PR Windows Harness and post-merge
+- Current stage: W3 - Compatibility Guardrail Sweep.
+- Stage status: B - compatibility guardrail docs/tests are implemented and
+  full local deterministic validation passed; PR Windows Harness and post-merge
   Windows Harness are pending.
-- Last completed evidence: W1 PR #93 passed PR Windows Harness run
-  `25563462333`, merged as `9c91f262ebb06f0b4fd8b4c38eeb17e8c688ecb9`, and
-  post-merge `main` Windows Harness run `25563589781` passed on that SHA.
-- Last validation: W2 workflow/dependency tests, full pytest, helper build,
+- Last completed evidence: W2 PR #94 passed PR Windows Harness run
+  `25564182547`, merged as `f9dff37828abdedb95511aeaf204a1313b75727c`, and
+  post-merge `main` Windows Harness run `25564339025` passed on that SHA.
+- Last validation: W3 compatibility guardrail tests, full pytest, helper build,
   watcher build, install CLI smoke, full harness, and `git diff --check`
-  passed locally. W1 PR Windows Harness and post-merge `main` Windows Harness
+  passed locally. W2 PR Windows Harness and post-merge `main` Windows Harness
   passed.
-- Next atomic task: open a small W2 PR, verify PR and post-merge Windows
-  Harness, then advance to W3 compatibility guardrail sweep in the next
-  branch.
+- Next atomic task: run full W3 deterministic validation, open a small W3 PR,
+  verify PR and post-merge Windows Harness, then advance to W4 release
+  readiness in the next branch.
 - Known blockers: none.
 
 ## Phased Work
@@ -203,6 +203,16 @@ Stage-specific gates:
   screenshot/OCR/audio/keyboard/clipboard/network/LLM/control-oriented
   packages. `pyproject.toml` remains limited to deterministic project and dev
   dependencies for the current maintenance path.
+- During W2, merged PR #94 as
+  `f9dff37828abdedb95511aeaf204a1313b75727c`; PR Windows Harness
+  `25564182547` and post-merge `main` Windows Harness `25564339025` passed.
+- During W3, re-ran the existing compatibility guardrail tests for CLI/MCP
+  surface shape, exact read-only MCP tool list, disabled privacy surfaces,
+  observed-content trust boundaries, Phase 6 spec-only status, watcher preview
+  limits, helper harness-only capture, Windows Harness guardrails, and product
+  targeted capture absence. No compatibility drift requiring product code,
+  schema, CLI/MCP shape, helper/watcher behavior, or capture-surface changes was
+  found, so W3 records a no-action-needed compatibility sweep.
 
 ## Validation Log
 
@@ -239,6 +249,18 @@ Stage-specific gates:
   - `tests/test_windows_harness_workflow.py` inspection - passed; workflow guard pins Node 24, the Windows runner, and deterministic gate order.
   - `pyproject.toml` inspection - passed; direct runtime dependency remains `jsonschema`, with dev-only `pytest`, `jsonschema`, and `wheel`.
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_windows_harness_workflow.py tests/test_phase6_privacy_scorecard.py -q` - passed with 17 tests.
+  - `python -m pytest -q` - passed with 112 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage W2 remote validation:
+  - PR #94 Windows Harness run `25564182547` - passed.
+  - Post-merge `main` Windows Harness run `25564339025` - passed on `f9dff37828abdedb95511aeaf204a1313b75727c`.
+- Stage W3 compatibility guardrail validation:
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_uia_helper_contract.py tests/test_windows_harness_workflow.py -q` - passed with 48 tests.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_uia_helper_contract.py tests/test_windows_harness_workflow.py -q` - passed with 58 tests.
   - `python -m pytest -q` - passed with 112 tests.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
