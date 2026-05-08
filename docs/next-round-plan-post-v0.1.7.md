@@ -24,17 +24,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: U1 - Evidence Freshness And Entry Hygiene.
-- Stage status: B - evidence freshness docs/tests are implemented and local
+- Current stage: U2 - CI Runtime And Dependency Maintenance Scan.
+- Stage status: B - CI/runtime/dependency scan docs/tests are implemented and local
   deterministic validation passed; PR Windows Harness and post-merge Windows
   Harness are pending.
-- Last completed evidence: U0 PR #87 passed PR Windows Harness run
-  `25557993996`, merged as `3ca1d2772c16ac11b7cfef8f4fe8b6fc28cb6636`, and
-  post-merge `main` Windows Harness run `25558154805` passed on that SHA.
-- Last validation: U1 local docs tests, full pytest, helper build, watcher
+- Last completed evidence: U1 PR #88 passed PR Windows Harness run
+  `25558809159`, merged as `bf7397711bc4f2f70ca677dc788464d6fa4f03f3`, and
+  post-merge `main` Windows Harness run `25558922168` passed on that SHA.
+- Last validation: U2 local focused tests, full pytest, helper build, watcher
   build, install CLI smoke, full harness, and `git diff --check` passed.
-- Next atomic task: open a small U1 PR, verify PR and post-merge Windows
-  Harness, then advance to U2 in the next branch.
+- Next atomic task: open a small U2 PR, verify PR and post-merge Windows
+  Harness, then advance to U3 in the next branch.
 - Known blockers: none.
 
 ## Phased Work
@@ -192,6 +192,19 @@ Stage-specific gates:
   PR #86 and the U0 cursor PR #87 evidence. The UIA helper quality matrix
   maintenance wording now points at compatible maintenance releases after
   `v0.1.7` while preserving historical `v0.1.4`-onward context.
+- During U1, merged PR #88 as
+  `bf7397711bc4f2f70ca677dc788464d6fa4f03f3`; PR Windows Harness
+  `25558809159` and post-merge `main` Windows Harness `25558922168` passed.
+- During U2, reviewed the latest `main` Windows Harness run, workflow, and
+  workflow guard test. The workflow still uses
+  `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"`, pins
+  `windows-2025-vs2026`, preserves deterministic gate order, and produced no
+  deprecation or failed-log signal requiring a workflow/runtime change.
+  Therefore U2 records a no-action-needed CI runtime scan.
+- During U2, reviewed package metadata and added a direct-dependency guard
+  against screenshot/OCR/audio/keyboard/clipboard/network/LLM/control-oriented
+  packages. `pyproject.toml` remains limited to deterministic project and dev
+  dependencies for the current maintenance path.
 
 ## Validation Log
 
@@ -211,6 +224,22 @@ Stage-specific gates:
   - Post-merge `main` Windows Harness run `25558154805` - passed on `3ca1d2772c16ac11b7cfef8f4fe8b6fc28cb6636`.
 - Stage U1 evidence-freshness validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py tests/test_version_identity.py -q` - passed after advancing this cursor to U1 and recording the active post-v0.1.7 manual smoke freshness decision.
+  - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage U1 remote validation:
+  - PR #88 Windows Harness run `25558809159` - passed.
+  - Post-merge `main` Windows Harness run `25558922168` - passed on `bf7397711bc4f2f70ca677dc788464d6fa4f03f3`.
+- Stage U2 CI/runtime scan validation:
+  - `gh run view 25558922168 --json databaseId,status,conclusion,headSha,url,createdAt,updatedAt,name,displayTitle,jobs` - passed; latest post-U1 `main` Windows Harness conclusion was `success` on `bf7397711bc4f2f70ca677dc788464d6fa4f03f3`.
+  - `gh run view 25558922168 --log | Select-String -Pattern "warning|deprecated|deprecation|Node 20|Node20|windows-2025|Node|runner image|error" -CaseSensitive:$false` - reviewed; runner image is `windows-2025-vs2026`, Node 24 env is present, .NET builds report 0 warnings/0 errors, and the remaining `error` matches are deterministic fixture names or fixture text.
+  - `.github/workflows/windows-harness.yml` inspection - passed; gate order and gate set are unchanged.
+  - `tests/test_windows_harness_workflow.py` inspection - passed; workflow guard already pins Node 24, the Windows runner, and deterministic gate order.
+  - `pyproject.toml` inspection - passed; direct runtime dependency remains `jsonschema`, with dev-only `pytest`, `jsonschema`, and `wheel`.
+  - `python -m pytest tests/test_windows_harness_workflow.py tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py -q` - passed after recording the U2 no-action-needed scan and dependency guard.
   - `python -m pytest -q` - passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.

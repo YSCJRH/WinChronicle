@@ -11,6 +11,9 @@ def test_windows_harness_uses_current_windows_runner_without_gate_drift():
     assert 'FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"' in text
     assert "runs-on: windows-2025-vs2026" in text
     assert "runs-on: windows-latest" not in text
+    assert "uses: actions/checkout@v6" in text
+    assert "uses: actions/setup-python@v6" in text
+    assert "uses: actions/setup-dotnet@v5" in text
 
     expected_steps = (
         "Check out repository",
