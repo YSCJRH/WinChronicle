@@ -23,8 +23,8 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: P1 - Release Evidence And Entry Hygiene.
-- Stage status: C - P1 complete; ready to enter P2 on the next turn.
+- Current stage: P2 - Manual Smoke Freshness Decision.
+- Stage status: C - P2 complete; ready to enter P3 on the next turn.
 - Last completed evidence: `v0.1.4` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4 and targets
   `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`. The post-publication
@@ -37,7 +37,12 @@ service install, and no default background capture.
   assertion issue after a capture was written before any heartbeat was emitted.
   P1 audited operator-facing entry points and scorecards, found no stale older
   plan presented as current, and strengthened README current/history ordering
-  coverage.
+  coverage. P2 recorded the manual smoke freshness decision: inherited
+  `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and
+  watcher preview manual evidence is accepted for the compatible `v0.1.5` path
+  only if the remaining release path does not change helper behavior, watcher
+  product behavior, manual smoke scripts, capture behavior, privacy behavior,
+  product CLI/MCP shape, or capture surfaces.
 - Last validation: P0 full local validation passed: `python -m pytest -q`,
   both .NET builds, `python harness/scripts/run_install_cli_smoke.py`,
   `python harness/scripts/run_harness.py`, and `git diff --check`. The
@@ -45,10 +50,13 @@ service install, and no default background capture.
   full pytest, both .NET builds, install CLI smoke, full harness, and
   `git diff --check`. P1 targeted docs validation passed after the README
   entry-ordering test update, followed by full pytest, both .NET builds,
-  install CLI smoke, full harness, and `git diff --check`.
-- Next atomic task: start P2 by deciding whether the next compatible release
-  can explicitly inherit older manual UIA smoke evidence or must refresh manual
-  Notepad, Edge, VS Code metadata, and diagnostic smoke.
+  install CLI smoke, full harness, and `git diff --check`. P2 targeted docs
+  validation passed after updating the manual smoke ledger, release checklist,
+  release evidence guide, and docs tests.
+- Next atomic task: start P3 by re-running compatibility guardrail checks and
+  strengthening tests only for discovered drift around version identity,
+  read-only MCP, privacy parity, memory/search trust boundaries, release
+  evidence freshness, or Phase 6 spec-only status.
 - Known blockers: none.
 
 ## Phased Work
@@ -183,6 +191,13 @@ Stage-specific gates:
   only in historical sections. Strengthened README tests rather than changing
   product docs because the audit found the current operator entry points already
   identify post-v0.1.4 and `v0.1.4` as current.
+- During P2, explicitly accepted inherited `v0.1.0` manual UIA smoke evidence
+  for the compatible `v0.1.5` path because completed post-v0.1.4 work has
+  changed documentation, tests, and deterministic harness evidence only. This
+  acceptance is conditional: fresh manual smoke becomes required if a later
+  stage changes helper behavior, watcher product behavior, manual smoke scripts,
+  capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces,
+  or if the release approver requires fresh hard-gate evidence.
 
 ## Validation Log
 
@@ -196,6 +211,15 @@ Stage-specific gates:
 - Stage P0 local validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - 12 passed.
   - `python -m pytest -q` - 99 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage P2 manual-smoke freshness validation:
+  - `rg -n "Last freshness decision|post-v0\\.1\\.4 path|inherited `v0\\.1\\.0` manual|Fresh manual smoke|Deterministic harness smoke|manual smoke freshness|P2" docs/manual-smoke-evidence-ledger.md docs/release-checklist.md docs/release-evidence.md docs/next-round-plan-post-v0.1.4.md tests/test_operator_diagnostics_docs.py` - reviewed current freshness policy and P2 decision surfaces.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py -q` - passed after updating ledger expectations.
+  - `python -m pytest -q` - 101 passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.

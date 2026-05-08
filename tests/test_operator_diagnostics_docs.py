@@ -103,8 +103,8 @@ def test_post_v014_plan_is_active_without_expanding_scope():
     )
 
     for expected in (
-        "Current stage: P1 - Release Evidence And Entry Hygiene.",
-        "Stage status: C - P1 complete; ready to enter P2 on the next turn.",
+        "Current stage: P2 - Manual Smoke Freshness Decision.",
+        "Stage status: C - P2 complete; ready to enter P3 on the next turn.",
         "Windows Harness run `25432718007` passed on that SHA",
         "`v0.1.4` is published at\nhttps://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4",
         "post-publication\nreconciliation `main` commit is",
@@ -136,6 +136,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "active post-v0.1.4 execution cursor must be followed",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
         "inherited `v0.1.0` manual",
+        "P2 has\n  explicitly accepted inherited `v0.1.0` manual smoke",
         "capture-surface behavior changes",
         "no observed-content artifact is committed to refresh evidence",
         "deterministic harness smoke changes require fresh deterministic gate",
@@ -150,8 +151,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "manual UIA smoke evidence inherited from `v0.1.0`",
         "must be labeled as inherited or stale",
         "must not present inherited manual smoke as freshly run",
-        "future release record may\n  explicitly accept inherited `v0.1.0` manual smoke",
-        "capture-surface behavior changed",
+        "P2 has\n  explicitly accepted inherited `v0.1.0` manual smoke",
+        "capture-surface behavior changes",
         "never observed content",
         "deterministic harness smoke changes require fresh deterministic gate",
     ):
@@ -187,10 +188,11 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Published release record | [v0.1.4 maintenance release record]",
         "Latest published release record | [v0.1.4 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
-        "Last freshness decision | For the post-v0.1.3 compatible maintenance path that produced",
-        "post-v0.1.4 path must make a fresh P2 decision",
-        "Inherited from `v0.1.0`; stale for a new release unless rerun",
-        "accepted for a compatible future release only after a fresh P2 decision",
+        "Last freshness decision | For the post-v0.1.4 compatible maintenance path toward",
+        "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
+        "accepted by post-v0.1.4 P2 for the compatible `v0.1.5` path",
+        "accepted by post-v0.1.4 P2 as diagnostic context",
+        "is explicitly accepted by the P2 decision only when the remaining release",
         "Fresh manual smoke is required if any helper, watcher, smoke script",
         "Do not paste observed text",
         "Do not save or commit raw watcher JSONL",
@@ -203,11 +205,12 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     assert "[Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)" in readme
     assert "Manual smoke evidence ledger" in checklist
     assert "Manual smoke evidence ledger" in evidence
-    assert "Current stage: P1 - Release Evidence And Entry Hygiene." in plan
-    assert "Stage status: C - P1 complete; ready to enter P2 on the next turn." in plan
+    assert "Current stage: P2 - Manual Smoke Freshness Decision." in plan
+    assert "Stage status: C - P2 complete; ready to enter P3 on the next turn." in plan
     assert "Windows Harness run `25432718007` passed on that SHA" in plan
     assert "Stage P0 - Post-v0.1.4 Baseline Cursor" in plan
     assert "Stage P1 entry-hygiene validation:" in plan
+    assert "Stage P2 manual-smoke freshness validation:" in plan
     assert "Stage P0 local validation:" in plan
     assert "Stage P2 - Manual Smoke Freshness Decision" in plan
     assert "observed-content\n  artifacts remain uncommitted" in plan
