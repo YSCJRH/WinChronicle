@@ -26,18 +26,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Z0 - Post-v0.1.11 Baseline Cursor.
-- Stage status: B - Z0 baseline docs/tests are implemented and local
+- Current stage: Z1 - Evidence Freshness And Entry Hygiene.
+- Stage status: B - Z1 evidence freshness docs/tests are implemented and local
   deterministic validation passed; PR Windows Harness and post-merge Windows
   Harness are pending.
-- Last completed evidence: `v0.1.11` is published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.11, targets
-  `1724b0e47e6f6b915a99842fb971d7f9c503f65a`, and post-merge `main` Windows
-  Harness run `25573347339` passed on that SHA.
-- Last validation: Z0 docs/version tests, full pytest, helper build, watcher
-  build, install CLI smoke, full harness, and `git diff --check` passed
-  locally.
-- Next atomic task: open the Z0 PR, then verify PR and post-merge Windows
+- Last completed evidence: Z0 PR #107 passed PR Windows Harness run
+  `25573927712`, merged as
+  `8ca63acf7298564385f2a7ca777ff973aa7cb09b`, and post-merge `main`
+  Windows Harness run `25574042929` passed on that SHA.
+- Last validation: Z1 docs freshness scan, focused docs tests, full pytest,
+  helper build, watcher build, install CLI smoke, full harness, and
+  `git diff --check` passed locally.
+- Next atomic task: open the Z1 PR, then verify PR and post-merge Windows
   Harness.
 - Known blockers: none.
 
@@ -179,6 +179,16 @@ Stage-specific gates:
   `v0.1.11`.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
+- Recorded Z0 PR #107 and post-merge Windows Harness run `25574042929` as the
+  post-publication baseline reconciliation for `v0.1.11`.
+- During Z1, accepted inherited `v0.1.0` manual UIA smoke as inherited/stale
+  evidence for the active post-v0.1.11 compatible maintenance path because
+  Z0/Z1 changed only docs/tests and did not change helper behavior, watcher
+  product behavior, manual smoke scripts, capture behavior, privacy behavior,
+  product CLI/MCP shape, capture surfaces, or release approver requirements.
+  This does not make inherited manual smoke fresh or current release evidence;
+  Z4 must explicitly accept inherited evidence before `v0.1.12` publication or
+  record fresh manual smoke.
 
 ## Validation Log
 
@@ -194,5 +204,19 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending PR Windows Harness.
-- Pending post-merge `main` Windows Harness.
+- Stage Z0 remote validation:
+  - PR #107 Windows Harness run `25573927712` - passed.
+  - PR #107 merged as `8ca63acf7298564385f2a7ca777ff973aa7cb09b`.
+  - Post-merge `main` Windows Harness run `25574042929` - passed on
+    `8ca63acf7298564385f2a7ca777ff973aa7cb09b`.
+- Stage Z1 evidence freshness validation:
+  - `rg --pcre2 -n <stale-current-or-latest-v0.1.0-through-v0.1.10-patterns> README.md docs tests` - reviewed; remaining matches were historical records or tests asserting stale wording is absent.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 26 tests.
+  - `python -m pytest -q` - passed, 118 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending Z1 PR Windows Harness.
+- Pending Z1 post-merge `main` Windows Harness.
