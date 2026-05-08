@@ -36,7 +36,8 @@ historical records. After the `v0.1.9` publication:
 - `v0.1.9` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
 - the post-v0.1.9 execution cursor is active and records PR #96 plus
-  post-merge Windows Harness run `25565697723`;
+  post-merge Windows Harness run `25565697723`, and X0 PR #97 plus
+  post-merge Windows Harness run `25566750349`;
 - the post-v0.1.8 execution cursor is completed historical context;
 - the post-v0.1.7 execution cursor is completed historical context;
 - the post-v0.1.6 execution cursor is completed historical context;
@@ -53,22 +54,31 @@ historical records. After the `v0.1.9` publication:
   record because no helper, watcher product behavior, manual smoke script,
   capture, privacy, product CLI/MCP shape, or capture-surface behavior changed
   before release readiness;
-- for the active post-v0.1.7 compatible maintenance path toward `v0.1.8`,
+- for the completed post-v0.1.7 compatible maintenance path toward `v0.1.8`,
   inherited `v0.1.0` manual smoke remained stale/inherited after the U1
   freshness decision, then is explicitly accepted by the U4
   release-readiness record because no helper, watcher product behavior, manual
   smoke script, capture, privacy, product CLI/MCP shape, or capture-surface
   behavior changed before release readiness;
-- for the active post-v0.1.8 maintenance path, inherited `v0.1.0` manual
+- for the completed post-v0.1.8 maintenance path, inherited `v0.1.0` manual
   smoke remains stale/inherited after the W1 freshness decision and is not
   fresh or current release evidence unless a later release-readiness record
   explicitly accepts it for a compatible release, or fresh manual smoke is
   recorded;
-- for the active post-v0.1.8 compatible maintenance path toward `v0.1.9`,
+- for the completed post-v0.1.8 compatible maintenance path toward `v0.1.9`,
   inherited `v0.1.0` manual smoke is explicitly accepted by the W4
   release-readiness record because no helper, watcher product behavior, manual
   smoke script, capture, privacy, product CLI/MCP shape, or capture-surface
   behavior changed before release readiness;
+- for the active post-v0.1.9 compatible maintenance path, inherited `v0.1.0`
+  manual smoke is explicitly accepted by the X1 freshness decision as
+  inherited/stale evidence because no helper behavior, watcher product
+  behavior, manual smoke script, capture behavior, privacy behavior, product
+  CLI/MCP shape, capture-surface behavior, or release approver requirement
+  changed in X0/X1;
+- the X1 decision does not make inherited manual smoke fresh or current release
+  evidence; release readiness must explicitly accept inherited evidence for
+  publication or record fresh manual smoke;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are
