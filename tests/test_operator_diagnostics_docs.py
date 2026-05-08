@@ -40,11 +40,13 @@ def test_operator_quickstart_links_diagnostics_playbook():
 
     assert "[Operator diagnostics](operator-diagnostics.md)" in quickstart
     assert "[Blueprint gap audit after v0.1.12](blueprint-gap-audit-post-v0.1.12.md)" in quickstart
+    assert "[Deterministic demo](deterministic-demo.md)" in quickstart
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
     assert (
         "[Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)"
         in readme
     )
+    assert "[Deterministic demo](docs/deterministic-demo.md)" in readme
 
 
 def test_operator_entry_points_distinguish_current_cursor_from_history():
@@ -762,15 +764,15 @@ def test_post_v012_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: AA1 - Blueprint Gap And Public Surface Audit.",
-        "Stage status: B - AA1 audit docs/tests are implemented locally",
+        "Current stage: AA2 - Deterministic Demo And Operator Experience Refresh.",
+        "Stage status: B - AA2 demo docs/tests are implemented locally",
         "`v0.1.12` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12",
         "targets `df16ea301243e2d3a612a5d09bd59f1436723fb4`",
         "Windows Harness run `25577701036` passed",
         "`3164d185e5d203b504bd78432032fa13003983f8`",
-        "AA0 PR #113 passed PR Windows Harness run `25578139342`",
-        "`4a5c5d53d9a6981e81a3ba61625cea847a87d88f`",
-        "Windows Harness run `25578252392` passed",
+        "AA1 PR #114 passed PR Windows Harness run `25578768178`",
+        "`b5b5bd7725c47f85fd4811eee3b5798577621e53`",
+        "Windows Harness run `25578855299` passed",
         "Stage AA0 - Post-v0.1.12 Baseline Cursor",
         "Stage AA1 - Blueprint Gap And Public Surface Audit",
         "Stage AA2 - Deterministic Demo And Operator Experience Refresh",
@@ -782,7 +784,7 @@ def test_post_v012_plan_is_active_without_expanding_scope():
         "MCP tool list remains unchanged and read-only",
         "Product CLI still does not expose targeted `--hwnd`, `--pid`",
         "Do not implement screenshot capture, OCR, audio recording",
-        "AA1 focused docs tests, full pytest, helper build, watcher build",
+        "AA2 focused docs tests, full pytest, helper build, watcher build",
         "Stage AA0 initialization:",
         "gh release view v0.1.12",
         "git rev-parse v0.1.12",
@@ -795,8 +797,18 @@ def test_post_v012_plan_is_active_without_expanding_scope():
         "reviewed CLI evidence",
         "reviewed MCP evidence",
         "reviewed workflow/docs/harness surfaces",
-        "Pending AA1 PR Windows Harness.",
-        "Pending AA1 post-merge `main` Windows Harness.",
+        "Stage AA1 remote validation:",
+        "PR #114 Windows Harness run `25578768178` - passed.",
+        "Post-merge `main` Windows Harness run `25578855299` - passed",
+        "Stage AA2 deterministic demo validation:",
+        "First `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` attempt failed",
+        "python -m pytest tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 17 tests.",
+        "python -m pytest -q` - passed, 122 tests.",
+        "python harness/scripts/run_install_cli_smoke.py` - passed.",
+        "python harness/scripts/run_harness.py` - passed.",
+        "git diff --check` - passed.",
+        "Pending AA2 PR Windows Harness.",
+        "Pending AA2 post-merge `main` Windows Harness.",
     ):
         assert expected in normalized
 
@@ -830,6 +842,48 @@ def test_blueprint_gap_audit_records_evidence_and_no_scope_expansion():
         "AA2: consolidate deterministic demo/operator\ninstructions",
     ):
         assert expected in audit
+
+
+def test_deterministic_demo_is_fixture_only_and_covers_operator_route():
+    demo = (ROOT / "docs" / "deterministic-demo.md").read_text(encoding="utf-8")
+
+    for expected in (
+        "without reading the live desktop",
+        "synthetic fixtures",
+        "temporary local state",
+        "python -m winchronicle status",
+        "screenshot, OCR, audio, keyboard, clipboard",
+        "product targeted capture",
+        "python -m winchronicle capture-once --fixture harness/fixtures/uia/terminal_error.json",
+        "python -m winchronicle capture-once --fixture harness/fixtures/uia/vscode_editor.json",
+        "python -m winchronicle capture-once --fixture harness/fixtures/uia/edge_browser.json",
+        "python -m winchronicle search-captures \"AssertionError\"",
+        "python -m winchronicle search-captures \"test_capture_redacts_passwords\"",
+        "python -m winchronicle search-captures \"OpenChronicle\"",
+        "trust = \"untrusted_observed_content\"",
+        "python -m winchronicle generate-memory --date 2026-04-25",
+        "python -m winchronicle search-memory \"AssertionError\"",
+        "python -m winchronicle search-memory \"OpenChronicle\"",
+        "python -m winchronicle watch --events harness/fixtures/watcher/notepad_burst.jsonl",
+        "python -m winchronicle search-captures \"Watcher burst\"",
+        "python harness/scripts/run_mcp_smoke.py",
+        "python harness/scripts/run_install_cli_smoke.py",
+        "python harness/scripts/run_harness.py",
+        "Real UIA Notepad, Edge, VS\nCode, and watcher preview smoke stay manual",
+        "Do not commit those files, raw helper JSON, raw watcher\nJSONL",
+        "observed-content diagnostics",
+    ):
+        assert expected in demo
+
+    forbidden_phrases = (
+        "git add",
+        "git commit",
+        "commit observed",
+        "save observed",
+        "run capture-frontmost",
+    )
+    for forbidden in forbidden_phrases:
+        assert forbidden not in demo
 
 
 def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():

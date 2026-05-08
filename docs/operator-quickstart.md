@@ -52,6 +52,10 @@ package without fetching dependencies, and runs deterministic CLI commands. The
 full harness uses temporary state, deterministic fixtures, fake helper smoke,
 and read-only MCP smoke.
 
+For a single fixture-only walkthrough that covers capture search, memory search,
+watcher fixture replay, read-only MCP smoke, privacy status, and artifact
+policy, use [Deterministic demo](deterministic-demo.md).
+
 ## Basic CLI Flow
 
 Use fixture captures for deterministic operator checks:
@@ -142,6 +146,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Release evidence guide](release-evidence.md)
 - [Manual smoke evidence template](manual-smoke-evidence-template.md)
 - [Manual smoke evidence ledger](manual-smoke-evidence-ledger.md)
+- [Deterministic demo](deterministic-demo.md)
 - [Windows UIA smoke gates](windows-uia-smoke.md)
 - [UIA helper quality matrix](uia-helper-quality-matrix.md)
 - [Operator diagnostics](operator-diagnostics.md)
