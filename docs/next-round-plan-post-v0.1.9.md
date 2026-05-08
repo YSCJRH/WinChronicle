@@ -26,18 +26,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: X3 - Compatibility Guardrail Sweep.
-- Stage status: B - X3 compatibility guardrail docs/tests are implemented and
-  local deterministic validation passed; PR Windows Harness and post-merge
-  Windows Harness are pending.
-- Last completed evidence: X2 PR #99 passed PR Windows Harness run
-  `25567947799`, merged as `f49a5774f4c5fb1dd2dcef64e1dca3affbf15d68`, and
-  post-merge `main` Windows Harness run `25568061526` passed on that SHA.
-- Last validation: X3 compatibility tests, full pytest, helper build, watcher
-  build, install CLI smoke, full harness, and `git diff --check` passed
+- Current stage: X4 - v0.1.10 Release Readiness.
+- Stage status: B - X4 release-readiness docs, tests, and version metadata are
+  implemented and local deterministic validation passed; PR Windows Harness,
+  post-merge Windows Harness, and publication are pending.
+- Last completed evidence: X3 PR #100 passed PR Windows Harness run
+  `25568494398`, merged as `d13f84d1849b9300cf534cea55c25a3584aeea02`, and
+  post-merge `main` Windows Harness run `25568639603` passed on that SHA.
+- Last validation: X4 targeted docs/version tests, full pytest, helper build,
+  watcher build, install CLI smoke, full harness, and `git diff --check` passed
   locally.
-- Next atomic task: open a small X3 PR, verify PR and post-merge Windows
-  Harness, then advance to X4 v0.1.10 release readiness in the next branch.
+- Next atomic task: open the X4 PR, verify PR and post-merge Windows Harness,
+  then publish `v0.1.10` if all gates pass.
 - Known blockers: none.
 
 ## Phased Work
@@ -204,6 +204,16 @@ Stage-specific gates:
   surfaces. Matches were expected helper-only harness targeting, disabled
   surface contracts, fixtures, specs, scorecards, and tests; no product
   CLI/MCP targeted capture or new capture/control implementation was found.
+- During X4, chose the direct compatible `v0.1.10` path because X0-X4 only
+  change release evidence, documentation, tests, CI/runtime metadata,
+  compatibility evidence, and version metadata. If product behavior, schema,
+  CLI/MCP JSON shape, privacy behavior, helper/watcher behavior, or capture
+  surface changes before publication, stop and prepare a release candidate.
+- During X4, the `v0.1.10` release-readiness record explicitly accepts
+  inherited `v0.1.0` manual UIA smoke only for this compatible path because
+  helper behavior, watcher product behavior, manual smoke scripts, capture
+  behavior, privacy behavior, product CLI/MCP shape, and capture surfaces are
+  unchanged.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -269,3 +279,18 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Stage X3 remote validation:
+  - PR #100 Windows Harness run `25568494398` - passed.
+  - PR #100 merged as `d13f84d1849b9300cf534cea55c25a3584aeea02`.
+  - Post-merge `main` Windows Harness run `25568639603` - passed on `d13f84d1849b9300cf534cea55c25a3584aeea02`.
+- Stage X4 release-readiness validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 24 tests.
+  - `python -m pytest -q` - passed, 115 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+  - Pending PR Windows Harness.
+  - Pending post-merge `main` Windows Harness.
+  - Pending `v0.1.10` publication validation.
