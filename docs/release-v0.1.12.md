@@ -1,15 +1,14 @@
 # v0.1.12 Maintenance Release Record
 
-This record captures the compatible `v0.1.12` maintenance release candidate
+This record captures the published compatible `v0.1.12` maintenance release
 from the published `v0.1.11` baseline. It records commands, results, commit
 identifiers, CI URLs, environment notes, and local artifact paths only. It does
 not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.12` is a ready compatible maintenance release candidate. Local Z4
-validation passed. PR Windows Harness, post-merge `main` Windows Harness, and
-GitHub release publication are pending until the candidate PR merges.
+`v0.1.12` is published. Local Z4 validation, PR Windows Harness, post-merge
+`main` Windows Harness, and GitHub release publication passed.
 
 The direct compatible release path is allowed because Z0-Z4 change release
 evidence, documentation, tests, CI/runtime scan evidence, compatibility
@@ -23,22 +22,22 @@ publication, prepare a release candidate instead of publishing `v0.1.12`
 directly. If such a regression is found after publication, publish a follow-up
 release candidate instead of retagging `v0.1.12`.
 
-Publication status: ready maintenance release candidate.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.12` |
-| Stage | Ready maintenance release candidate |
+| Stage | Published maintenance release |
 | Evidence date | 2026-05-09, Asia/Shanghai |
 | Base `main` SHA before Z4 readiness | `86be82cb153269bad68fb92806fa7701a1e8579c` |
-| Candidate PR | Pending |
-| Candidate PR Windows Harness | Pending |
-| Candidate post-merge `main` Windows Harness | Pending |
-| Publication status | Pending |
-| Release URL | Pending until publication |
-| Final tag target | Pending until publication |
+| Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/111 |
+| Candidate PR Windows Harness | Passed, run `25576751080`, https://github.com/YSCJRH/WinChronicle/actions/runs/25576751080 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25576867729`, https://github.com/YSCJRH/WinChronicle/actions/runs/25576867729 |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12 |
+| Final tag target | `df16ea301243e2d3a612a5d09bd59f1436723fb4` |
 | Previous stable release | `v0.1.11` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.11 |
 | `v0.1.11` tag target | `1724b0e47e6f6b915a99842fb971d7f9c503f65a` |
@@ -60,7 +59,7 @@ Environment:
 - Windows PowerShell.
 - Python: `3.11`.
 - .NET SDK: `8.0`.
-- Manual UIA smoke is not refreshed for this maintenance release candidate
+- Manual UIA smoke was not refreshed for this maintenance release
   because Z0-Z4 changes are documentation, tests, CI/runtime scan evidence,
   deterministic harness evidence, compatibility evidence, and version metadata
   only. This Z4 record explicitly accepts inherited `v0.1.0` Notepad, Edge, VS
@@ -83,8 +82,8 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The Z4 PR Windows Harness and post-merge `main` Windows Harness must pass
-before publication.
+The Z4 PR Windows Harness and post-merge `main` Windows Harness passed before
+publication.
 
 ## Release Notes
 
@@ -171,12 +170,11 @@ This maintenance release does not expand the capture surface from `v0.1.11`.
 
 ## Release Decision Summary
 
-- Release path: compatible `v0.1.12` maintenance release candidate.
+- Release path: compatible `v0.1.12` maintenance release, published.
 - Fallback path: release candidate if any product or contract change is
   required before publication.
-- Deterministic gates: local Z4 validation passed; PR Windows Harness,
-  post-merge `main` Windows Harness, and GitHub release publication are
-  pending.
+- Deterministic gates: local Z4 validation, PR Windows Harness, post-merge
+  `main` Windows Harness, and GitHub release publication passed.
 - Manual UIA gates: inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code
   strict diagnostic, and watcher preview manual evidence is explicitly accepted
   by this Z4 record for the compatible `v0.1.12` path only because product UIA
@@ -186,5 +184,5 @@ This maintenance release does not expand the capture surface from `v0.1.11`.
 - Privacy/scope confirmation: unchanged and recorded above.
 - Publication approval: completed by the active thread goal directing stage
   completion, remote push, and publication after required gates pass.
-- Release URL: pending until publication.
-- Final tag target: pending until publication.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12.
+- Final tag target: `df16ea301243e2d3a612a5d09bd59f1436723fb4`.

@@ -434,20 +434,20 @@ def test_v0111_release_record_is_published_and_compatible():
         assert f"`{tool_name}`" in text
 
 
-def test_v0112_release_record_is_ready_and_compatible():
+def test_v0112_release_record_is_published_and_compatible():
     text = V0112_RELEASE.read_text(encoding="utf-8")
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: ready maintenance release candidate.",
+        "Publication status: published maintenance release.",
         "Release | `v0.1.12`",
-        "Stage | Ready maintenance release candidate",
+        "Stage | Published maintenance release",
         "Base `main` SHA before Z4 readiness | `86be82cb153269bad68fb92806fa7701a1e8579c`",
-        "Candidate PR | Pending",
-        "Candidate PR Windows Harness | Pending",
-        "Candidate post-merge `main` Windows Harness | Pending",
-        "Release URL | Pending until publication",
-        "Final tag target | Pending until publication",
+        "Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/111",
+        "Candidate PR Windows Harness | Passed, run `25576751080`",
+        "Candidate post-merge `main` Windows Harness | Passed, run `25576867729`",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12",
+        "Final tag target | `df16ea301243e2d3a612a5d09bd59f1436723fb4`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.11",
         "`v0.1.11` tag target | `1724b0e47e6f6b915a99842fb971d7f9c503f65a`",
         "Z0 PR Windows Harness | Passed, run `25573927712`",
@@ -466,9 +466,10 @@ def test_v0112_release_record_is_ready_and_compatible():
         "`python -m pytest -q` | Pass | `119 passed`",
         "Fallback path: release candidate if any product or contract change",
         "Publication approval: completed by the active thread goal",
-        "Deterministic gates: local Z4 validation passed",
-        "Release URL: pending until publication.",
-        "Final tag target: pending until publication.",
+        "Deterministic gates: local Z4 validation, PR Windows Harness",
+        "GitHub release publication passed",
+        "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12.",
+        "Final tag target: `df16ea301243e2d3a612a5d09bd59f1436723fb4`.",
     ):
         assert phrase in normalized
 

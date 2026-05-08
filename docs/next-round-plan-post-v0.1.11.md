@@ -2,16 +2,16 @@
 
 ## Summary
 
-`v0.1.11` is published at
-https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.11. The release tag
-targets `1724b0e47e6f6b915a99842fb971d7f9c503f65a`, and post-merge `main`
-Windows Harness run `25573347339` passed on that SHA.
+`v0.1.12` is published at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12. The release tag
+targets `df16ea301243e2d3a612a5d09bd59f1436723fb4`, and post-merge `main`
+Windows Harness run `25576867729` passed on that SHA.
 
-The post-v0.1.11 baseline starts from the compatible `v0.1.11` maintenance
-release. `main` is green, package/runtime/MCP version identity reports
-`0.1.11`, and no product behavior, schema, CLI/MCP JSON shape, privacy
-behavior, helper/watcher behavior, or capture-surface change was introduced by
-the post-v0.1.10 round.
+The post-v0.1.11 maintenance round is complete. It published the compatible
+`v0.1.12` maintenance release from the `v0.1.11` baseline. `main` is green,
+package/runtime/MCP version identity reports `0.1.12`, and no product
+behavior, schema, CLI/MCP JSON shape, privacy behavior, helper/watcher
+behavior, or capture-surface change was introduced by this round.
 
 This next round remains a conservative compatible maintenance pass. It should
 keep release evidence current, preserve operator entry points, audit inherited
@@ -26,21 +26,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Z4 - v0.1.12 Release Readiness.
-- Stage status: B - Z4 release-readiness docs/tests/version metadata are
-  implemented and local
-  deterministic validation passed; PR Windows Harness and post-merge Windows
-  Harness are pending.
-- Last completed evidence: Z3 PR #110 passed PR Windows Harness run
-  `25575910225`, merged as
-  `86be82cb153269bad68fb92806fa7701a1e8579c`, and post-merge `main`
-  Windows Harness run `25576068774` passed on that SHA.
-- Last validation: Z4 release-readiness checks, version identity tests,
-  release evidence docs tests, full pytest, helper build, watcher build,
-  install CLI smoke, full
-  harness, and `git diff --check` passed locally.
-- Next atomic task: open the Z4 PR, then verify PR and post-merge Windows
-  Harness.
+- Current stage: G - v0.1.12 Published Baseline Reconciliation.
+- Stage status: G - v0.1.12 published; baseline reconciliation complete.
+- Last completed evidence: `v0.1.12` is published at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12, targets
+  `df16ea301243e2d3a612a5d09bd59f1436723fb4`, and post-merge `main`
+  Windows Harness run `25576867729` passed on that SHA.
+- Last validation: v0.1.12 publication validation passed with
+  `gh release view v0.1.12`, `git rev-parse v0.1.12`, and
+  `python -c "import winchronicle; print(winchronicle.__version__)"`.
+- Next atomic task: establish the post-v0.1.12 maintenance plan before starting
+  new implementation.
 - Known blockers: none.
 
 ## Phased Work
@@ -184,13 +180,12 @@ Stage-specific gates:
 - Recorded Z0 PR #107 and post-merge Windows Harness run `25574042929` as the
   post-publication baseline reconciliation for `v0.1.11`.
 - During Z1, accepted inherited `v0.1.0` manual UIA smoke as inherited/stale
-  evidence for the active post-v0.1.11 compatible maintenance path because
+  evidence for the post-v0.1.11 compatible maintenance path because
   Z0/Z1 changed only docs/tests and did not change helper behavior, watcher
   product behavior, manual smoke scripts, capture behavior, privacy behavior,
   product CLI/MCP shape, capture surfaces, or release approver requirements.
   This does not make inherited manual smoke fresh or current release evidence;
-  Z4 must explicitly accept inherited evidence before `v0.1.12` publication or
-  record fresh manual smoke.
+  Z4 explicitly accepted inherited evidence before `v0.1.12` publication.
 - Recorded Z1 PR #108 and post-merge Windows Harness run `25574855474` as the
   evidence freshness and entry hygiene completion evidence.
 - During Z2, reviewed the latest `main` Windows Harness run `25574855474` and
@@ -225,6 +220,9 @@ Stage-specific gates:
   because helper behavior, watcher product behavior, manual smoke scripts,
   capture behavior, privacy behavior, product CLI/MCP shape, and capture
   surfaces are unchanged.
+- Published `v0.1.12` from `df16ea301243e2d3a612a5d09bd59f1436723fb4`.
+  Do not retag `v0.1.12`; establish a post-v0.1.12 maintenance plan before
+  starting new implementation.
 
 ## Validation Log
 
@@ -304,5 +302,13 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending Z4 PR Windows Harness.
-- Pending Z4 post-merge `main` Windows Harness.
+- Stage Z4 remote validation:
+  - PR #111 Windows Harness run `25576751080` - passed.
+  - PR #111 merged as `df16ea301243e2d3a612a5d09bd59f1436723fb4`.
+  - Post-merge `main` Windows Harness run `25576867729` - passed on
+    `df16ea301243e2d3a612a5d09bd59f1436723fb4`.
+- v0.1.12 publication validation:
+  - `gh release create v0.1.12 --target df16ea301243e2d3a612a5d09bd59f1436723fb4 --title "v0.1.12" --notes <inline release notes>` - passed.
+  - `gh release view v0.1.12 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; release URL https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12, not draft, not prerelease, published at `2026-05-08T20:07:36Z`, and target `df16ea301243e2d3a612a5d09bd59f1436723fb4`.
+  - `git rev-parse v0.1.12` - passed and printed `df16ea301243e2d3a612a5d09bd59f1436723fb4`.
+  - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.12`.
