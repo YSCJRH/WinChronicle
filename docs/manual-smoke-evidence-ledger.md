@@ -13,14 +13,14 @@ or token canaries.
 
 | Field | Value |
 | --- | --- |
-| Stable release baseline | `v0.1.12` |
-| Current maintenance plan | [Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md) |
-| Latest completed maintenance plan | [Post-v0.1.11 maintenance plan](next-round-plan-post-v0.1.11.md) |
-| Published release record | [v0.1.12 maintenance release record](release-v0.1.12.md) |
-| Latest published release record | [v0.1.12 maintenance release record](release-v0.1.12.md) |
+| Stable release baseline | `v0.1.13` |
+| Current maintenance plan | Pending post-v0.1.13 maintenance plan |
+| Latest completed maintenance plan | [Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md) |
+| Published release record | [v0.1.13 maintenance release record](release-v0.1.13.md) |
+| Latest published release record | [v0.1.13 maintenance release record](release-v0.1.13.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
-| Last freshness decision | For the completed post-v0.1.11 compatible maintenance path, inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and watcher preview manual evidence was accepted by Z1 as inherited/stale evidence, then explicitly accepted by Z4 for compatible `v0.1.12` publication because Z0-Z4 did not change helper behavior, watcher product behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approver requirements. This does not make inherited manual smoke fresh or current release evidence. |
+| Last freshness decision | For the completed post-v0.1.12 compatible maintenance path, inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and watcher preview manual evidence was accepted by AA5 for compatible `v0.1.13` publication because AA0-AA5 did not change helper behavior, watcher product behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approver requirements. This does not make inherited manual smoke fresh or current release evidence. |
 | Next freshness decision | The next maintenance plan must decide whether inherited manual evidence remains acceptable or whether fresh manual smoke is required before the next release. |
 
 ## Latest Known Manual Evidence

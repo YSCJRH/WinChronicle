@@ -32,8 +32,8 @@ def test_release_checklist_requires_compatibility_evidence():
         "exact read-only MCP tool list",
         "Phase 6 screenshot/OCR work remains specification-only",
         "product targeted capture flags are exposed",
+        "v0.1.13 maintenance release record",
         "v0.1.12 maintenance release record",
-        "v0.1.11 maintenance release record",
     ):
         assert phrase in normalized
 
@@ -52,8 +52,8 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Phase 6 remains specification-only",
         "no screenshot capture code",
         "OCR engine integration",
+        "v0.1.13 maintenance release record",
         "v0.1.12 maintenance release record",
-        "v0.1.11 maintenance release record",
     ):
         assert phrase in normalized
 
@@ -483,13 +483,15 @@ def test_v0113_release_record_is_ready_and_compatible():
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: release-readiness candidate.",
+        "Publication status: published maintenance release.",
         "Release | `v0.1.13`",
-        "Stage | Release-readiness candidate",
+        "Stage | Published maintenance release",
         "Base `main` SHA before AA5 readiness | `1c9cabec4d27b8c0e4e245d9a27ddcba96ed3a00`",
-        "Candidate PR | Pending AA5 PR",
-        "Candidate PR Windows Harness | Pending AA5 PR Windows Harness",
-        "Candidate post-merge `main` Windows Harness | Pending AA5 post-merge Windows Harness",
+        "Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/118",
+        "Candidate PR Windows Harness | Passed, run `25580778260`",
+        "Candidate post-merge `main` Windows Harness | Passed, run `25580877004`",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13",
+        "Final tag target | `1070343d9bcfd60c48238835e26b6c32f9060ae7`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12",
         "`v0.1.12` tag target | `df16ea301243e2d3a612a5d09bd59f1436723fb4`",
         "AA0 PR Windows Harness | Passed, run `25578139342`",
@@ -509,8 +511,10 @@ def test_v0113_release_record_is_ready_and_compatible():
         "explicitly accepts inherited `v0.1.0` Notepad",
         "Fallback path: release candidate if any product or contract change",
         "Publication approval: completed by the active thread goal",
-        "AA5 local validation passed",
-        "Release URL and final tag target are pending.",
+        "AA5 local validation, PR Windows Harness",
+        "GitHub release publication passed",
+        "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13.",
+        "Final tag target: `1070343d9bcfd60c48238835e26b6c32f9060ae7`.",
     ):
         assert phrase in normalized
 

@@ -1,14 +1,14 @@
-# v0.1.13 Maintenance Release Readiness Record
+# v0.1.13 Maintenance Release Record
 
-This record prepares the compatible `v0.1.13` maintenance release from the
-published `v0.1.12` baseline. It records commands, results, commit identifiers,
-CI URLs, environment notes, and local artifact paths only. It does not commit
-observed-content artifacts.
+This record captures the published compatible `v0.1.13` maintenance release
+from the published `v0.1.12` baseline. It records commands, results, commit
+identifiers, CI URLs, environment notes, and local artifact paths only. It does
+not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.13` is a release-readiness candidate until the AA5 PR, post-merge `main`
-Windows Harness, and GitHub release publication pass.
+`v0.1.13` is published. Local AA5 validation, PR Windows Harness, post-merge
+`main` Windows Harness, and GitHub release publication passed.
 
 The direct compatible release path is allowed because AA0-AA4 changed
 documentation, tests, GitHub metadata, deterministic harness evidence,
@@ -23,22 +23,22 @@ publication, prepare a release candidate instead of publishing `v0.1.13`
 directly. If such a regression is found after publication, publish a follow-up
 release candidate instead of retagging `v0.1.13`.
 
-Publication status: release-readiness candidate.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.13` |
-| Stage | Release-readiness candidate |
+| Stage | Published maintenance release |
 | Evidence date | 2026-05-09, Asia/Shanghai |
 | Base `main` SHA before AA5 readiness | `1c9cabec4d27b8c0e4e245d9a27ddcba96ed3a00` |
-| Candidate PR | Pending AA5 PR |
-| Candidate PR Windows Harness | Pending AA5 PR Windows Harness |
-| Candidate post-merge `main` Windows Harness | Pending AA5 post-merge Windows Harness |
-| Publication status | Pending publication |
-| Release URL | Pending publication |
-| Final tag target | Pending publication |
+| Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/118 |
+| Candidate PR Windows Harness | Passed, run `25580778260`, https://github.com/YSCJRH/WinChronicle/actions/runs/25580778260 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25580877004`, https://github.com/YSCJRH/WinChronicle/actions/runs/25580877004 |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13 |
+| Final tag target | `1070343d9bcfd60c48238835e26b6c32f9060ae7` |
 | Previous stable release | `v0.1.12` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12 |
 | `v0.1.12` tag target | `df16ea301243e2d3a612a5d09bd59f1436723fb4` |
@@ -84,8 +84,8 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The AA5 PR Windows Harness and post-merge `main` Windows Harness must pass
-before publication.
+The AA5 PR Windows Harness and post-merge `main` Windows Harness passed before
+publication.
 
 ## Release Notes
 
@@ -127,8 +127,7 @@ before publication.
 
 ## Privacy And Scope Confirmation
 
-This maintenance release candidate does not expand the capture surface from
-`v0.1.12`.
+This maintenance release does not expand the capture surface from `v0.1.12`.
 
 - Local-first: captured content remains local; no cloud or network upload is
   implemented.
@@ -174,11 +173,11 @@ This maintenance release candidate does not expand the capture surface from
 
 ## Release Decision Summary
 
-- Release path: compatible `v0.1.13` maintenance release, pending publication.
+- Release path: compatible `v0.1.13` maintenance release, published.
 - Fallback path: release candidate if any product or contract change is
   required before publication.
-- Deterministic gates: AA5 local validation passed; PR Windows Harness and
-  post-merge `main` Windows Harness are pending.
+- Deterministic gates: AA5 local validation, PR Windows Harness, post-merge
+  `main` Windows Harness, and GitHub release publication passed.
 - Manual UIA gates: inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code
   strict diagnostic, and watcher preview manual evidence is accepted by this
   AA5 record for the compatible `v0.1.13` path only because product UIA helper
@@ -188,5 +187,5 @@ This maintenance release candidate does not expand the capture surface from
 - Privacy/scope confirmation: unchanged and recorded above.
 - Publication approval: completed by the active thread goal directing stage
   completion, remote push, and publication after required gates pass.
-  Publication still requires AA5 PR and post-merge Windows Harness success.
-  Release URL and final tag target are pending.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13.
+- Final tag target: `1070343d9bcfd60c48238835e26b6c32f9060ae7`.
