@@ -103,8 +103,8 @@ def test_post_v014_plan_is_active_without_expanding_scope():
     )
 
     for expected in (
-        "Current stage: P2 - Manual Smoke Freshness Decision.",
-        "Stage status: C - P2 complete; ready to enter P3 on the next turn.",
+        "Current stage: P3 - Compatibility Guardrail Maintenance.",
+        "Stage status: C - P3 complete; ready to enter P4 on the next turn.",
         "Windows Harness run `25432718007` passed on that SHA",
         "`v0.1.4` is published at\nhttps://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4",
         "post-publication\nreconciliation `main` commit is",
@@ -205,12 +205,13 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     assert "[Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)" in readme
     assert "Manual smoke evidence ledger" in checklist
     assert "Manual smoke evidence ledger" in evidence
-    assert "Current stage: P2 - Manual Smoke Freshness Decision." in plan
-    assert "Stage status: C - P2 complete; ready to enter P3 on the next turn." in plan
+    assert "Current stage: P3 - Compatibility Guardrail Maintenance." in plan
+    assert "Stage status: C - P3 complete; ready to enter P4 on the next turn." in plan
     assert "Windows Harness run `25432718007` passed on that SHA" in plan
     assert "Stage P0 - Post-v0.1.4 Baseline Cursor" in plan
     assert "Stage P1 entry-hygiene validation:" in plan
     assert "Stage P2 manual-smoke freshness validation:" in plan
+    assert "Stage P3 compatibility guardrail validation:" in plan
     assert "Stage P0 local validation:" in plan
     assert "Stage P2 - Manual Smoke Freshness Decision" in plan
     assert "observed-content\n  artifacts remain uncommitted" in plan

@@ -23,8 +23,8 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: P2 - Manual Smoke Freshness Decision.
-- Stage status: C - P2 complete; ready to enter P3 on the next turn.
+- Current stage: P3 - Compatibility Guardrail Maintenance.
+- Stage status: C - P3 complete; ready to enter P4 on the next turn.
 - Last completed evidence: `v0.1.4` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4 and targets
   `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`. The post-publication
@@ -42,7 +42,10 @@ service install, and no default background capture.
   watcher preview manual evidence is accepted for the compatible `v0.1.5` path
   only if the remaining release path does not change helper behavior, watcher
   product behavior, manual smoke scripts, capture behavior, privacy behavior,
-  product CLI/MCP shape, or capture surfaces.
+  product CLI/MCP shape, or capture surfaces. P3 audited compatibility
+  guardrail coverage and confirmed existing tests lock version identity, exact
+  read-only MCP tools, privacy surface parity, CLI and memory/search trust
+  boundaries, release evidence freshness, and Phase 6 spec-only status.
 - Last validation: P0 full local validation passed: `python -m pytest -q`,
   both .NET builds, `python harness/scripts/run_install_cli_smoke.py`,
   `python harness/scripts/run_harness.py`, and `git diff --check`. The
@@ -52,11 +55,12 @@ service install, and no default background capture.
   entry-ordering test update, followed by full pytest, both .NET builds,
   install CLI smoke, full harness, and `git diff --check`. P2 targeted docs
   validation passed after updating the manual smoke ledger, release checklist,
-  release evidence guide, and docs tests.
-- Next atomic task: start P3 by re-running compatibility guardrail checks and
-  strengthening tests only for discovered drift around version identity,
-  read-only MCP, privacy parity, memory/search trust boundaries, release
-  evidence freshness, or Phase 6 spec-only status.
+  release evidence guide, and docs tests. P3 compatibility guardrail validation
+  passed with targeted compatibility suites and full stage gates.
+- Next atomic task: start P4 by preparing `v0.1.5` release readiness: align
+  package/runtime/MCP version metadata to `0.1.5`, add the release record,
+  record local and PR Windows Harness evidence, and stop for publication
+  approval before creating the release.
 - Known blockers: none.
 
 ## Phased Work
@@ -198,6 +202,11 @@ Stage-specific gates:
   stage changes helper behavior, watcher product behavior, manual smoke scripts,
   capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces,
   or if the release approver requires fresh hard-gate evidence.
+- During P3, found no compatibility drift requiring product or contract
+  changes. Existing tests already cover version identity, CLI surface shape,
+  exact read-only MCP tools, privacy parity, search and memory trust
+  boundaries, release evidence freshness, and Phase 6 spec-only status, so P3
+  only advanced the cursor and refreshed validation evidence.
 
 ## Validation Log
 
@@ -211,6 +220,15 @@ Stage-specific gates:
 - Stage P0 local validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - 12 passed.
   - `python -m pytest -q` - 99 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage P3 compatibility guardrail validation:
+  - `rg -n "__version__|serverInfo|TOOL_NAMES|privacy_status|screenshots_enabled|ocr_enabled|Phase 6|specification-only|search-captures|search-memory|untrusted_observed_content|version identity|MCP tool list|product targeted" tests src docs harness` - reviewed existing guardrail coverage.
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed.
+  - `python -m pytest -q` - passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
