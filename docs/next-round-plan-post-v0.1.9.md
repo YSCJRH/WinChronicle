@@ -26,18 +26,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: X4 - v0.1.10 Release Readiness.
-- Stage status: B - X4 release-readiness docs, tests, and version metadata are
-  implemented and local deterministic validation passed; PR Windows Harness,
-  post-merge Windows Harness, and publication are pending.
-- Last completed evidence: X3 PR #100 passed PR Windows Harness run
-  `25568494398`, merged as `d13f84d1849b9300cf534cea55c25a3584aeea02`, and
-  post-merge `main` Windows Harness run `25568639603` passed on that SHA.
-- Last validation: X4 targeted docs/version tests, full pytest, helper build,
-  watcher build, install CLI smoke, full harness, and `git diff --check` passed
-  locally.
-- Next atomic task: open the X4 PR, verify PR and post-merge Windows Harness,
-  then publish `v0.1.10` if all gates pass.
+- Current stage: G - v0.1.10 Published Baseline Reconciliation.
+- Stage status: G - v0.1.10 published; baseline reconciliation complete.
+- Last completed evidence: `v0.1.10` is published at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.10, targets
+  `28b062a531519d4360911b51dfc083782b6dcbad`, and post-merge `main` Windows
+  Harness run `25569567825` passed on that SHA.
+- Last validation: v0.1.10 publication validation passed with
+  `gh release view v0.1.10`, `git show-ref --tags v0.1.10`, and
+  `python -c "import winchronicle; print(winchronicle.__version__)"`.
+- Next atomic task: follow the post-v0.1.10 maintenance plan before starting
+  new implementation work.
 - Known blockers: none.
 
 ## Phased Work
@@ -214,6 +213,13 @@ Stage-specific gates:
   helper behavior, watcher product behavior, manual smoke scripts, capture
   behavior, privacy behavior, product CLI/MCP shape, and capture surfaces are
   unchanged.
+- During X4, merged PR #101 as
+  `28b062a531519d4360911b51dfc083782b6dcbad`; PR Windows Harness run
+  `25569414864` passed and post-merge `main` Windows Harness run
+  `25569567825` passed.
+- Published `v0.1.10` from `28b062a531519d4360911b51dfc083782b6dcbad`.
+  Do not retag `v0.1.10`; follow the post-v0.1.10 maintenance plan before
+  starting new implementation work.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -291,6 +297,11 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-  - Pending PR Windows Harness.
-  - Pending post-merge `main` Windows Harness.
-  - Pending `v0.1.10` publication validation.
+  - PR #101 Windows Harness run `25569414864` - passed.
+  - PR #101 merged as `28b062a531519d4360911b51dfc083782b6dcbad`.
+  - Post-merge `main` Windows Harness run `25569567825` - passed on `28b062a531519d4360911b51dfc083782b6dcbad`.
+- v0.1.10 publication validation:
+  - `gh release create v0.1.10 --target 28b062a531519d4360911b51dfc083782b6dcbad --title "v0.1.10" --notes-file <temp release notes>` - passed.
+  - `gh release view v0.1.10 --json name,tagName,url,isDraft,isPrerelease,publishedAt,targetCommitish` - passed; release URL https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.10, not draft, not prerelease, published at `2026-05-08T17:28:07Z`, and target `28b062a531519d4360911b51dfc083782b6dcbad`.
+  - `git show-ref --tags v0.1.10` - passed; local tag points to `28b062a531519d4360911b51dfc083782b6dcbad`.
+  - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.10`.
