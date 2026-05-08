@@ -24,17 +24,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: U2 - CI Runtime And Dependency Maintenance Scan.
-- Stage status: B - CI/runtime/dependency scan docs/tests are implemented and local
+- Current stage: U3 - Compatibility Guardrail Sweep.
+- Stage status: B - compatibility guardrail sweep docs/tests are implemented and local
   deterministic validation passed; PR Windows Harness and post-merge Windows
   Harness are pending.
-- Last completed evidence: U1 PR #88 passed PR Windows Harness run
-  `25558809159`, merged as `bf7397711bc4f2f70ca677dc788464d6fa4f03f3`, and
-  post-merge `main` Windows Harness run `25558922168` passed on that SHA.
-- Last validation: U2 local focused tests, full pytest, helper build, watcher
+- Last completed evidence: U2 PR #89 passed PR Windows Harness run
+  `25559501788`, merged as `a6703f500c0140dba7ed4d2bcdf3427050745649`, and
+  post-merge `main` Windows Harness run `25559686547` passed on that SHA.
+- Last validation: U3 compatibility-focused tests, full pytest, helper build, watcher
   build, install CLI smoke, full harness, and `git diff --check` passed.
-- Next atomic task: open a small U2 PR, verify PR and post-merge Windows
-  Harness, then advance to U3 in the next branch.
+- Next atomic task: open a small U3 PR, verify PR and post-merge Windows
+  Harness, then advance to U4 release readiness in the next branch.
 - Known blockers: none.
 
 ## Phased Work
@@ -205,6 +205,16 @@ Stage-specific gates:
   against screenshot/OCR/audio/keyboard/clipboard/network/LLM/control-oriented
   packages. `pyproject.toml` remains limited to deterministic project and dev
   dependencies for the current maintenance path.
+- During U2, merged PR #89 as
+  `a6703f500c0140dba7ed4d2bcdf3427050745649`; PR Windows Harness
+  `25559501788` and post-merge `main` Windows Harness `25559686547` passed.
+- During U3, treated existing tests and scorecards as compatibility oracles.
+  The sweep found current coverage for version identity, exact read-only MCP
+  tools, disabled privacy surfaces, search/memory trust boundaries, Phase 6
+  spec-only and dependency/source absence, watcher preview limits, product
+  targeted capture absence, and UIA helper boundary status. Therefore U3
+  records a no-action-needed compatibility guardrail sweep with no product
+  changes.
 
 ## Validation Log
 
@@ -240,6 +250,17 @@ Stage-specific gates:
   - `tests/test_windows_harness_workflow.py` inspection - passed; workflow guard already pins Node 24, the Windows runner, and deterministic gate order.
   - `pyproject.toml` inspection - passed; direct runtime dependency remains `jsonschema`, with dev-only `pytest`, `jsonschema`, and `wheel`.
   - `python -m pytest tests/test_windows_harness_workflow.py tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py -q` - passed after recording the U2 no-action-needed scan and dependency guard.
+  - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage U2 remote validation:
+  - PR #89 Windows Harness run `25559501788` - passed.
+  - Post-merge `main` Windows Harness run `25559686547` - passed on `a6703f500c0140dba7ed4d2bcdf3427050745649`.
+- Stage U3 compatibility guardrail validation:
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_memory_pipeline.py tests/test_phase6_privacy_scorecard.py tests/test_privacy_check.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py tests/test_watcher_events.py tests/test_uia_helper_quality_matrix.py -q` - passed.
   - `python -m pytest -q` - passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
