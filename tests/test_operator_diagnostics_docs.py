@@ -39,7 +39,12 @@ def test_operator_quickstart_links_diagnostics_playbook():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
 
     assert "[Operator diagnostics](operator-diagnostics.md)" in quickstart
+    assert "[Blueprint gap audit after v0.1.12](blueprint-gap-audit-post-v0.1.12.md)" in quickstart
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
+    assert (
+        "[Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)"
+        in readme
+    )
 
 
 def test_operator_entry_points_distinguish_current_cursor_from_history():
@@ -757,12 +762,15 @@ def test_post_v012_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: AA0 - Post-v0.1.12 Baseline Cursor.",
-        "Stage status: B - AA0 docs/tests are implemented locally",
+        "Current stage: AA1 - Blueprint Gap And Public Surface Audit.",
+        "Stage status: B - AA1 audit docs/tests are implemented locally",
         "`v0.1.12` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12",
         "targets `df16ea301243e2d3a612a5d09bd59f1436723fb4`",
-        "post-publication `main` Windows Harness run `25577701036`",
+        "Windows Harness run `25577701036` passed",
         "`3164d185e5d203b504bd78432032fa13003983f8`",
+        "AA0 PR #113 passed PR Windows Harness run `25578139342`",
+        "`4a5c5d53d9a6981e81a3ba61625cea847a87d88f`",
+        "Windows Harness run `25578252392` passed",
         "Stage AA0 - Post-v0.1.12 Baseline Cursor",
         "Stage AA1 - Blueprint Gap And Public Surface Audit",
         "Stage AA2 - Deterministic Demo And Operator Experience Refresh",
@@ -774,16 +782,54 @@ def test_post_v012_plan_is_active_without_expanding_scope():
         "MCP tool list remains unchanged and read-only",
         "Product CLI still does not expose targeted `--hwnd`, `--pid`",
         "Do not implement screenshot capture, OCR, audio recording",
-        "AA0 focused docs tests, full pytest, helper build, watcher build",
+        "AA1 focused docs tests, full pytest, helper build, watcher build",
         "Stage AA0 initialization:",
         "gh release view v0.1.12",
         "git rev-parse v0.1.12",
         "gh run view 25577701036",
         "Stage AA0 local validation:",
-        "Pending AA0 PR Windows Harness.",
-        "Pending AA0 post-merge `main` Windows Harness.",
+        "Stage AA0 remote validation:",
+        "PR #113 Windows Harness run `25578139342` - passed.",
+        "Post-merge `main` Windows Harness run `25578252392` - passed",
+        "Stage AA1 blueprint gap audit validation:",
+        "reviewed CLI evidence",
+        "reviewed MCP evidence",
+        "reviewed workflow/docs/harness surfaces",
+        "Pending AA1 PR Windows Harness.",
+        "Pending AA1 post-merge `main` Windows Harness.",
     ):
         assert expected in normalized
+
+
+def test_blueprint_gap_audit_records_evidence_and_no_scope_expansion():
+    audit = (ROOT / "docs" / "blueprint-gap-audit-post-v0.1.12.md").read_text(
+        encoding="utf-8"
+    )
+
+    for expected in (
+        "This audit compares the published `v0.1.12` baseline with `WinChronicle.md`.",
+        "It records evidence and follow-up candidates only.",
+        "new\ncapture surfaces",
+        "North star and README positioning",
+        "CLI command surface",
+        "Fixture capture and SQLite search",
+        "UIA helper preview",
+        "Watcher preview",
+        "Read-only MCP",
+        "Durable memory",
+        "Phase 6 boundary",
+        "Deterministic public demo",
+        "Roadmap",
+        "Issue templates",
+        "Contribution entry",
+        "Manual smoke freshness",
+        "GitHub metadata/social surface",
+        "The absence of screenshot/OCR implementation is intentional",
+        "The absence of product targeted capture flags is intentional",
+        "AA1 finds no required product-code change",
+        "AA2: consolidate deterministic demo/operator\ninstructions",
+    ):
+        assert expected in audit
 
 
 def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
