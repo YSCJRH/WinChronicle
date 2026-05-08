@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Operator quickstart
+    url: https://github.com/YSCJRH/WinChronicle/blob/main/docs/operator-quickstart.md
+    about: Start here for local deterministic validation and release-readiness guidance.
+  - name: Roadmap
+    url: https://github.com/YSCJRH/WinChronicle/blob/main/docs/roadmap.md
+    about: Review current v0.1 maintenance lanes and explicit non-goals.

@@ -28,17 +28,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AA2 - Deterministic Demo And Operator Experience Refresh.
-- Stage status: B - AA2 demo docs/tests are implemented locally; PR Windows
+- Current stage: AA3 - Issue, Roadmap, And Contribution Hygiene.
+- Stage status: B - AA3 roadmap/issue/contribution docs/tests are implemented locally; PR Windows
   Harness and post-merge Windows Harness are pending.
-- Last completed evidence: AA1 PR #114 passed PR Windows Harness run
-  `25578768178`, merged as
-  `b5b5bd7725c47f85fd4811eee3b5798577621e53`, and post-merge `main`
-  Windows Harness run `25578855299` passed on that SHA.
-- Last validation: AA2 focused docs tests, full pytest, helper build, watcher
+- Last completed evidence: AA2 PR #115 passed PR Windows Harness run
+  `25579283981`, merged as
+  `96a5e9145765375818e5b2dc0cb1792f83b7fc0e`, and post-merge `main`
+  Windows Harness run `25579389224` passed on that SHA.
+- Last validation: AA3 focused docs tests, full pytest, helper build, watcher
   build, install CLI smoke, full harness, and `git diff --check` passed
   locally.
-- Next atomic task: open the AA2 PR, then verify PR and post-merge Windows
+- Next atomic task: open the AA3 PR, then verify PR and post-merge Windows
   Harness.
 - Known blockers: none.
 
@@ -186,6 +186,11 @@ Stage-specific gates:
   operator path that covers capture search, memory generation/search, watcher
   fixture replay, read-only MCP smoke, privacy status, and artifact policy
   without adding live UIA smoke to default CI.
+- Recorded AA2 PR #115 and post-merge Windows Harness run `25579389224` as the
+  deterministic demo completion evidence.
+- During AA3, added lightweight roadmap, contribution guidance, issue templates,
+  and a PR template that route work through harness-first lanes and repeat the
+  v0.1 privacy/scope boundaries without creating product behavior work.
 
 ## Validation Log
 
@@ -232,5 +237,19 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AA2 PR Windows Harness.
-- Pending AA2 post-merge `main` Windows Harness.
+- Stage AA2 remote validation:
+  - PR #115 Windows Harness run `25579283981` - passed.
+  - PR #115 merged as `96a5e9145765375818e5b2dc0cb1792f83b7fc0e`.
+  - Post-merge `main` Windows Harness run `25579389224` - passed on
+    `96a5e9145765375818e5b2dc0cb1792f83b7fc0e`.
+- Stage AA3 issue/roadmap/contribution validation:
+  - First `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` attempt failed because the new roadmap assertion expected a phrase that was implicit in the definition-of-done list; the roadmap now states the artifact rule explicitly.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 18 tests.
+  - `python -m pytest -q` - passed, 123 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AA3 PR Windows Harness.
+- Pending AA3 post-merge `main` Windows Harness.

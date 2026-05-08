@@ -1,0 +1,42 @@
+name: Privacy boundary review
+description: Review proposals that may touch capture, storage, privacy, MCP, memory, or release evidence contracts.
+title: "[privacy] "
+labels: ["privacy", "scope-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Open this before implementation when a proposal may affect capture
+        surfaces, privacy behavior, schema shape, CLI/MCP JSON shape,
+        helper/watcher behavior, storage, memory output, or release evidence.
+        Do not attach or paste observed-content artifacts.
+  - type: textarea
+    id: surface
+    attributes:
+      label: Surface under review
+      description: Name the contract, command, MCP tool, helper/watcher path, storage path, memory output, scorecard, or release evidence affected.
+    validations:
+      required: true
+  - type: textarea
+    id: risk
+    attributes:
+      label: Privacy or scope risk
+      description: Describe the risk without including observed content, secrets, passwords, screenshots, OCR output, raw helper JSON, or raw watcher JSONL.
+    validations:
+      required: true
+  - type: textarea
+    id: tests_first_plan
+    attributes:
+      label: Tests-first plan
+      description: List the contracts, fixtures, tests, scorecards, or docs that should change before behavior changes.
+    validations:
+      required: true
+  - type: checkboxes
+    id: prohibited_surfaces
+    attributes:
+      label: Prohibited surface confirmation
+      options:
+        - label: This review does not authorize screenshot capture, OCR, audio recording, keyboard capture, clipboard capture, network upload, LLM calls, desktop control, daemon/service install, polling capture, default background capture, MCP write tools, arbitrary file reads, or product targeted capture.
+          required: true
+        - label: This review will not include committed observed-content artifacts.
+          required: true

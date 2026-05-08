@@ -1,0 +1,51 @@
+name: Harness-first task
+description: Propose deterministic fixtures, tests, docs, scorecards, or compatible metadata work.
+title: "[harness] "
+labels: ["harness-first"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for work that stays inside the v0.1 maintenance boundary.
+        Do not attach or paste observed-content artifacts.
+  - type: dropdown
+    id: lane
+    attributes:
+      label: Roadmap lane
+      options:
+        - Fixture and privacy baseline
+        - UIA helper hardening
+        - Watcher preview
+        - Read-only MCP
+        - Durable memory
+        - Docs and deterministic demo
+        - Phase 6 privacy spec only
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_change
+    attributes:
+      label: Proposed change
+      description: Describe the smallest deterministic change and why it is needed.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation plan
+      description: List tests, harness scripts, docs checks, or manual smoke evidence expected for this task.
+      placeholder: |
+        - python -m pytest -q
+        - python harness/scripts/run_harness.py
+        - git diff --check
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Boundary confirmation
+      options:
+        - label: This does not add screenshot capture, OCR, audio recording, keyboard capture, clipboard capture, network upload, LLM calls, desktop control, daemon/service install, polling capture, default background capture, MCP write tools, arbitrary file reads, or product targeted capture.
+          required: true
+        - label: This does not require committing local state, raw helper JSON, raw watcher JSONL, generated captures, generated memory, screenshots, OCR output, secrets, passwords, or observed-content diagnostics.
+          required: true
