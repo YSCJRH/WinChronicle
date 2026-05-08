@@ -14,12 +14,14 @@ or token canaries.
 | Field | Value |
 | --- | --- |
 | Stable release baseline | `v0.1.6` |
+| Current maintenance plan | [Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md) |
 | Latest completed maintenance plan | [Post-v0.1.5 maintenance plan](next-round-plan-post-v0.1.5.md) |
 | Published release record | [v0.1.6 maintenance release record](release-v0.1.6.md) |
 | Latest published release record | [v0.1.6 maintenance release record](release-v0.1.6.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
 | Last freshness decision | For the post-v0.1.5 compatible maintenance path that published `v0.1.6`, inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and watcher preview manual evidence was explicitly accepted by the S4 release record because the release path changed documentation, tests, CI/runtime metadata, version metadata, deterministic harness evidence, and compatibility evidence without changing helper behavior, watcher product behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces. Fresh manual smoke is still required if a later stage changes any of those boundaries or if the release approver requires fresh hard-gate evidence. |
+| Next freshness decision | The active post-v0.1.6 plan must make a release-specific freshness decision before any `v0.1.7` publication path. |
 
 ## Latest Known Manual Evidence
 
