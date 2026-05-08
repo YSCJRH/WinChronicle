@@ -13,6 +13,7 @@ V013_RELEASE = ROOT / "docs" / "release-v0.1.3.md"
 V014_RELEASE = ROOT / "docs" / "release-v0.1.4.md"
 V015_RELEASE = ROOT / "docs" / "release-v0.1.5.md"
 V016_RELEASE = ROOT / "docs" / "release-v0.1.6.md"
+V017_RELEASE = ROOT / "docs" / "release-v0.1.7.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -25,6 +26,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "exact read-only MCP tool list",
         "Phase 6 screenshot/OCR work remains specification-only",
         "product targeted capture flags are exposed",
+        "v0.1.7 maintenance release record",
     ):
         assert phrase in normalized
 
@@ -43,6 +45,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Phase 6 remains specification-only",
         "no screenshot capture code",
         "OCR engine integration",
+        "v0.1.7 maintenance release record",
     ):
         assert phrase in normalized
 
@@ -203,6 +206,41 @@ def test_v016_release_record_is_published_and_compatible():
         "Deterministic gates: local S4 validation, PR Windows Harness, post-merge `main` Windows Harness, and GitHub release publication passed.",
         "Publication approval: completed by the active thread goal directing stage completion, remote push, and publication.",
         "follow-up release candidate instead of retagging `v0.1.6`",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
+def test_v017_release_record_is_ready_and_compatible():
+    text = V017_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Publication status: release-readiness candidate; not yet published.",
+        "Release | `v0.1.7`",
+        "Stage | Release-readiness candidate",
+        "Base `main` SHA before T4 readiness | `6d1d8f94c56636c23daafcb4ceae24053ff226aa`",
+        "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6",
+        "`v0.1.6` tag target | `914cf361ac5864fa31d393d125d14e45eeba96bc`",
+        "T0 PR Windows Harness | Passed, run `25553025094`",
+        "T1 PR Windows Harness | Passed, run `25553940230`",
+        "T2 PR Windows Harness | Passed, run `25554431580`",
+        "T3 PR Windows Harness | Passed, run `25555063537`",
+        "T3 post-merge `main` Windows Harness | Passed, run `25555180274`",
+        "must report `0.1.7`",
+        "`python -m pytest -q` | Pass | `108 passed",
+        "exact read-only MCP tool list remains unchanged",
+        "Phase 6 remains specification-only",
+        "no new capture surfaces",
+        "no helper/watcher product behavior changes",
+        "no screenshot capture code",
+        "no OCR engine integration",
+        "explicitly accepts inherited `v0.1.0` Notepad",
+        "Fallback path: release candidate if any product or contract change",
+        "Publication approval: directed by the active thread goal",
+        "Deterministic gates: local T4 validation passed; PR Windows Harness and post-merge `main` Windows Harness are pending.",
     ):
         assert phrase in normalized
 

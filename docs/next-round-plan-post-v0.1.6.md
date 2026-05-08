@@ -23,8 +23,8 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: T3 - Compatibility Guardrail Sweep.
-- Stage status: B - T3 local compatibility guardrail sweep and validation are
+- Current stage: T4 - v0.1.7 Release Readiness.
+- Stage status: B - T4 local release-readiness changes and validation are
   complete; PR Windows Harness and post-merge `main` Windows Harness are
   pending.
 - Last completed evidence: `v0.1.6` is published at
@@ -35,14 +35,17 @@ service install, and no default background capture.
   Harness run `25552214063` passed on that SHA. T2 PR #83 passed PR Windows
   Harness run `25554431580`, merged as
   `fb84fb2b2bf47cfe89680c898f3694f543d75c52`, and post-merge `main` Windows
-  Harness run `25554520036` passed on that SHA.
-- Last validation: T3 compatibility guardrail sweep found no required product,
-  schema, CLI/MCP, helper/watcher, privacy, or capture-surface changes;
-  targeted compatibility tests, the full deterministic gate, and `git diff
-  --check` passed.
-- Next atomic task: open the T3 PR, wait for PR Windows Harness, merge after
-  review, then wait for post-merge `main` Windows Harness before starting T4
-  release readiness.
+  Harness run `25554520036` passed on that SHA. T3 PR #84 passed PR Windows
+  Harness run `25555063537`, merged as
+  `6d1d8f94c56636c23daafcb4ceae24053ff226aa`, and post-merge `main` Windows
+  Harness run `25555180274` passed on that SHA.
+- Last validation: T4 release-readiness validation aligned version identity to
+  `0.1.7`, added the `v0.1.7` release record, accepted inherited manual UIA
+  smoke for this compatible path, and passed targeted release docs tests, the
+  full deterministic gate, and `git diff --check`.
+- Next atomic task: open the T4 release-readiness PR, wait for PR Windows
+  Harness, merge after review, wait for post-merge `main` Windows Harness, and
+  then publish `v0.1.7` if no product or contract regression is found.
 - Known blockers: none.
 
 ## Phased Work
@@ -202,6 +205,16 @@ Stage-specific gates:
   product targeted capture absence, and Phase 6 spec-only status. Therefore
   T3 records a no-action-needed compatibility guardrail sweep with no product
   changes.
+- During T3, merged PR #84 as
+  `6d1d8f94c56636c23daafcb4ceae24053ff226aa`; PR Windows Harness
+  `25555063537` and post-merge `main` Windows Harness `25555180274` passed.
+- During T4, chose the direct compatible `v0.1.7` path because T0-T4 changed
+  only documentation, tests, CI/runtime metadata, compatibility evidence, and
+  version metadata. The `v0.1.7` release-readiness record explicitly accepts
+  inherited `v0.1.0` manual UIA smoke for this compatible path only because
+  helper behavior, watcher product behavior, manual smoke scripts, capture
+  behavior, privacy behavior, product CLI/MCP shape, and capture surfaces are
+  unchanged.
 
 ## Validation Log
 
@@ -227,6 +240,8 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+  - PR #82 Windows Harness run `25553940230` - passed.
+  - Post-merge `main` Windows Harness run `25554033860` - passed on `fccba1ec46126710d29fd1dacbb34f45b9eef938`.
 - Stage T2 CI runtime scan validation:
   - `gh run view 25554033860 --json databaseId,status,conclusion,headSha,url,createdAt,updatedAt,name,displayTitle,jobs` - passed; latest post-T1 `main` Windows Harness conclusion was `success` on `fccba1ec46126710d29fd1dacbb34f45b9eef938`.
   - `gh run view 25554033860 --log-failed` - passed with no failed log output.
@@ -244,6 +259,16 @@ Stage-specific gates:
   - Post-merge `main` Windows Harness run `25554520036` - passed on `fb84fb2b2bf47cfe89680c898f3694f543d75c52`.
 - Stage T3 compatibility guardrail validation:
   - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_memory_pipeline.py tests/test_phase6_privacy_scorecard.py tests/test_privacy_check.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py tests/test_watcher_events.py tests/test_uia_helper_quality_matrix.py -q` - passed.
+  - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+  - PR #84 Windows Harness run `25555063537` - passed.
+  - Post-merge `main` Windows Harness run `25555180274` - passed on `6d1d8f94c56636c23daafcb4ceae24053ff226aa`.
+- Stage T4 release-readiness validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed after aligning version identity to `0.1.7` and adding the release-readiness record.
   - `python -m pytest -q` - passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
