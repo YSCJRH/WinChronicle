@@ -7,7 +7,8 @@ artifacts. The latest published release record is
 [v0.1.11 maintenance release record](release-v0.1.11.md). The active
 post-v0.1.11 maintenance cursor is recorded in
 [Post-v0.1.11 maintenance plan](next-round-plan-post-v0.1.11.md). The
-post-v0.1.10 cursor is completed historical evidence.
+active release-readiness record is
+[v0.1.12 maintenance release record](release-v0.1.12.md). post-v0.1.10 cursor is completed historical evidence.
 
 ## Evidence Location
 

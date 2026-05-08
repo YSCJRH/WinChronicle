@@ -10,7 +10,8 @@ The latest published release record is
 post-v0.1.11 execution cursor lives in
 [Post-v0.1.11 maintenance plan](next-round-plan-post-v0.1.11.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
-post-v0.1.10 plan is completed historical evidence.
+active release-readiness record is
+[v0.1.12 maintenance release record](release-v0.1.12.md). post-v0.1.10 plan is completed historical evidence.
 
 ## Deterministic Gates
 
