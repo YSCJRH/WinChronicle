@@ -26,9 +26,9 @@ Publication status: release-readiness candidate, not yet published.
 | Stage | Release-readiness candidate |
 | Evidence date | 2026-05-08, Asia/Shanghai |
 | Base `main` SHA before P4 readiness | `7984a604b225392c29f31ece2abf90d46cc4d482` |
-| Candidate PR | Pending P4 PR |
-| Candidate PR Windows Harness | Pending P4 PR |
-| Candidate post-merge `main` Windows Harness | Pending P4 merge |
+| Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/71 |
+| Candidate PR Windows Harness | Passed, run `25544005112`, https://github.com/YSCJRH/WinChronicle/actions/runs/25544005112 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25544114712`, https://github.com/YSCJRH/WinChronicle/actions/runs/25544114712 |
 | Publication status | Pending explicit publication approval |
 | Release URL | Pending publication |
 | Final tag target | Pending publication |
@@ -78,8 +78,8 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The P4 PR Windows Harness, post-merge `main` Windows Harness, GitHub release
-publication, and post-publication reconciliation are pending.
+The P4 PR Windows Harness and post-merge `main` Windows Harness passed. GitHub
+release publication and post-publication reconciliation are pending.
 
 ## Release Notes
 
@@ -164,8 +164,8 @@ This maintenance release does not expand the capture surface from `v0.1.4`.
 - Release path: compatible `v0.1.5` maintenance release candidate.
 - Fallback path: release candidate if any product or contract change is
   required before publication.
-- Deterministic gates: local P4 validation passed; PR Windows Harness,
-  post-merge `main` Windows Harness, GitHub release publication, and
+- Deterministic gates: local P4 validation, PR Windows Harness, and
+  post-merge `main` Windows Harness passed; GitHub release publication and
   post-publication reconciliation remain pending.
 - Manual UIA gates: inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS
   Code strict diagnostic, and watcher preview manual evidence is accepted by

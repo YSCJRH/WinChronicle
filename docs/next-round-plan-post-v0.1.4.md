@@ -61,10 +61,9 @@ service install, and no default background capture.
   release evidence guide, and docs tests. P3 compatibility guardrail validation
   passed with targeted compatibility suites and full stage gates. P4 local
   validation passed after the version bump and release-readiness record.
-- Next atomic task: merge the P4 release-readiness PR after Windows Harness
-  passes, confirm post-merge `main` Windows Harness, then publish `v0.1.5`
-  only after explicit publication approval and reconcile the release record with
-  the final tag target and release URL.
+- Next atomic task: publish `v0.1.5` only after explicit publication approval,
+  then reconcile the release record with the final tag target, release URL, and
+  post-publication evidence.
 - Known blockers: none.
 
 ## Phased Work
@@ -233,6 +232,8 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+  - PR Windows Harness passed: run `25544005112`.
+  - Post-merge `main` Windows Harness passed: run `25544114712`.
 - Stage P4 release-readiness validation:
   - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed after aligning version identity to `0.1.5` and adding the release-readiness record.
   - `python -m pytest -q` - passed.
