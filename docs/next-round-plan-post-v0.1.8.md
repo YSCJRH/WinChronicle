@@ -24,17 +24,20 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: W1 - Evidence Freshness And Entry Hygiene.
-- Stage status: B - evidence-freshness docs/tests are implemented and local
-  deterministic validation passed; PR Windows Harness and post-merge Windows
-  Harness are pending.
-- Last completed evidence: W0 PR #92 passed PR Windows Harness run
-  `25562785206`, merged as `6d44aad77eedfb2480147ae8c112c3e001da4710`, and
-  post-merge `main` Windows Harness run `25562905132` passed on that SHA.
-- Last validation: W1 docs tests, full pytest, helper build, watcher build,
-  install CLI smoke, full harness, and `git diff --check` passed.
-- Next atomic task: open a small W1 PR, verify PR and post-merge Windows
-  Harness, then advance to W2 CI/runtime scan in the next branch.
+- Current stage: W2 - CI Runtime And Dependency Maintenance Scan.
+- Stage status: B - CI/runtime and dependency scan docs/tests are implemented
+  and local deterministic validation passed; PR Windows Harness and post-merge
+  Windows Harness are pending.
+- Last completed evidence: W1 PR #93 passed PR Windows Harness run
+  `25563462333`, merged as `9c91f262ebb06f0b4fd8b4c38eeb17e8c688ecb9`, and
+  post-merge `main` Windows Harness run `25563589781` passed on that SHA.
+- Last validation: W2 workflow/dependency tests, full pytest, helper build,
+  watcher build, install CLI smoke, full harness, and `git diff --check`
+  passed locally. W1 PR Windows Harness and post-merge `main` Windows Harness
+  passed.
+- Next atomic task: open a small W2 PR, verify PR and post-merge Windows
+  Harness, then advance to W3 compatibility guardrail sweep in the next
+  branch.
 - Known blockers: none.
 
 ## Phased Work
@@ -187,6 +190,19 @@ Stage-specific gates:
   rerun and recorded. No fresh manual smoke is required in W1 because no helper
   behavior, watcher product behavior, manual smoke scripts, capture behavior,
   privacy behavior, product CLI/MCP shape, or capture surfaces changed.
+- During W1, merged PR #93 as
+  `9c91f262ebb06f0b4fd8b4c38eeb17e8c688ecb9`; PR Windows Harness
+  `25563462333` and post-merge `main` Windows Harness `25563589781` passed.
+- During W2, reviewed the latest `main` Windows Harness run, workflow, and
+  workflow guard test. The workflow still uses
+  `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"`, pins
+  `windows-2025-vs2026`, preserves deterministic gate order, and produced no
+  deprecation or failed-log signal requiring a workflow/runtime change.
+  Therefore W2 records a no-action-needed CI runtime scan.
+- During W2, reviewed package metadata and the direct-dependency guard against
+  screenshot/OCR/audio/keyboard/clipboard/network/LLM/control-oriented
+  packages. `pyproject.toml` remains limited to deterministic project and dev
+  dependencies for the current maintenance path.
 
 ## Validation Log
 
@@ -208,6 +224,22 @@ Stage-specific gates:
 - Stage W1 evidence-freshness validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py tests/test_uia_helper_quality_matrix.py -q` - passed after advancing this cursor to W1 and recording the active post-v0.1.8 manual smoke freshness decision.
   - `python -m pytest -q` - passed with `112 passed`.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage W1 remote validation:
+  - PR #93 Windows Harness run `25563462333` - passed.
+  - Post-merge `main` Windows Harness run `25563589781` - passed on `9c91f262ebb06f0b4fd8b4c38eeb17e8c688ecb9`.
+- Stage W2 CI/runtime scan validation:
+  - `gh run view 25563589781 --json databaseId,status,conclusion,headSha,url,createdAt,updatedAt,name,displayTitle,jobs` - passed; latest post-W1 `main` Windows Harness conclusion was `success` on `9c91f262ebb06f0b4fd8b4c38eeb17e8c688ecb9`.
+  - `gh run view 25563589781 --log | Select-String -Pattern "warning|deprecated|deprecation|Node 20|Node20|windows-2025|runner image|error" -CaseSensitive:$false` - reviewed; runner image is `windows-2025-vs2026`, Node 24 env is present, .NET builds report 0 warnings/0 errors, and the remaining `error` matches are deterministic fixture names or fixture text.
+  - `.github/workflows/windows-harness.yml` inspection - passed; gate order and gate set are unchanged.
+  - `tests/test_windows_harness_workflow.py` inspection - passed; workflow guard pins Node 24, the Windows runner, and deterministic gate order.
+  - `pyproject.toml` inspection - passed; direct runtime dependency remains `jsonschema`, with dev-only `pytest`, `jsonschema`, and `wheel`.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_windows_harness_workflow.py tests/test_phase6_privacy_scorecard.py -q` - passed with 17 tests.
+  - `python -m pytest -q` - passed with 112 tests.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
