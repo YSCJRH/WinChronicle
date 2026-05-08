@@ -150,6 +150,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Windows UIA smoke gates](windows-uia-smoke.md)
 - [UIA helper quality matrix](uia-helper-quality-matrix.md)
 - [Operator diagnostics](operator-diagnostics.md)
+- [Public metadata audit after v0.1.13](public-metadata-audit-post-v0.1.13.md)
 - [Blueprint gap audit after v0.1.12](blueprint-gap-audit-post-v0.1.12.md)
 - [Compatibility guardrail sweep after v0.1.12](compatibility-guardrail-sweep-post-v0.1.12.md)
 - [Watcher preview](watcher-preview.md)

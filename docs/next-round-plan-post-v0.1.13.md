@@ -30,19 +30,21 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AB0 - Post-v0.1.13 Baseline Cursor.
-- Stage status: B - AB0 baseline cursor docs/tests and local validation are
-  complete; PR Windows Harness and post-merge Windows Harness are pending.
+- Current stage: AB1 - Public Metadata And Evidence Freshness Audit.
+- Stage status: B - AB1 public metadata audit docs/tests and local validation
+  are complete; PR Windows Harness and post-merge Windows Harness are pending.
 - Last completed evidence: `v0.1.13` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13, targets
   `1070343d9bcfd60c48238835e26b6c32f9060ae7`, publication reconciliation PR
-  #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`, and post-merge
-  `main` Windows Harness run `25581662790` passed on that SHA.
-- Last validation: AB0 local validation passed with focused docs/version tests,
+  #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`, post-merge
+  `main` Windows Harness run `25581662790` passed, AB0 PR #120 merged as
+  `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`, and post-merge `main` Windows
+  Harness run `25582374884` passed.
+- Last validation: AB1 local validation passed with focused docs/version tests,
   full pytest, helper build, watcher build, install CLI smoke, full harness,
   and `git diff --check`.
-- Next atomic task: open the AB0 baseline cursor PR, verify PR and post-merge
-  Windows Harness, then continue to AB1.
+- Next atomic task: open the AB1 public metadata audit PR, verify PR and
+  post-merge Windows Harness, then continue to AB2.
 - Known blockers: none.
 
 ## Phased Work
@@ -181,6 +183,14 @@ Stage-specific gates:
   from a completed post-v0.1.12 plan.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
+- Recorded AB0 remote validation as completed evidence: PR #120 passed Windows
+  Harness run `25582300531`, merged as
+  `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`, and post-merge `main` Windows
+  Harness run `25582374884` passed.
+- AB1 found public GitHub metadata gaps in repository description, homepage,
+  topics, and social preview verification. These are manual maintainer metadata
+  items, not product-code changes or release blockers for deterministic
+  harness correctness.
 
 ## Validation Log
 
@@ -197,5 +207,20 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AB0 PR Windows Harness.
-- Pending AB0 post-merge `main` Windows Harness.
+- Stage AB0 remote validation:
+  - PR #120 Windows Harness run `25582300531` - passed.
+  - PR #120 merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`.
+  - Post-merge `main` Windows Harness run `25582374884` - passed.
+- Stage AB1 initialization:
+  - `gh repo view YSCJRH/WinChronicle --json nameWithOwner,description,homepageUrl,repositoryTopics,isPrivate,visibility,defaultBranchRef,url` - passed; repository is `PUBLIC`, default branch is `main`, and description, homepage, and topics are empty or not configured.
+  - `gh release view v0.1.13 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name` - passed; `v0.1.13` is published, not a draft or prerelease, and targets `1070343d9bcfd60c48238835e26b6c32f9060ae7`.
+- Stage AB1 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 36 tests.
+  - `python -m pytest -q` - passed, 127 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AB1 PR Windows Harness.
+- Pending AB1 post-merge `main` Windows Harness.
