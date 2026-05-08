@@ -23,8 +23,8 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: P0 - Post-v0.1.4 Baseline Cursor.
-- Stage status: C - P0 complete; ready to enter P1 on the next turn.
+- Current stage: P1 - Release Evidence And Entry Hygiene.
+- Stage status: C - P1 complete; ready to enter P2 on the next turn.
 - Last completed evidence: `v0.1.4` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4 and targets
   `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`. The post-publication
@@ -35,15 +35,20 @@ service install, and no default background capture.
   the active cursor and post-v0.1.3 is historical. The post-merge Windows
   Harness run `25466653439` exposed a deterministic watcher-smoke harness
   assertion issue after a capture was written before any heartbeat was emitted.
+  P1 audited operator-facing entry points and scorecards, found no stale older
+  plan presented as current, and strengthened README current/history ordering
+  coverage.
 - Last validation: P0 full local validation passed: `python -m pytest -q`,
   both .NET builds, `python harness/scripts/run_install_cli_smoke.py`,
   `python harness/scripts/run_harness.py`, and `git diff --check`. The
   watcher-smoke stability fix also passed local `tests/test_watcher_events.py`,
   full pytest, both .NET builds, install CLI smoke, full harness, and
-  `git diff --check`.
-- Next atomic task: start P1 by auditing docs and scorecards that still
-  describe older release plans as current; update only operator-facing entry
-  points and narrow docs tests for any discovered drift.
+  `git diff --check`. P1 targeted docs validation passed after the README
+  entry-ordering test update, followed by full pytest, both .NET builds,
+  install CLI smoke, full harness, and `git diff --check`.
+- Next atomic task: start P2 by deciding whether the next compatible release
+  can explicitly inherit older manual UIA smoke evidence or must refresh manual
+  Notepad, Edge, VS Code metadata, and diagnostic smoke.
 - Known blockers: none.
 
 ## Phased Work
@@ -174,6 +179,10 @@ Stage-specific gates:
   remains a watcher liveness diagnostic covered by separate tests and docs. This
   does not change product watcher/helper behavior, CLI/MCP shape, capture
   schema, privacy behavior, or capture surface.
+- During P1, treated older post-v0.1.x plans and release records as acceptable
+  only in historical sections. Strengthened README tests rather than changing
+  product docs because the audit found the current operator entry points already
+  identify post-v0.1.4 and `v0.1.4` as current.
 
 ## Validation Log
 
@@ -187,6 +196,16 @@ Stage-specific gates:
 - Stage P0 local validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - 12 passed.
   - `python -m pytest -q` - 99 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage P1 entry-hygiene validation:
+  - `rg -n "active cursor|current cursor|current plan|next-round-plan-post-v0\\.1\\.[0-3]|post-v0\\.1\\.[0-3].*(active|current)|v0\\.1\\.[0-3].*(current|latest|stable|baseline)|latest published|stable release baseline|release baseline|current stable|current release|Before v0\\.1\\.[0-4]|Pending release-readiness record|manual smoke.*fresh|fresh manual|freshness" README.md docs harness tests` - reviewed expected historical records and current post-v0.1.4 references.
+  - `rg -n "next-round-plan-post-v0\\.1\\.[0-3].*(active|current)|active post-v0\\.1\\.[0-3]|current post-v0\\.1\\.[0-3]|latest published `v0\\.1\\.[0-3]`|stable baseline is `v0\\.1\\.[0-3]`|Stable release baseline \\| `v0\\.1\\.[0-3]`" README.md docs tests` - no matches.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed after adding README current/history ordering coverage.
+  - `python -m pytest -q` - 101 passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
