@@ -2,7 +2,13 @@
 
 ## Summary
 
-`v0.1.8` is published at
+This post-v0.1.8 maintenance round completed as the compatible `v0.1.9`
+maintenance release. `v0.1.9` is published at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.9 and targets
+`d06ab5bc8bea7520bac2719adb457794c72911d3`. Continue from the
+post-v0.1.9 maintenance plan before starting new implementation work.
+
+The previous `v0.1.8` release is published at
 https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.8. The release tag
 targets `1ea1e378aedb0a509d202fd32bc69704dbe903d4`.
 
@@ -24,18 +30,16 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: W4 - v0.1.9 Release Readiness.
-- Stage status: B - release-readiness version metadata and release record are
-  implemented and local deterministic validation passed; PR Windows Harness,
-  post-merge Windows Harness, and publication are pending.
-- Last completed evidence: W3 PR #95 passed PR Windows Harness run
-  `25564810377`, merged as `36d430c478e65ad107125b7e87ed4ec18ac18709`, and
-  post-merge `main` Windows Harness run `25564926634` passed on that SHA.
-- Last validation: W3 compatibility guardrail tests, full pytest, helper build,
-  watcher build, install CLI smoke, full harness, `git diff --check`, PR
-  Windows Harness, and post-merge `main` Windows Harness passed.
-- Next atomic task: open the W4 release-readiness PR, verify PR and post-merge
-  Windows Harness, then publish `v0.1.9` if all gates pass.
+- Current stage: G - v0.1.9 Published Baseline Reconciliation.
+- Stage status: G - v0.1.9 published; baseline reconciliation complete.
+- Last completed evidence: `v0.1.9` is published at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.9 and targets
+  `d06ab5bc8bea7520bac2719adb457794c72911d3`.
+- Last validation: `gh release view v0.1.9` confirmed published status,
+  release URL, and tag target; local tags include `v0.1.9`; package runtime
+  version reports `0.1.9`.
+- Next atomic task: follow the post-v0.1.9 maintenance plan before starting
+  new implementation work.
 - Known blockers: none.
 
 ## Phased Work
@@ -229,6 +233,9 @@ Stage-specific gates:
 - During W4, aligned version identity to `0.1.9` across `pyproject.toml`,
   `winchronicle.__version__`, and MCP `serverInfo.version` through the shared
   version module.
+- During publication, published `v0.1.9` from
+  `d06ab5bc8bea7520bac2719adb457794c72911d3`. Do not retag `v0.1.9`; follow
+  the post-v0.1.9 maintenance plan before starting new implementation work.
 
 ## Validation Log
 
@@ -294,3 +301,11 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Stage W4 remote validation:
+  - PR #96 Windows Harness run `25565589238` - passed.
+  - Post-merge `main` Windows Harness run `25565697723` - passed on `d06ab5bc8bea7520bac2719adb457794c72911d3`.
+- v0.1.9 publication validation:
+  - `gh release create v0.1.9 --target d06ab5bc8bea7520bac2719adb457794c72911d3 --title "v0.1.9"` - passed.
+  - `gh release view v0.1.9 --json name,tagName,url,isDraft,isPrerelease,publishedAt,targetCommitish` - passed and returned release URL https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.9.
+  - `git fetch --tags --quiet` and `git show-ref --tags v0.1.9` - passed; local tag points to `d06ab5bc8bea7520bac2719adb457794c72911d3`.
+  - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.9`.

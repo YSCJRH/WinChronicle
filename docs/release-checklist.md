@@ -6,13 +6,11 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.8 maintenance release record](release-v0.1.8.md). The active
-release-readiness record is
-[v0.1.9 release-readiness record](release-v0.1.9.md). The active
-post-v0.1.8 execution cursor lives in
-[Post-v0.1.8 maintenance plan](next-round-plan-post-v0.1.8.md). For release
+[v0.1.9 maintenance release record](release-v0.1.9.md). The active
+post-v0.1.9 execution cursor lives in
+[Post-v0.1.9 maintenance plan](next-round-plan-post-v0.1.9.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
-post-v0.1.7 plan is completed historical evidence.
+post-v0.1.8 plan is completed historical evidence.
 
 ## Deterministic Gates
 
@@ -30,13 +28,13 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.8` until a later plan explicitly prepares
+- the stable baseline is `v0.1.9` until a later plan explicitly prepares
   another version;
-- `v0.1.8` is the latest published release; its release URL, tag target, and
+- `v0.1.9` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- the post-v0.1.8 execution cursor is active and records PR #91 plus
-  post-merge Windows Harness run `25561832883`, and W0 PR #92 plus
-  post-merge Windows Harness run `25562905132`;
+- the post-v0.1.9 execution cursor is active and records PR #96 plus
+  post-merge Windows Harness run `25565697723`;
+- the post-v0.1.8 execution cursor is completed historical context;
 - the post-v0.1.7 execution cursor is completed historical context;
 - the post-v0.1.6 execution cursor is completed historical context;
 - the post-v0.1.5 execution cursor is completed historical context;

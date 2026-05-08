@@ -4,12 +4,10 @@ Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
-[v0.1.8 maintenance release record](release-v0.1.8.md). The active
-release-readiness record is
-[v0.1.9 release-readiness record](release-v0.1.9.md). The active post-v0.1.8
-maintenance cursor is recorded in
-[Post-v0.1.8 maintenance plan](next-round-plan-post-v0.1.8.md). The
-post-v0.1.7 cursor is completed historical evidence.
+[v0.1.9 maintenance release record](release-v0.1.9.md). The active
+post-v0.1.9 maintenance cursor is recorded in
+[Post-v0.1.9 maintenance plan](next-round-plan-post-v0.1.9.md). The
+post-v0.1.8 cursor is completed historical evidence.
 
 ## Evidence Location
 
@@ -31,15 +29,15 @@ Record only:
 ## Evidence Freshness
 
 Release evidence must name which facts are current and which are inherited from
-historical records. After the `v0.1.8` publication:
+historical records. After the `v0.1.9` publication:
 
-- `v0.1.8` is the stable baseline until a later plan explicitly prepares
+- `v0.1.9` is the stable baseline until a later plan explicitly prepares
   another version;
-- `v0.1.8` is the latest published release; its release URL, tag target, and
+- `v0.1.9` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- the post-v0.1.8 execution cursor is active and records PR #91 plus
-  post-merge Windows Harness run `25561832883`, and W0 PR #92 plus
-  post-merge Windows Harness run `25562905132`;
+- the post-v0.1.9 execution cursor is active and records PR #96 plus
+  post-merge Windows Harness run `25565697723`;
+- the post-v0.1.8 execution cursor is completed historical context;
 - the post-v0.1.7 execution cursor is completed historical context;
 - the post-v0.1.6 execution cursor is completed historical context;
 - the post-v0.1.5 execution cursor is completed historical context;
