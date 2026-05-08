@@ -33,9 +33,10 @@ inherited historical evidence:
 - `v0.1.11` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
 - the post-v0.1.11 execution cursor is active and records PR #106 plus
-  post-merge Windows Harness run `25573347339`;
-- the post-v0.1.10 execution cursor is active and records PR #101 plus
-  post-merge Windows Harness run `25569567825`;
+  post-merge Windows Harness run `25573347339`, and publication
+  reconciliation PR #107 plus post-merge Windows Harness run `25574042929`;
+- the post-v0.1.10 execution cursor is completed historical context and
+  records PR #101 plus post-merge Windows Harness run `25569567825`;
 - the post-v0.1.9 execution cursor is completed historical context and records
   PR #96 plus
   post-merge Windows Harness run `25565697723`, and X0 PR #97 plus
@@ -90,7 +91,7 @@ inherited historical evidence:
   because no helper, watcher product behavior, manual smoke script, capture,
   privacy, product CLI/MCP shape, or capture-surface behavior changed before
   release readiness;
-- for the active post-v0.1.10 compatible maintenance path, inherited
+- for the completed post-v0.1.10 compatible maintenance path, inherited
   `v0.1.0` manual smoke is explicitly accepted by the Y1 freshness decision as
   inherited/stale evidence because Y0/Y1 changed only docs/tests and did not
   change helper behavior, watcher product behavior, manual smoke scripts,
@@ -104,6 +105,15 @@ inherited historical evidence:
   because no helper, watcher product behavior, manual smoke script, capture,
   privacy, product CLI/MCP shape, or capture-surface behavior changed before
   release readiness;
+- for the active post-v0.1.11 compatible maintenance path, inherited
+  `v0.1.0` manual smoke is explicitly accepted by the Z1 freshness decision as
+  inherited/stale evidence because Z0/Z1 changed only docs/tests and did not
+  change helper behavior, watcher product behavior, manual smoke scripts,
+  capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces,
+  or release approver requirements;
+- the Z1 decision does not make inherited manual smoke fresh or current release
+  evidence; release readiness must explicitly accept inherited evidence for
+  publication or record fresh manual smoke;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are
