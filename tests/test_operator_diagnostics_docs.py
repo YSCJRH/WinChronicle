@@ -65,6 +65,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         in quickstart
     )
     assert "[v0.1.13 maintenance release record](release-v0.1.13.md)" in quickstart
+    assert (
+        "[v0.1.14 maintenance release-readiness record](release-v0.1.14.md)"
+        in quickstart
+    )
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
     assert (
         "[Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)"
@@ -95,6 +99,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         in readme
     )
     assert "[v0.1.13 maintenance release record](docs/release-v0.1.13.md)" in readme
+    assert (
+        "[v0.1.14 maintenance release-readiness record](docs/release-v0.1.14.md)"
+        in readme
+    )
 
 
 def test_operator_entry_points_distinguish_current_cursor_from_history():
@@ -116,12 +124,14 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
 
     assert "active post-v0.1.13 maintenance plan" in readme_intro_normalized
     assert "public metadata audit" in readme_intro_normalized
+    assert "`v0.1.14` release-readiness record" in readme_intro_normalized
     assert "latest published `v0.1.13` release record" in readme_intro_normalized
     assert "completed post-v0.1.12 maintenance plan" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
     assert "v0.1.13 maintenance release record" in readme_operator_docs
+    assert "v0.1.14 maintenance release-readiness record" in readme_operator_docs
     assert "Post-v0.1.13 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.13" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.13" in readme_operator_docs
@@ -157,6 +167,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Blueprint gap audit after v0.1.12"
     )
     assert readme_operator_docs.index("Post-v0.1.13 maintenance plan") < readme_operator_docs.index(
+        "v0.1.14 maintenance release-readiness record"
+    )
+    assert readme_operator_docs.index("v0.1.14 maintenance release-readiness record") < readme_operator_docs.index(
         "v0.1.13 maintenance release record"
     )
     assert readme_operator_docs.index("v0.1.13 maintenance release record") < readme_operator_docs.index(
@@ -206,6 +219,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "helper-watcher-diagnostics-sweep-post-v0.1.13.md" in current_section
     assert "mcp-memory-contract-sweep-post-v0.1.13.md" in current_section
     assert "compatibility-guardrail-sweep-post-v0.1.13.md" in current_section
+    assert "release-v0.1.14.md" in current_section
     assert "release-v0.1.13.md" in current_section
     assert "release-v0.1.12.md" in current_section
     assert "next-round-plan-post-v0.1.12.md" not in current_section
@@ -270,8 +284,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-v0.1.0-final.md" in historical_section
     assert "release-v0.1.13.md" in checklist
     assert "release-v0.1.13.md" in evidence
+    assert "release-v0.1.14.md" in checklist
+    assert "release-v0.1.14.md" in evidence
     assert "next-round-plan-post-v0.1.13.md" in checklist
     assert "next-round-plan-post-v0.1.13.md" in evidence
+    assert "v0.1.14` is the current compatible release-readiness candidate" in checklist
+    assert "v0.1.14` is the current compatible release-readiness candidate" in evidence
     assert "public metadata and evidence-freshness checks" in checklist
     assert "public metadata evidence should record" in evidence
     assert "release-v0.1.12.md" in checklist
@@ -956,15 +974,16 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "publication reconciliation on `main` is `f4781a91f2120f3eca5088b87bf9034be752274f`",
         "Windows Harness run `25581662790` passed",
         "reports `0.1.13`",
-        "Current stage: AB4 - Compatibility Guardrail Sweep.",
-        "Stage status: B - AB4 compatibility guardrail sweep docs/tests and local validation are complete",
+        "Current stage: AB5 - v0.1.14 Release Readiness.",
+        "Stage status: B - AB5 release-readiness metadata, release record, version identity updates, and local validation are complete",
         "publication reconciliation PR #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`",
         "AB0 PR #120 merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`",
         "AB1 PR #121 merged as `1f557faf9ef2460cc456ea6966495b5f175ad809`",
         "AB2 PR #122 merged as `9cdb6f80b0665915dd403101911c14293d60946f`",
         "AB3 PR #123 merged as `13f1a33ca6bcbc2cc8d5863ac0be9e48d0ccb204`",
-        "PR #123 passed Windows Harness run `25583769517`",
-        "post-merge `main` Windows Harness run `25583884127` passed",
+        "AB4 PR #124 merged as `cd5215e6e6333c7fe00fe47a526ea0d15dcf1bd7`",
+        "PR #124 passed Windows Harness run `25584341353`",
+        "post-merge `main` Windows Harness run `25584426546` passed",
         "Stage AB0 - Post-v0.1.13 Baseline Cursor",
         "Stage AB1 - Public Metadata And Evidence Freshness Audit",
         "Stage AB2 - Helper And Watcher Preview Diagnostics Evidence",
@@ -1029,8 +1048,23 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "Stage AB4 local validation:",
         "passed, 39 tests.",
         "python -m pytest -q` - passed, 130 tests.",
-        "Pending AB4 PR Windows Harness.",
-        "Pending AB4 post-merge `main` Windows Harness.",
+        "Stage AB4 remote validation:",
+        "PR #124 Windows Harness run `25584341353` - passed.",
+        "PR #124 merged as `cd5215e6e6333c7fe00fe47a526ea0d15dcf1bd7`.",
+        "Post-merge `main` Windows Harness run `25584426546` - passed.",
+        "Stage AB5 initialization:",
+        "git rev-parse HEAD` - passed and printed `cd5215e6e6333c7fe00fe47a526ea0d15dcf1bd7`.",
+        "gh release view v0.1.14",
+        "confirmed release not found before AB5 readiness",
+        "Stage AB5 local validation:",
+        "passed, 40 tests.",
+        "python -m pytest -q` - passed, 131 tests.",
+        "python harness/scripts/run_install_cli_smoke.py` - passed.",
+        "python harness/scripts/run_harness.py` - passed.",
+        "git diff --check` - passed.",
+        "Pending AB5 PR Windows Harness.",
+        "Pending AB5 post-merge `main` Windows Harness.",
+        "Pending `v0.1.14` publication approval and GitHub release.",
     ):
         assert expected in normalized
 
@@ -1561,19 +1595,20 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Stable release baseline | `v0.1.13`",
         "Current maintenance plan | [Post-v0.1.13 maintenance plan]",
         "Latest completed maintenance plan | [Post-v0.1.12 maintenance plan]",
+        "Current release-readiness record | [v0.1.14 maintenance release-readiness record]",
         "Published release record | [v0.1.13 maintenance release record]",
         "Latest published release record | [v0.1.13 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
-        "Last freshness decision | For the completed post-v0.1.12 compatible maintenance path",
+        "Last freshness decision | For the post-v0.1.13 compatible maintenance path toward `v0.1.14`",
         "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
-        "accepted by AA5 for compatible `v0.1.13` publication",
+        "accepted by AB5 because AB0-AB5 did not change helper behavior",
         "explicitly accepted by S4 for the compatible `v0.1.6` path",
         "explicitly accepted by T4 for the compatible `v0.1.7` path",
         "explicitly accepted by U4 for the compatible `v0.1.8` path",
         "explicitly accepted by W4 for the compatible `v0.1.9` path",
         "accepted by X1 as inherited/stale evidence for the post-v0.1.9 path",
         "historically accepted for `v0.1.5` as diagnostic context",
-        "Next freshness decision | The next maintenance plan must decide",
+        "Next freshness decision | The next maintenance plan after `v0.1.14` publication must decide",
         "whether inherited manual evidence remains acceptable",
         "manual smoke is explicitly accepted by the T4 release-readiness\n  record",
         "For the completed post-v0.1.7 compatible maintenance path toward `v0.1.8`",

@@ -9,7 +9,9 @@ The latest published release record is
 [v0.1.13 maintenance release record](release-v0.1.13.md). The active
 post-v0.1.13 execution cursor lives in
 [Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md). For release
-evidence shape, use [Release evidence guide](release-evidence.md). The previous
+evidence shape, use [Release evidence guide](release-evidence.md). The current
+compatible release-readiness candidate is
+[v0.1.14 maintenance release-readiness record](release-v0.1.14.md). The previous
 stable release record is
 [v0.1.12 maintenance release record](release-v0.1.12.md), the completed
 post-v0.1.12 execution cursor lives in
@@ -36,6 +38,9 @@ inherited historical evidence:
   another version;
 - `v0.1.13` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
+- `v0.1.14` is the current compatible release-readiness candidate; it must not
+  be treated as published until the GitHub release exists and the release record
+  is reconciled;
 - the post-v0.1.13 execution cursor is active and records post-publication
   reconciliation PR #119 plus post-merge Windows Harness run `25581662790`;
 - public metadata and evidence-freshness checks record repository description,
@@ -131,6 +136,11 @@ inherited historical evidence:
   behavior, watcher product behavior, manual smoke scripts, capture behavior,
   privacy behavior, product CLI/MCP shape, capture surfaces, or release
   approver requirements;
+- for the post-v0.1.13 compatible maintenance path toward `v0.1.14`, inherited
+  `v0.1.0` manual smoke is explicitly accepted by the AB5 release-readiness
+  record because AB0-AB5 did not change helper behavior, watcher product
+  behavior, manual smoke scripts, capture behavior, privacy behavior, product
+  CLI/MCP shape, capture surfaces, or release approver requirements;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are
