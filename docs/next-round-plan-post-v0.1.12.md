@@ -28,17 +28,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AA3 - Issue, Roadmap, And Contribution Hygiene.
-- Stage status: B - AA3 roadmap/issue/contribution docs/tests are implemented locally; PR Windows
+- Current stage: AA4 - Compatibility Guardrail Sweep.
+- Stage status: B - AA4 compatibility sweep docs/tests are implemented locally; PR Windows
   Harness and post-merge Windows Harness are pending.
-- Last completed evidence: AA2 PR #115 passed PR Windows Harness run
-  `25579283981`, merged as
-  `96a5e9145765375818e5b2dc0cb1792f83b7fc0e`, and post-merge `main`
-  Windows Harness run `25579389224` passed on that SHA.
-- Last validation: AA3 focused docs tests, full pytest, helper build, watcher
+- Last completed evidence: AA3 PR #116 passed PR Windows Harness run
+  `25579782185`, merged as
+  `8da0ba6dd111cfc16170284cb4e7787819d3a67e`, and post-merge `main`
+  Windows Harness run `25579869673` passed on that SHA.
+- Last validation: AA4 focused compatibility tests, full pytest, helper build, watcher
   build, install CLI smoke, full harness, and `git diff --check` passed
   locally.
-- Next atomic task: open the AA3 PR, then verify PR and post-merge Windows
+- Next atomic task: open the AA4 PR, then verify PR and post-merge Windows
   Harness.
 - Known blockers: none.
 
@@ -191,6 +191,12 @@ Stage-specific gates:
 - During AA3, added lightweight roadmap, contribution guidance, issue templates,
   and a PR template that route work through harness-first lanes and repeat the
   v0.1 privacy/scope boundaries without creating product behavior work.
+- Recorded AA3 PR #116 and post-merge Windows Harness run `25579869673` as the
+  issue/roadmap/contribution hygiene completion evidence.
+- During AA4, treated existing compatibility tests and scorecards as the
+  authoritative guardrails. The focused tests and scans found no drift requiring
+  product code, schema, CLI/MCP shape, helper/watcher behavior, or privacy
+  behavior changes.
 
 ## Validation Log
 
@@ -251,5 +257,21 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AA3 PR Windows Harness.
-- Pending AA3 post-merge `main` Windows Harness.
+- Stage AA3 remote validation:
+  - PR #116 Windows Harness run `25579782185` - passed.
+  - PR #116 merged as `8da0ba6dd111cfc16170284cb4e7787819d3a67e`.
+  - Post-merge `main` Windows Harness run `25579869673` - passed on
+    `8da0ba6dd111cfc16170284cb4e7787819d3a67e`.
+- Stage AA4 compatibility guardrail sweep:
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py tests/test_version_identity.py -q` - passed, 45 tests.
+  - `rg -n -e "--hwnd|--pid|--window-title|--window-title-regex|--process-name|screenshot|ocr|audio|keyboard|clipboard|network_upload|cloud_upload|llm_calls|desktop_control|write_memory|read_file|click|type" src\winchronicle tests\test_compatibility_contracts.py tests\test_mcp_tools.py tests\test_phase6_privacy_scorecard.py tests\test_watcher_events.py tests\test_state_compatibility.py tests\test_memory_pipeline.py harness\scorecards docs\mcp-readonly-examples.md docs\watcher-preview.md docs\deterministic-demo.md docs\roadmap.md CONTRIBUTING.md .github` - reviewed; matches are existing disabled-surface contracts, sentinels, docs, tests, scorecards, fixture fields, and helper-only harness wording rather than new product capabilities.
+  - `rg -n -g "*.py" -g "*.cs" -g "*.md" -g "*.json" -g "*.yml" -e "SetForegroundWindow|AttachThreadInput|SendInput|mouse_event|keybd_event|GetAsyncKeyState|OpenClipboard|GetClipboardData|BitBlt|CopyFromScreen|PrintWindow|Tesseract|OpenAI|Anthropic|requests|httpx|aiohttp|selenium|playwright" src resources tests harness .github docs CONTRIBUTING.md README.md` - reviewed; matches are historical plan evidence, privacy-policy canary text, deterministic fixture/golden content, explicit forbidden-term tests, and the local MCP smoke request variable name rather than new runtime dependencies or implementations.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 19 tests.
+  - `python -m pytest -q` - passed, 124 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AA4 PR Windows Harness.
+- Pending AA4 post-merge `main` Windows Harness.

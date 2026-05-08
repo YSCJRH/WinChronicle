@@ -40,12 +40,20 @@ def test_operator_quickstart_links_diagnostics_playbook():
 
     assert "[Operator diagnostics](operator-diagnostics.md)" in quickstart
     assert "[Blueprint gap audit after v0.1.12](blueprint-gap-audit-post-v0.1.12.md)" in quickstart
+    assert (
+        "[Compatibility guardrail sweep after v0.1.12](compatibility-guardrail-sweep-post-v0.1.12.md)"
+        in quickstart
+    )
     assert "[Deterministic demo](deterministic-demo.md)" in quickstart
     assert "[Roadmap](roadmap.md)" in quickstart
     assert "[Contributing](../CONTRIBUTING.md)" in quickstart
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
     assert (
         "[Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)"
+        in readme
+    )
+    assert (
+        "[Compatibility guardrail sweep after v0.1.12](docs/compatibility-guardrail-sweep-post-v0.1.12.md)"
         in readme
     )
     assert "[Deterministic demo](docs/deterministic-demo.md)" in readme
@@ -768,15 +776,15 @@ def test_post_v012_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: AA3 - Issue, Roadmap, And Contribution Hygiene.",
-        "Stage status: B - AA3 roadmap/issue/contribution docs/tests are implemented locally",
+        "Current stage: AA4 - Compatibility Guardrail Sweep.",
+        "Stage status: B - AA4 compatibility sweep docs/tests are implemented locally",
         "`v0.1.12` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12",
         "targets `df16ea301243e2d3a612a5d09bd59f1436723fb4`",
         "Windows Harness run `25577701036` passed",
         "`3164d185e5d203b504bd78432032fa13003983f8`",
-        "AA2 PR #115 passed PR Windows Harness run `25579283981`",
-        "`96a5e9145765375818e5b2dc0cb1792f83b7fc0e`",
-        "Windows Harness run `25579389224` passed",
+        "AA3 PR #116 passed PR Windows Harness run `25579782185`",
+        "`8da0ba6dd111cfc16170284cb4e7787819d3a67e`",
+        "Windows Harness run `25579869673` passed",
         "Stage AA0 - Post-v0.1.12 Baseline Cursor",
         "Stage AA1 - Blueprint Gap And Public Surface Audit",
         "Stage AA2 - Deterministic Demo And Operator Experience Refresh",
@@ -788,7 +796,7 @@ def test_post_v012_plan_is_active_without_expanding_scope():
         "MCP tool list remains unchanged and read-only",
         "Product CLI still does not expose targeted `--hwnd`, `--pid`",
         "Do not implement screenshot capture, OCR, audio recording",
-        "AA3 focused docs tests, full pytest, helper build, watcher build",
+        "AA4 focused compatibility tests, full pytest, helper build, watcher build",
         "Stage AA0 initialization:",
         "gh release view v0.1.12",
         "git rev-parse v0.1.12",
@@ -821,8 +829,21 @@ def test_post_v012_plan_is_active_without_expanding_scope():
         "python harness/scripts/run_install_cli_smoke.py` - passed.",
         "python harness/scripts/run_harness.py` - passed.",
         "git diff --check` - passed.",
-        "Pending AA3 PR Windows Harness.",
-        "Pending AA3 post-merge `main` Windows Harness.",
+        "Stage AA3 remote validation:",
+        "PR #116 Windows Harness run `25579782185` - passed.",
+        "Post-merge `main` Windows Harness run `25579869673` - passed",
+        "Stage AA4 compatibility guardrail sweep:",
+        "python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py",
+        "passed, 45 tests.",
+        "matches are existing disabled-surface contracts, sentinels, docs, tests",
+        "historical plan evidence, privacy-policy canary text, deterministic fixture/golden content",
+        "python -m pytest tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 19 tests.",
+        "python -m pytest -q` - passed, 124 tests.",
+        "python harness/scripts/run_install_cli_smoke.py` - passed.",
+        "python harness/scripts/run_harness.py` - passed.",
+        "git diff --check` - passed.",
+        "Pending AA4 PR Windows Harness.",
+        "Pending AA4 post-merge `main` Windows Harness.",
     ):
         assert expected in normalized
 
@@ -981,6 +1002,33 @@ def test_roadmap_contribution_and_issue_templates_keep_harness_first_scope():
         "No observed-content artifact",
     ):
         assert expected in pr_template
+
+
+def test_compatibility_guardrail_sweep_records_no_drift_decision():
+    sweep = (
+        ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.12.md"
+    ).read_text(encoding="utf-8")
+
+    for expected in (
+        "does not change product behavior, schemas, CLI/MCP JSON shape",
+        "Version identity",
+        "Exact read-only MCP tool list",
+        "Disabled privacy surfaces",
+        "Observed-content trust boundary",
+        "Watcher preview limits",
+        "Durable memory contract",
+        "Phase 6 spec-only status",
+        "Product targeted capture absence",
+        "No write/control/file/screenshot/OCR/audio/keyboard/clipboard/network tools found",
+        "No screenshot/OCR implementation found",
+        "Product targeted capture remains absent",
+        "45 passed",
+        "matches are existing disabled-surface contracts, sentinels",
+        "No new product CLI/MCP targeted capture",
+        "No new runtime\ndependency or implementation path was found",
+        "No compatibility drift was found",
+    ):
+        assert expected in sweep
 
 
 def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
