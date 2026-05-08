@@ -41,12 +41,16 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Operator diagnostics](operator-diagnostics.md)" in quickstart
     assert "[Blueprint gap audit after v0.1.12](blueprint-gap-audit-post-v0.1.12.md)" in quickstart
     assert "[Deterministic demo](deterministic-demo.md)" in quickstart
+    assert "[Roadmap](roadmap.md)" in quickstart
+    assert "[Contributing](../CONTRIBUTING.md)" in quickstart
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
     assert (
         "[Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)"
         in readme
     )
     assert "[Deterministic demo](docs/deterministic-demo.md)" in readme
+    assert "[Roadmap](docs/roadmap.md)" in readme
+    assert "[Contributing](CONTRIBUTING.md)" in readme
 
 
 def test_operator_entry_points_distinguish_current_cursor_from_history():
@@ -764,15 +768,15 @@ def test_post_v012_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: AA2 - Deterministic Demo And Operator Experience Refresh.",
-        "Stage status: B - AA2 demo docs/tests are implemented locally",
+        "Current stage: AA3 - Issue, Roadmap, And Contribution Hygiene.",
+        "Stage status: B - AA3 roadmap/issue/contribution docs/tests are implemented locally",
         "`v0.1.12` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12",
         "targets `df16ea301243e2d3a612a5d09bd59f1436723fb4`",
         "Windows Harness run `25577701036` passed",
         "`3164d185e5d203b504bd78432032fa13003983f8`",
-        "AA1 PR #114 passed PR Windows Harness run `25578768178`",
-        "`b5b5bd7725c47f85fd4811eee3b5798577621e53`",
-        "Windows Harness run `25578855299` passed",
+        "AA2 PR #115 passed PR Windows Harness run `25579283981`",
+        "`96a5e9145765375818e5b2dc0cb1792f83b7fc0e`",
+        "Windows Harness run `25579389224` passed",
         "Stage AA0 - Post-v0.1.12 Baseline Cursor",
         "Stage AA1 - Blueprint Gap And Public Surface Audit",
         "Stage AA2 - Deterministic Demo And Operator Experience Refresh",
@@ -784,7 +788,7 @@ def test_post_v012_plan_is_active_without_expanding_scope():
         "MCP tool list remains unchanged and read-only",
         "Product CLI still does not expose targeted `--hwnd`, `--pid`",
         "Do not implement screenshot capture, OCR, audio recording",
-        "AA2 focused docs tests, full pytest, helper build, watcher build",
+        "AA3 focused docs tests, full pytest, helper build, watcher build",
         "Stage AA0 initialization:",
         "gh release view v0.1.12",
         "git rev-parse v0.1.12",
@@ -807,8 +811,18 @@ def test_post_v012_plan_is_active_without_expanding_scope():
         "python harness/scripts/run_install_cli_smoke.py` - passed.",
         "python harness/scripts/run_harness.py` - passed.",
         "git diff --check` - passed.",
-        "Pending AA2 PR Windows Harness.",
-        "Pending AA2 post-merge `main` Windows Harness.",
+        "Stage AA2 remote validation:",
+        "PR #115 Windows Harness run `25579283981` - passed.",
+        "Post-merge `main` Windows Harness run `25579389224` - passed",
+        "Stage AA3 issue/roadmap/contribution validation:",
+        "First `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` attempt failed",
+        "python -m pytest tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 18 tests.",
+        "python -m pytest -q` - passed, 123 tests.",
+        "python harness/scripts/run_install_cli_smoke.py` - passed.",
+        "python harness/scripts/run_harness.py` - passed.",
+        "git diff --check` - passed.",
+        "Pending AA3 PR Windows Harness.",
+        "Pending AA3 post-merge `main` Windows Harness.",
     ):
         assert expected in normalized
 
@@ -884,6 +898,89 @@ def test_deterministic_demo_is_fixture_only_and_covers_operator_route():
     )
     for forbidden in forbidden_phrases:
         assert forbidden not in demo
+
+
+def test_roadmap_contribution_and_issue_templates_keep_harness_first_scope():
+    roadmap = (ROOT / "docs" / "roadmap.md").read_text(encoding="utf-8")
+    contributing = (ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
+    harness_issue = (
+        ROOT / ".github" / "ISSUE_TEMPLATE" / "harness_first_task.yml"
+    ).read_text(encoding="utf-8")
+    privacy_issue = (
+        ROOT / ".github" / "ISSUE_TEMPLATE" / "privacy_boundary_review.yml"
+    ).read_text(encoding="utf-8")
+    issue_config = (ROOT / ".github" / "ISSUE_TEMPLATE" / "config.yml").read_text(
+        encoding="utf-8"
+    )
+    pr_template = (ROOT / ".github" / "pull_request_template.md").read_text(
+        encoding="utf-8"
+    )
+
+    for expected in (
+        "without\nauthorizing new capture surfaces",
+        "Fixture and privacy baseline",
+        "UIA helper hardening",
+        "Watcher preview",
+        "Read-only MCP",
+        "Durable memory",
+        "Docs and deterministic demo",
+        "Phase 6 privacy enrichment",
+        "Do not add product `--hwnd`, `--pid`, or title-targeted capture",
+        "Do not add daemon/service install, default background capture, or polling capture loops",
+        "Do not add LLM reducer/classifier calls or network upload",
+        "Do not implement screenshot capture or OCR in v0.1 maintenance",
+        "Do not commit generated state or memory artifacts",
+    ):
+        assert expected in roadmap
+
+    for expected in (
+        "Start by reading\n`AGENTS.md`, `docs/operator-quickstart.md`, `docs/deterministic-demo.md`, and\n`docs/roadmap.md`",
+        "Harness-first Workflow",
+        "python harness/scripts/run_install_cli_smoke.py",
+        "python harness/scripts/run_harness.py",
+        "Do not add screenshot capture, OCR, audio recording, keyboard capture, clipboard",
+        "Do not commit local state, raw helper JSON, raw watcher JSONL",
+        "trust = \"untrusted_observed_content\"",
+        "open a privacy boundary review issue before implementation",
+    ):
+        assert expected in contributing
+
+    for expected in (
+        "Roadmap lane",
+        "Fixture and privacy baseline",
+        "UIA helper hardening",
+        "Watcher preview",
+        "Read-only MCP",
+        "Durable memory",
+        "Docs and deterministic demo",
+        "Phase 6 privacy spec only",
+        "Do not attach or paste observed-content artifacts",
+        "This does not add screenshot capture, OCR, audio recording, keyboard capture, clipboard capture",
+        "This does not require committing local state, raw helper JSON, raw watcher JSONL",
+    ):
+        assert expected in harness_issue
+
+    for expected in (
+        "Privacy boundary review",
+        "capture\n        surfaces, privacy behavior, schema shape, CLI/MCP JSON shape",
+        "Tests-first plan",
+        "This review does not authorize screenshot capture, OCR, audio recording",
+        "This review will not include committed observed-content artifacts",
+    ):
+        assert expected in privacy_issue
+
+    assert "blank_issues_enabled: false" in issue_config
+    assert "Operator quickstart" in issue_config
+    assert "Roadmap" in issue_config
+
+    for expected in (
+        "## Summary",
+        "## Validation",
+        "## Privacy and scope",
+        "Product CLI/MCP shape unchanged unless explicitly called out",
+        "No observed-content artifact",
+    ):
+        assert expected in pr_template
 
 
 def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():

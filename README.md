@@ -135,6 +135,8 @@ available through `search-captures`.
 - [Watcher preview](docs/watcher-preview.md)
 - [Read-only MCP examples](docs/mcp-readonly-examples.md)
 - [Known limitations](docs/known-limitations.md)
+- [Roadmap](docs/roadmap.md)
+- [Contributing](CONTRIBUTING.md)
 - [v0.1.12 maintenance release record](docs/release-v0.1.12.md)
 - [Post-v0.1.12 maintenance plan](docs/next-round-plan-post-v0.1.12.md)
 - [Post-v0.1.11 maintenance plan](docs/next-round-plan-post-v0.1.11.md)
