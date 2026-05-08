@@ -6,14 +6,14 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.12 maintenance release record](release-v0.1.12.md). The active
+[v0.1.13 maintenance release record](release-v0.1.13.md). The completed
 post-v0.1.12 execution cursor lives in
 [Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md). For release
-evidence shape, use [Release evidence guide](release-evidence.md). The
-completed post-v0.1.11 execution cursor lives in
-[Post-v0.1.11 maintenance plan](next-round-plan-post-v0.1.11.md), the
-previous stable release record is
-[v0.1.11 maintenance release record](release-v0.1.11.md), and the
+evidence shape, use [Release evidence guide](release-evidence.md). The previous
+stable release record is
+[v0.1.12 maintenance release record](release-v0.1.12.md), the completed
+post-v0.1.11 execution cursor lives in
+[Post-v0.1.11 maintenance plan](next-round-plan-post-v0.1.11.md), and the
 post-v0.1.10 plan is completed historical evidence.
 
 ## Deterministic Gates
@@ -32,12 +32,12 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.12` until a later plan explicitly prepares
+- the stable baseline is `v0.1.13` until a later plan explicitly prepares
   another version;
-- `v0.1.12` is the latest published release; its release URL, tag target, and
+- `v0.1.13` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- the post-v0.1.12 execution cursor is active and records the
-  post-publication `main` Windows Harness run `25577701036`;
+- the post-v0.1.12 execution cursor is completed historical context and records
+  PR #118 plus post-merge Windows Harness run `25580877004`;
 - the post-v0.1.11 execution cursor is completed historical context and
   records PR #111 plus post-merge Windows Harness run `25576867729`;
 - the post-v0.1.10 execution cursor is completed historical context and
@@ -119,6 +119,12 @@ inherited historical evidence:
 - the Z1 decision does not make inherited manual smoke fresh or current release
   evidence; the Z4 release-readiness record explicitly accepted inherited
   evidence for `v0.1.12` publication;
+- for the completed post-v0.1.12 compatible maintenance path, inherited
+  `v0.1.0` manual smoke was explicitly accepted by the AA5 release-readiness
+  record for `v0.1.13` publication because AA0-AA5 did not change helper
+  behavior, watcher product behavior, manual smoke scripts, capture behavior,
+  privacy behavior, product CLI/MCP shape, capture surfaces, or release
+  approver requirements;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are
