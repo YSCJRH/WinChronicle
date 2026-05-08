@@ -200,8 +200,8 @@ def test_post_v016_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: T1 - Evidence Freshness And Entry Hygiene.",
-        "Stage status: B - T1 local implementation and validation are complete",
+        "Current stage: T2 - CI Runtime And Dependency Maintenance Scan.",
+        "Stage status: B - T2 local scan and validation are complete",
         "`v0.1.6` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6",
         "targets `914cf361ac5864fa31d393d125d14e45eeba96bc`",
         "Publication reconciliation PR #80 passed PR Windows Harness run `25552120656`",
@@ -223,6 +223,10 @@ def test_post_v016_plan_is_active_without_expanding_scope():
         "not expand the capture surface or start Phase 6 implementation",
         "Do not add real UIA smoke to default CI",
         "prepare a release candidate instead",
+        "no required workflow/runtime changes",
+        "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24",
+        "windows-2025-vs2026",
+        "no-action-needed CI runtime scan",
     ):
         assert expected in normalized
 
