@@ -9,6 +9,8 @@ post-v0.1.4 maintenance cursor is recorded in
 [Post-v0.1.4 maintenance plan](next-round-plan-post-v0.1.4.md). The published
 `v0.1.4` maintenance release record is
 [v0.1.4 maintenance release record](release-v0.1.4.md). The
+current `v0.1.5` release-readiness record is
+[v0.1.5 release-readiness record](release-v0.1.5.md). The
 post-v0.1.3 cursor is closed historical evidence.
 
 ## Evidence Location

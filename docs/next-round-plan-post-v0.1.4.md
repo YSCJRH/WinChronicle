@@ -23,8 +23,9 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: P3 - Compatibility Guardrail Maintenance.
-- Stage status: C - P3 complete; ready to enter P4 on the next turn.
+- Current stage: P4 - v0.1.5 Release Readiness.
+- Stage status: F - v0.1.5 release-readiness candidate prepared; publication
+  remains pending explicit approval.
 - Last completed evidence: `v0.1.4` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4 and targets
   `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`. The post-publication
@@ -45,7 +46,9 @@ service install, and no default background capture.
   product CLI/MCP shape, or capture surfaces. P3 audited compatibility
   guardrail coverage and confirmed existing tests lock version identity, exact
   read-only MCP tools, privacy surface parity, CLI and memory/search trust
-  boundaries, release evidence freshness, and Phase 6 spec-only status.
+  boundaries, release evidence freshness, and Phase 6 spec-only status. P4
+  aligned package/runtime/MCP version identity to `0.1.5` and added the
+  `v0.1.5` release-readiness record.
 - Last validation: P0 full local validation passed: `python -m pytest -q`,
   both .NET builds, `python harness/scripts/run_install_cli_smoke.py`,
   `python harness/scripts/run_harness.py`, and `git diff --check`. The
@@ -56,11 +59,12 @@ service install, and no default background capture.
   install CLI smoke, full harness, and `git diff --check`. P2 targeted docs
   validation passed after updating the manual smoke ledger, release checklist,
   release evidence guide, and docs tests. P3 compatibility guardrail validation
-  passed with targeted compatibility suites and full stage gates.
-- Next atomic task: start P4 by preparing `v0.1.5` release readiness: align
-  package/runtime/MCP version metadata to `0.1.5`, add the release record,
-  record local and PR Windows Harness evidence, and stop for publication
-  approval before creating the release.
+  passed with targeted compatibility suites and full stage gates. P4 local
+  validation passed after the version bump and release-readiness record.
+- Next atomic task: merge the P4 release-readiness PR after Windows Harness
+  passes, confirm post-merge `main` Windows Harness, then publish `v0.1.5`
+  only after explicit publication approval and reconcile the release record with
+  the final tag target and release URL.
 - Known blockers: none.
 
 ## Phased Work
@@ -207,6 +211,10 @@ Stage-specific gates:
   exact read-only MCP tools, privacy parity, search and memory trust
   boundaries, release evidence freshness, and Phase 6 spec-only status, so P3
   only advanced the cursor and refreshed validation evidence.
+- During P4, chose the direct compatible `v0.1.5` path because the release
+  changes version metadata, documentation, tests, and release evidence only.
+  Product behavior, schema, CLI/MCP JSON shape, privacy behavior,
+  helper/watcher behavior, and capture surfaces remain unchanged.
 
 ## Validation Log
 
@@ -220,6 +228,14 @@ Stage-specific gates:
 - Stage P0 local validation:
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - 12 passed.
   - `python -m pytest -q` - 99 passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage P4 release-readiness validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed after aligning version identity to `0.1.5` and adding the release-readiness record.
+  - `python -m pytest -q` - passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
