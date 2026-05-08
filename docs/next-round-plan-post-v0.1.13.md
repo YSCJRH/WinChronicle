@@ -30,8 +30,8 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AB3 - MCP And Memory Operator Contract Sweep.
-- Stage status: B - AB3 MCP/memory contract sweep docs/tests and local
+- Current stage: AB4 - Compatibility Guardrail Sweep.
+- Stage status: B - AB4 compatibility guardrail sweep docs/tests and local
   validation are complete; PR Windows Harness and post-merge Windows Harness
   are pending.
 - Last completed evidence: `v0.1.13` is published at
@@ -40,12 +40,13 @@ service install, no polling capture loop, and no default background capture.
   #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`, AB0 PR #120
   merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`, AB1 PR #121 merged
   as `1f557faf9ef2460cc456ea6966495b5f175ad809`, and AB2 PR #122 merged as
-  `9cdb6f80b0665915dd403101911c14293d60946f`.
-- Last validation: AB3 local validation passed with focused docs/version tests,
-  full pytest, helper build, watcher build, install CLI smoke, full harness,
-  and `git diff --check`.
-- Next atomic task: open the AB3 MCP/memory contract sweep PR, verify PR and
-  post-merge Windows Harness, then continue to AB4.
+  `9cdb6f80b0665915dd403101911c14293d60946f`, and AB3 PR #123 merged as
+  `13f1a33ca6bcbc2cc8d5863ac0be9e48d0ccb204`.
+- Last validation: AB4 local validation passed with focused guardrail tests,
+  focused docs/version tests, full pytest, helper build, watcher build, install
+  CLI smoke, full harness, and `git diff --check`.
+- Next atomic task: open the AB4 compatibility guardrail sweep PR, verify PR
+  and post-merge Windows Harness, then continue to AB5.
 - Known blockers: none.
 
 ## Phased Work
@@ -210,6 +211,14 @@ Stage-specific gates:
   read-only MCP tools, stable response examples, CLI/MCP memory-search parity,
   durable memory goldens, idempotence, secret exclusion, and the observed-content
   trust boundary.
+- Recorded AB3 remote validation as completed evidence: PR #123 passed Windows
+  Harness run `25583769517`, merged as
+  `13f1a33ca6bcbc2cc8d5863ac0be9e48d0ccb204`, and post-merge `main` Windows
+  Harness run `25583884127` passed.
+- AB4 found no compatibility drift requiring product-code or schema changes:
+  exact read-only MCP tools, disabled privacy surfaces, observed-content trust
+  boundaries, watcher preview limits, durable memory contract, Phase 6
+  spec-only status, and product targeted capture absence still hold.
 
 ## Validation Log
 
@@ -271,5 +280,21 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AB3 PR Windows Harness.
-- Pending AB3 post-merge `main` Windows Harness.
+- Stage AB3 remote validation:
+  - PR #123 Windows Harness run `25583769517` - passed.
+  - PR #123 merged as `13f1a33ca6bcbc2cc8d5863ac0be9e48d0ccb204`.
+  - Post-merge `main` Windows Harness run `25583884127` - passed.
+- Stage AB4 initialization:
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py tests/test_version_identity.py -q` - passed, 45 tests.
+  - `rg -n -e "--hwnd|--pid|--window-title|--window-title-regex|--process-name|screenshot|ocr|audio|keyboard|clipboard|network_upload|cloud_upload|llm_calls|desktop_control|write_memory|read_file|click|type" src\winchronicle tests\test_compatibility_contracts.py tests\test_mcp_tools.py tests\test_phase6_privacy_scorecard.py tests\test_watcher_events.py tests\test_state_compatibility.py tests\test_memory_pipeline.py harness\scorecards docs\mcp-readonly-examples.md docs\watcher-preview.md docs\deterministic-demo.md docs\roadmap.md CONTRIBUTING.md .github` - reviewed; matches are existing disabled-surface contracts, sentinels, documentation, scorecards, fixtures/tests, schema field names, or allowed helper-only harness wording.
+  - `rg -n -g "*.py" -g "*.cs" -g "*.md" -g "*.json" -g "*.yml" -e "SetForegroundWindow|AttachThreadInput|SendInput|mouse_event|keybd_event|GetAsyncKeyState|OpenClipboard|GetClipboardData|BitBlt|CopyFromScreen|PrintWindow|Tesseract|OpenAI|Anthropic|requests|httpx|aiohttp|selenium|playwright" src resources tests harness .github docs CONTRIBUTING.md README.md` - reviewed; matches are historical plan evidence, privacy-policy canary text, deterministic fixture/golden content, explicit forbidden-term tests, and the local MCP smoke request variable name.
+- Stage AB4 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 39 tests.
+  - `python -m pytest -q` - passed, 130 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AB4 PR Windows Harness.
+- Pending AB4 post-merge `main` Windows Harness.
