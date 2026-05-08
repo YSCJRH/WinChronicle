@@ -130,6 +130,7 @@ available through `search-captures`.
 - [Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)
 - [Windows UIA smoke gates](docs/windows-uia-smoke.md)
 - [Operator diagnostics](docs/operator-diagnostics.md)
+- [Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)
 - [Watcher preview](docs/watcher-preview.md)
 - [Read-only MCP examples](docs/mcp-readonly-examples.md)
 - [Known limitations](docs/known-limitations.md)

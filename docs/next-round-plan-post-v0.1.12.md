@@ -28,18 +28,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AA0 - Post-v0.1.12 Baseline Cursor.
-- Stage status: B - AA0 docs/tests are implemented locally; PR Windows
+- Current stage: AA1 - Blueprint Gap And Public Surface Audit.
+- Stage status: B - AA1 audit docs/tests are implemented locally; PR Windows
   Harness and post-merge Windows Harness are pending.
-- Last completed evidence: `v0.1.12` is published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12, targets
-  `df16ea301243e2d3a612a5d09bd59f1436723fb4`, and post-publication `main`
-  Windows Harness run `25577701036` passed on
-  `3164d185e5d203b504bd78432032fa13003983f8`.
-- Last validation: AA0 focused docs tests, full pytest, helper build, watcher
+- Last completed evidence: AA0 PR #113 passed PR Windows Harness run
+  `25578139342`, merged as
+  `4a5c5d53d9a6981e81a3ba61625cea847a87d88f`, and post-merge `main`
+  Windows Harness run `25578252392` passed on that SHA.
+- Last validation: AA1 focused docs tests, full pytest, helper build, watcher
   build, install CLI smoke, full harness, and `git diff --check` passed
   locally.
-- Next atomic task: open the AA0 PR, then verify PR and post-merge Windows
+- Next atomic task: open the AA1 PR, then verify PR and post-merge Windows
   Harness.
 - Known blockers: none.
 
@@ -175,6 +174,12 @@ Stage-specific gates:
   from a completed post-v0.1.11 plan.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
+- Recorded AA0 PR #113 and post-merge Windows Harness run `25578252392` as the
+  post-v0.1.12 baseline cursor completion evidence.
+- During AA1, found no required product-code change. The concrete gaps are
+  deterministic public demo consolidation, public roadmap, issue templates,
+  harness-first contribution entry, manual smoke freshness tracking, and
+  manually maintained GitHub metadata/social surface.
 
 ## Validation Log
 
@@ -191,5 +196,21 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AA0 PR Windows Harness.
-- Pending AA0 post-merge `main` Windows Harness.
+- Stage AA0 remote validation:
+  - PR #113 Windows Harness run `25578139342` - passed.
+  - PR #113 merged as `4a5c5d53d9a6981e81a3ba61625cea847a87d88f`.
+  - Post-merge `main` Windows Harness run `25578252392` - passed on
+    `4a5c5d53d9a6981e81a3ba61625cea847a87d88f`.
+- Stage AA1 blueprint gap audit validation:
+  - `rg -n "def main|subparsers|add_parser|capture-frontmost|mcp-stdio|search-memory|generate-memory|watch" src\winchronicle` - reviewed CLI evidence.
+  - `rg -n "TOOL_NAMES|current_context|search_captures|search_memory|privacy_status|read_recent_capture|recent_activity" src\winchronicle\mcp tests\test_mcp_tools.py` - reviewed MCP evidence.
+  - `rg --files .github docs harness` - reviewed workflow/docs/harness surfaces.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 16 tests.
+  - `python -m pytest -q` - passed, 121 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AA1 PR Windows Harness.
+- Pending AA1 post-merge `main` Windows Harness.

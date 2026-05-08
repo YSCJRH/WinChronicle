@@ -145,6 +145,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Windows UIA smoke gates](windows-uia-smoke.md)
 - [UIA helper quality matrix](uia-helper-quality-matrix.md)
 - [Operator diagnostics](operator-diagnostics.md)
+- [Blueprint gap audit after v0.1.12](blueprint-gap-audit-post-v0.1.12.md)
 - [Watcher preview](watcher-preview.md)
 - [Read-only MCP compatibility examples](mcp-readonly-examples.md)
 - [Known limitations](known-limitations.md)
