@@ -14,7 +14,7 @@ or token canaries.
 | Field | Value |
 | --- | --- |
 | Stable release baseline | `v0.1.12` |
-| Current maintenance plan | Pending post-v0.1.12 maintenance plan |
+| Current maintenance plan | [Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md) |
 | Latest completed maintenance plan | [Post-v0.1.11 maintenance plan](next-round-plan-post-v0.1.11.md) |
 | Published release record | [v0.1.12 maintenance release record](release-v0.1.12.md) |
 | Latest published release record | [v0.1.12 maintenance release record](release-v0.1.12.md) |
