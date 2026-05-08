@@ -4,10 +4,10 @@ Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
-[v0.1.7 maintenance release record](release-v0.1.7.md). The completed
-post-v0.1.6 maintenance cursor is recorded in
-[Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md). The
-post-v0.1.5 cursor is completed historical evidence.
+[v0.1.7 maintenance release record](release-v0.1.7.md). The active
+post-v0.1.7 maintenance cursor is recorded in
+[Post-v0.1.7 maintenance plan](next-round-plan-post-v0.1.7.md). The
+post-v0.1.6 cursor is completed historical evidence.
 
 ## Evidence Location
 
@@ -35,8 +35,8 @@ historical records. After the `v0.1.7` publication:
   another version;
 - `v0.1.7` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- a post-v0.1.7 execution cursor must be established before implementation
-  continues;
+- the post-v0.1.7 execution cursor is active and records publication
+  reconciliation PR #86 plus post-merge Windows Harness run `25557058094`;
 - the post-v0.1.6 execution cursor is completed historical context;
 - the post-v0.1.5 execution cursor is completed historical context;
 - manual UIA smoke evidence inherited from `v0.1.0` or another older release
