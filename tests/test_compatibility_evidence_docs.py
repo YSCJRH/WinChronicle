@@ -29,8 +29,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "exact read-only MCP tool list",
         "Phase 6 screenshot/OCR work remains specification-only",
         "product targeted capture flags are exposed",
-        "v0.1.9 maintenance release record",
-        "v0.1.10 release-readiness record",
+        "v0.1.10 maintenance release record",
     ):
         assert phrase in normalized
 
@@ -49,8 +48,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Phase 6 remains specification-only",
         "no screenshot capture code",
         "OCR engine integration",
-        "v0.1.9 maintenance release record",
-        "v0.1.10 release-readiness record",
+        "v0.1.10 maintenance release record",
     ):
         assert phrase in normalized
 
@@ -349,13 +347,15 @@ def test_v0110_release_record_is_ready_and_compatible():
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: release-readiness candidate; publication pending.",
+        "Publication status: published maintenance release.",
         "Release | `v0.1.10`",
-        "Stage | Release readiness candidate",
+        "Stage | Published maintenance release",
         "Base `main` SHA before X4 readiness | `d13f84d1849b9300cf534cea55c25a3584aeea02`",
-        "Candidate PR | Pending X4 PR",
-        "Candidate PR Windows Harness | Pending X4 PR Windows Harness",
-        "Candidate post-merge `main` Windows Harness | Pending X4 post-merge Windows Harness",
+        "Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/101",
+        "Candidate PR Windows Harness | Passed, run `25569414864`",
+        "Candidate post-merge `main` Windows Harness | Passed, run `25569567825`",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.10",
+        "Final tag target | `28b062a531519d4360911b51dfc083782b6dcbad`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.9",
         "`v0.1.9` tag target | `d06ab5bc8bea7520bac2719adb457794c72911d3`",
         "X0 PR Windows Harness | Passed, run `25566609049`",
@@ -364,7 +364,7 @@ def test_v0110_release_record_is_ready_and_compatible():
         "X3 PR Windows Harness | Passed, run `25568494398`",
         "X3 post-merge `main` Windows Harness | Passed, run `25568639603`",
         "`python -m pytest -q` | Pass | `115 passed",
-        "local X4 validation passed",
+        "Local X4 validation",
         "must report `0.1.10`",
         "exact read-only MCP tool list remains unchanged",
         "Phase 6 remains specification-only",
@@ -374,10 +374,11 @@ def test_v0110_release_record_is_ready_and_compatible():
         "no OCR engine integration",
         "explicitly accepts inherited `v0.1.0` Notepad",
         "Fallback path: release candidate if any product or contract change",
-        "Publication approval: active goal authorizes publication after local, PR, and",
-        "Deterministic gates: local X4 validation passed",
-        "Release URL: pending publication.",
-        "Final tag target: pending publication.",
+        "Publication approval: completed by the active thread goal",
+        "Deterministic gates: local X4 validation, PR Windows Harness, post-merge",
+        "GitHub release publication passed.",
+        "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.10.",
+        "Final tag target: `28b062a531519d4360911b51dfc083782b6dcbad`.",
     ):
         assert phrase in normalized
 

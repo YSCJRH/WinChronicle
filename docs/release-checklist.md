@@ -6,13 +6,11 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.9 maintenance release record](release-v0.1.9.md). The active
-release-readiness record is
-[v0.1.10 release-readiness record](release-v0.1.10.md), and the active
-post-v0.1.9 execution cursor lives in
-[Post-v0.1.9 maintenance plan](next-round-plan-post-v0.1.9.md). For release
+[v0.1.10 maintenance release record](release-v0.1.10.md). The active
+post-v0.1.10 execution cursor lives in
+[Post-v0.1.10 maintenance plan](next-round-plan-post-v0.1.10.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
-post-v0.1.8 plan is completed historical evidence.
+post-v0.1.9 plan is completed historical evidence.
 
 ## Deterministic Gates
 
@@ -30,14 +28,14 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.9` until a later plan explicitly prepares
+- the stable baseline is `v0.1.10` until a later plan explicitly prepares
   another version;
-- `v0.1.9` is the latest published release; its release URL, tag target, and
+- `v0.1.10` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- `v0.1.10` is the active release-readiness candidate and must remain pending
-  until local X4 validation, PR Windows Harness, post-merge `main` Windows
-  Harness, and GitHub release publication pass;
-- the post-v0.1.9 execution cursor is active and records PR #96 plus
+- the post-v0.1.10 execution cursor is active and records PR #101 plus
+  post-merge Windows Harness run `25569567825`;
+- the post-v0.1.9 execution cursor is completed historical context and records
+  PR #96 plus
   post-merge Windows Harness run `25565697723`, and X0 PR #97 plus
   post-merge Windows Harness run `25566750349`, X1 PR #98 plus post-merge
   Windows Harness run `25567503424`, X2 PR #99 plus post-merge Windows Harness
@@ -76,20 +74,23 @@ inherited historical evidence:
   release-readiness record because no helper, watcher product behavior, manual
   smoke script, capture, privacy, product CLI/MCP shape, or capture-surface
   behavior changed before release readiness;
-- for the active post-v0.1.9 compatible maintenance path, inherited `v0.1.0`
+- for the completed post-v0.1.9 compatible maintenance path, inherited `v0.1.0`
   manual smoke is explicitly accepted by the X1 freshness decision as
   inherited/stale evidence because no helper behavior, watcher product
   behavior, manual smoke script, capture behavior, privacy behavior, product
   CLI/MCP shape, capture-surface behavior, or release approver requirement
   changed in X0/X1;
-- the X1 decision does not make inherited manual smoke fresh or current release
-  evidence; release readiness must explicitly accept inherited evidence for
-  publication or record fresh manual smoke;
-- for the active `v0.1.10` release-readiness candidate, inherited `v0.1.0`
+- the X1 decision did not make inherited manual smoke fresh or current release
+  evidence; the X4 release-readiness record explicitly accepted inherited
+  evidence for `v0.1.10` publication;
+- for the completed `v0.1.10` release-readiness path, inherited `v0.1.0`
   manual smoke is explicitly accepted by the X4 release-readiness record
   because no helper, watcher product behavior, manual smoke script, capture,
   privacy, product CLI/MCP shape, or capture-surface behavior changed before
   release readiness;
+- for the active post-v0.1.10 compatible maintenance path, inherited
+  `v0.1.0` manual smoke remains inherited/stale until Y1 or Y4 explicitly
+  accepts it for a compatible release path or fresh manual smoke is recorded;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are
