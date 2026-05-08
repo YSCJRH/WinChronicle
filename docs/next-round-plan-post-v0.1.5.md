@@ -2,17 +2,16 @@
 
 ## Summary
 
-`v0.1.5` is published at
-https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5. The release tag
-targets `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`. The post-publication
-reconciliation `main` commit is
-`df15810c0b5022bebd1fe8a488f677e74fe8eae1`, and the post-reconciliation
-Windows Harness run `25546003233` passed on that SHA.
+`v0.1.6` is published at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6. The release tag
+targets `914cf361ac5864fa31d393d125d14e45eeba96bc`. The S4 release-readiness
+PR Windows Harness run `25551243900` passed, and the post-merge `main` Windows
+Harness run `25551362920` passed on that SHA.
 
-The next round should be a small compatible maintenance pass toward `v0.1.6`.
-It should keep release evidence current, preserve operator entry points,
-address CI/runtime maintenance signals, and maintain compatibility guardrails.
-It must not expand the capture surface or start Phase 6 implementation.
+This post-v0.1.5 maintenance round completed as the compatible `v0.1.6`
+maintenance release. The next atomic task is to establish the post-v0.1.6
+baseline cursor before any new implementation work. This completed round did
+not expand the capture surface or start Phase 6 implementation.
 
 Keep the v0.1 product boundary unchanged: local-first, UIA-first,
 harness-first, read-only MCP first, no screenshot/OCR implementation, no audio
@@ -22,21 +21,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: S4 - v0.1.6 Release Readiness.
-- Stage status: B - S4 local release-readiness is complete; S4 PR Windows
-  Harness, post-merge `main` Windows Harness, and publication are pending.
-- Last completed evidence: `v0.1.5` is published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5 and targets
-  `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`. The post-publication
-  reconciliation commit is `df15810c0b5022bebd1fe8a488f677e74fe8eae1`, and
-  Windows Harness run `25546003233` passed on that SHA.
-- Last validation: S4 local release-readiness validation passed targeted
-  release docs/version tests, the full deterministic gate, and `git diff
-  --check` after aligning package/runtime/MCP version identity to `0.1.6` and
-  adding the `v0.1.6` release-readiness record.
-- Next atomic task: open the S4 release-readiness PR, wait for PR Windows
-  Harness, merge after review, then wait for post-merge `main` Windows Harness
-  before publication.
+- Current stage: G - v0.1.6 Published Baseline Reconciliation.
+- Stage status: G - v0.1.6 published; baseline reconciliation in progress.
+- Last completed evidence: `v0.1.6` is published at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6 and targets
+  `914cf361ac5864fa31d393d125d14e45eeba96bc`. The S4 PR Windows Harness run
+  `25551243900` passed, and post-merge `main` Windows Harness run
+  `25551362920` passed on that SHA.
+- Last validation: publication metadata was verified with `gh release view
+  v0.1.6`; local tags include `v0.1.6`; package runtime version reports
+  `0.1.6`.
+- Next atomic task: finish post-publication reconciliation, then establish a
+  post-v0.1.6 next-round plan before new implementation work.
 - Known blockers: none.
 
 ## Phased Work
@@ -140,9 +136,9 @@ Stage-specific gates:
 
 ## Assumptions
 
-- `v0.1.5` is the current stable release baseline and must not be modified or
+- `v0.1.6` is the current stable release baseline and must not be modified or
   retagged.
-- The next compatible release target is `v0.1.6`.
+- The next compatible release target must be chosen in the post-v0.1.6 plan.
 - Phase 6 remains privacy spec/scorecard work only until a future tests-first
   round.
 - Manual UIA smoke remains outside default CI because it depends on an
@@ -173,6 +169,11 @@ Stage-specific gates:
   evidence, and compatibility guardrails. The `v0.1.6`
   release-readiness record explicitly accepts inherited `v0.1.0` manual UIA
   smoke for this compatible path, with no observed-content artifacts committed.
+- During publication, published `v0.1.6` from
+  `914cf361ac5864fa31d393d125d14e45eeba96bc` after S4 PR Windows Harness
+  `25551243900` and post-merge `main` Windows Harness `25551362920` passed.
+  Do not retag `v0.1.6`; establish a post-v0.1.6 cursor before starting new
+  implementation work.
 
 ## Validation Log
 
@@ -225,3 +226,9 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- v0.1.6 publication validation:
+  - `gh release create v0.1.6 --target 914cf361ac5864fa31d393d125d14e45eeba96bc --title "v0.1.6"` - passed.
+  - `gh release view v0.1.6 --json name,tagName,url,isDraft,isPrerelease,publishedAt,targetCommitish` - passed and returned release URL https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6.
+  - `gh run view 25551362920 --json databaseId,status,conclusion,headSha,url,createdAt,updatedAt,name,displayTitle` - passed; conclusion `success` on `914cf361ac5864fa31d393d125d14e45eeba96bc`.
+  - `git fetch --tags --quiet` and `git show-ref --tags v0.1.6` - passed; local tag points to `914cf361ac5864fa31d393d125d14e45eeba96bc`.
+  - `python -` version check - passed and printed `0.1.6`.
