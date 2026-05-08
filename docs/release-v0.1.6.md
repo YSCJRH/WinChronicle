@@ -1,15 +1,15 @@
-# v0.1.6 Maintenance Release Readiness Record
+# v0.1.6 Maintenance Release Record
 
-This record prepares the compatible `v0.1.6` maintenance release from the
-published `v0.1.5` baseline. It records commands, results, commit identifiers,
-CI URLs, environment notes, and local artifact paths only. It does not commit
-observed-content artifacts.
+This record captures the published compatible `v0.1.6` maintenance release
+from the published `v0.1.5` baseline. It records commands, results, commit
+identifiers, CI URLs, environment notes, and local artifact paths only. It does
+not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.6` is a release-readiness candidate. Publication remains pending until
-the S4 PR Windows Harness, post-merge `main` Windows Harness, and publication
-step complete.
+`v0.1.6` is published. The release-readiness PR and post-merge `main` Windows
+Harness passed. Publication completed after the active thread goal directed
+stage completion, remote push, and publication.
 
 The direct compatible release path is allowed because S0-S4 change release
 evidence, documentation, tests, CI/runtime metadata, and version metadata only.
@@ -17,26 +17,26 @@ No product behavior, schema, CLI/MCP JSON shape, privacy behavior,
 helper/watcher behavior, or capture-surface change is included.
 
 If any product behavior, schema, CLI/MCP JSON shape, privacy behavior,
-helper/watcher behavior, or capture-surface change is required before
-publication, stop the direct `v0.1.6` path and prepare a release candidate
-instead.
+helper/watcher behavior, or capture-surface regression is found after
+publication, prepare a follow-up release candidate instead of retagging
+`v0.1.6`.
 
-Publication status: release-readiness candidate; publication pending.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.6` |
-| Stage | Release-readiness candidate |
+| Stage | Published maintenance release |
 | Evidence date | 2026-05-08, Asia/Shanghai |
 | Base `main` SHA before S4 readiness | `4a8222f24423c565b64c065da3b151ee5e246b99` |
-| Candidate PR | Pending S4 PR |
-| Candidate PR Windows Harness | Pending S4 PR |
-| Candidate post-merge `main` Windows Harness | Pending S4 merge |
-| Publication status | Pending |
-| Release URL | Pending |
-| Final tag target | Pending |
+| Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/79 |
+| Candidate PR Windows Harness | Passed, run `25551243900`, https://github.com/YSCJRH/WinChronicle/actions/runs/25551243900 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25551362920`, https://github.com/YSCJRH/WinChronicle/actions/runs/25551362920 |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6 |
+| Final tag target | `914cf361ac5864fa31d393d125d14e45eeba96bc` |
 | Previous stable release | `v0.1.5` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5 |
 | `v0.1.5` tag target | `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4` |
@@ -60,7 +60,7 @@ Environment:
 - Windows PowerShell.
 - Python: `3.11`.
 - .NET SDK: `8.0`.
-- Manual UIA smoke is not refreshed for this release-readiness branch because
+- Manual UIA smoke was not refreshed for this maintenance release because
   S0-S4 changes are documentation, tests, CI/runtime metadata, deterministic
   harness evidence, compatibility evidence, and version metadata only. This S4
   record explicitly accepts inherited `v0.1.0` Notepad, Edge, VS Code metadata,
@@ -83,13 +83,13 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The S4 PR Windows Harness and post-merge `main` Windows Harness are required
-before publication.
+The S4 PR Windows Harness and post-merge `main` Windows Harness passed before
+publication.
 
 ## Release Notes
 
 - Aligns package, runtime, and MCP server version identity to `0.1.6`.
-- Records the `v0.1.6` maintenance release readiness evidence from the
+- Records the published `v0.1.6` maintenance release evidence from the
   post-v0.1.5 maintenance round.
 - Keeps the v0.1 product boundary unchanged: no new capture surfaces, no new
   MCP tools, no helper/watcher product behavior changes, and no Phase 6
@@ -167,11 +167,11 @@ This maintenance release does not expand the capture surface from `v0.1.5`.
 
 ## Release Decision Summary
 
-- Release path: compatible `v0.1.6` maintenance release-readiness candidate.
-- Fallback path: release candidate if any product or contract change is
-  required before publication.
-- Deterministic gates: local S4 validation passed; S4 PR Windows Harness and
-  post-merge `main` Windows Harness remain pending.
+- Release path: compatible `v0.1.6` maintenance release, published.
+- Fallback path: follow-up release candidate if any product or contract change
+  is required after publication.
+- Deterministic gates: local S4 validation, PR Windows Harness, post-merge
+  `main` Windows Harness, and GitHub release publication passed.
 - Manual UIA gates: inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS
   Code strict diagnostic, and watcher preview manual evidence is explicitly
   accepted by this S4 record for the compatible `v0.1.6` path only because
@@ -179,7 +179,7 @@ This maintenance release does not expand the capture surface from `v0.1.5`.
   scripts, capture behavior, privacy behavior, product CLI/MCP shape, and
   capture surfaces are unchanged.
 - Privacy/scope confirmation: unchanged and recorded above.
-- Publication approval: pending until S4 PR and post-merge Windows Harness
-  pass.
-- Release URL: pending.
-- Final tag target: pending.
+- Publication approval: completed by the active thread goal directing stage
+  completion, remote push, and publication.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6.
+- Final tag target: `914cf361ac5864fa31d393d125d14e45eeba96bc`.

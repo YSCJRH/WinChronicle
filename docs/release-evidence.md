@@ -3,11 +3,9 @@
 Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
-artifacts. The current release-readiness record is
-[v0.1.6 maintenance release-readiness record](release-v0.1.6.md). The latest
-published release record is
-[v0.1.5 maintenance release record](release-v0.1.5.md). The active post-v0.1.5
-maintenance cursor is recorded in
+artifacts. The latest published release record is
+[v0.1.6 maintenance release record](release-v0.1.6.md). The completed
+post-v0.1.5 maintenance cursor is recorded in
 [Post-v0.1.5 maintenance plan](next-round-plan-post-v0.1.5.md). The
 post-v0.1.4 cursor is closed historical evidence.
 
@@ -31,23 +29,21 @@ Record only:
 ## Evidence Freshness
 
 Release evidence must name which facts are current and which are inherited from
-historical records. After the post-v0.1.5 publication:
+historical records. After the `v0.1.6` publication:
 
-- `v0.1.5` is the stable baseline until a later plan explicitly prepares
+- `v0.1.6` is the stable baseline until a later plan explicitly prepares
   another version;
-- `v0.1.5` is the latest published release; its release URL, tag target, and
+- `v0.1.6` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- the active post-v0.1.5 execution cursor must be followed before
-  implementation continues;
+- the post-v0.1.5 execution cursor is completed; a post-v0.1.6 cursor must be
+  established before implementation continues;
 - manual UIA smoke evidence inherited from `v0.1.0` or another older release
   must be labeled as inherited or stale;
 - a release record must not present inherited manual smoke as freshly run;
-- for the current post-v0.1.5 compatible maintenance path toward `v0.1.6`,
-  inherited `v0.1.0` manual smoke remains contextual only if no helper,
+- for the post-v0.1.5 compatible maintenance path that published `v0.1.6`,
+  inherited `v0.1.0` manual smoke was explicitly accepted by S4 because no helper,
   watcher product behavior, manual smoke script, capture, privacy, product
-  CLI/MCP shape, or capture-surface behavior changes before release; the S4
-  release record must explicitly accept the inherited evidence or record fresh
-  smoke before publication;
+  CLI/MCP shape, or capture-surface behavior changed before release;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are

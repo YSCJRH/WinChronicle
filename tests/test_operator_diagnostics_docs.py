@@ -57,17 +57,18 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "## Historical Release Records", 1
     )[0]
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
+    readme_intro_normalized = " ".join(readme_intro.split())
 
-    assert "current\n`v0.1.6` release-readiness record" in readme_intro
-    assert "latest published `v0.1.5` release" in readme_intro
-    assert "active post-v0.1.5 maintenance plan" in readme_intro
+    assert "latest published `v0.1.6` release record" in readme_intro_normalized
+    assert "completed post-v0.1.5 maintenance plan" in readme_intro_normalized
+    assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "Post-v0.1.5 maintenance plan" in readme_operator_docs
-    assert "v0.1.6 maintenance release-readiness record" in readme_operator_docs
+    assert "v0.1.6 maintenance release record" in readme_operator_docs
     assert "Post-v0.1.4 maintenance plan" in readme_operator_docs
     assert "v0.1.5 maintenance release record" in readme_operator_docs
     assert "v0.1.4 maintenance release record" in readme_operator_docs
-    assert readme_operator_docs.index("v0.1.6 maintenance release-readiness record") < readme_operator_docs.index(
+    assert readme_operator_docs.index("v0.1.6 maintenance release record") < readme_operator_docs.index(
         "Post-v0.1.5 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.5 maintenance plan") < readme_operator_docs.index(
@@ -108,8 +109,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-v0.1.6.md" in evidence
     assert "next-round-plan-post-v0.1.4.md" not in checklist
     assert "next-round-plan-post-v0.1.4.md" not in evidence
-    assert "release-v0.1.5.md" in checklist
-    assert "release-v0.1.5.md" in evidence
+    assert "release-v0.1.5.md" not in checklist
+    assert "release-v0.1.5.md" not in evidence
     assert "release-v0.1.4.md" not in checklist
     assert "release-v0.1.4.md" not in evidence
     assert "post-v0.1.4 plan is closed historical evidence" in checklist
@@ -150,14 +151,16 @@ def test_post_v015_plan_is_active_without_expanding_scope():
     plan = (ROOT / "docs" / "next-round-plan-post-v0.1.5.md").read_text(
         encoding="utf-8"
     )
+    normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: S4 - v0.1.6 Release Readiness.",
-        "Stage status: B - S4 local release-readiness is complete",
-        "`v0.1.5` is published at\nhttps://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5",
-        "targets `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`",
-        "post-publication\nreconciliation `main` commit is\n`df15810c0b5022bebd1fe8a488f677e74fe8eae1`",
-        "Windows Harness run `25546003233` passed on that SHA",
+        "Current stage: G - v0.1.6 Published Baseline Reconciliation.",
+        "Stage status: G - v0.1.6 published; baseline reconciliation in progress.",
+        "`v0.1.6` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6",
+        "targets `914cf361ac5864fa31d393d125d14e45eeba96bc`",
+        "S4 PR Windows Harness run `25551243900` passed",
+        "post-merge `main` Windows Harness run `25551362920` passed",
+        "post-v0.1.6 next-round plan before new implementation work",
         "Stage S0 - Post-v0.1.5 Baseline Cursor",
         "Stage S1 - CI Runtime Maintenance Decision",
         "Stage S2 - Release Evidence And Entry Hygiene",
@@ -170,11 +173,11 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "pins `windows-2025-vs2026`",
         "audited operator-facing docs, scorecards, and tests",
         "source-level Phase 6 absence",
-        "post-v0.1.5 path\n  toward `v0.1.6`",
-        "aligning package/runtime/MCP version identity to `0.1.6`",
+        "post-v0.1.5 path toward `v0.1.6`",
+        "aligning version identity to `0.1.6`",
         "release-readiness record explicitly accepts inherited `v0.1.0` manual UIA",
     ):
-        assert expected in plan
+        assert expected in normalized
 
 
 def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
@@ -186,14 +189,15 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "stable baseline is `v0.1.5`",
-        "`v0.1.5` is the latest published release",
-        "active post-v0.1.5 execution cursor must be followed",
+        "stable baseline is `v0.1.6`",
+        "`v0.1.6` is the latest published release",
+        "post-v0.1.5 execution cursor is completed",
+        "post-v0.1.6 cursor must be\n  established before any new implementation",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
         "inherited `v0.1.0` manual",
-        "current post-v0.1.5 compatible maintenance path toward `v0.1.6`",
-        "S4\n  release record must explicitly accept the inherited evidence",
-        "capture-surface behavior changes",
+        "post-v0.1.5 compatible maintenance path that published `v0.1.6`",
+        "inherited `v0.1.0` manual smoke was explicitly accepted by S4",
+        "capture-surface behavior changed before release",
         "no observed-content artifact is committed to refresh evidence",
         "deterministic harness smoke changes require fresh deterministic gate",
     ):
@@ -201,15 +205,16 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "`v0.1.5` is the stable baseline",
-        "`v0.1.5` is the latest published release",
-        "active post-v0.1.5 execution cursor must be followed",
+        "`v0.1.6` is the stable baseline",
+        "`v0.1.6` is the latest published release",
+        "post-v0.1.5 execution cursor is completed",
+        "post-v0.1.6 cursor must be\n  established before implementation continues",
         "manual UIA smoke evidence inherited from `v0.1.0`",
         "must be labeled as inherited or stale",
         "must not present inherited manual smoke as freshly run",
-        "current post-v0.1.5 compatible maintenance path toward `v0.1.6`",
-        "S4\n  release record must explicitly accept the inherited evidence",
-        "capture-surface behavior changes",
+        "post-v0.1.5 compatible maintenance path that published `v0.1.6`",
+        "inherited `v0.1.0` manual smoke was explicitly accepted by S4",
+        "capture-surface behavior changed before release",
         "never observed content",
         "deterministic harness smoke changes require fresh deterministic gate",
     ):
@@ -240,15 +245,14 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         assert gate in ledger
 
     for expected in (
-        "Stable release baseline | `v0.1.5`",
-        "Latest maintenance plan | [Post-v0.1.5 maintenance plan]",
-        "Published release record | [v0.1.5 maintenance release record]",
-        "Current release-readiness record | [v0.1.6 maintenance release-readiness record]",
-        "Latest published release record | [v0.1.5 maintenance release record]",
+        "Stable release baseline | `v0.1.6`",
+        "Latest completed maintenance plan | [Post-v0.1.5 maintenance plan]",
+        "Published release record | [v0.1.6 maintenance release record]",
+        "Latest published release record | [v0.1.6 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
-        "Last freshness decision | For the current post-v0.1.5 compatible maintenance path toward",
+        "Last freshness decision | For the post-v0.1.5 compatible maintenance path that published",
         "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
-        "explicitly accepted by the S4 release-readiness record",
+        "was explicitly accepted by the S4 release record",
         "explicitly accepted by S4 for the compatible `v0.1.6` path",
         "historically accepted for `v0.1.5` as diagnostic context",
         "Fresh manual smoke is required if any helper, watcher, smoke script",

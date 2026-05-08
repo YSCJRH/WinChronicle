@@ -170,14 +170,20 @@ def test_v015_release_record_is_published_and_compatible():
         assert f"`{tool_name}`" in text
 
 
-def test_v016_release_readiness_record_is_compatible():
+def test_v016_release_record_is_published_and_compatible():
     text = V016_RELEASE.read_text(encoding="utf-8")
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: release-readiness candidate; publication pending.",
+        "Publication status: published maintenance release.",
         "Release | `v0.1.6`",
+        "Stage | Published maintenance release",
         "Base `main` SHA before S4 readiness | `4a8222f24423c565b64c065da3b151ee5e246b99`",
+        "Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/79",
+        "Candidate PR Windows Harness | Passed, run `25551243900`",
+        "Candidate post-merge `main` Windows Harness | Passed, run `25551362920`",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6",
+        "Final tag target | `914cf361ac5864fa31d393d125d14e45eeba96bc`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5",
         "`v0.1.5` tag target | `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`",
         "S0 PR Windows Harness | Passed, run `25546758389`",
@@ -194,8 +200,9 @@ def test_v016_release_readiness_record_is_compatible():
         "no screenshot capture code",
         "no OCR engine integration",
         "explicitly accepts inherited `v0.1.0` Notepad",
-        "Deterministic gates: local S4 validation passed",
-        "Publication approval: pending until S4 PR and post-merge Windows Harness",
+        "Deterministic gates: local S4 validation, PR Windows Harness, post-merge `main` Windows Harness, and GitHub release publication passed.",
+        "Publication approval: completed by the active thread goal directing stage completion, remote push, and publication.",
+        "follow-up release candidate instead of retagging `v0.1.6`",
     ):
         assert phrase in normalized
 
