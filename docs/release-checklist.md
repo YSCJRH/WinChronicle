@@ -6,11 +6,9 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.6 maintenance release record](release-v0.1.6.md). The active
+[v0.1.7 maintenance release record](release-v0.1.7.md). The completed
 post-v0.1.6 execution cursor lives in
-[Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md). The active
-release-readiness record is
-[v0.1.7 maintenance release record](release-v0.1.7.md). For release
+[Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
 post-v0.1.5 plan is completed historical evidence.
 
@@ -30,12 +28,13 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.6` until a later plan explicitly prepares
+- the stable baseline is `v0.1.7` until a later plan explicitly prepares
   another version;
-- `v0.1.6` is the latest published release; its release URL, tag target, and
+- `v0.1.7` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- the post-v0.1.6 execution cursor must be followed before any new
+- a post-v0.1.7 execution cursor must be established before any new
   implementation;
+- the post-v0.1.6 execution cursor is completed historical context;
 - the post-v0.1.5 execution cursor is completed historical context;
 - manual UIA smoke inherited from an earlier release is labeled as inherited or
   stale, not current;

@@ -2,7 +2,15 @@
 
 ## Summary
 
-`v0.1.6` is published at
+`v0.1.7` is published at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.7. The release tag
+targets `0b5969509754f78b218f823d0e6bb7a0ea61392b`.
+
+This post-v0.1.6 maintenance round completed as the compatible `v0.1.7`
+maintenance release. The next atomic task is to establish the post-v0.1.7
+baseline cursor before starting any new implementation work.
+
+Previous stable baseline: `v0.1.6` was published at
 https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6. The release tag
 targets `914cf361ac5864fa31d393d125d14e45eeba96bc`. The publication
 reconciliation PR #80 merged as `371060498c70a4e1ff4e075b3fd247b704c6d3f7`;
@@ -23,29 +31,19 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: T4 - v0.1.7 Release Readiness.
-- Stage status: B - T4 local release-readiness changes and validation are
-  complete; PR Windows Harness and post-merge `main` Windows Harness are
-  pending.
-- Last completed evidence: `v0.1.6` is published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6 and targets
-  `914cf361ac5864fa31d393d125d14e45eeba96bc`. Publication reconciliation PR
-  #80 passed PR Windows Harness run `25552120656`, merged as
-  `371060498c70a4e1ff4e075b3fd247b704c6d3f7`, and post-merge `main` Windows
-  Harness run `25552214063` passed on that SHA. T2 PR #83 passed PR Windows
-  Harness run `25554431580`, merged as
-  `fb84fb2b2bf47cfe89680c898f3694f543d75c52`, and post-merge `main` Windows
-  Harness run `25554520036` passed on that SHA. T3 PR #84 passed PR Windows
-  Harness run `25555063537`, merged as
-  `6d1d8f94c56636c23daafcb4ceae24053ff226aa`, and post-merge `main` Windows
-  Harness run `25555180274` passed on that SHA.
-- Last validation: T4 release-readiness validation aligned version identity to
-  `0.1.7`, added the `v0.1.7` release record, accepted inherited manual UIA
-  smoke for this compatible path, and passed targeted release docs tests, the
-  full deterministic gate, and `git diff --check`.
-- Next atomic task: open the T4 release-readiness PR, wait for PR Windows
-  Harness, merge after review, wait for post-merge `main` Windows Harness, and
-  then publish `v0.1.7` if no product or contract regression is found.
+- Current stage: G - v0.1.7 Published Baseline Reconciliation.
+- Stage status: G - v0.1.7 published; baseline reconciliation complete.
+- Last completed evidence: `v0.1.7` is published at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.7 and targets
+  `0b5969509754f78b218f823d0e6bb7a0ea61392b`. T4 PR #85 passed PR Windows
+  Harness run `25556058760`, merged as
+  `0b5969509754f78b218f823d0e6bb7a0ea61392b`, and post-merge `main` Windows
+  Harness run `25556207363` passed on that SHA.
+- Last validation: `gh release view v0.1.7` confirmed the release URL, final
+  tag target, and published status; local tags include `v0.1.7`; package
+  runtime version reports `0.1.7`.
+- Next atomic task: establish a post-v0.1.7 maintenance plan before starting
+  new implementation work.
 - Known blockers: none.
 
 ## Phased Work
@@ -215,6 +213,10 @@ Stage-specific gates:
   helper behavior, watcher product behavior, manual smoke scripts, capture
   behavior, privacy behavior, product CLI/MCP shape, and capture surfaces are
   unchanged.
+- During publication, published `v0.1.7` from
+  `0b5969509754f78b218f823d0e6bb7a0ea61392b` after PR #85 and post-merge
+  `main` Windows Harness passed. Do not retag `v0.1.7`; establish a
+  post-v0.1.7 cursor before starting new implementation work.
 
 ## Validation Log
 
@@ -275,3 +277,10 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+  - PR #85 Windows Harness run `25556058760` - passed.
+  - Post-merge `main` Windows Harness run `25556207363` - passed on `0b5969509754f78b218f823d0e6bb7a0ea61392b`.
+- v0.1.7 publication validation:
+  - `gh release create v0.1.7 --target 0b5969509754f78b218f823d0e6bb7a0ea61392b --title "v0.1.7"` - passed.
+  - `gh release view v0.1.7 --json name,tagName,url,isDraft,isPrerelease,publishedAt,targetCommitish` - passed and returned release URL https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.7.
+  - `git fetch --tags --quiet` and `git show-ref --tags v0.1.7` - passed; local tag points to `0b5969509754f78b218f823d0e6bb7a0ea61392b`.
+  - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.7`.
