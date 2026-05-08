@@ -5,6 +5,8 @@ evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
 [v0.1.10 maintenance release record](release-v0.1.10.md). The active
+release-readiness record is
+[v0.1.11 release-readiness record](release-v0.1.11.md), and the active
 post-v0.1.10 maintenance cursor is recorded in
 [Post-v0.1.10 maintenance plan](next-round-plan-post-v0.1.10.md). The
 post-v0.1.9 cursor is completed historical evidence.
@@ -35,6 +37,9 @@ historical records. After the `v0.1.9` publication:
   another version;
 - `v0.1.10` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
+- `v0.1.11` is the active release-readiness candidate and must remain pending
+  until local Y4 validation, PR Windows Harness, post-merge `main` Windows
+  Harness, and GitHub release publication pass;
 - the post-v0.1.10 execution cursor is active and records PR #101 plus
   post-merge Windows Harness run `25569567825`;
 - the post-v0.1.9 execution cursor is completed historical context and records
@@ -99,6 +104,11 @@ historical records. After the `v0.1.9` publication:
 - the Y1 decision does not make inherited manual smoke fresh or current release
   evidence; release readiness must explicitly accept inherited evidence for
   publication or record fresh manual smoke;
+- for the active `v0.1.11` release-readiness candidate, inherited `v0.1.0`
+  manual smoke is explicitly accepted by the Y4 release-readiness record
+  because no helper, watcher product behavior, manual smoke script, capture,
+  privacy, product CLI/MCP shape, or capture-surface behavior changed before
+  release readiness;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are

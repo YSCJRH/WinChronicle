@@ -26,18 +26,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Y3 - Compatibility Guardrail Sweep.
-- Stage status: B - Y3 compatibility guardrail docs/tests are implemented and
-  local deterministic validation passed; PR Windows Harness and post-merge
-  Windows Harness are pending.
-- Last completed evidence: Y2 PR #104 passed PR Windows Harness run
-  `25571923026`, merged as `1f1d44da805ed0d2d953eb043758bed62a6b35d4`, and
-  post-merge `main` Windows Harness run `25572048167` passed on that SHA.
-- Last validation: Y3 compatibility guardrail tests, full pytest, helper build,
+- Current stage: Y4 - v0.1.11 Release Readiness.
+- Stage status: B - Y4 release-readiness docs/tests and version metadata are
+  implemented and local deterministic validation passed; PR Windows Harness,
+  post-merge Windows Harness, and release publication are pending.
+- Last completed evidence: Y3 PR #105 passed PR Windows Harness run
+  `25572434735`, merged as `b7a6651d829c914fe9d8eeea0896238d0d880249`, and
+  post-merge `main` Windows Harness run `25572553734` passed on that SHA.
+- Last validation: Y4 release-readiness tests, full pytest, helper build,
   watcher build, install CLI smoke, full harness, and `git diff --check` passed
   locally.
-- Next atomic task: open the Y3 PR, then verify PR and post-merge Windows
-  Harness.
+- Next atomic task: open the Y4 PR, verify PR and post-merge Windows Harness,
+  then publish `v0.1.11` if all release gates pass.
 - Known blockers: none.
 
 ## Phased Work
@@ -206,6 +206,21 @@ Stage-specific gates:
   JSON shape, memory/search trust boundaries, watcher preview-only behavior,
   product targeted capture absence, and Phase 6 spec-only status. No additional
   product tests were needed because no drift was found.
+- Recorded Y3 PR #105 and post-merge Windows Harness run `25572553734` before
+  starting Y4; this keeps the active cursor aligned with the current `main`
+  baseline without retagging `v0.1.10`.
+- During Y4, chose the direct compatible `v0.1.11` path because Y0-Y4 only
+  change release evidence, documentation, tests, CI/runtime metadata,
+  compatibility evidence, and version metadata. If product behavior, schema,
+  CLI/MCP JSON shape, privacy behavior, helper/watcher behavior, or capture
+  surface changes before publication, stop and prepare a release candidate.
+- During Y4, aligned package, runtime, and MCP server version identity to
+  `0.1.11` without changing MCP tool schemas or CLI/MCP JSON shape.
+- During Y4, the `v0.1.11` release-readiness record explicitly accepts
+  inherited `v0.1.0` manual UIA smoke only for this compatible path because
+  helper behavior, watcher product behavior, manual smoke scripts, capture
+  behavior, privacy behavior, product CLI/MCP shape, and capture surfaces are
+  unchanged.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -267,5 +282,17 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+  - PR #105 Windows Harness run `25572434735` - passed.
+  - PR #105 merged as `b7a6651d829c914fe9d8eeea0896238d0d880249`.
+  - Post-merge `main` Windows Harness run `25572553734` - passed on `b7a6651d829c914fe9d8eeea0896238d0d880249`.
+- Stage Y4 release-readiness validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 26 tests.
+  - `python -m pytest -q` - passed, 117 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
   - Pending PR Windows Harness.
   - Pending post-merge `main` Windows Harness.
+  - Pending `v0.1.11` publication.
