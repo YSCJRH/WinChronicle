@@ -478,11 +478,11 @@ def test_post_v019_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: X2 - CI Runtime And Dependency Maintenance Scan.",
-        "Stage status: B - X2 CI/runtime and dependency scan docs/tests are",
-        "X1 PR #98 passed PR Windows Harness run `25567381942`",
-        "merged as `def43279df9f09ae999f02b0c9ebc794e4540094`",
-        "post-merge `main` Windows Harness run `25567503424` passed",
+        "Current stage: X3 - Compatibility Guardrail Sweep.",
+        "Stage status: B - X3 compatibility guardrail docs/tests are implemented",
+        "X2 PR #99 passed PR Windows Harness run `25567947799`",
+        "merged as `f49a5774f4c5fb1dd2dcef64e1dca3affbf15d68`",
+        "post-merge `main` Windows Harness run `25568061526` passed",
         "`v0.1.9` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.9",
         "targets `d06ab5bc8bea7520bac2719adb457794c72911d3`",
         "post-merge `main` Windows Harness run `25565697723` passed",
@@ -512,11 +512,17 @@ def test_post_v019_plan_is_active_without_expanding_scope():
         "actions/setup-python@v6",
         "actions/setup-dotnet@v5",
         "depends only on `jsonschema` at runtime",
+        "During X3, treated existing compatibility tests and scorecards as the",
+        "exact read-only MCP tool names",
+        "product targeted capture absence",
+        "no product CLI/MCP targeted capture or new capture/control implementation was found",
         "Do not retag `v0.1.9`",
         "Stage X0 initialization:",
         "Stage X0 remote validation:",
         "Stage X1 remote validation:",
         "Stage X2 CI/runtime and dependency scan:",
+        "Stage X2 remote validation:",
+        "Stage X3 compatibility guardrail scan:",
         "python -c \"import winchronicle; print(winchronicle.__version__)\"",
     ):
         assert expected in normalized
