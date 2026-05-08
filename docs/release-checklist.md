@@ -89,8 +89,14 @@ inherited historical evidence:
   privacy, product CLI/MCP shape, or capture-surface behavior changed before
   release readiness;
 - for the active post-v0.1.10 compatible maintenance path, inherited
-  `v0.1.0` manual smoke remains inherited/stale until Y1 or Y4 explicitly
-  accepts it for a compatible release path or fresh manual smoke is recorded;
+  `v0.1.0` manual smoke is explicitly accepted by the Y1 freshness decision as
+  inherited/stale evidence because Y0/Y1 changed only docs/tests and did not
+  change helper behavior, watcher product behavior, manual smoke scripts,
+  capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces,
+  or release approver requirements;
+- the Y1 decision does not make inherited manual smoke fresh or current release
+  evidence; release readiness must explicitly accept inherited evidence for
+  publication or record fresh manual smoke;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are
