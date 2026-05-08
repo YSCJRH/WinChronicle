@@ -27,8 +27,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "exact read-only MCP tool list",
         "Phase 6 screenshot/OCR work remains specification-only",
         "product targeted capture flags are exposed",
-        "v0.1.8 maintenance release-readiness record",
-        "v0.1.7 maintenance release record",
+        "v0.1.8 maintenance release record",
     ):
         assert phrase in normalized
 
@@ -47,8 +46,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Phase 6 remains specification-only",
         "no screenshot capture code",
         "OCR engine integration",
-        "v0.1.8 maintenance release-readiness record",
-        "v0.1.7 maintenance release record",
+        "v0.1.8 maintenance release record",
     ):
         assert phrase in normalized
 
@@ -262,13 +260,15 @@ def test_v018_release_record_is_ready_and_compatible():
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: pending publication.",
+        "Publication status: published maintenance release.",
         "Release | `v0.1.8`",
-        "Stage | Release readiness candidate",
+        "Stage | Published maintenance release",
         "Base `main` SHA before U4 readiness | `8a25ec8abf2f91a912aaffd807ae4a4897847578`",
-        "Candidate PR | Pending until the U4 PR is opened",
-        "Candidate PR Windows Harness | Pending",
-        "Candidate post-merge `main` Windows Harness | Pending",
+        "Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/91",
+        "Candidate PR Windows Harness | Passed, run `25561704868`",
+        "Candidate post-merge `main` Windows Harness | Passed, run `25561832883`",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.8",
+        "Final tag target | `1ea1e378aedb0a509d202fd32bc69704dbe903d4`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.7",
         "`v0.1.7` tag target | `0b5969509754f78b218f823d0e6bb7a0ea61392b`",
         "v0.1.7 publication reconciliation PR | https://github.com/YSCJRH/WinChronicle/pull/86",
@@ -286,11 +286,11 @@ def test_v018_release_record_is_ready_and_compatible():
         "no OCR engine integration",
         "explicitly accepts inherited `v0.1.0` Notepad",
         "`python -m pytest -q` | Pass | `111 passed",
-        "local U4 validation passed",
-        "Fallback path: release candidate if any product or contract change",
+        "Fallback path: follow-up release candidate if any product or contract change",
         "Publication approval: completed by the active thread goal",
-        "Release URL: pending publication.",
-        "Final tag target: pending publication.",
+        "Deterministic gates: local U4 validation, PR Windows Harness, post-merge `main` Windows Harness, and GitHub release publication passed.",
+        "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.8.",
+        "Final tag target: `1ea1e378aedb0a509d202fd32bc69704dbe903d4`.",
     ):
         assert phrase in normalized
 

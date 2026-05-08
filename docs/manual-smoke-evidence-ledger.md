@@ -13,16 +13,15 @@ or token canaries.
 
 | Field | Value |
 | --- | --- |
-| Stable release baseline | `v0.1.7` |
-| Current maintenance plan | [Post-v0.1.7 maintenance plan](next-round-plan-post-v0.1.7.md) |
-| Latest completed maintenance plan | [Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md) |
-| Current release-readiness record | [v0.1.8 maintenance release-readiness record](release-v0.1.8.md) |
-| Published release record | [v0.1.7 maintenance release record](release-v0.1.7.md) |
-| Latest published release record | [v0.1.7 maintenance release record](release-v0.1.7.md) |
+| Stable release baseline | `v0.1.8` |
+| Current maintenance plan | [Post-v0.1.8 maintenance plan](next-round-plan-post-v0.1.8.md) |
+| Latest completed maintenance plan | [Post-v0.1.7 maintenance plan](next-round-plan-post-v0.1.7.md) |
+| Published release record | [v0.1.8 maintenance release record](release-v0.1.8.md) |
+| Latest published release record | [v0.1.8 maintenance release record](release-v0.1.8.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
 | Last freshness decision | For the active post-v0.1.7 compatible maintenance path toward `v0.1.8`, inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and watcher preview manual evidence remained stale/inherited after U1, then is explicitly accepted by the U4 release-readiness record only because no helper behavior, watcher product behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces changed. |
-| Next freshness decision | After `v0.1.8` publication, the next maintenance cursor must either keep this inherited-evidence decision scoped to `v0.1.8` or record fresh manual smoke before a future release. |
+| Next freshness decision | W1 must decide whether inherited `v0.1.0` manual evidence remains acceptable for a compatible release after `v0.1.8`, or record fresh manual smoke before publication. |
 
 ## Latest Known Manual Evidence
 
@@ -72,6 +71,9 @@ smoke. These command patterns are evidence shapes only; replace
   release-readiness record for that compatible path because helper behavior,
   watcher product behavior, manual smoke scripts, capture behavior, privacy
   behavior, product CLI/MCP shape, and capture surfaces are unchanged.
+- For the active post-v0.1.8 path, inherited `v0.1.0` manual smoke is
+  historical context until W1 explicitly accepts it for a compatible release
+  path or records fresh manual smoke.
 - Fresh manual smoke is required if any helper, watcher, smoke script, capture,
   privacy, product CLI/MCP shape, or capture-surface behavior changes, or if
   the release approver requires fresh hard-gate evidence.

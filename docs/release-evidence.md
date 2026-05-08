@@ -4,12 +4,10 @@ Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
-[v0.1.7 maintenance release record](release-v0.1.7.md). The current
-release-readiness record is
-[v0.1.8 maintenance release-readiness record](release-v0.1.8.md). The active
-post-v0.1.7 maintenance cursor is recorded in
-[Post-v0.1.7 maintenance plan](next-round-plan-post-v0.1.7.md). The
-post-v0.1.6 cursor is completed historical evidence.
+[v0.1.8 maintenance release record](release-v0.1.8.md). The active
+post-v0.1.8 maintenance cursor is recorded in
+[Post-v0.1.8 maintenance plan](next-round-plan-post-v0.1.8.md). The
+post-v0.1.7 cursor is completed historical evidence.
 
 ## Evidence Location
 
@@ -31,15 +29,15 @@ Record only:
 ## Evidence Freshness
 
 Release evidence must name which facts are current and which are inherited from
-historical records. After the `v0.1.7` publication:
+historical records. After the `v0.1.8` publication:
 
-- `v0.1.7` is the stable baseline until a later plan explicitly prepares
+- `v0.1.8` is the stable baseline until a later plan explicitly prepares
   another version;
-- `v0.1.7` is the latest published release; its release URL, tag target, and
+- `v0.1.8` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- the post-v0.1.7 execution cursor is active and records publication
-  reconciliation PR #86 plus post-merge Windows Harness run `25557058094`, and
-  U0 PR #87 plus post-merge Windows Harness run `25558154805`;
+- the post-v0.1.8 execution cursor is active and records PR #91 plus
+  post-merge Windows Harness run `25561832883`;
+- the post-v0.1.7 execution cursor is completed historical context;
 - the post-v0.1.6 execution cursor is completed historical context;
 - the post-v0.1.5 execution cursor is completed historical context;
 - manual UIA smoke evidence inherited from `v0.1.0` or another older release
@@ -60,6 +58,9 @@ historical records. After the `v0.1.7` publication:
   release-readiness record because no helper, watcher product behavior, manual
   smoke script, capture, privacy, product CLI/MCP shape, or capture-surface
   behavior changed before release readiness;
+- for the active post-v0.1.8 maintenance path, inherited `v0.1.0` manual
+  smoke is historical context until W1 makes a release-specific freshness
+  decision;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are
