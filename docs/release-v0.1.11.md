@@ -1,14 +1,14 @@
 # v0.1.11 Maintenance Release Record
 
-This record captures the compatible `v0.1.11` maintenance release-readiness candidate
+This record captures the published compatible `v0.1.11` maintenance release
 from the published `v0.1.10` baseline. It records commands, results, commit
 identifiers, CI URLs, environment notes, and local artifact paths only. It does
 not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.11` is a release-readiness candidate. Local Y4 validation has passed; PR Windows Harness, post-merge
-`main` Windows Harness, and GitHub release publication are pending.
+`v0.1.11` is published. Local Y4 validation, PR Windows Harness, post-merge
+`main` Windows Harness, and GitHub release publication passed.
 
 The direct compatible release path is allowed because Y0-Y4 change release
 evidence, documentation, tests, CI/runtime metadata, compatibility evidence,
@@ -21,22 +21,22 @@ helper/watcher behavior, or capture-surface regression is found after
 publication, prepare a follow-up release candidate instead of retagging
 `v0.1.11`.
 
-Publication status: release-readiness candidate; publication pending.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.11` |
-| Stage | Release-readiness candidate |
+| Stage | Published maintenance release |
 | Evidence date | 2026-05-09, Asia/Shanghai |
 | Base `main` SHA before Y4 readiness | `b7a6651d829c914fe9d8eeea0896238d0d880249` |
-| Candidate PR | Pending Y4 PR |
-| Candidate PR Windows Harness | Pending Y4 PR Windows Harness |
-| Candidate post-merge `main` Windows Harness | Pending Y4 post-merge Windows Harness |
-| Publication status | Pending release publication |
-| Release URL | Pending publication |
-| Final tag target | Pending publication |
+| Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/106 |
+| Candidate PR Windows Harness | Passed, run `25573214374`, https://github.com/YSCJRH/WinChronicle/actions/runs/25573214374 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25573347339`, https://github.com/YSCJRH/WinChronicle/actions/runs/25573347339 |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.11 |
+| Final tag target | `1724b0e47e6f6b915a99842fb971d7f9c503f65a` |
 | Previous stable release | `v0.1.10` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.10 |
 | `v0.1.10` tag target | `28b062a531519d4360911b51dfc083782b6dcbad` |
@@ -81,7 +81,8 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The Y4 PR Windows Harness and post-merge `main` Windows Harness are pending before publication.
+The Y4 PR Windows Harness and post-merge `main` Windows Harness passed before
+publication.
 
 ## Release Notes
 
@@ -168,12 +169,11 @@ This maintenance release does not expand the capture surface from `v0.1.10`.
 
 ## Release Decision Summary
 
-- Release path: compatible `v0.1.11` maintenance release-readiness candidate; publication pending.
+- Release path: compatible `v0.1.11` maintenance release, published.
 - Fallback path: release candidate if any product or contract change is
   required after publication.
-- Deterministic gates: local Y4 validation is recorded above; PR Windows
-  Harness, post-merge `main` Windows Harness, and GitHub release publication
-  are pending.
+- Deterministic gates: local Y4 validation, PR Windows Harness, post-merge
+  `main` Windows Harness, and GitHub release publication passed.
 - Manual UIA gates: inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code
   strict diagnostic, and watcher preview manual evidence is explicitly accepted
   by this Y4 record for the compatible `v0.1.11` path only because product UIA
@@ -181,8 +181,7 @@ This maintenance release does not expand the capture surface from `v0.1.10`.
   behavior, privacy behavior, product CLI/MCP shape, and capture surfaces are
   unchanged.
 - Privacy/scope confirmation: unchanged and recorded above.
-- Publication approval: authorized by the active thread goal after required local,
-  PR, and post-merge gates pass.
-- Release URL: pending publication.
-- Final tag target: pending publication.
-
+- Publication approval: completed by the active thread goal directing stage
+  completion, remote push, and publication.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.11.
+- Final tag target: `1724b0e47e6f6b915a99842fb971d7f9c503f65a`.

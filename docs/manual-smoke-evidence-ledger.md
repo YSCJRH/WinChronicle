@@ -13,15 +13,14 @@ or token canaries.
 
 | Field | Value |
 | --- | --- |
-| Stable release baseline | `v0.1.10` |
-| Active release-readiness record | [v0.1.11 release-readiness record](release-v0.1.11.md) |
-| Current maintenance plan | [Post-v0.1.10 maintenance plan](next-round-plan-post-v0.1.10.md) |
-| Latest completed maintenance plan | [Post-v0.1.9 maintenance plan](next-round-plan-post-v0.1.9.md) |
-| Published release record | [v0.1.10 maintenance release record](release-v0.1.10.md) |
-| Latest published release record | [v0.1.10 maintenance release record](release-v0.1.10.md) |
+| Stable release baseline | `v0.1.11` |
+| Current maintenance plan | [Post-v0.1.11 maintenance plan](next-round-plan-post-v0.1.11.md) |
+| Latest completed maintenance plan | [Post-v0.1.10 maintenance plan](next-round-plan-post-v0.1.10.md) |
+| Published release record | [v0.1.11 maintenance release record](release-v0.1.11.md) |
+| Latest published release record | [v0.1.11 maintenance release record](release-v0.1.11.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
-| Last freshness decision | For the active `v0.1.11` release-readiness candidate, inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and watcher preview manual evidence is explicitly accepted by Y4 because Y0-Y4 changed only docs/tests, CI/runtime metadata, compatibility evidence, release evidence, and version metadata, without changing helper behavior, watcher product behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approver requirements. |
+| Last freshness decision | For the completed `v0.1.11` release-readiness path, inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and watcher preview manual evidence is explicitly accepted by Y4 because Y0-Y4 changed only docs/tests, CI/runtime metadata, compatibility evidence, release evidence, and version metadata, without changing helper behavior, watcher product behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approver requirements. |
 | Next freshness decision | The next release-readiness round after `v0.1.11` publication must explicitly accept inherited manual evidence again or record fresh manual smoke before publication. |
 
 ## Latest Known Manual Evidence
