@@ -2,18 +2,14 @@
 
 ## Summary
 
-`v0.1.4` is published at
-https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4. The release tag
-targets `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`. The post-publication
-reconciliation `main` commit is
-`eea9ed944f0b47f9c94e5ab5f41f3e45b48a4654`, and the post-reconciliation
-Windows Harness run `25432718007` passed on that SHA.
+`v0.1.5` is published at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5. The release tag
+targets `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`. The pre-publication
+`main` Windows Harness run `25544832155` passed on that SHA.
 
-The next round should be a small compatible maintenance pass toward `v0.1.5`.
-It should keep release evidence current, preserve operator entry points, decide
-manual smoke freshness before any release, and maintain compatibility
-guardrails. It must not expand the capture surface or start Phase 6
-implementation.
+This post-v0.1.4 maintenance round completed as the compatible `v0.1.5`
+maintenance release. The next atomic task is to establish the post-v0.1.5
+baseline cursor before starting any new implementation work.
 
 Keep the v0.1 product boundary unchanged: local-first, UIA-first,
 harness-first, read-only MCP first, no screenshot/OCR implementation, no audio
@@ -23,9 +19,8 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: P4 - v0.1.5 Release Readiness.
-- Stage status: F - v0.1.5 release-readiness candidate prepared; publication
-  remains pending explicit approval.
+- Current stage: G - v0.1.5 Published Baseline Reconciliation.
+- Stage status: G - v0.1.5 published; publication reconciliation in progress.
 - Last completed evidence: `v0.1.4` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4 and targets
   `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`. The post-publication
@@ -48,7 +43,9 @@ service install, and no default background capture.
   read-only MCP tools, privacy surface parity, CLI and memory/search trust
   boundaries, release evidence freshness, and Phase 6 spec-only status. P4
   aligned package/runtime/MCP version identity to `0.1.5` and added the
-  `v0.1.5` release-readiness record.
+  `v0.1.5` release-readiness record. `v0.1.5` is now published at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5 and targets
+  `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`.
 - Last validation: P0 full local validation passed: `python -m pytest -q`,
   both .NET builds, `python harness/scripts/run_install_cli_smoke.py`,
   `python harness/scripts/run_harness.py`, and `git diff --check`. The
@@ -60,12 +57,12 @@ service install, and no default background capture.
   validation passed after updating the manual smoke ledger, release checklist,
   release evidence guide, and docs tests. P3 compatibility guardrail validation
   passed with targeted compatibility suites and full stage gates. P4 local
-  validation passed after the version bump and release-readiness record.
-- Next atomic task: publish `v0.1.5` only after explicit publication approval,
-  then reconcile the release record with the final tag target, release URL, and
-  post-publication evidence.
-- Known blockers: explicit `v0.1.5` publication approval has not been
-  provided.
+  validation passed after the version bump and release-readiness record. The
+  pre-publication `main` Windows Harness run `25544832155` passed on the final
+  release tag target.
+- Next atomic task: establish the post-v0.1.5 next-round plan from the
+  published baseline.
+- Known blockers: none.
 
 ## Phased Work
 
@@ -87,7 +84,7 @@ service install, and no default background capture.
 - Add or strengthen narrow docs tests only for discovered drift around active
   cursor links, latest release identity, and evidence freshness wording.
 - Keep `v0.1.4` as the stable release baseline until release-readiness work
-  explicitly prepares `v0.1.5`.
+  explicitly prepares and publishes `v0.1.5`.
 - Do not bump package/server version in P1.
 
 ### Stage P2 - Manual Smoke Freshness Decision
@@ -122,7 +119,8 @@ service install, and no default background capture.
 - If any change alters product behavior, schema, CLI/MCP JSON shape, privacy
   behavior, helper/watcher behavior, or capture surface, stop the direct
   `v0.1.5` path and prepare a release candidate instead.
-- Publication remains blocked on explicit user approval.
+- Publication completed after the active thread goal directed stage completion,
+  remote push, and publication.
 
 ## Test Plan
 
@@ -169,9 +167,10 @@ Stage-specific gates:
 
 ## Assumptions
 
-- `v0.1.4` is the current stable release baseline and must not be modified or
+- `v0.1.5` is the current stable release baseline and must not be modified or
   retagged.
-- The next compatible release target is `v0.1.5`.
+- The next compatible release target must be established by a new
+  post-v0.1.5 plan before implementation resumes.
 - Phase 6 remains privacy spec/scorecard work only until a future tests-first
   round.
 - Manual UIA smoke remains outside default CI because it depends on an
