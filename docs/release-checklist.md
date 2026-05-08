@@ -11,7 +11,9 @@ post-v0.1.4 execution cursor lives in
 [Post-v0.1.4 maintenance plan](next-round-plan-post-v0.1.4.md). The published
 `v0.1.4` maintenance release record is
 [v0.1.4 maintenance release record](release-v0.1.4.md). For release
-evidence shape, use [Release evidence guide](release-evidence.md). The
+evidence shape, use [Release evidence guide](release-evidence.md). The current
+`v0.1.5` release-readiness record is
+[v0.1.5 release-readiness record](release-v0.1.5.md). The
 post-v0.1.3 plan is closed historical evidence.
 
 ## Deterministic Gates

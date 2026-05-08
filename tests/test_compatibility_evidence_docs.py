@@ -11,6 +11,7 @@ PHASE6_SCORECARD = ROOT / "harness" / "scorecards" / "phase6-privacy-enrichment.
 V012_RELEASE = ROOT / "docs" / "release-v0.1.2.md"
 V013_RELEASE = ROOT / "docs" / "release-v0.1.3.md"
 V014_RELEASE = ROOT / "docs" / "release-v0.1.4.md"
+V015_RELEASE = ROOT / "docs" / "release-v0.1.5.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -127,6 +128,35 @@ def test_v014_release_record_is_published_and_compatible():
         "Publication approval: completed.",
         "Deterministic gates: local P4 validation, PR Windows Harness, post-merge `main` Windows Harness, and GitHub release publication passed.",
         "deterministic watcher smoke was refreshed through P3 local and Windows Harness evidence",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
+def test_v015_release_record_is_candidate_and_compatible():
+    text = V015_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Publication status: release-readiness candidate, not yet published.",
+        "Release URL | Pending publication",
+        "Final tag target | Pending publication",
+        "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4",
+        "P1 post-merge `main` Windows Harness | Passed, run `25542239210`",
+        "P2 post-merge `main` Windows Harness | Passed, run `25542706517`",
+        "P3 post-merge `main` Windows Harness | Passed, run `25543079012`",
+        "`python -m pytest -q` | Pass | `102 passed",
+        "must report `0.1.5`",
+        "exact read-only MCP tool list remains unchanged",
+        "Phase 6 remains specification-only",
+        "no new capture surfaces",
+        "no helper/watcher product behavior changes",
+        "no screenshot capture code",
+        "no OCR engine integration",
+        "Publication approval: pending.",
+        "P2 decision only because product UIA helper behavior",
     ):
         assert phrase in normalized
 
