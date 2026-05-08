@@ -131,7 +131,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current\n`v0.1.3` readiness round" not in matrix
 
 
-def test_post_v014_plan_is_active_without_expanding_scope():
+def test_post_v014_plan_is_historical_without_expanding_scope():
     plan = (ROOT / "docs" / "next-round-plan-post-v0.1.4.md").read_text(
         encoding="utf-8"
     )
@@ -156,7 +156,7 @@ def test_post_v014_plan_is_active_without_expanding_scope():
         assert expected in plan
 
 
-def test_post_v015_plan_is_active_without_expanding_scope():
+def test_post_v015_plan_is_completed_without_expanding_scope():
     plan = (ROOT / "docs" / "next-round-plan-post-v0.1.5.md").read_text(
         encoding="utf-8"
     )
@@ -200,13 +200,15 @@ def test_post_v016_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: T0 - Post-v0.1.6 Baseline Cursor.",
-        "Stage status: B - T0 local implementation and validation are complete",
+        "Current stage: T1 - Evidence Freshness And Entry Hygiene.",
+        "Stage status: B - T1 local implementation and validation are complete",
         "`v0.1.6` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6",
         "targets `914cf361ac5864fa31d393d125d14e45eeba96bc`",
         "Publication reconciliation PR #80 passed PR Windows Harness run `25552120656`",
         "merged as `371060498c70a4e1ff4e075b3fd247b704c6d3f7`",
         "Windows Harness run `25552214063` passed",
+        "PR #81 Windows Harness run `25553025094` - passed",
+        "Post-merge `main` Windows Harness run `25553238476` - passed",
         "Stage T0 - Post-v0.1.6 Baseline Cursor",
         "Stage T1 - Evidence Freshness And Entry Hygiene",
         "Stage T2 - CI Runtime And Dependency Maintenance Scan",
@@ -304,8 +306,10 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
         "was explicitly accepted by the S4 release record",
         "explicitly accepted by S4 for the compatible `v0.1.6` path",
+        "not yet accepted for the active `v0.1.7` path",
         "historically accepted for `v0.1.5` as diagnostic context",
         "Next freshness decision | The active post-v0.1.6 plan must make a release-specific freshness decision",
+        "manual smoke is not current evidence until T1 or a release record explicitly",
         "Fresh manual smoke is required if any helper, watcher, smoke script",
         "Do not paste observed text",
         "Do not save or commit raw watcher JSONL",

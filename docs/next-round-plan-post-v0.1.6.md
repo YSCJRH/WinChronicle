@@ -23,8 +23,8 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: T0 - Post-v0.1.6 Baseline Cursor.
-- Stage status: B - T0 local implementation and validation are complete; PR
+- Current stage: T1 - Evidence Freshness And Entry Hygiene.
+- Stage status: B - T1 local implementation and validation are complete; PR
   Windows Harness and post-merge `main` Windows Harness are pending.
 - Last completed evidence: `v0.1.6` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6 and targets
@@ -32,12 +32,12 @@ service install, and no default background capture.
   #80 passed PR Windows Harness run `25552120656`, merged as
   `371060498c70a4e1ff4e075b3fd247b704c6d3f7`, and post-merge `main` Windows
   Harness run `25552214063` passed on that SHA.
-- Last validation: T0 local validation passed targeted docs/version tests, the
-  full deterministic gate, and `git diff --check` after establishing this
-  active cursor.
-- Next atomic task: open the T0 PR, wait for PR Windows Harness, merge after
-  review, then wait for post-merge `main` Windows Harness before starting T1
-  evidence freshness and entry hygiene.
+- Last validation: T1 local validation passed targeted docs/version tests, the
+  full deterministic gate, and `git diff --check` after refreshing manual
+  smoke freshness wording and advancing this cursor to T1.
+- Next atomic task: open the T1 PR, wait for PR Windows Harness, merge after
+  review, then wait for post-merge `main` Windows Harness before starting T2
+  CI runtime and dependency maintenance scan.
 - Known blockers: none.
 
 ## Phased Work
@@ -174,6 +174,14 @@ Stage-specific gates:
   planning contract, not implementation authorization.
 - Kept inherited manual UIA smoke as historical context only until T1 makes a
   release-specific freshness decision.
+- During T0, merged PR #81 as
+  `94db6c8a0733fb373bdd97246ef9568e9aa2f7ac`; PR Windows Harness
+  `25553025094` and post-merge `main` Windows Harness `25553238476` passed.
+- During T1, kept inherited `v0.1.0` manual UIA smoke as not-current evidence
+  for the active `v0.1.7` path until T1 or a release record explicitly accepts
+  it, or fresh manual smoke is recorded. No helper behavior, watcher product
+  behavior, manual smoke scripts, capture behavior, privacy behavior, product
+  CLI/MCP shape, or capture surfaces changed.
 
 ## Validation Log
 
@@ -182,6 +190,17 @@ Stage-specific gates:
   - `gh run view 25552214063 --json databaseId,status,conclusion,headSha,url,createdAt,updatedAt,name,displayTitle` - passed; conclusion `success` on `371060498c70a4e1ff4e075b3fd247b704c6d3f7`.
   - `git show-ref --tags v0.1.6` - passed; local tag points to `914cf361ac5864fa31d393d125d14e45eeba96bc`.
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py tests/test_version_identity.py -q` - passed after adding this active cursor and updating operator entry-point tests.
+  - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+  - PR #81 Windows Harness run `25553025094` - passed.
+  - Post-merge `main` Windows Harness run `25553238476` - passed on `94db6c8a0733fb373bdd97246ef9568e9aa2f7ac`.
+- Stage T1 evidence-hygiene validation:
+  - `gh run view 25553238476 --json databaseId,status,conclusion,headSha,url,createdAt,updatedAt,name,displayTitle` - passed; conclusion `success` on `94db6c8a0733fb373bdd97246ef9568e9aa2f7ac`.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py tests/test_version_identity.py -q` - passed after advancing this cursor to T1 and tightening manual smoke freshness wording.
   - `python -m pytest -q` - passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.

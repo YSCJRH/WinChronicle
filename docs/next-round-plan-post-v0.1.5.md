@@ -205,7 +205,7 @@ Stage-specific gates:
   - `git diff --check` - passed.
 - Stage S2 entry-hygiene validation:
   - `rg -n "latest published `v0\\.1\\.[0-4]`|stable baseline is `v0\\.1\\.[0-4]`|Stable release baseline \\| `v0\\.1\\.[0-4]`|active post-v0\\.1\\.[0-4]|current post-v0\\.1\\.[0-4]|current `v0\\.1\\.[0-4]`|current release.*v0\\.1\\.[0-4]|latest release.*v0\\.1\\.[0-4]|release-readiness candidate, not yet published|Pending publication|Publication approval: pending|v0\\.1\\.5 release-readiness record" README.md docs harness tests` - reviewed matches; only historical validation-log text and historical plans matched.
-  - `rg -n "next-round-plan-post-v0\\.1\\.5|release-v0\\.1\\.5|v0\\.1\\.5 maintenance release|Post-v0\\.1\\.5" README.md docs tests` - confirmed current entry points reference the post-v0.1.5 plan and `v0.1.5` release record.
+  - `rg -n "next-round-plan-post-v0\\.1\\.5|release-v0\\.1\\.5|v0\\.1\\.5 maintenance release|Post-v0\\.1\\.5" README.md docs tests` - confirmed S2-era entry points referenced the post-v0.1.5 plan and `v0.1.5` release record.
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed.
   - `python -m pytest -q` - passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
