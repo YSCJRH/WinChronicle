@@ -22,8 +22,8 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: S0 - Post-v0.1.5 Baseline Cursor.
-- Stage status: C - S0 complete; ready to enter S1 on the next turn.
+- Current stage: S1 - CI Runtime Maintenance Decision.
+- Stage status: C - S1 complete; ready to enter S2 on the next turn.
 - Last completed evidence: `v0.1.5` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5 and targets
   `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`. The post-publication
@@ -34,9 +34,8 @@ service install, and no default background capture.
   `main` Windows Harness run `25546003233`. S0 local validation passed after
   adding this active cursor and updating README, operator quickstart, release
   checklist, release evidence guide, manual smoke ledger, and docs tests.
-- Next atomic task: start S1 by reviewing Windows Harness annotations and
-  runtime maintenance signals without removing gates or adding interactive UIA
-  smoke to default CI.
+- Next atomic task: start S2 by auditing operator-facing docs and scorecards
+  for stale current/latest release wording after `v0.1.5`.
 - Known blockers: none.
 
 ## Phased Work
@@ -157,6 +156,9 @@ Stage-specific gates:
   from a closed historical plan.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
+- During S1, pinned the Windows Harness runner to `windows-2025-vs2026` after
+  the latest `main` Windows Harness emitted a `windows-2025` redirection
+  notice. The workflow gate order and gate set remain unchanged.
 
 ## Validation Log
 
@@ -164,6 +166,15 @@ Stage-specific gates:
   - `gh release view v0.1.5 --json name,tagName,url,isDraft,isPrerelease,publishedAt,targetCommitish` - passed.
   - Post-publication `main` Windows Harness run `25546003233` - passed.
   - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed after establishing this active cursor.
+  - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage S1 CI runtime validation:
+  - `rg -n "windows-2025|windows-2025-vs2026|runs-on|FORCE_JAVASCRIPT_ACTIONS_TO_NODE24" .github docs tests` - confirmed the workflow still has the Node 24 environment setting and now pins `windows-2025-vs2026`.
+  - `python -m pytest tests/test_windows_harness_workflow.py -q` - passed after adding the workflow guard.
   - `python -m pytest -q` - passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.

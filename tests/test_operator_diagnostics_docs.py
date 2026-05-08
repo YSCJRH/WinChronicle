@@ -145,8 +145,8 @@ def test_post_v015_plan_is_active_without_expanding_scope():
     )
 
     for expected in (
-        "Current stage: S0 - Post-v0.1.5 Baseline Cursor.",
-        "Stage status: C - S0 complete; ready to enter S1 on the next turn.",
+        "Current stage: S1 - CI Runtime Maintenance Decision.",
+        "Stage status: C - S1 complete; ready to enter S2 on the next turn.",
         "`v0.1.5` is published at\nhttps://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5",
         "targets `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`",
         "post-publication\nreconciliation `main` commit is\n`df15810c0b5022bebd1fe8a488f677e74fe8eae1`",
@@ -160,6 +160,7 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "Product CLI still does not expose targeted `--hwnd`, `--pid`, or",
         "MCP remains read-only",
         "Known blockers: none.",
+        "pins `windows-2025-vs2026`",
     ):
         assert expected in plan
 
