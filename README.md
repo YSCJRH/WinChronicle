@@ -15,10 +15,9 @@ watcher preview paths stay bounded by the same harness contracts.
 For current maintenance operation, start with
 [`docs/operator-quickstart.md`](docs/operator-quickstart.md). It links the
 release checklist, manual smoke evidence template, Windows UIA smoke gates,
-watcher preview, read-only MCP examples, known limitations, the `v0.1.8`
-release-readiness record, the latest published `v0.1.7` release record, the
-active post-v0.1.7 maintenance plan, and the completed post-v0.1.6 maintenance
-plan.
+watcher preview, read-only MCP examples, known limitations, the latest
+published `v0.1.8` release record, the active post-v0.1.8 maintenance plan,
+and the completed post-v0.1.7 maintenance plan.
 
 ## Why WinChronicle
 
@@ -134,9 +133,10 @@ available through `search-captures`.
 - [Watcher preview](docs/watcher-preview.md)
 - [Read-only MCP examples](docs/mcp-readonly-examples.md)
 - [Known limitations](docs/known-limitations.md)
-- [v0.1.8 maintenance release-readiness record](docs/release-v0.1.8.md)
-- [v0.1.7 maintenance release record](docs/release-v0.1.7.md)
+- [v0.1.8 maintenance release record](docs/release-v0.1.8.md)
+- [Post-v0.1.8 maintenance plan](docs/next-round-plan-post-v0.1.8.md)
 - [Post-v0.1.7 maintenance plan](docs/next-round-plan-post-v0.1.7.md)
+- [v0.1.7 maintenance release record](docs/release-v0.1.7.md)
 - [Post-v0.1.6 maintenance plan](docs/next-round-plan-post-v0.1.6.md)
 - [v0.1.6 maintenance release record](docs/release-v0.1.6.md)
 - [Post-v0.1.5 maintenance plan](docs/next-round-plan-post-v0.1.5.md)

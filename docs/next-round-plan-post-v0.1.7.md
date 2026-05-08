@@ -11,10 +11,11 @@ The post-v0.1.7 publication reconciliation is complete. PR #86 merged as
 `25556946503` passed, and its post-merge `main` Windows Harness run
 `25557058094` passed on that SHA.
 
-This next round is a conservative compatible maintenance pass. It should keep
-release evidence current, preserve operator entry points, audit inherited
-manual smoke freshness, and maintain compatibility guardrails. It must not
-expand the capture surface or start Phase 6 implementation.
+This post-v0.1.7 maintenance round completed as the compatible `v0.1.8`
+maintenance release. `v0.1.8` is published at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.8 and targets
+`1ea1e378aedb0a509d202fd32bc69704dbe903d4`. The next atomic task is to follow
+the post-v0.1.8 maintenance plan before starting new implementation work.
 
 Keep the v0.1 product boundary unchanged: local-first, UIA-first,
 harness-first, read-only MCP first, no screenshot/OCR implementation, no audio
@@ -24,18 +25,16 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: U4 - v0.1.8 Release Readiness.
-- Stage status: B - release-readiness docs, tests, release record, and version
-  metadata are implemented and local deterministic validation passed; PR
-  Windows Harness and post-merge Windows Harness are pending.
-- Last completed evidence: U3 PR #90 passed PR Windows Harness run
-  `25560353073`, merged as `8a25ec8abf2f91a912aaffd807ae4a4897847578`, and
-  post-merge `main` Windows Harness run `25560483461` passed on that SHA.
-- Last validation: U4 version/docs tests, full pytest, helper build, watcher
-  build, install CLI smoke, full harness, and `git diff --check` passed.
-- Next atomic task: open the U4 PR, verify PR and post-merge Windows Harness,
-  then publish `v0.1.8` if no product, schema, CLI/MCP JSON shape, privacy,
-  helper/watcher behavior, or capture-surface change is discovered.
+- Current stage: G - v0.1.8 Published Baseline Reconciliation.
+- Stage status: G - v0.1.8 published; baseline reconciliation complete.
+- Last completed evidence: `v0.1.8` is published at
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.8 and targets
+  `1ea1e378aedb0a509d202fd32bc69704dbe903d4`.
+- Last validation: `gh release view v0.1.8` confirmed the release URL, final
+  tag target, and published status; local tags include `v0.1.8`; package
+  runtime version reports `0.1.8`.
+- Next atomic task: follow the post-v0.1.8 maintenance plan before starting
+  new implementation work.
 - Known blockers: none.
 
 ## Phased Work
@@ -233,6 +232,12 @@ Stage-specific gates:
 - During U4, aligned version identity to `0.1.8` across `pyproject.toml`,
   `winchronicle.__version__`, and MCP `serverInfo.version` through the shared
   version module.
+- During U4, merged PR #91 as
+  `1ea1e378aedb0a509d202fd32bc69704dbe903d4`; PR Windows Harness
+  `25561704868` and post-merge `main` Windows Harness `25561832883` passed.
+- During publication, published `v0.1.8` from
+  `1ea1e378aedb0a509d202fd32bc69704dbe903d4`. Do not retag `v0.1.8`; follow
+  the post-v0.1.8 maintenance plan before starting new implementation work.
 
 ## Validation Log
 
@@ -296,3 +301,11 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Stage U4 remote validation:
+  - PR #91 Windows Harness run `25561704868` - passed.
+  - Post-merge `main` Windows Harness run `25561832883` - passed on `1ea1e378aedb0a509d202fd32bc69704dbe903d4`.
+- v0.1.8 publication validation:
+  - `gh release create v0.1.8 --target 1ea1e378aedb0a509d202fd32bc69704dbe903d4 --title "v0.1.8"` - passed.
+  - `gh release view v0.1.8 --json name,tagName,url,isDraft,isPrerelease,publishedAt,targetCommitish` - passed and returned release URL https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.8.
+  - `git fetch --tags --quiet` and `git show-ref --tags v0.1.8` - passed; local tag points to `1ea1e378aedb0a509d202fd32bc69704dbe903d4`.
+  - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.8`.

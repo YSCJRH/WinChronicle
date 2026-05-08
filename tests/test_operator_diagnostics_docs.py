@@ -59,13 +59,13 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
     readme_intro_normalized = " ".join(readme_intro.split())
 
-    assert "`v0.1.8` release-readiness record" in readme_intro_normalized
-    assert "latest published `v0.1.7` release record" in readme_intro_normalized
-    assert "active post-v0.1.7 maintenance plan" in readme_intro_normalized
-    assert "completed post-v0.1.6 maintenance plan" in readme_intro_normalized
+    assert "latest published `v0.1.8` release record" in readme_intro_normalized
+    assert "active post-v0.1.8 maintenance plan" in readme_intro_normalized
+    assert "completed post-v0.1.7 maintenance plan" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
-    assert "v0.1.8 maintenance release-readiness record" in readme_operator_docs
+    assert "v0.1.8 maintenance release record" in readme_operator_docs
+    assert "Post-v0.1.8 maintenance plan" in readme_operator_docs
     assert "v0.1.7 maintenance release record" in readme_operator_docs
     assert "Post-v0.1.7 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.6 maintenance plan" in readme_operator_docs
@@ -74,21 +74,27 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Post-v0.1.4 maintenance plan" in readme_operator_docs
     assert "v0.1.5 maintenance release record" in readme_operator_docs
     assert "v0.1.4 maintenance release record" in readme_operator_docs
-    assert readme_operator_docs.index("v0.1.8 maintenance release-readiness record") < readme_operator_docs.index(
-        "v0.1.7 maintenance release record"
+    assert readme_operator_docs.index("v0.1.8 maintenance release record") < readme_operator_docs.index(
+        "Post-v0.1.8 maintenance plan"
     )
-    assert readme_operator_docs.index("v0.1.7 maintenance release record") < readme_operator_docs.index(
+    assert readme_operator_docs.index("Post-v0.1.8 maintenance plan") < readme_operator_docs.index(
         "Post-v0.1.7 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.7 maintenance plan") < readme_operator_docs.index(
+        "v0.1.7 maintenance release record"
+    )
+    assert readme_operator_docs.index("v0.1.7 maintenance release record") < readme_operator_docs.index(
         "Post-v0.1.6 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.6 maintenance plan") < readme_operator_docs.index(
         "v0.1.6 maintenance release record"
     )
     assert "release-v0.1.8.md" in current_section
-    assert "release-v0.1.7.md" in current_section
-    assert "next-round-plan-post-v0.1.7.md" in current_section
+    assert "next-round-plan-post-v0.1.8.md" in current_section
+    assert "release-v0.1.7.md" not in current_section
+    assert "next-round-plan-post-v0.1.7.md" not in current_section
+    assert "release-v0.1.7.md" in historical_section
+    assert "next-round-plan-post-v0.1.7.md" in historical_section
     assert "next-round-plan-post-v0.1.6.md" not in current_section
     assert "release-v0.1.6.md" not in current_section
     assert "next-round-plan-post-v0.1.6.md" in historical_section
@@ -131,10 +137,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-v0.1.0-final.md" in historical_section
     assert "release-v0.1.8.md" in checklist
     assert "release-v0.1.8.md" in evidence
-    assert "next-round-plan-post-v0.1.7.md" in checklist
-    assert "next-round-plan-post-v0.1.7.md" in evidence
-    assert "release-v0.1.7.md" in checklist
-    assert "release-v0.1.7.md" in evidence
+    assert "next-round-plan-post-v0.1.8.md" in checklist
+    assert "next-round-plan-post-v0.1.8.md" in evidence
+    assert "next-round-plan-post-v0.1.7.md" not in checklist
+    assert "next-round-plan-post-v0.1.7.md" not in evidence
+    assert "release-v0.1.7.md" not in checklist
+    assert "release-v0.1.7.md" not in evidence
     assert "next-round-plan-post-v0.1.6.md" not in checklist
     assert "next-round-plan-post-v0.1.6.md" not in evidence
     assert "next-round-plan-post-v0.1.5.md" not in checklist
@@ -147,10 +155,10 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-v0.1.5.md" not in evidence
     assert "release-v0.1.4.md" not in checklist
     assert "release-v0.1.4.md" not in evidence
-    assert "post-v0.1.6 plan is completed historical evidence" in checklist
-    assert "post-v0.1.6 cursor is completed historical evidence" in evidence
+    assert "post-v0.1.7 plan is completed historical evidence" in checklist
+    assert "post-v0.1.7 cursor is completed historical evidence" in evidence
     assert "Before a compatible `v0.1.1` maintenance release" not in matrix
-    assert "For compatible maintenance releases after `v0.1.7`" in matrix
+    assert "For compatible maintenance releases after `v0.1.8`" in matrix
     assert "Historical\nmaintenance records from `v0.1.4` onward" in matrix
     assert "current\n`v0.1.3` readiness round" not in matrix
 
@@ -255,7 +263,6 @@ def test_post_v016_plan_is_completed_without_expanding_scope():
         "Known blockers: none.",
         "next compatible release target is `v0.1.7`",
         "Manual UIA smoke remains outside default CI",
-        "not expand the capture surface or start Phase 6 implementation",
         "Do not add real UIA smoke to default CI",
         "prepare a release candidate instead",
         "no deprecation or failed-log signal requiring a workflow/runtime change",
@@ -283,18 +290,16 @@ def test_post_v017_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: U4 - v0.1.8 Release Readiness.",
-        "Stage status: B - release-readiness docs, tests, release record, and version",
+        "Current stage: G - v0.1.8 Published Baseline Reconciliation.",
+        "Stage status: G - v0.1.8 published; baseline reconciliation complete.",
         "`v0.1.7` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.7",
         "targets `0b5969509754f78b218f823d0e6bb7a0ea61392b`",
+        "`v0.1.8` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.8",
+        "targets `1ea1e378aedb0a509d202fd32bc69704dbe903d4`",
         "PR #86 merged as `5e310f9c37836c5e6baa1bee7f89f91f701ff6e8`",
         "PR Windows Harness run `25556946503` passed",
         "post-merge `main` Windows Harness run `25557058094` passed",
-        "U3 PR #90 passed PR Windows Harness run `25560353073`",
-        "merged as `8a25ec8abf2f91a912aaffd807ae4a4897847578`",
-        "post-merge `main` Windows Harness run `25560483461` passed",
-        "Next atomic task: open the U4 PR",
-        "publish `v0.1.8` if no product",
+        "Next atomic task: follow the post-v0.1.8 maintenance plan",
         "PR #87 Windows Harness run `25557993996` - passed",
         "`3ca1d2772c16ac11b7cfef8f4fe8b6fc28cb6636`",
         "Post-merge `main` Windows Harness run `25558154805` - passed",
@@ -309,7 +314,6 @@ def test_post_v017_plan_is_active_without_expanding_scope():
         "Known blockers: none.",
         "next compatible release target is `v0.1.8`",
         "Manual UIA smoke remains outside default CI",
-        "not expand the capture surface or start Phase 6 implementation",
         "Do not add real UIA smoke to default CI",
         "avoids screenshot/OCR dependency drift",
         "prepare a release candidate instead",
@@ -343,11 +347,59 @@ def test_post_v017_plan_is_active_without_expanding_scope():
         "During U4, chose the direct compatible `v0.1.8` path",
         "During U4, the `v0.1.8` release-readiness record explicitly accepts",
         "aligned version identity to `0.1.8`",
+        "During U4, merged PR #91 as",
+        "`1ea1e378aedb0a509d202fd32bc69704dbe903d4`",
+        "`25561704868`",
+        "`25561832883`",
+        "published `v0.1.8` from `1ea1e378aedb0a509d202fd32bc69704dbe903d4`",
+        "follow the post-v0.1.8 maintenance plan before starting",
         "Stage U4 release-readiness validation:",
         "`python -m pytest -q` - passed with `111 passed`",
+        "v0.1.8 publication validation:",
+        "gh release create v0.1.8",
         "No fresh manual smoke is required in U1",
         "Do not retag `v0.1.7`",
+        "Do not retag `v0.1.8`",
         "release-readiness record explicitly accepts it",
+    ):
+        assert expected in normalized
+
+
+def test_post_v018_plan_is_active_without_expanding_scope():
+    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.8.md").read_text(
+        encoding="utf-8"
+    )
+    normalized = " ".join(plan.split())
+
+    for expected in (
+        "Current stage: W0 - Post-v0.1.8 Baseline Cursor.",
+        "Stage status: B - baseline cursor docs/tests are implemented",
+        "`v0.1.8` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.8",
+        "targets `1ea1e378aedb0a509d202fd32bc69704dbe903d4`",
+        "PR #91 merged as `1ea1e378aedb0a509d202fd32bc69704dbe903d4`",
+        "PR Windows Harness run `25561704868` passed",
+        "post-merge `main` Windows Harness run `25561832883` passed",
+        "Stage W0 - Post-v0.1.8 Baseline Cursor",
+        "Stage W1 - Evidence Freshness And Entry Hygiene",
+        "Stage W2 - CI Runtime And Dependency Maintenance Scan",
+        "Stage W3 - Compatibility Guardrail Sweep",
+        "Stage W4 - v0.1.9 Release Readiness",
+        "No screenshot capture, OCR, audio recording, keyboard capture, clipboard",
+        "Product CLI still does not expose targeted `--hwnd`, `--pid`, or",
+        "MCP remains read-only",
+        "Known blockers: none.",
+        "next compatible release target is `v0.1.9`",
+        "Manual UIA smoke remains outside default CI",
+        "not expand the capture surface or start Phase 6 implementation",
+        "Do not add real UIA smoke to default CI",
+        "prepare a release candidate instead",
+        "exact read-only MCP tool list",
+        "product targeted capture absence",
+        "Phase 6 remains spec-only",
+        "Recorded PR #91 and post-merge Windows Harness run `25561832883`",
+        "Do not retag `v0.1.8`",
+        "Stage W0 initialization:",
+        "python -c \"import winchronicle; print(winchronicle.__version__)\"",
     ):
         assert expected in normalized
 
@@ -361,11 +413,11 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "stable baseline is `v0.1.7`",
-        "`v0.1.7` is the latest published release",
-        "post-v0.1.7 execution cursor is active and records publication",
-        "post-merge Windows Harness run `25557058094`",
-        "U0 PR #87 plus post-merge Windows Harness run `25558154805`",
+        "stable baseline is `v0.1.8`",
+        "`v0.1.8` is the latest published release",
+        "post-v0.1.8 execution cursor is active and records PR #91",
+        "post-merge Windows Harness run `25561832883`",
+        "post-v0.1.7 execution cursor is completed historical context",
         "post-v0.1.6 execution cursor is completed historical context",
         "post-v0.1.5 execution cursor is completed historical context",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
@@ -377,6 +429,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "active post-v0.1.7 compatible maintenance path toward `v0.1.8`",
         "remained stale/inherited after the U1",
         "explicitly accepted by the U4",
+        "active post-v0.1.8 maintenance path",
+        "historical context until W1",
         "capture-surface behavior changed before release",
         "no observed-content artifact is committed to refresh evidence",
         "deterministic harness smoke changes require fresh deterministic gate",
@@ -385,11 +439,11 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "`v0.1.7` is the stable baseline",
-        "`v0.1.7` is the latest published release",
-        "post-v0.1.7 execution cursor is active and records publication",
-        "post-merge Windows Harness run `25557058094`",
-        "U0 PR #87 plus post-merge Windows Harness run `25558154805`",
+        "`v0.1.8` is the stable baseline",
+        "`v0.1.8` is the latest published release",
+        "post-v0.1.8 execution cursor is active and records PR #91",
+        "post-merge Windows Harness run `25561832883`",
+        "post-v0.1.7 execution cursor is completed historical context",
         "post-v0.1.6 execution cursor is completed historical context",
         "post-v0.1.5 execution cursor is completed historical context",
         "manual UIA smoke evidence inherited from `v0.1.0`",
@@ -402,6 +456,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "active post-v0.1.7 compatible maintenance path toward `v0.1.8`",
         "remained stale/inherited after the U1",
         "explicitly accepted by the U4",
+        "active post-v0.1.8 maintenance path",
+        "historical context until W1",
         "capture-surface behavior changed before release",
         "never observed content",
         "deterministic harness smoke changes require fresh deterministic gate",
@@ -433,12 +489,11 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         assert gate in ledger
 
     for expected in (
-        "Stable release baseline | `v0.1.7`",
-        "Current maintenance plan | [Post-v0.1.7 maintenance plan]",
-        "Current release-readiness record | [v0.1.8 maintenance release-readiness record]",
-        "Latest completed maintenance plan | [Post-v0.1.6 maintenance plan]",
-        "Published release record | [v0.1.7 maintenance release record]",
-        "Latest published release record | [v0.1.7 maintenance release record]",
+        "Stable release baseline | `v0.1.8`",
+        "Current maintenance plan | [Post-v0.1.8 maintenance plan]",
+        "Latest completed maintenance plan | [Post-v0.1.7 maintenance plan]",
+        "Published release record | [v0.1.8 maintenance release record]",
+        "Latest published release record | [v0.1.8 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
         "Last freshness decision | For the active post-v0.1.7 compatible maintenance path toward `v0.1.8`",
         "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
@@ -448,10 +503,12 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "explicitly accepted by T4 for the compatible `v0.1.7` path",
         "explicitly accepted by U4 for the compatible `v0.1.8` path",
         "historically accepted for `v0.1.5` as diagnostic context",
-        "Next freshness decision | After `v0.1.8` publication",
+        "Next freshness decision | W1 must decide whether inherited `v0.1.0` manual evidence",
         "manual smoke is explicitly accepted by the T4 release-readiness\n  record",
         "For the active post-v0.1.7 compatible maintenance path toward `v0.1.8`",
         "then is explicitly accepted by the U4",
+        "For the active post-v0.1.8 path, inherited `v0.1.0` manual smoke is",
+        "historical context until W1",
         "Fresh manual smoke is required if any helper, watcher, smoke script",
         "Do not paste observed text",
         "Do not save or commit raw watcher JSONL",

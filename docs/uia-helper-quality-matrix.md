@@ -28,7 +28,7 @@ targeted capture.
 
 ## Maintenance Use
 
-For compatible maintenance releases after `v0.1.7`, use this matrix together
+For compatible maintenance releases after `v0.1.8`, use this matrix together
 with the current release checklist and manual smoke evidence ledger. Historical
 maintenance records from `v0.1.4` onward also cite this matrix. Release
 evidence should record:
