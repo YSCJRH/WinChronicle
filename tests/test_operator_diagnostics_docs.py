@@ -478,11 +478,11 @@ def test_post_v019_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: X1 - Evidence Freshness And Entry Hygiene.",
-        "Stage status: B - X1 evidence freshness docs/tests are implemented",
-        "X0 PR #97 passed PR Windows Harness run `25566609049`",
-        "merged as `008c4d02dfef58004a2494c6102f434741a83047`",
-        "post-merge `main` Windows Harness run `25566750349` passed",
+        "Current stage: X2 - CI Runtime And Dependency Maintenance Scan.",
+        "Stage status: B - X2 CI/runtime and dependency scan docs/tests are",
+        "X1 PR #98 passed PR Windows Harness run `25567381942`",
+        "merged as `def43279df9f09ae999f02b0c9ebc794e4540094`",
+        "post-merge `main` Windows Harness run `25567503424` passed",
         "`v0.1.9` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.9",
         "targets `d06ab5bc8bea7520bac2719adb457794c72911d3`",
         "post-merge `main` Windows Harness run `25565697723` passed",
@@ -506,9 +506,17 @@ def test_post_v019_plan_is_active_without_expanding_scope():
         "Recorded PR #96 and post-merge Windows Harness run `25565697723`",
         "Recorded X0 PR #97 and post-merge Windows Harness run `25566750349`",
         "During X1, accepted inherited `v0.1.0` manual UIA smoke as inherited/stale",
+        "During X2, reviewed the latest `main` Windows Harness run `25567503424`",
+        "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: \"true\"",
+        "actions/checkout@v6",
+        "actions/setup-python@v6",
+        "actions/setup-dotnet@v5",
+        "depends only on `jsonschema` at runtime",
         "Do not retag `v0.1.9`",
         "Stage X0 initialization:",
         "Stage X0 remote validation:",
+        "Stage X1 remote validation:",
+        "Stage X2 CI/runtime and dependency scan:",
         "python -c \"import winchronicle; print(winchronicle.__version__)\"",
     ):
         assert expected in normalized
