@@ -4,10 +4,10 @@ Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
-[v0.1.6 maintenance release record](release-v0.1.6.md). The completed
-post-v0.1.5 maintenance cursor is recorded in
-[Post-v0.1.5 maintenance plan](next-round-plan-post-v0.1.5.md). The
-post-v0.1.4 cursor is closed historical evidence.
+[v0.1.6 maintenance release record](release-v0.1.6.md). The active
+post-v0.1.6 maintenance cursor is recorded in
+[Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md). The
+post-v0.1.5 cursor is completed historical evidence.
 
 ## Evidence Location
 
@@ -35,8 +35,9 @@ historical records. After the `v0.1.6` publication:
   another version;
 - `v0.1.6` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- the post-v0.1.5 execution cursor is completed; a post-v0.1.6 cursor must be
-  established before implementation continues;
+- the post-v0.1.6 execution cursor must be followed before implementation
+  continues;
+- the post-v0.1.5 execution cursor is completed historical context;
 - manual UIA smoke evidence inherited from `v0.1.0` or another older release
   must be labeled as inherited or stale;
 - a release record must not present inherited manual smoke as freshly run;
@@ -44,6 +45,9 @@ historical records. After the `v0.1.6` publication:
   inherited `v0.1.0` manual smoke was explicitly accepted by S4 because no helper,
   watcher product behavior, manual smoke script, capture, privacy, product
   CLI/MCP shape, or capture-surface behavior changed before release;
+- for the post-v0.1.6 compatible maintenance path, inherited manual smoke must
+  stay labeled inherited/stale until the active plan makes a release-specific
+  freshness decision;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are

@@ -6,11 +6,11 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.6 maintenance release record](release-v0.1.6.md). The completed
-post-v0.1.5 execution cursor lives in
-[Post-v0.1.5 maintenance plan](next-round-plan-post-v0.1.5.md). For release
+[v0.1.6 maintenance release record](release-v0.1.6.md). The active
+post-v0.1.6 execution cursor lives in
+[Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
-post-v0.1.4 plan is closed historical evidence.
+post-v0.1.5 plan is completed historical evidence.
 
 ## Deterministic Gates
 
@@ -32,8 +32,9 @@ inherited historical evidence:
   another version;
 - `v0.1.6` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- the post-v0.1.5 execution cursor is completed; a post-v0.1.6 cursor must be
-  established before any new implementation;
+- the post-v0.1.6 execution cursor must be followed before any new
+  implementation;
+- the post-v0.1.5 execution cursor is completed historical context;
 - manual UIA smoke inherited from an earlier release is labeled as inherited or
   stale, not current;
 - stale manual smoke can support context, but a hard release gate needs fresh
@@ -42,6 +43,9 @@ inherited historical evidence:
   inherited `v0.1.0` manual smoke was explicitly accepted by S4 because no helper,
   watcher product behavior, manual smoke script, capture, privacy, product
   CLI/MCP shape, or capture-surface behavior changed before release;
+- for the post-v0.1.6 compatible maintenance path, inherited manual smoke must
+  stay labeled inherited/stale until the active plan makes a release-specific
+  freshness decision;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are

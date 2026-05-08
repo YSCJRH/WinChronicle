@@ -22,17 +22,20 @@ service install, and no default background capture.
 ## Execution Cursor
 
 - Current stage: G - v0.1.6 Published Baseline Reconciliation.
-- Stage status: G - v0.1.6 published; baseline reconciliation in progress.
+- Stage status: G - v0.1.6 published; baseline reconciliation complete.
 - Last completed evidence: `v0.1.6` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6 and targets
   `914cf361ac5864fa31d393d125d14e45eeba96bc`. The S4 PR Windows Harness run
   `25551243900` passed, and post-merge `main` Windows Harness run
-  `25551362920` passed on that SHA.
+  `25551362920` passed on that SHA. Publication reconciliation PR #80 passed
+  PR Windows Harness run `25552120656`, merged as
+  `371060498c70a4e1ff4e075b3fd247b704c6d3f7`, and post-merge `main` Windows
+  Harness run `25552214063` passed on that SHA.
 - Last validation: publication metadata was verified with `gh release view
   v0.1.6`; local tags include `v0.1.6`; package runtime version reports
-  `0.1.6`.
-- Next atomic task: finish post-publication reconciliation, then establish a
-  post-v0.1.6 next-round plan before new implementation work.
+  `0.1.6`; post-publication reconciliation Windows Harness passed.
+- Next atomic task: follow the post-v0.1.6 maintenance plan before starting
+  new implementation work.
 - Known blockers: none.
 
 ## Phased Work
@@ -174,6 +177,10 @@ Stage-specific gates:
   `25551243900` and post-merge `main` Windows Harness `25551362920` passed.
   Do not retag `v0.1.6`; establish a post-v0.1.6 cursor before starting new
   implementation work.
+- During publication reconciliation, merged PR #80 as
+  `371060498c70a4e1ff4e075b3fd247b704c6d3f7`; PR Windows Harness
+  `25552120656` and post-merge `main` Windows Harness `25552214063` passed.
+  This closes the post-v0.1.5 maintenance round.
 
 ## Validation Log
 
@@ -232,3 +239,13 @@ Stage-specific gates:
   - `gh run view 25551362920 --json databaseId,status,conclusion,headSha,url,createdAt,updatedAt,name,displayTitle` - passed; conclusion `success` on `914cf361ac5864fa31d393d125d14e45eeba96bc`.
   - `git fetch --tags --quiet` and `git show-ref --tags v0.1.6` - passed; local tag points to `914cf361ac5864fa31d393d125d14e45eeba96bc`.
   - `python -` version check - passed and printed `0.1.6`.
+- v0.1.6 post-publication reconciliation validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed.
+  - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+  - PR #80 Windows Harness run `25552120656` - passed.
+  - Post-merge `main` Windows Harness run `25552214063` - passed on `371060498c70a4e1ff4e075b3fd247b704c6d3f7`.
