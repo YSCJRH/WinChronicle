@@ -23,21 +23,21 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: T1 - Evidence Freshness And Entry Hygiene.
-- Stage status: B - T1 local implementation and validation are complete; PR
-  Windows Harness and post-merge `main` Windows Harness are pending.
+- Current stage: T2 - CI Runtime And Dependency Maintenance Scan.
+- Stage status: B - T2 local scan and validation are complete; PR Windows
+  Harness and post-merge `main` Windows Harness are pending.
 - Last completed evidence: `v0.1.6` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6 and targets
   `914cf361ac5864fa31d393d125d14e45eeba96bc`. Publication reconciliation PR
   #80 passed PR Windows Harness run `25552120656`, merged as
   `371060498c70a4e1ff4e075b3fd247b704c6d3f7`, and post-merge `main` Windows
   Harness run `25552214063` passed on that SHA.
-- Last validation: T1 local validation passed targeted docs/version tests, the
-  full deterministic gate, and `git diff --check` after refreshing manual
-  smoke freshness wording and advancing this cursor to T1.
-- Next atomic task: open the T1 PR, wait for PR Windows Harness, merge after
-  review, then wait for post-merge `main` Windows Harness before starting T2
-  CI runtime and dependency maintenance scan.
+- Last validation: T2 local scan found no required workflow/runtime changes;
+  targeted workflow/docs tests, the full deterministic gate, and `git diff
+  --check` passed.
+- Next atomic task: open the T2 PR, wait for PR Windows Harness, merge after
+  review, then wait for post-merge `main` Windows Harness before starting T3
+  compatibility guardrail sweep.
 - Known blockers: none.
 
 ## Phased Work
@@ -182,6 +182,12 @@ Stage-specific gates:
   it, or fresh manual smoke is recorded. No helper behavior, watcher product
   behavior, manual smoke scripts, capture behavior, privacy behavior, product
   CLI/MCP shape, or capture surfaces changed.
+- During T2, reviewed the latest `main` Windows Harness run, workflow, and
+  workflow guard test. The workflow already uses
+  `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"`, pins
+  `windows-2025-vs2026`, preserves the deterministic gate order, and produced
+  no deprecation or failed-log signal requiring a workflow/runtime change.
+  Therefore T2 records a no-action-needed CI runtime scan.
 
 ## Validation Log
 
@@ -207,3 +213,9 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Stage T2 CI runtime scan validation:
+  - `gh run view 25554033860 --json databaseId,status,conclusion,headSha,url,createdAt,updatedAt,name,displayTitle,jobs` - passed; latest post-T1 `main` Windows Harness conclusion was `success` on `fccba1ec46126710d29fd1dacbb34f45b9eef938`.
+  - `gh run view 25554033860 --log-failed` - passed with no failed log output.
+  - `gh run view 25554033860 --log | Select-String -Pattern "warning|deprecated|deprecation|windows-2025|Node|runner image|error" -CaseSensitive:$false` - reviewed; runner image is `windows-2025-vs2026`, Node 24 env is present, .NET builds report 0 warnings/0 errors, and the remaining `error` matches are fixture names or deterministic fixture text.
+  - `.github/workflows/windows-harness.yml` inspection - passed; gate order and gate set are unchanged.
+  - `tests/test_windows_harness_workflow.py` inspection - passed; workflow guard already pins Node 24, the Windows runner, and deterministic gate order.
