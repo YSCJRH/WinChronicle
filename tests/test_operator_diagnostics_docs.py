@@ -60,11 +60,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     readme_intro_normalized = " ".join(readme_intro.split())
 
     assert "latest published `v0.1.12` release record" in readme_intro_normalized
+    assert "active post-v0.1.12 maintenance plan" in readme_intro_normalized
     assert "completed post-v0.1.11 maintenance plan" in readme_intro_normalized
-    assert "completed post-v0.1.10 maintenance plan" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
+    assert "Post-v0.1.12 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.11 maintenance plan" in readme_operator_docs
     assert "v0.1.11 maintenance release record" in readme_operator_docs
     assert "v0.1.10 maintenance release record" in readme_operator_docs
@@ -82,6 +83,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.5 maintenance release record" in readme_operator_docs
     assert "v0.1.4 maintenance release record" in readme_operator_docs
     assert readme_operator_docs.index("v0.1.12 maintenance release record") < readme_operator_docs.index(
+        "Post-v0.1.12 maintenance plan"
+    )
+    assert readme_operator_docs.index("Post-v0.1.12 maintenance plan") < readme_operator_docs.index(
         "Post-v0.1.11 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.11 maintenance plan") < readme_operator_docs.index(
@@ -118,8 +122,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "v0.1.6 maintenance release record"
     )
     assert "release-v0.1.12.md" in current_section
-    assert "next-round-plan-post-v0.1.11.md" in current_section
-    assert "release-v0.1.11.md" in current_section
+    assert "next-round-plan-post-v0.1.12.md" in current_section
+    assert "next-round-plan-post-v0.1.11.md" not in current_section
+    assert "release-v0.1.11.md" not in current_section
+    assert "next-round-plan-post-v0.1.11.md" in historical_section
+    assert "release-v0.1.11.md" in historical_section
     assert "release-v0.1.10.md" not in current_section
     assert "next-round-plan-post-v0.1.10.md" not in current_section
     assert "release-v0.1.10.md" in historical_section
@@ -176,6 +183,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-v0.1.0-final.md" in historical_section
     assert "release-v0.1.12.md" in checklist
     assert "release-v0.1.12.md" in evidence
+    assert "next-round-plan-post-v0.1.12.md" in checklist
+    assert "next-round-plan-post-v0.1.12.md" in evidence
     assert "release-v0.1.11.md" in checklist
     assert "release-v0.1.11.md" in evidence
     assert "next-round-plan-post-v0.1.11.md" in checklist
@@ -741,6 +750,42 @@ def test_post_v0111_plan_is_published_reconciled_without_expanding_scope():
         assert expected in normalized
 
 
+def test_post_v012_plan_is_active_without_expanding_scope():
+    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.12.md").read_text(
+        encoding="utf-8"
+    )
+    normalized = " ".join(plan.split())
+
+    for expected in (
+        "Current stage: AA0 - Post-v0.1.12 Baseline Cursor.",
+        "Stage status: B - AA0 docs/tests are implemented locally",
+        "`v0.1.12` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12",
+        "targets `df16ea301243e2d3a612a5d09bd59f1436723fb4`",
+        "post-publication `main` Windows Harness run `25577701036`",
+        "`3164d185e5d203b504bd78432032fa13003983f8`",
+        "Stage AA0 - Post-v0.1.12 Baseline Cursor",
+        "Stage AA1 - Blueprint Gap And Public Surface Audit",
+        "Stage AA2 - Deterministic Demo And Operator Experience Refresh",
+        "Stage AA3 - Issue, Roadmap, And Contribution Hygiene",
+        "Stage AA4 - Compatibility Guardrail Sweep",
+        "Stage AA5 - v0.1.13 Release Readiness",
+        "next compatible release target is `v0.1.13`",
+        "Phase 6 stays at spec/scorecard level",
+        "MCP tool list remains unchanged and read-only",
+        "Product CLI still does not expose targeted `--hwnd`, `--pid`",
+        "Do not implement screenshot capture, OCR, audio recording",
+        "AA0 focused docs tests, full pytest, helper build, watcher build",
+        "Stage AA0 initialization:",
+        "gh release view v0.1.12",
+        "git rev-parse v0.1.12",
+        "gh run view 25577701036",
+        "Stage AA0 local validation:",
+        "Pending AA0 PR Windows Harness.",
+        "Pending AA0 post-merge `main` Windows Harness.",
+    ):
+        assert expected in normalized
+
+
 def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
     checklist = (ROOT / "docs" / "release-checklist.md").read_text(encoding="utf-8")
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
@@ -752,6 +797,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "## Evidence Freshness",
         "stable baseline is `v0.1.12`",
         "`v0.1.12` is the latest published release",
+        "post-v0.1.12 execution cursor is active",
+        "post-publication `main` Windows Harness run `25577701036`",
         "post-v0.1.11 execution cursor is completed historical context",
         "post-merge Windows Harness run `25576867729`",
         "post-v0.1.10 execution cursor is completed historical context",
@@ -801,6 +848,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "Release evidence must name which facts are current",
         "`v0.1.12` is the stable baseline",
         "`v0.1.12` is the latest published release",
+        "post-v0.1.12 execution cursor is active",
+        "post-publication `main` Windows Harness run `25577701036`",
         "post-v0.1.11 execution cursor is completed historical context",
         "post-merge Windows Harness run `25576867729`",
         "post-v0.1.10 execution cursor is completed historical context",
@@ -873,7 +922,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
 
     for expected in (
         "Stable release baseline | `v0.1.12`",
-        "Current maintenance plan | Pending post-v0.1.12 maintenance plan",
+        "Current maintenance plan | [Post-v0.1.12 maintenance plan]",
         "Latest completed maintenance plan | [Post-v0.1.11 maintenance plan]",
         "Published release record | [v0.1.12 maintenance release record]",
         "Latest published release record | [v0.1.12 maintenance release record]",
