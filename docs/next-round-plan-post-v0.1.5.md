@@ -22,20 +22,19 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: S1 - CI Runtime Maintenance Decision.
-- Stage status: C - S1 complete; ready to enter S2 on the next turn.
+- Current stage: S2 - Release Evidence And Entry Hygiene.
+- Stage status: C - S2 complete; ready to enter S3 on the next turn.
 - Last completed evidence: `v0.1.5` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5 and targets
   `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`. The post-publication
   reconciliation commit is `df15810c0b5022bebd1fe8a488f677e74fe8eae1`, and
   Windows Harness run `25546003233` passed on that SHA.
-- Last validation: post-v0.1.5 publication reconciliation passed local
-  deterministic gates, PR Windows Harness run `25545834946`, and post-merge
-  `main` Windows Harness run `25546003233`. S0 local validation passed after
-  adding this active cursor and updating README, operator quickstart, release
-  checklist, release evidence guide, manual smoke ledger, and docs tests.
-- Next atomic task: start S2 by auditing operator-facing docs and scorecards
-  for stale current/latest release wording after `v0.1.5`.
+- Last validation: S2 entry-hygiene validation passed targeted docs tests, the
+  full deterministic gate, release-entry grep checks, and `git diff --check`
+  after confirming no stale operator entry points needed changes.
+- Next atomic task: start S3 by re-running compatibility guardrail suites and
+  confirming exact read-only MCP tools, disabled privacy surfaces,
+  memory/search trust boundaries, and Phase 6 spec-only status.
 - Known blockers: none.
 
 ## Phased Work
@@ -159,6 +158,9 @@ Stage-specific gates:
 - During S1, pinned the Windows Harness runner to `windows-2025-vs2026` after
   the latest `main` Windows Harness emitted a `windows-2025` redirection
   notice. The workflow gate order and gate set remain unchanged.
+- During S2, audited operator-facing docs, scorecards, and tests for stale
+  current/latest release wording after `v0.1.5`; no entry-point drift required
+  product or documentation changes beyond this cursor update.
 
 ## Validation Log
 
@@ -175,6 +177,16 @@ Stage-specific gates:
 - Stage S1 CI runtime validation:
   - `rg -n "windows-2025|windows-2025-vs2026|runs-on|FORCE_JAVASCRIPT_ACTIONS_TO_NODE24" .github docs tests` - confirmed the workflow still has the Node 24 environment setting and now pins `windows-2025-vs2026`.
   - `python -m pytest tests/test_windows_harness_workflow.py -q` - passed after adding the workflow guard.
+  - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage S2 entry-hygiene validation:
+  - `rg -n "latest published `v0\\.1\\.[0-4]`|stable baseline is `v0\\.1\\.[0-4]`|Stable release baseline \\| `v0\\.1\\.[0-4]`|active post-v0\\.1\\.[0-4]|current post-v0\\.1\\.[0-4]|current `v0\\.1\\.[0-4]`|current release.*v0\\.1\\.[0-4]|latest release.*v0\\.1\\.[0-4]|release-readiness candidate, not yet published|Pending publication|Publication approval: pending|v0\\.1\\.5 release-readiness record" README.md docs harness tests` - reviewed matches; only historical validation-log text and historical plans matched.
+  - `rg -n "next-round-plan-post-v0\\.1\\.5|release-v0\\.1\\.5|v0\\.1\\.5 maintenance release|Post-v0\\.1\\.5" README.md docs tests` - confirmed current entry points reference the post-v0.1.5 plan and `v0.1.5` release record.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed.
   - `python -m pytest -q` - passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
