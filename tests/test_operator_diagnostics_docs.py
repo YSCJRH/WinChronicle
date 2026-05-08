@@ -145,8 +145,8 @@ def test_post_v015_plan_is_active_without_expanding_scope():
     )
 
     for expected in (
-        "Current stage: S2 - Release Evidence And Entry Hygiene.",
-        "Stage status: C - S2 complete; ready to enter S3 on the next turn.",
+        "Current stage: S3 - Compatibility Guardrail Sweep.",
+        "Stage status: C - S3 complete; ready to enter S4 on the next turn.",
         "`v0.1.5` is published at\nhttps://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5",
         "targets `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`",
         "post-publication\nreconciliation `main` commit is\n`df15810c0b5022bebd1fe8a488f677e74fe8eae1`",
@@ -162,6 +162,8 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "Known blockers: none.",
         "pins `windows-2025-vs2026`",
         "audited operator-facing docs, scorecards, and tests",
+        "source-level Phase 6 absence",
+        "post-v0.1.5 path\n  toward `v0.1.6`",
     ):
         assert expected in plan
 
@@ -180,7 +182,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "active post-v0.1.5 execution cursor must be followed",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
         "inherited `v0.1.0` manual",
-        "P2 has\n  explicitly accepted inherited `v0.1.0` manual smoke",
+        "current post-v0.1.5 compatible maintenance path toward `v0.1.6`",
+        "S4\n  release record must explicitly accept the inherited evidence",
         "capture-surface behavior changes",
         "no observed-content artifact is committed to refresh evidence",
         "deterministic harness smoke changes require fresh deterministic gate",
@@ -195,7 +198,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "manual UIA smoke evidence inherited from `v0.1.0`",
         "must be labeled as inherited or stale",
         "must not present inherited manual smoke as freshly run",
-        "P2 has\n  explicitly accepted inherited `v0.1.0` manual smoke",
+        "current post-v0.1.5 compatible maintenance path toward `v0.1.6`",
+        "S4\n  release record must explicitly accept the inherited evidence",
         "capture-surface behavior changes",
         "never observed content",
         "deterministic harness smoke changes require fresh deterministic gate",
@@ -232,11 +236,11 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Published release record | [v0.1.5 maintenance release record]",
         "Latest published release record | [v0.1.5 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
-        "Last freshness decision | For the post-v0.1.4 compatible maintenance path toward",
+        "Last freshness decision | For the current post-v0.1.5 compatible maintenance path toward",
         "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
-        "accepted by post-v0.1.4 P2 for the compatible `v0.1.5` path",
-        "accepted by post-v0.1.4 P2 as diagnostic context",
-        "is explicitly accepted by the P2 decision only when the remaining release",
+        "requires fresh S4 acceptance or refresh for `v0.1.6`",
+        "historically accepted for `v0.1.5` as diagnostic context",
+        "S4 must explicitly accept the inherited evidence or record fresh smoke",
         "Fresh manual smoke is required if any helper, watcher, smoke script",
         "Do not paste observed text",
         "Do not save or commit raw watcher JSONL",

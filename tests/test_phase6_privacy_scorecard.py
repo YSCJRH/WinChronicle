@@ -1,8 +1,42 @@
+import re
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SCORECARD = ROOT / "harness" / "scorecards" / "phase6-privacy-enrichment.md"
+PRODUCTION_ROOTS = (ROOT / "src" / "winchronicle", ROOT / "resources")
+SOURCE_SUFFIXES = {".py", ".cs", ".csproj", ".ps1"}
+ALLOWED_PHASE6_SOURCE_SENTINELS = {
+    "src/winchronicle/capture.py": {'"screenshot": None,'},
+    "src/winchronicle/privacy.py": {
+        '"screenshots_enabled": False,',
+        '"ocr_enabled": False,',
+    },
+    "src/winchronicle/mcp/server.py": {
+        'CONTROL_TOOL_TERMS = ("click", "type", "press", "key", "clipboard", "screenshot", "ocr", "audio")',
+    },
+    "resources/win-uia-helper/Program.cs": {
+        '["screenshots"] = false,',
+        '["ocr"] = false,',
+    },
+}
+FORBIDDEN_PHASE6_ENGINE_PATTERNS = tuple(
+    re.compile(pattern, re.IGNORECASE)
+    for pattern in (
+        r"\bImageGrab\b",
+        r"\bmss\b",
+        r"\bpyscreenshot\b",
+        r"\bpyautogui\b",
+        r"\bpytesseract\b",
+        r"\beasyocr\b",
+        r"\bpaddleocr\b",
+        r"\bWindows\.Graphics\.Capture\b",
+        r"\bCopyFromScreen\b",
+        r"\bBitBlt\b",
+        r"\bPrintWindow\b",
+        r"\bTesseract\b",
+    )
+)
 
 
 def test_phase6_privacy_scorecard_remains_spec_only():
@@ -80,3 +114,34 @@ def test_phase6_privacy_scorecard_lists_required_regressions_and_non_goals():
     )
     for phrase in required_phrases:
         assert phrase in text
+
+
+def test_phase6_has_no_source_surface_implementation_artifacts():
+    unexpected_surface_mentions = []
+    unexpected_engine_mentions = []
+
+    for path in _production_source_files():
+        relative = path.relative_to(ROOT).as_posix()
+        allowed_lines = ALLOWED_PHASE6_SOURCE_SENTINELS.get(relative, set())
+        text = path.read_text(encoding="utf-8")
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            stripped = line.strip()
+            if re.search(r"screenshot|ocr", line, re.IGNORECASE) and stripped not in allowed_lines:
+                unexpected_surface_mentions.append(f"{relative}:{line_number}: {stripped}")
+            for pattern in FORBIDDEN_PHASE6_ENGINE_PATTERNS:
+                if pattern.search(line):
+                    unexpected_engine_mentions.append(f"{relative}:{line_number}: {stripped}")
+
+    assert unexpected_surface_mentions == []
+    assert unexpected_engine_mentions == []
+
+
+def _production_source_files() -> list[Path]:
+    return sorted(
+        path
+        for root in PRODUCTION_ROOTS
+        for path in root.rglob("*")
+        if path.is_file()
+        and path.suffix in SOURCE_SUFFIXES
+        and not {"bin", "obj"}.intersection(path.relative_to(root).parts)
+    )
