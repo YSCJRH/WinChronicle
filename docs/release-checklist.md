@@ -5,13 +5,13 @@ releases.
 
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
-The latest published release record is
+The current release-readiness record is
+[v0.1.6 maintenance release-readiness record](release-v0.1.6.md). The latest
+published release record is
 [v0.1.5 maintenance release record](release-v0.1.5.md). The active post-v0.1.5
 execution cursor lives in
-[Post-v0.1.5 maintenance plan](next-round-plan-post-v0.1.5.md). The published
-`v0.1.5` maintenance release record is
-[v0.1.5 maintenance release record](release-v0.1.5.md). For release evidence
-shape, use [Release evidence guide](release-evidence.md). The
+[Post-v0.1.5 maintenance plan](next-round-plan-post-v0.1.5.md). For release
+evidence shape, use [Release evidence guide](release-evidence.md). The
 post-v0.1.4 plan is closed historical evidence.
 
 ## Deterministic Gates

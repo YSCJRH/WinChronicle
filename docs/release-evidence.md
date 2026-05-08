@@ -3,12 +3,12 @@
 Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
-artifacts. The latest published release record is
+artifacts. The current release-readiness record is
+[v0.1.6 maintenance release-readiness record](release-v0.1.6.md). The latest
+published release record is
 [v0.1.5 maintenance release record](release-v0.1.5.md). The active post-v0.1.5
 maintenance cursor is recorded in
-[Post-v0.1.5 maintenance plan](next-round-plan-post-v0.1.5.md). The published
-`v0.1.5` maintenance release record is
-[v0.1.5 maintenance release record](release-v0.1.5.md). The
+[Post-v0.1.5 maintenance plan](next-round-plan-post-v0.1.5.md). The
 post-v0.1.4 cursor is closed historical evidence.
 
 ## Evidence Location
