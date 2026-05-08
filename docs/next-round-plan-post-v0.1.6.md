@@ -23,21 +23,26 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: T2 - CI Runtime And Dependency Maintenance Scan.
-- Stage status: B - T2 local scan and validation are complete; PR Windows
-  Harness and post-merge `main` Windows Harness are pending.
+- Current stage: T3 - Compatibility Guardrail Sweep.
+- Stage status: B - T3 local compatibility guardrail sweep and validation are
+  complete; PR Windows Harness and post-merge `main` Windows Harness are
+  pending.
 - Last completed evidence: `v0.1.6` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6 and targets
   `914cf361ac5864fa31d393d125d14e45eeba96bc`. Publication reconciliation PR
   #80 passed PR Windows Harness run `25552120656`, merged as
   `371060498c70a4e1ff4e075b3fd247b704c6d3f7`, and post-merge `main` Windows
-  Harness run `25552214063` passed on that SHA.
-- Last validation: T2 local scan found no required workflow/runtime changes;
-  targeted workflow/docs tests, the full deterministic gate, and `git diff
+  Harness run `25552214063` passed on that SHA. T2 PR #83 passed PR Windows
+  Harness run `25554431580`, merged as
+  `fb84fb2b2bf47cfe89680c898f3694f543d75c52`, and post-merge `main` Windows
+  Harness run `25554520036` passed on that SHA.
+- Last validation: T3 compatibility guardrail sweep found no required product,
+  schema, CLI/MCP, helper/watcher, privacy, or capture-surface changes;
+  targeted compatibility tests, the full deterministic gate, and `git diff
   --check` passed.
-- Next atomic task: open the T2 PR, wait for PR Windows Harness, merge after
-  review, then wait for post-merge `main` Windows Harness before starting T3
-  compatibility guardrail sweep.
+- Next atomic task: open the T3 PR, wait for PR Windows Harness, merge after
+  review, then wait for post-merge `main` Windows Harness before starting T4
+  release readiness.
 - Known blockers: none.
 
 ## Phased Work
@@ -188,6 +193,15 @@ Stage-specific gates:
   `windows-2025-vs2026`, preserves the deterministic gate order, and produced
   no deprecation or failed-log signal requiring a workflow/runtime change.
   Therefore T2 records a no-action-needed CI runtime scan.
+- During T2, merged PR #83 as
+  `fb84fb2b2bf47cfe89680c898f3694f543d75c52`; PR Windows Harness
+  `25554431580` and post-merge `main` Windows Harness `25554520036` passed.
+- During T3, treated existing tests and scorecards as compatibility oracles.
+  The sweep found existing coverage for exact read-only MCP tools, disabled
+  privacy surfaces, search/memory trust boundaries, watcher preview limits,
+  product targeted capture absence, and Phase 6 spec-only status. Therefore
+  T3 records a no-action-needed compatibility guardrail sweep with no product
+  changes.
 
 ## Validation Log
 
@@ -219,3 +233,20 @@ Stage-specific gates:
   - `gh run view 25554033860 --log | Select-String -Pattern "warning|deprecated|deprecation|windows-2025|Node|runner image|error" -CaseSensitive:$false` - reviewed; runner image is `windows-2025-vs2026`, Node 24 env is present, .NET builds report 0 warnings/0 errors, and the remaining `error` matches are fixture names or deterministic fixture text.
   - `.github/workflows/windows-harness.yml` inspection - passed; gate order and gate set are unchanged.
   - `tests/test_windows_harness_workflow.py` inspection - passed; workflow guard already pins Node 24, the Windows runner, and deterministic gate order.
+  - `python -m pytest tests/test_windows_harness_workflow.py tests/test_operator_diagnostics_docs.py -q` - passed after recording the T2 no-action-needed scan.
+  - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+  - PR #83 Windows Harness run `25554431580` - passed.
+  - Post-merge `main` Windows Harness run `25554520036` - passed on `fb84fb2b2bf47cfe89680c898f3694f543d75c52`.
+- Stage T3 compatibility guardrail validation:
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_memory_pipeline.py tests/test_phase6_privacy_scorecard.py tests/test_privacy_check.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py tests/test_watcher_events.py tests/test_uia_helper_quality_matrix.py -q` - passed.
+  - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.

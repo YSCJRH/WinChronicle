@@ -200,8 +200,8 @@ def test_post_v016_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: T2 - CI Runtime And Dependency Maintenance Scan.",
-        "Stage status: B - T2 local scan and validation are complete",
+        "Current stage: T3 - Compatibility Guardrail Sweep.",
+        "Stage status: B - T3 local compatibility guardrail sweep and validation are",
         "`v0.1.6` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6",
         "targets `914cf361ac5864fa31d393d125d14e45eeba96bc`",
         "Publication reconciliation PR #80 passed PR Windows Harness run `25552120656`",
@@ -209,6 +209,9 @@ def test_post_v016_plan_is_active_without_expanding_scope():
         "Windows Harness run `25552214063` passed",
         "PR #81 Windows Harness run `25553025094` - passed",
         "Post-merge `main` Windows Harness run `25553238476` - passed",
+        "T2 PR #83 passed PR Windows Harness run `25554431580`",
+        "merged as `fb84fb2b2bf47cfe89680c898f3694f543d75c52`",
+        "post-merge `main` Windows Harness run `25554520036` passed",
         "Stage T0 - Post-v0.1.6 Baseline Cursor",
         "Stage T1 - Evidence Freshness And Entry Hygiene",
         "Stage T2 - CI Runtime And Dependency Maintenance Scan",
@@ -223,10 +226,14 @@ def test_post_v016_plan_is_active_without_expanding_scope():
         "not expand the capture surface or start Phase 6 implementation",
         "Do not add real UIA smoke to default CI",
         "prepare a release candidate instead",
-        "no required workflow/runtime changes",
+        "no deprecation or failed-log signal requiring a workflow/runtime change",
         "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24",
         "windows-2025-vs2026",
         "no-action-needed CI runtime scan",
+        "no-action-needed compatibility guardrail sweep",
+        "exact read-only MCP tools",
+        "product targeted capture absence",
+        "Phase 6 spec-only status",
     ):
         assert expected in normalized
 
