@@ -30,21 +30,22 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AB2 - Helper And Watcher Preview Diagnostics Evidence.
-- Stage status: B - AB2 helper/watcher diagnostics sweep docs/tests and local
+- Current stage: AB3 - MCP And Memory Operator Contract Sweep.
+- Stage status: B - AB3 MCP/memory contract sweep docs/tests and local
   validation are complete; PR Windows Harness and post-merge Windows Harness
   are pending.
 - Last completed evidence: `v0.1.13` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13, targets
   `1070343d9bcfd60c48238835e26b6c32f9060ae7`, publication reconciliation PR
   #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`, AB0 PR #120
-  merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`, and AB1 PR #121
-  merged as `1f557faf9ef2460cc456ea6966495b5f175ad809`.
-- Last validation: AB2 local validation passed with focused docs/version tests,
+  merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`, AB1 PR #121 merged
+  as `1f557faf9ef2460cc456ea6966495b5f175ad809`, and AB2 PR #122 merged as
+  `9cdb6f80b0665915dd403101911c14293d60946f`.
+- Last validation: AB3 local validation passed with focused docs/version tests,
   full pytest, helper build, watcher build, install CLI smoke, full harness,
   and `git diff --check`.
-- Next atomic task: open the AB2 helper/watcher diagnostics sweep PR, verify PR
-  and post-merge Windows Harness, then continue to AB3.
+- Next atomic task: open the AB3 MCP/memory contract sweep PR, verify PR and
+  post-merge Windows Harness, then continue to AB4.
 - Known blockers: none.
 
 ## Phased Work
@@ -200,6 +201,15 @@ Stage-specific gates:
   malformed output, no observed-content echo, heartbeat-only liveness,
   duplicate skip, denylist skip, raw JSONL non-persistence, and diagnostic
   artifact policy.
+- Recorded AB2 remote validation as completed evidence: PR #122 passed Windows
+  Harness run `25583319858`, merged as
+  `9cdb6f80b0665915dd403101911c14293d60946f`, and post-merge `main` Windows
+  Harness run `25583397242` passed.
+- AB3 found no MCP/memory contract drift requiring product-code changes:
+  current docs, scorecards, tests, and deterministic demo already preserve exact
+  read-only MCP tools, stable response examples, CLI/MCP memory-search parity,
+  durable memory goldens, idempotence, secret exclusion, and the observed-content
+  trust boundary.
 
 ## Validation Log
 
@@ -246,5 +256,20 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AB2 PR Windows Harness.
-- Pending AB2 post-merge `main` Windows Harness.
+- Stage AB2 remote validation:
+  - PR #122 Windows Harness run `25583319858` - passed.
+  - PR #122 merged as `9cdb6f80b0665915dd403101911c14293d60946f`.
+  - Post-merge `main` Windows Harness run `25583397242` - passed.
+- Stage AB3 initialization:
+  - Reviewed `docs/mcp-readonly-examples.md`, `docs/deterministic-demo.md`, `harness/scorecards/mcp-quality.md`, and `harness/scorecards/memory-quality.md`.
+  - `rg "search_memory|current_context|search_captures|read_recent_capture|recent_activity|privacy_status|untrusted_observed_content|entries_fts|memory" tests src harness docs -n` - passed; deterministic MCP/memory trust-boundary and exact-tool coverage is present in tests, scorecards, and docs.
+- Stage AB3 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 38 tests.
+  - `python -m pytest -q` - passed, 129 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AB3 PR Windows Harness.
+- Pending AB3 post-merge `main` Windows Harness.

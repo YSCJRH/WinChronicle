@@ -56,6 +56,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Helper and watcher diagnostics sweep after v0.1.13](helper-watcher-diagnostics-sweep-post-v0.1.13.md)"
         in quickstart
     )
+    assert (
+        "[MCP and memory contract sweep after v0.1.13](mcp-memory-contract-sweep-post-v0.1.13.md)"
+        in quickstart
+    )
     assert "[v0.1.13 maintenance release record](release-v0.1.13.md)" in quickstart
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
     assert (
@@ -76,6 +80,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[Helper and watcher diagnostics sweep after v0.1.13](docs/helper-watcher-diagnostics-sweep-post-v0.1.13.md)"
+        in readme
+    )
+    assert (
+        "[MCP and memory contract sweep after v0.1.13](docs/mcp-memory-contract-sweep-post-v0.1.13.md)"
         in readme
     )
     assert "[v0.1.13 maintenance release record](docs/release-v0.1.13.md)" in readme
@@ -109,6 +117,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Post-v0.1.13 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.13" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.13" in readme_operator_docs
+    assert "MCP and memory contract sweep after v0.1.13" in readme_operator_docs
     assert "Post-v0.1.12 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.11 maintenance plan" in readme_operator_docs
     assert "v0.1.11 maintenance release record" in readme_operator_docs
@@ -130,6 +139,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Helper and watcher diagnostics sweep after v0.1.13"
     )
     assert readme_operator_docs.index("Helper and watcher diagnostics sweep after v0.1.13") < readme_operator_docs.index(
+        "MCP and memory contract sweep after v0.1.13"
+    )
+    assert readme_operator_docs.index("MCP and memory contract sweep after v0.1.13") < readme_operator_docs.index(
         "Blueprint gap audit after v0.1.12"
     )
     assert readme_operator_docs.index("Post-v0.1.13 maintenance plan") < readme_operator_docs.index(
@@ -180,6 +192,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.13.md" in current_section
     assert "public-metadata-audit-post-v0.1.13.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.13.md" in current_section
+    assert "mcp-memory-contract-sweep-post-v0.1.13.md" in current_section
     assert "release-v0.1.13.md" in current_section
     assert "release-v0.1.12.md" in current_section
     assert "next-round-plan-post-v0.1.12.md" not in current_section
@@ -930,13 +943,14 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "publication reconciliation on `main` is `f4781a91f2120f3eca5088b87bf9034be752274f`",
         "Windows Harness run `25581662790` passed",
         "reports `0.1.13`",
-        "Current stage: AB2 - Helper And Watcher Preview Diagnostics Evidence.",
-        "Stage status: B - AB2 helper/watcher diagnostics sweep docs/tests and local validation are complete",
+        "Current stage: AB3 - MCP And Memory Operator Contract Sweep.",
+        "Stage status: B - AB3 MCP/memory contract sweep docs/tests and local validation are complete",
         "publication reconciliation PR #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`",
         "AB0 PR #120 merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`",
         "AB1 PR #121 merged as `1f557faf9ef2460cc456ea6966495b5f175ad809`",
-        "PR #121 passed Windows Harness run `25582831041`",
-        "post-merge `main` Windows Harness run `25582935956` passed",
+        "AB2 PR #122 merged as `9cdb6f80b0665915dd403101911c14293d60946f`",
+        "PR #122 passed Windows Harness run `25583319858`",
+        "post-merge `main` Windows Harness run `25583397242` passed",
         "Stage AB0 - Post-v0.1.13 Baseline Cursor",
         "Stage AB1 - Public Metadata And Evidence Freshness Audit",
         "Stage AB2 - Helper And Watcher Preview Diagnostics Evidence",
@@ -980,8 +994,18 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "Stage AB2 local validation:",
         "passed, 37 tests.",
         "python -m pytest -q` - passed, 128 tests.",
-        "Pending AB2 PR Windows Harness.",
-        "Pending AB2 post-merge `main` Windows Harness.",
+        "Stage AB2 remote validation:",
+        "PR #122 Windows Harness run `25583319858` - passed.",
+        "PR #122 merged as `9cdb6f80b0665915dd403101911c14293d60946f`.",
+        "Post-merge `main` Windows Harness run `25583397242` - passed.",
+        "Stage AB3 initialization:",
+        "Reviewed `docs/mcp-readonly-examples.md`, `docs/deterministic-demo.md`, `harness/scorecards/mcp-quality.md`",
+        "deterministic MCP/memory trust-boundary and exact-tool coverage is present",
+        "Stage AB3 local validation:",
+        "passed, 38 tests.",
+        "python -m pytest -q` - passed, 129 tests.",
+        "Pending AB3 PR Windows Harness.",
+        "Pending AB3 post-merge `main` Windows Harness.",
     ):
         assert expected in normalized
 
@@ -1084,6 +1108,68 @@ def test_helper_watcher_diagnostics_sweep_records_no_drift_decision():
         "polling capture loops",
         "default background capture",
         "live UIA smoke in\ndefault CI",
+    ):
+        assert boundary in sweep
+
+
+def test_mcp_memory_contract_sweep_records_no_drift_decision():
+    sweep = (ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.13.md").read_text(
+        encoding="utf-8"
+    )
+
+    for expected in (
+        "MCP And Memory Contract Sweep After v0.1.13",
+        "does not change product behavior, schemas, CLI/MCP JSON\nshape",
+        "MCP tool schemas",
+        "docs/mcp-readonly-examples.md",
+        "docs/deterministic-demo.md",
+        "harness/scorecards/mcp-quality.md",
+        "harness/scorecards/memory-quality.md",
+        "tests/test_mcp_tools.py",
+        "tests/test_memory_pipeline.py",
+        "tests/test_compatibility_contracts.py",
+        "tests/test_state_compatibility.py",
+        "current_context",
+        "search_captures",
+        "search_memory",
+        "read_recent_capture",
+        "recent_activity",
+        "privacy_status",
+        "trust = \"untrusted_observed_content\"",
+        "Exact MCP tool list",
+        "Read-only MCP boundary",
+        "Observed-content trust boundary",
+        "MCP `search_memory` parity",
+        "Durable memory Markdown",
+        "Memory FTS",
+        "Idempotent memory generation",
+        "Secret exclusion",
+        "Fixture-only demo",
+        "AB3 found no required MCP or memory product-code change",
+        "exact read-only MCP\ntools",
+        "CLI/MCP memory-search parity",
+        "durable memory\ngoldens",
+        "No fresh manual UIA smoke is required",
+        "AB4: re-run compatibility guardrails",
+    ):
+        assert expected in sweep
+
+    for boundary in (
+        "does not authorize MCP write tools",
+        "arbitrary file reads",
+        "screenshot\ncapture",
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network\nupload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service\ninstall",
+        "polling capture loops",
+        "default background capture",
+        "live UIA smoke\nin default CI",
     ):
         assert boundary in sweep
 
