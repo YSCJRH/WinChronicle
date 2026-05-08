@@ -47,6 +47,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Deterministic demo](deterministic-demo.md)" in quickstart
     assert "[Roadmap](roadmap.md)" in quickstart
     assert "[Contributing](../CONTRIBUTING.md)" in quickstart
+    assert "[v0.1.13 release readiness record](release-v0.1.13.md)" in quickstart
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
     assert (
         "[Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)"
@@ -59,6 +60,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Deterministic demo](docs/deterministic-demo.md)" in readme
     assert "[Roadmap](docs/roadmap.md)" in readme
     assert "[Contributing](CONTRIBUTING.md)" in readme
+    assert "[v0.1.13 release readiness record](docs/release-v0.1.13.md)" in readme
 
 
 def test_operator_entry_points_distinguish_current_cursor_from_history():
@@ -84,6 +86,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
+    assert "v0.1.13 release readiness record" in readme_operator_docs
     assert "Post-v0.1.12 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.11 maintenance plan" in readme_operator_docs
     assert "v0.1.11 maintenance release record" in readme_operator_docs
@@ -101,6 +104,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Post-v0.1.4 maintenance plan" in readme_operator_docs
     assert "v0.1.5 maintenance release record" in readme_operator_docs
     assert "v0.1.4 maintenance release record" in readme_operator_docs
+    assert readme_operator_docs.index("v0.1.13 release readiness record") < readme_operator_docs.index(
+        "v0.1.12 maintenance release record"
+    )
     assert readme_operator_docs.index("v0.1.12 maintenance release record") < readme_operator_docs.index(
         "Post-v0.1.12 maintenance plan"
     )
@@ -140,6 +146,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert readme_operator_docs.index("Post-v0.1.6 maintenance plan") < readme_operator_docs.index(
         "v0.1.6 maintenance release record"
     )
+    assert "release-v0.1.13.md" in current_section
     assert "release-v0.1.12.md" in current_section
     assert "next-round-plan-post-v0.1.12.md" in current_section
     assert "next-round-plan-post-v0.1.11.md" not in current_section
@@ -776,15 +783,15 @@ def test_post_v012_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: AA4 - Compatibility Guardrail Sweep.",
-        "Stage status: B - AA4 compatibility sweep docs/tests are implemented locally",
+        "Current stage: AA5 - v0.1.13 Release Readiness.",
+        "Stage status: B - AA5 release-readiness docs/version/tests are implemented locally",
         "`v0.1.12` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12",
         "targets `df16ea301243e2d3a612a5d09bd59f1436723fb4`",
         "Windows Harness run `25577701036` passed",
         "`3164d185e5d203b504bd78432032fa13003983f8`",
-        "AA3 PR #116 passed PR Windows Harness run `25579782185`",
-        "`8da0ba6dd111cfc16170284cb4e7787819d3a67e`",
-        "Windows Harness run `25579869673` passed",
+        "AA4 PR #117 passed PR Windows Harness run `25580215098`",
+        "`1c9cabec4d27b8c0e4e245d9a27ddcba96ed3a00`",
+        "Windows Harness run `25580333158` passed",
         "Stage AA0 - Post-v0.1.12 Baseline Cursor",
         "Stage AA1 - Blueprint Gap And Public Surface Audit",
         "Stage AA2 - Deterministic Demo And Operator Experience Refresh",
@@ -796,7 +803,7 @@ def test_post_v012_plan_is_active_without_expanding_scope():
         "MCP tool list remains unchanged and read-only",
         "Product CLI still does not expose targeted `--hwnd`, `--pid`",
         "Do not implement screenshot capture, OCR, audio recording",
-        "AA4 focused compatibility tests, full pytest, helper build, watcher build",
+        "AA5 focused release-readiness tests, full pytest, helper build, watcher build",
         "Stage AA0 initialization:",
         "gh release view v0.1.12",
         "git rev-parse v0.1.12",
@@ -842,8 +849,18 @@ def test_post_v012_plan_is_active_without_expanding_scope():
         "python harness/scripts/run_install_cli_smoke.py` - passed.",
         "python harness/scripts/run_harness.py` - passed.",
         "git diff --check` - passed.",
-        "Pending AA4 PR Windows Harness.",
-        "Pending AA4 post-merge `main` Windows Harness.",
+        "Stage AA4 remote validation:",
+        "PR #117 Windows Harness run `25580215098` - passed.",
+        "Post-merge `main` Windows Harness run `25580333158` - passed",
+        "Stage AA5 release-readiness validation:",
+        "python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 34 tests.",
+        "python -m pytest -q` - passed, 125 tests.",
+        "python harness/scripts/run_install_cli_smoke.py` - passed.",
+        "python harness/scripts/run_harness.py` - passed.",
+        "git diff --check` - passed.",
+        "Pending AA5 PR Windows Harness.",
+        "Pending AA5 post-merge `main` Windows Harness.",
+        "Pending `v0.1.13` publication.",
     ):
         assert expected in normalized
 

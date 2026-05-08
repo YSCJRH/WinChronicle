@@ -19,6 +19,7 @@ V019_RELEASE = ROOT / "docs" / "release-v0.1.9.md"
 V0110_RELEASE = ROOT / "docs" / "release-v0.1.10.md"
 V0111_RELEASE = ROOT / "docs" / "release-v0.1.11.md"
 V0112_RELEASE = ROOT / "docs" / "release-v0.1.12.md"
+V0113_RELEASE = ROOT / "docs" / "release-v0.1.13.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -470,6 +471,46 @@ def test_v0112_release_record_is_published_and_compatible():
         "GitHub release publication passed",
         "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12.",
         "Final tag target: `df16ea301243e2d3a612a5d09bd59f1436723fb4`.",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
+def test_v0113_release_record_is_ready_and_compatible():
+    text = V0113_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Publication status: release-readiness candidate.",
+        "Release | `v0.1.13`",
+        "Stage | Release-readiness candidate",
+        "Base `main` SHA before AA5 readiness | `1c9cabec4d27b8c0e4e245d9a27ddcba96ed3a00`",
+        "Candidate PR | Pending AA5 PR",
+        "Candidate PR Windows Harness | Pending AA5 PR Windows Harness",
+        "Candidate post-merge `main` Windows Harness | Pending AA5 post-merge Windows Harness",
+        "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.12",
+        "`v0.1.12` tag target | `df16ea301243e2d3a612a5d09bd59f1436723fb4`",
+        "AA0 PR Windows Harness | Passed, run `25578139342`",
+        "AA1 PR Windows Harness | Passed, run `25578768178`",
+        "AA2 PR Windows Harness | Passed, run `25579283981`",
+        "AA3 PR Windows Harness | Passed, run `25579782185`",
+        "AA4 PR Windows Harness | Passed, run `25580215098`",
+        "AA4 post-merge `main` Windows Harness | Passed, run `25580333158`",
+        "must report `0.1.13`",
+        "`python -m pytest -q` | Pass | `125 passed`",
+        "exact read-only MCP tool list remains unchanged",
+        "Phase 6 remains specification-only",
+        "no new capture surfaces",
+        "no helper/watcher product behavior changes",
+        "no screenshot capture code",
+        "no OCR engine integration",
+        "explicitly accepts inherited `v0.1.0` Notepad",
+        "Fallback path: release candidate if any product or contract change",
+        "Publication approval: completed by the active thread goal",
+        "AA5 local validation passed",
+        "Release URL and final tag target are pending.",
     ):
         assert phrase in normalized
 

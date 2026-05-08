@@ -28,18 +28,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AA4 - Compatibility Guardrail Sweep.
-- Stage status: B - AA4 compatibility sweep docs/tests are implemented locally; PR Windows
+- Current stage: AA5 - v0.1.13 Release Readiness.
+- Stage status: B - AA5 release-readiness docs/version/tests are implemented locally; PR Windows
   Harness and post-merge Windows Harness are pending.
-- Last completed evidence: AA3 PR #116 passed PR Windows Harness run
-  `25579782185`, merged as
-  `8da0ba6dd111cfc16170284cb4e7787819d3a67e`, and post-merge `main`
-  Windows Harness run `25579869673` passed on that SHA.
-- Last validation: AA4 focused compatibility tests, full pytest, helper build, watcher
+- Last completed evidence: AA4 PR #117 passed PR Windows Harness run
+  `25580215098`, merged as
+  `1c9cabec4d27b8c0e4e245d9a27ddcba96ed3a00`, and post-merge `main`
+  Windows Harness run `25580333158` passed on that SHA.
+- Last validation: AA5 focused release-readiness tests, full pytest, helper build, watcher
   build, install CLI smoke, full harness, and `git diff --check` passed
   locally.
-- Next atomic task: open the AA4 PR, then verify PR and post-merge Windows
-  Harness.
+- Next atomic task: open the AA5 PR, verify PR and post-merge Windows Harness,
+  then publish `v0.1.13`.
 - Known blockers: none.
 
 ## Phased Work
@@ -197,6 +197,19 @@ Stage-specific gates:
   authoritative guardrails. The focused tests and scans found no drift requiring
   product code, schema, CLI/MCP shape, helper/watcher behavior, or privacy
   behavior changes.
+- Recorded AA4 PR #117 and post-merge Windows Harness run `25580333158` as the
+  compatibility guardrail sweep completion evidence.
+- During AA5, chose the direct compatible `v0.1.13` path because AA0-AA4 changed
+  documentation, tests, GitHub metadata, deterministic harness evidence,
+  compatibility evidence, and release-planning records only. AA5 changes
+  release documentation, tests, and version metadata only.
+- During AA5, aligned package, runtime, and MCP server version identity to
+  `0.1.13`.
+- During AA5, the `v0.1.13` release-readiness record accepts inherited
+  `v0.1.0` manual UIA smoke for the compatible `v0.1.13` path only because
+  helper behavior, watcher product behavior, manual smoke scripts, capture
+  behavior, privacy behavior, product CLI/MCP shape, release approver
+  requirements, and capture surfaces are unchanged.
 
 ## Validation Log
 
@@ -273,5 +286,19 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AA4 PR Windows Harness.
-- Pending AA4 post-merge `main` Windows Harness.
+- Stage AA4 remote validation:
+  - PR #117 Windows Harness run `25580215098` - passed.
+  - PR #117 merged as `1c9cabec4d27b8c0e4e245d9a27ddcba96ed3a00`.
+  - Post-merge `main` Windows Harness run `25580333158` - passed on
+    `1c9cabec4d27b8c0e4e245d9a27ddcba96ed3a00`.
+- Stage AA5 release-readiness validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 34 tests.
+  - `python -m pytest -q` - passed, 125 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AA5 PR Windows Harness.
+- Pending AA5 post-merge `main` Windows Harness.
+- Pending `v0.1.13` publication.
