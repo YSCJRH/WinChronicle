@@ -13,16 +13,15 @@ or token canaries.
 
 | Field | Value |
 | --- | --- |
-| Stable release baseline | `v0.1.6` |
-| Current maintenance plan | [Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md) |
-| Latest completed maintenance plan | [Post-v0.1.5 maintenance plan](next-round-plan-post-v0.1.5.md) |
-| Published release record | [v0.1.6 maintenance release record](release-v0.1.6.md) |
-| Latest published release record | [v0.1.6 maintenance release record](release-v0.1.6.md) |
-| Active release-readiness record | [v0.1.7 maintenance release record](release-v0.1.7.md) |
+| Stable release baseline | `v0.1.7` |
+| Current maintenance plan | Establish post-v0.1.7 plan before new implementation |
+| Latest completed maintenance plan | [Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md) |
+| Published release record | [v0.1.7 maintenance release record](release-v0.1.7.md) |
+| Latest published release record | [v0.1.7 maintenance release record](release-v0.1.7.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
 | Last freshness decision | For the post-v0.1.6 compatible maintenance path toward `v0.1.7`, inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and watcher preview manual evidence is explicitly accepted by the T4 release-readiness record because the release path changed documentation, tests, CI/runtime metadata, version metadata, deterministic harness evidence, and compatibility evidence without changing helper behavior, watcher product behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces. Fresh manual smoke is still required if a later stage changes any of those boundaries or if the release approver requires fresh hard-gate evidence. |
-| Next freshness decision | After any `v0.1.7` publication, reconcile the published facts and establish the next active plan before new implementation work. |
+| Next freshness decision | The next post-v0.1.7 plan must make a release-specific freshness decision before any later publication path. |
 
 ## Latest Known Manual Evidence
 

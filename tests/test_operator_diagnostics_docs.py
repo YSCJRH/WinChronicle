@@ -59,9 +59,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
     readme_intro_normalized = " ".join(readme_intro.split())
 
-    assert "latest published `v0.1.6` release record" in readme_intro_normalized
-    assert "active post-v0.1.6 maintenance plan" in readme_intro_normalized
-    assert "`v0.1.7` release-readiness record" in readme_intro_normalized
+    assert "latest published `v0.1.7` release record" in readme_intro_normalized
+    assert "completed post-v0.1.6 maintenance plan" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.7 maintenance release record" in readme_operator_docs
@@ -72,13 +71,13 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.5 maintenance release record" in readme_operator_docs
     assert "v0.1.4 maintenance release record" in readme_operator_docs
     assert readme_operator_docs.index("v0.1.7 maintenance release record") < readme_operator_docs.index(
-        "v0.1.6 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.6 maintenance release record") < readme_operator_docs.index(
         "Post-v0.1.6 maintenance plan"
     )
-    assert "release-v0.1.7.md" in current_section
     assert readme_operator_docs.index("Post-v0.1.6 maintenance plan") < readme_operator_docs.index(
+        "v0.1.6 maintenance release record"
+    )
+    assert "release-v0.1.7.md" in current_section
+    assert readme_operator_docs.index("v0.1.6 maintenance release record") < readme_operator_docs.index(
         "Post-v0.1.5 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.5 maintenance plan") < readme_operator_docs.index(
@@ -122,8 +121,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-v0.1.7.md" in evidence
     assert "next-round-plan-post-v0.1.5.md" not in checklist
     assert "next-round-plan-post-v0.1.5.md" not in evidence
-    assert "release-v0.1.6.md" in checklist
-    assert "release-v0.1.6.md" in evidence
+    assert "release-v0.1.6.md" not in checklist
+    assert "release-v0.1.6.md" not in evidence
     assert "next-round-plan-post-v0.1.4.md" not in checklist
     assert "next-round-plan-post-v0.1.4.md" not in evidence
     assert "release-v0.1.5.md" not in checklist
@@ -208,21 +207,26 @@ def test_post_v016_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: T4 - v0.1.7 Release Readiness.",
-        "Stage status: B - T4 local release-readiness changes and validation are",
-        "`v0.1.6` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6",
-        "targets `914cf361ac5864fa31d393d125d14e45eeba96bc`",
-        "Publication reconciliation PR #80 passed PR Windows Harness run `25552120656`",
-        "merged as `371060498c70a4e1ff4e075b3fd247b704c6d3f7`",
+        "Current stage: G - v0.1.7 Published Baseline Reconciliation.",
+        "Stage status: G - v0.1.7 published; baseline reconciliation complete.",
+        "`v0.1.7` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.7",
+        "targets `0b5969509754f78b218f823d0e6bb7a0ea61392b`",
+        "Previous stable baseline: `v0.1.6` was published",
+        "publication reconciliation PR #80 merged as `371060498c70a4e1ff4e075b3fd247b704c6d3f7`",
+        "its PR Windows Harness run `25552120656` passed",
         "Windows Harness run `25552214063` passed",
         "PR #81 Windows Harness run `25553025094` - passed",
         "Post-merge `main` Windows Harness run `25553238476` - passed",
-        "T2 PR #83 passed PR Windows Harness run `25554431580`",
-        "merged as `fb84fb2b2bf47cfe89680c898f3694f543d75c52`",
-        "post-merge `main` Windows Harness run `25554520036` passed",
-        "T3 PR #84 passed PR Windows Harness run `25555063537`",
-        "merged as `6d1d8f94c56636c23daafcb4ceae24053ff226aa`",
-        "post-merge `main` Windows Harness run `25555180274` passed",
+        "During T2, merged PR #83 as",
+        "PR #83 Windows Harness run `25554431580` - passed",
+        "`fb84fb2b2bf47cfe89680c898f3694f543d75c52`",
+        "`25554520036`",
+        "`25555063537`",
+        "`6d1d8f94c56636c23daafcb4ceae24053ff226aa`",
+        "`25555180274`",
+        "`25556058760`",
+        "merged as `0b5969509754f78b218f823d0e6bb7a0ea61392b`",
+        "`25556207363`",
         "Stage T0 - Post-v0.1.6 Baseline Cursor",
         "Stage T1 - Evidence Freshness And Entry Hygiene",
         "Stage T2 - CI Runtime And Dependency Maintenance Scan",
@@ -248,6 +252,9 @@ def test_post_v016_plan_is_active_without_expanding_scope():
         "direct compatible `v0.1.7` path",
         "aligning version identity to `0.1.7`",
         "release-readiness record explicitly accepts inherited `v0.1.0` manual UIA smoke",
+        "published `v0.1.7` from `0b5969509754f78b218f823d0e6bb7a0ea61392b`",
+        "establish a post-v0.1.7 maintenance plan before starting",
+        "gh release create v0.1.7",
     ):
         assert expected in normalized
 
@@ -261,9 +268,10 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "stable baseline is `v0.1.6`",
-        "`v0.1.6` is the latest published release",
-        "post-v0.1.6 execution cursor must be followed before any new",
+        "stable baseline is `v0.1.7`",
+        "`v0.1.7` is the latest published release",
+        "post-v0.1.7 execution cursor must be established before any new",
+        "post-v0.1.6 execution cursor is completed historical context",
         "post-v0.1.5 execution cursor is completed historical context",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
         "inherited `v0.1.0` manual",
@@ -279,9 +287,10 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "`v0.1.6` is the stable baseline",
-        "`v0.1.6` is the latest published release",
-        "post-v0.1.6 execution cursor must be followed before implementation",
+        "`v0.1.7` is the stable baseline",
+        "`v0.1.7` is the latest published release",
+        "post-v0.1.7 execution cursor must be established before implementation",
+        "post-v0.1.6 execution cursor is completed historical context",
         "post-v0.1.5 execution cursor is completed historical context",
         "manual UIA smoke evidence inherited from `v0.1.0`",
         "must be labeled as inherited or stale",
@@ -321,12 +330,11 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         assert gate in ledger
 
     for expected in (
-        "Stable release baseline | `v0.1.6`",
-        "Current maintenance plan | [Post-v0.1.6 maintenance plan]",
-        "Latest completed maintenance plan | [Post-v0.1.5 maintenance plan]",
-        "Published release record | [v0.1.6 maintenance release record]",
-        "Latest published release record | [v0.1.6 maintenance release record]",
-        "Active release-readiness record | [v0.1.7 maintenance release record]",
+        "Stable release baseline | `v0.1.7`",
+        "Current maintenance plan | Establish post-v0.1.7 plan before new implementation",
+        "Latest completed maintenance plan | [Post-v0.1.6 maintenance plan]",
+        "Published release record | [v0.1.7 maintenance release record]",
+        "Latest published release record | [v0.1.7 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
         "Last freshness decision | For the post-v0.1.6 compatible maintenance path toward `v0.1.7`",
         "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
@@ -334,7 +342,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "explicitly accepted by S4 for the compatible `v0.1.6` path",
         "explicitly accepted by T4 for the compatible `v0.1.7` path",
         "historically accepted for `v0.1.5` as diagnostic context",
-        "Next freshness decision | After any `v0.1.7` publication",
+        "Next freshness decision | The next post-v0.1.7 plan must make a release-specific freshness decision",
         "manual smoke is explicitly accepted by the T4 release-readiness record",
         "Fresh manual smoke is required if any helper, watcher, smoke script",
         "Do not paste observed text",

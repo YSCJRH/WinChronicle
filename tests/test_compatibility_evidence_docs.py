@@ -218,10 +218,15 @@ def test_v017_release_record_is_ready_and_compatible():
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: release-readiness candidate; not yet published.",
+        "Publication status: published maintenance release.",
         "Release | `v0.1.7`",
-        "Stage | Release-readiness candidate",
+        "Stage | Published maintenance release",
         "Base `main` SHA before T4 readiness | `6d1d8f94c56636c23daafcb4ceae24053ff226aa`",
+        "Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/85",
+        "Candidate PR Windows Harness | Passed, run `25556058760`",
+        "Candidate post-merge `main` Windows Harness | Passed, run `25556207363`",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.7",
+        "Final tag target | `0b5969509754f78b218f823d0e6bb7a0ea61392b`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.6",
         "`v0.1.6` tag target | `914cf361ac5864fa31d393d125d14e45eeba96bc`",
         "T0 PR Windows Harness | Passed, run `25553025094`",
@@ -238,9 +243,10 @@ def test_v017_release_record_is_ready_and_compatible():
         "no screenshot capture code",
         "no OCR engine integration",
         "explicitly accepts inherited `v0.1.0` Notepad",
-        "Fallback path: release candidate if any product or contract change",
-        "Publication approval: directed by the active thread goal",
-        "Deterministic gates: local T4 validation passed; PR Windows Harness and post-merge `main` Windows Harness are pending.",
+        "Fallback path: follow-up release candidate if any product or contract change",
+        "Publication approval: completed by the active thread goal",
+        "Deterministic gates: local T4 validation, PR Windows Harness, post-merge `main` Windows Harness, and GitHub release publication passed.",
+        "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.7.",
     ):
         assert phrase in normalized
 

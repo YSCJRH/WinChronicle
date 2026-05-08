@@ -149,8 +149,8 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Read-only MCP compatibility examples](mcp-readonly-examples.md)
 - [Known limitations](known-limitations.md)
 - [v0.1.7 maintenance release record](release-v0.1.7.md)
-- [v0.1.6 maintenance release record](release-v0.1.6.md)
 - [Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md)
+- [v0.1.6 maintenance release record](release-v0.1.6.md)
 
 ## Historical Release Records
 
