@@ -28,9 +28,10 @@ targeted capture.
 
 ## Maintenance Use
 
-For compatible maintenance releases after `v0.1.4`, including the published
-`v0.1.4` maintenance release record and any later maintenance round, release
-evidence should cite this matrix and record:
+For compatible maintenance releases after `v0.1.7`, use this matrix together
+with the current release checklist and manual smoke evidence ledger. Historical
+maintenance records from `v0.1.4` onward also cite this matrix. Release
+evidence should record:
 
 - Notepad targeted smoke result.
 - Edge targeted smoke result.

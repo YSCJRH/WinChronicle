@@ -142,9 +142,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "post-v0.1.6 plan is completed historical evidence" in checklist
     assert "post-v0.1.6 cursor is completed historical evidence" in evidence
     assert "Before a compatible `v0.1.1` maintenance release" not in matrix
-    assert "For compatible maintenance releases after `v0.1.4`" in matrix
-    assert "published\n`v0.1.4` maintenance release record" in matrix
-    assert "any later maintenance round" in matrix
+    assert "For compatible maintenance releases after `v0.1.7`" in matrix
+    assert "Historical\nmaintenance records from `v0.1.4` onward" in matrix
     assert "current\n`v0.1.3` readiness round" not in matrix
 
 
@@ -276,14 +275,17 @@ def test_post_v017_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: U0 - Post-v0.1.7 Baseline Cursor.",
-        "Stage status: B - active cursor docs/tests are implemented",
+        "Current stage: U1 - Evidence Freshness And Entry Hygiene.",
+        "Stage status: B - evidence freshness docs/tests are implemented",
         "`v0.1.7` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.7",
         "targets `0b5969509754f78b218f823d0e6bb7a0ea61392b`",
         "PR #86 merged as `5e310f9c37836c5e6baa1bee7f89f91f701ff6e8`",
         "PR Windows Harness run `25556946503` passed",
         "post-merge `main` Windows Harness run `25557058094` passed",
-        "Next atomic task: open a small U0 PR",
+        "Next atomic task: open a small U1 PR",
+        "U0 PR #87 passed PR Windows Harness run `25557993996`",
+        "merged as `3ca1d2772c16ac11b7cfef8f4fe8b6fc28cb6636`",
+        "post-merge `main` Windows Harness run `25558154805` passed",
         "Stage U0 - Post-v0.1.7 Baseline Cursor",
         "Stage U1 - Evidence Freshness And Entry Hygiene",
         "Stage U2 - CI Runtime And Dependency Maintenance Scan",
@@ -303,8 +305,11 @@ def test_post_v017_plan_is_active_without_expanding_scope():
         "product targeted capture absence",
         "Phase 6 spec-only status",
         "Recorded PR #86 and post-merge Windows Harness run `25557058094`",
+        "During U0, merged PR #87 as",
+        "During U1, decided that inherited `v0.1.0` manual UIA smoke remains",
+        "No fresh manual smoke is required in U1",
         "Do not retag `v0.1.7`",
-        "inherited manual UIA smoke as historical context only until U1",
+        "release-readiness record explicitly accepts it",
     ):
         assert expected in normalized
 
@@ -322,6 +327,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "`v0.1.7` is the latest published release",
         "post-v0.1.7 execution cursor is active and records publication",
         "post-merge Windows Harness run `25557058094`",
+        "U0 PR #87 plus post-merge Windows Harness run `25558154805`",
         "post-v0.1.6 execution cursor is completed historical context",
         "post-v0.1.5 execution cursor is completed historical context",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
@@ -330,6 +336,9 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "inherited `v0.1.0` manual smoke was explicitly accepted by S4",
         "post-v0.1.6 compatible maintenance path toward `v0.1.7`",
         "inherited\n  `v0.1.0` manual smoke is explicitly accepted by the T4",
+        "active post-v0.1.7 maintenance path",
+        "stale/inherited after the U1 freshness decision",
+        "not\n  fresh or current release evidence",
         "capture-surface behavior changed before release",
         "no observed-content artifact is committed to refresh evidence",
         "deterministic harness smoke changes require fresh deterministic gate",
@@ -342,6 +351,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "`v0.1.7` is the latest published release",
         "post-v0.1.7 execution cursor is active and records publication",
         "post-merge Windows Harness run `25557058094`",
+        "U0 PR #87 plus post-merge Windows Harness run `25558154805`",
         "post-v0.1.6 execution cursor is completed historical context",
         "post-v0.1.5 execution cursor is completed historical context",
         "manual UIA smoke evidence inherited from `v0.1.0`",
@@ -351,6 +361,9 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "inherited `v0.1.0` manual smoke was explicitly accepted by S4",
         "post-v0.1.6 compatible maintenance path toward `v0.1.7`",
         "inherited\n  `v0.1.0` manual smoke is explicitly accepted by the T4",
+        "active post-v0.1.7 maintenance path",
+        "stale/inherited after the U1 freshness decision",
+        "not\n  fresh or current release evidence",
         "capture-surface behavior changed before release",
         "never observed content",
         "deterministic harness smoke changes require fresh deterministic gate",
@@ -388,15 +401,19 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Published release record | [v0.1.7 maintenance release record]",
         "Latest published release record | [v0.1.7 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
-        "Last freshness decision | For the post-v0.1.6 compatible maintenance path toward `v0.1.7`",
+        "Last freshness decision | For the active post-v0.1.7 maintenance path",
         "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
-        "is explicitly accepted by the T4 release-readiness record",
+        "remains stale/inherited",
+        "U1 does not treat it as fresh or current release evidence",
+        "No fresh manual smoke is required in U1",
         "explicitly accepted by S4 for the compatible `v0.1.6` path",
         "explicitly accepted by T4 for the compatible `v0.1.7` path",
         "historically accepted for `v0.1.5` as diagnostic context",
-        "Next freshness decision | Stage U1 of the post-v0.1.7 plan must make a release-specific freshness decision",
+        "Next freshness decision | U4 release readiness must explicitly accept inherited manual evidence",
         "manual smoke is explicitly accepted by the T4 release-readiness\n  record",
         "For the active post-v0.1.7 path, inherited `v0.1.0` manual smoke remains",
+        "stale/inherited after the U1 freshness decision",
+        "not fresh or current\n  release evidence",
         "Fresh manual smoke is required if any helper, watcher, smoke script",
         "Do not paste observed text",
         "Do not save or commit raw watcher JSONL",

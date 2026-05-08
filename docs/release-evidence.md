@@ -36,7 +36,8 @@ historical records. After the `v0.1.7` publication:
 - `v0.1.7` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
 - the post-v0.1.7 execution cursor is active and records publication
-  reconciliation PR #86 plus post-merge Windows Harness run `25557058094`;
+  reconciliation PR #86 plus post-merge Windows Harness run `25557058094`, and
+  U0 PR #87 plus post-merge Windows Harness run `25558154805`;
 - the post-v0.1.6 execution cursor is completed historical context;
 - the post-v0.1.5 execution cursor is completed historical context;
 - manual UIA smoke evidence inherited from `v0.1.0` or another older release
@@ -51,6 +52,11 @@ historical records. After the `v0.1.7` publication:
   record because no helper, watcher product behavior, manual smoke script,
   capture, privacy, product CLI/MCP shape, or capture-surface behavior changed
   before release readiness;
+- for the active post-v0.1.7 maintenance path, inherited `v0.1.0` manual
+  smoke remains stale/inherited after the U1 freshness decision and is not
+  fresh or current release evidence unless a later release-readiness record
+  explicitly accepts it for a compatible release, or fresh manual smoke is
+  recorded;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are

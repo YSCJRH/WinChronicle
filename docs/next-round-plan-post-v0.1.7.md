@@ -24,21 +24,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: U0 - Post-v0.1.7 Baseline Cursor.
-- Stage status: B - active cursor docs/tests are implemented and local
+- Current stage: U1 - Evidence Freshness And Entry Hygiene.
+- Stage status: B - evidence freshness docs/tests are implemented and local
   deterministic validation passed; PR Windows Harness and post-merge Windows
   Harness are pending.
-- Last completed evidence: `v0.1.7` is published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.7 and targets
-  `0b5969509754f78b218f823d0e6bb7a0ea61392b`. Publication reconciliation PR
-  #86 merged as `5e310f9c37836c5e6baa1bee7f89f91f701ff6e8`; PR Windows
-  Harness run `25556946503` passed, and post-merge `main` Windows Harness run
-  `25557058094` passed on that SHA.
-- Last validation: `gh release view v0.1.7` confirmed the release URL, final
-  tag target, and published status; local tags include `v0.1.7`; package
-  runtime version reports `0.1.7`.
-- Next atomic task: open a small U0 PR, verify PR and post-merge Windows
-  Harness, then advance to U1 in the next branch.
+- Last completed evidence: U0 PR #87 passed PR Windows Harness run
+  `25557993996`, merged as `3ca1d2772c16ac11b7cfef8f4fe8b6fc28cb6636`, and
+  post-merge `main` Windows Harness run `25558154805` passed on that SHA.
+- Last validation: U1 local docs tests, full pytest, helper build, watcher
+  build, install CLI smoke, full harness, and `git diff --check` passed.
+- Next atomic task: open a small U1 PR, verify PR and post-merge Windows
+  Harness, then advance to U2 in the next branch.
 - Known blockers: none.
 
 ## Phased Work
@@ -181,6 +177,21 @@ Stage-specific gates:
   planning contract, not implementation authorization.
 - Kept inherited manual UIA smoke as historical context only until U1 makes a
   release-specific freshness decision.
+- During U0, merged PR #87 as
+  `3ca1d2772c16ac11b7cfef8f4fe8b6fc28cb6636`; PR Windows Harness
+  `25557993996` and post-merge `main` Windows Harness `25558154805` passed.
+- During U1, decided that inherited `v0.1.0` manual UIA smoke remains
+  stale/inherited for the active post-v0.1.7 maintenance path. It is not fresh
+  or current release evidence unless a later release-readiness record
+  explicitly accepts it for a compatible release, or fresh manual smoke is
+  rerun and recorded. No fresh manual smoke is required in U1 because no helper
+  behavior, watcher product behavior, manual smoke scripts, capture behavior,
+  privacy behavior, product CLI/MCP shape, or capture surfaces changed.
+- During U1, refreshed operator evidence references so the active
+  post-v0.1.7 cursor includes both the publication reconciliation evidence from
+  PR #86 and the U0 cursor PR #87 evidence. The UIA helper quality matrix
+  maintenance wording now points at compatible maintenance releases after
+  `v0.1.7` while preserving historical `v0.1.4`-onward context.
 
 ## Validation Log
 
@@ -189,6 +200,17 @@ Stage-specific gates:
   - `gh run view 25557058094 --json databaseId,status,conclusion,headSha,url,createdAt,updatedAt,name,displayTitle` - passed; conclusion `success` on `5e310f9c37836c5e6baa1bee7f89f91f701ff6e8`.
   - `git show-ref --tags v0.1.7` - passed; local tag points to `0b5969509754f78b218f823d0e6bb7a0ea61392b`.
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py tests/test_version_identity.py -q` - passed after adding this active cursor and updating operator entry-point tests.
+  - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage U0 remote validation:
+  - PR #87 Windows Harness run `25557993996` - passed.
+  - Post-merge `main` Windows Harness run `25558154805` - passed on `3ca1d2772c16ac11b7cfef8f4fe8b6fc28cb6636`.
+- Stage U1 evidence-freshness validation:
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py tests/test_version_identity.py -q` - passed after advancing this cursor to U1 and recording the active post-v0.1.7 manual smoke freshness decision.
   - `python -m pytest -q` - passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
