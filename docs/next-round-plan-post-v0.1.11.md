@@ -26,19 +26,19 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Z2 - CI Runtime And Dependency Maintenance Scan.
-- Stage status: B - Z2 CI/runtime and dependency scan docs/tests are
+- Current stage: Z3 - Compatibility Guardrail Sweep.
+- Stage status: B - Z3 compatibility guardrail docs/tests are
   implemented and local
   deterministic validation passed; PR Windows Harness and post-merge Windows
   Harness are pending.
-- Last completed evidence: Z1 PR #108 passed PR Windows Harness run
-  `25574694437`, merged as
-  `a24ae2435264790ba8c2cac243c996ce3db0ce88`, and post-merge `main`
-  Windows Harness run `25574855474` passed on that SHA.
-- Last validation: Z2 CI/runtime and dependency maintenance scan, focused docs
+- Last completed evidence: Z2 PR #109 passed PR Windows Harness run
+  `25575316043`, merged as
+  `6ac84e7ff62a4d5bd11ac4a9ffec85cbf51a3991`, and post-merge `main`
+  Windows Harness run `25575439821` passed on that SHA.
+- Last validation: Z3 compatibility guardrail sweep, focused compatibility
   tests, full pytest, helper build, watcher build, install CLI smoke, full
   harness, and `git diff --check` passed locally.
-- Next atomic task: open the Z2 PR, then verify PR and post-merge Windows
+- Next atomic task: open the Z3 PR, then verify PR and post-merge Windows
   Harness.
 - Known blockers: none.
 
@@ -203,6 +203,15 @@ Stage-specific gates:
   project dependencies: runtime `jsonschema`, and dev `pytest`, `jsonschema`,
   and `wheel`. No screenshot/OCR/audio/keyboard/clipboard/network/LLM
   dependency drift was found.
+- Recorded Z2 PR #109 and post-merge Windows Harness run `25575439821` as the
+  CI/runtime and dependency maintenance completion evidence.
+- During Z3, treated the existing compatibility tests and scorecards as the
+  compatibility oracles for exact read-only MCP tools, disabled privacy
+  surfaces, observed content trust boundaries, watcher preview-only behavior,
+  product targeted capture absence, and Phase 6 spec-only status.
+- During Z3, found no product behavior, schema, CLI/MCP JSON shape, privacy
+  behavior, helper/watcher behavior, or capture-surface drift. No additional
+  product tests or code changes were needed.
 
 ## Validation Log
 
@@ -250,5 +259,24 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending Z2 PR Windows Harness.
-- Pending Z2 post-merge `main` Windows Harness.
+- Stage Z2 remote validation:
+  - PR #109 Windows Harness run `25575316043` - passed.
+  - PR #109 merged as `6ac84e7ff62a4d5bd11ac4a9ffec85cbf51a3991`.
+  - Post-merge `main` Windows Harness run `25575439821` - passed on
+    `6ac84e7ff62a4d5bd11ac4a9ffec85cbf51a3991`.
+- Stage Z3 compatibility guardrail sweep:
+  - `gh run view 25575439821 --json databaseId,status,conclusion,headSha,displayTitle,url,jobs` - passed; run and deterministic harness job concluded `success`.
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py -q` - passed, 44 tests.
+  - `python -c "from winchronicle.mcp.server import TOOL_NAMES; print('\n'.join(TOOL_NAMES))"` - passed; tool list remains exactly `current_context`, `search_captures`, `search_memory`, `read_recent_capture`, `recent_activity`, and `privacy_status`.
+  - `WINCHRONICLE_HOME=<temp>; python -m winchronicle init; python -m winchronicle status` - passed; screenshots, OCR, audio, keyboard capture, clipboard capture, network upload, LLM calls, MCP write tools, desktop control, and product targeted capture remained disabled, and observed content trust remained `untrusted_observed_content`.
+  - `rg -n -- "--hwnd|--pid|--window-title|--window-title-regex" src/winchronicle` - passed with no matches.
+  - `rg -n "import .*keyboard|from .*keyboard|KeyboardHook|SetWindowsHookEx|ImageGrab|pyscreenshot|easyocr|paddleocr|pyautogui|pyperclip|requests\.|httpx|aiohttp|openai|anthropic|SetForegroundWindow|AttachThreadInput" src resources/win-uia-helper resources/win-uia-watcher` - passed with no matches.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 26 tests.
+  - `python -m pytest -q` - passed, 118 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending Z3 PR Windows Harness.
+- Pending Z3 post-merge `main` Windows Harness.
