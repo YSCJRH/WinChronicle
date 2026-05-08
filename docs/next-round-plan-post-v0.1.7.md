@@ -24,17 +24,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: U3 - Compatibility Guardrail Sweep.
-- Stage status: B - compatibility guardrail sweep docs/tests are implemented and local
-  deterministic validation passed; PR Windows Harness and post-merge Windows
-  Harness are pending.
-- Last completed evidence: U2 PR #89 passed PR Windows Harness run
-  `25559501788`, merged as `a6703f500c0140dba7ed4d2bcdf3427050745649`, and
-  post-merge `main` Windows Harness run `25559686547` passed on that SHA.
-- Last validation: U3 compatibility-focused tests, full pytest, helper build, watcher
+- Current stage: U4 - v0.1.8 Release Readiness.
+- Stage status: B - release-readiness docs, tests, release record, and version
+  metadata are implemented and local deterministic validation passed; PR
+  Windows Harness and post-merge Windows Harness are pending.
+- Last completed evidence: U3 PR #90 passed PR Windows Harness run
+  `25560353073`, merged as `8a25ec8abf2f91a912aaffd807ae4a4897847578`, and
+  post-merge `main` Windows Harness run `25560483461` passed on that SHA.
+- Last validation: U4 version/docs tests, full pytest, helper build, watcher
   build, install CLI smoke, full harness, and `git diff --check` passed.
-- Next atomic task: open a small U3 PR, verify PR and post-merge Windows
-  Harness, then advance to U4 release readiness in the next branch.
+- Next atomic task: open the U4 PR, verify PR and post-merge Windows Harness,
+  then publish `v0.1.8` if no product, schema, CLI/MCP JSON shape, privacy,
+  helper/watcher behavior, or capture-surface change is discovered.
 - Known blockers: none.
 
 ## Phased Work
@@ -215,6 +216,23 @@ Stage-specific gates:
   targeted capture absence, and UIA helper boundary status. Therefore U3
   records a no-action-needed compatibility guardrail sweep with no product
   changes.
+- During U3, merged PR #90 as
+  `8a25ec8abf2f91a912aaffd807ae4a4897847578`; PR Windows Harness
+  `25560353073` and post-merge `main` Windows Harness `25560483461` passed.
+- During U4, chose the direct compatible `v0.1.8` path because U0-U4 change
+  release evidence, documentation, tests, CI/runtime metadata, compatibility
+  evidence, and version metadata only. If any product behavior, schema,
+  CLI/MCP JSON shape, privacy behavior, helper/watcher behavior, or
+  capture-surface change is required, stop the direct path and prepare a
+  release candidate instead.
+- During U4, the `v0.1.8` release-readiness record explicitly accepts
+  inherited `v0.1.0` manual UIA smoke for the compatible `v0.1.8` path only
+  because helper behavior, watcher product behavior, manual smoke scripts,
+  capture behavior, privacy behavior, product CLI/MCP shape, and capture
+  surfaces are unchanged.
+- During U4, aligned version identity to `0.1.8` across `pyproject.toml`,
+  `winchronicle.__version__`, and MCP `serverInfo.version` through the shared
+  version module.
 
 ## Validation Log
 
@@ -262,6 +280,17 @@ Stage-specific gates:
 - Stage U3 compatibility guardrail validation:
   - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_memory_pipeline.py tests/test_phase6_privacy_scorecard.py tests/test_privacy_check.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py tests/test_watcher_events.py tests/test_uia_helper_quality_matrix.py -q` - passed.
   - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage U3 remote validation:
+  - PR #90 Windows Harness run `25560353073` - passed.
+  - Post-merge `main` Windows Harness run `25560483461` - passed on `8a25ec8abf2f91a912aaffd807ae4a4897847578`.
+- Stage U4 release-readiness validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed after aligning version identity to `0.1.8`, adding the `v0.1.8` release-readiness record, and recording the U4 manual smoke acceptance decision.
+  - `python -m pytest -q` - passed with `111 passed`.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
