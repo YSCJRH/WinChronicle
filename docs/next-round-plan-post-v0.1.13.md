@@ -30,21 +30,21 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AB1 - Public Metadata And Evidence Freshness Audit.
-- Stage status: B - AB1 public metadata audit docs/tests and local validation
-  are complete; PR Windows Harness and post-merge Windows Harness are pending.
+- Current stage: AB2 - Helper And Watcher Preview Diagnostics Evidence.
+- Stage status: B - AB2 helper/watcher diagnostics sweep docs/tests and local
+  validation are complete; PR Windows Harness and post-merge Windows Harness
+  are pending.
 - Last completed evidence: `v0.1.13` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13, targets
   `1070343d9bcfd60c48238835e26b6c32f9060ae7`, publication reconciliation PR
-  #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`, post-merge
-  `main` Windows Harness run `25581662790` passed, AB0 PR #120 merged as
-  `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`, and post-merge `main` Windows
-  Harness run `25582374884` passed.
-- Last validation: AB1 local validation passed with focused docs/version tests,
+  #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`, AB0 PR #120
+  merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`, and AB1 PR #121
+  merged as `1f557faf9ef2460cc456ea6966495b5f175ad809`.
+- Last validation: AB2 local validation passed with focused docs/version tests,
   full pytest, helper build, watcher build, install CLI smoke, full harness,
   and `git diff --check`.
-- Next atomic task: open the AB1 public metadata audit PR, verify PR and
-  post-merge Windows Harness, then continue to AB2.
+- Next atomic task: open the AB2 helper/watcher diagnostics sweep PR, verify PR
+  and post-merge Windows Harness, then continue to AB3.
 - Known blockers: none.
 
 ## Phased Work
@@ -191,6 +191,15 @@ Stage-specific gates:
   topics, and social preview verification. These are manual maintainer metadata
   items, not product-code changes or release blockers for deterministic
   harness correctness.
+- Recorded AB1 remote validation as completed evidence: PR #121 passed Windows
+  Harness run `25582831041`, merged as
+  `1f557faf9ef2460cc456ea6966495b5f175ad809`, and post-merge `main` Windows
+  Harness run `25582935956` passed.
+- AB2 found no helper/watcher diagnostics drift requiring product-code changes:
+  current docs, scorecards, and deterministic tests already cover timeout,
+  malformed output, no observed-content echo, heartbeat-only liveness,
+  duplicate skip, denylist skip, raw JSONL non-persistence, and diagnostic
+  artifact policy.
 
 ## Validation Log
 
@@ -222,5 +231,20 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AB1 PR Windows Harness.
-- Pending AB1 post-merge `main` Windows Harness.
+- Stage AB1 remote validation:
+  - PR #121 Windows Harness run `25582831041` - passed.
+  - PR #121 merged as `1f557faf9ef2460cc456ea6966495b5f175ad809`.
+  - Post-merge `main` Windows Harness run `25582935956` - passed.
+- Stage AB2 initialization:
+  - Reviewed `docs/uia-helper-quality-matrix.md`, `docs/watcher-preview.md`, `docs/operator-diagnostics.md`, and `harness/scorecards/capture-quality.md`.
+  - `rg "helper timed out|invalid JSON|empty stdout|watcher timed out|malformed JSONL|duplicates_skipped|denylisted_skipped|no raw|jsonl|capture-on-start|helper failed" tests src harness -n` - passed; deterministic helper/watcher diagnostics coverage is present in tests and scorecards.
+- Stage AB2 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 37 tests.
+  - `python -m pytest -q` - passed, 128 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AB2 PR Windows Harness.
+- Pending AB2 post-merge `main` Windows Harness.

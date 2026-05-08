@@ -132,6 +132,7 @@ available through `search-captures`.
 - [Windows UIA smoke gates](docs/windows-uia-smoke.md)
 - [Operator diagnostics](docs/operator-diagnostics.md)
 - [Public metadata audit after v0.1.13](docs/public-metadata-audit-post-v0.1.13.md)
+- [Helper and watcher diagnostics sweep after v0.1.13](docs/helper-watcher-diagnostics-sweep-post-v0.1.13.md)
 - [Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)
 - [Compatibility guardrail sweep after v0.1.12](docs/compatibility-guardrail-sweep-post-v0.1.12.md)
 - [Watcher preview](docs/watcher-preview.md)
