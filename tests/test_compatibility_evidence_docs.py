@@ -12,6 +12,7 @@ V012_RELEASE = ROOT / "docs" / "release-v0.1.2.md"
 V013_RELEASE = ROOT / "docs" / "release-v0.1.3.md"
 V014_RELEASE = ROOT / "docs" / "release-v0.1.4.md"
 V015_RELEASE = ROOT / "docs" / "release-v0.1.5.md"
+V016_RELEASE = ROOT / "docs" / "release-v0.1.6.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -162,6 +163,39 @@ def test_v015_release_record_is_published_and_compatible():
         "Publication approval: completed by the active thread goal directing stage completion, remote push, and publication.",
         "Deterministic gates: local P4 validation, PR Windows Harness, post-merge `main` Windows Harness, and GitHub release publication passed.",
         "P2 decision only because product UIA helper behavior",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
+def test_v016_release_readiness_record_is_compatible():
+    text = V016_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Publication status: release-readiness candidate; publication pending.",
+        "Release | `v0.1.6`",
+        "Base `main` SHA before S4 readiness | `4a8222f24423c565b64c065da3b151ee5e246b99`",
+        "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5",
+        "`v0.1.5` tag target | `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`",
+        "S0 PR Windows Harness | Passed, run `25546758389`",
+        "S1 PR Windows Harness | Passed, run `25547398940`",
+        "S2 PR Windows Harness | Passed, run `25548402922`",
+        "S3 PR Windows Harness | Passed, run `25549622445`",
+        "S3 post-merge `main` Windows Harness | Passed, run `25549851891`",
+        "`python -m pytest -q` | Pass | `106 passed",
+        "must report `0.1.6`",
+        "exact read-only MCP tool list remains unchanged",
+        "Phase 6 remains specification-only",
+        "no new capture surfaces",
+        "no helper/watcher product behavior changes",
+        "no screenshot capture code",
+        "no OCR engine integration",
+        "explicitly accepts inherited `v0.1.0` Notepad",
+        "Deterministic gates: local S4 validation passed",
+        "Publication approval: pending until S4 PR and post-merge Windows Harness",
     ):
         assert phrase in normalized
 

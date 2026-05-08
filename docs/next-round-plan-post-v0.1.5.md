@@ -22,19 +22,21 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: S3 - Compatibility Guardrail Sweep.
-- Stage status: C - S3 complete; ready to enter S4 on the next turn.
+- Current stage: S4 - v0.1.6 Release Readiness.
+- Stage status: B - S4 local release-readiness is complete; S4 PR Windows
+  Harness, post-merge `main` Windows Harness, and publication are pending.
 - Last completed evidence: `v0.1.5` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5 and targets
   `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`. The post-publication
   reconciliation commit is `df15810c0b5022bebd1fe8a488f677e74fe8eae1`, and
   Windows Harness run `25546003233` passed on that SHA.
-- Last validation: S3 guardrail validation passed targeted compatibility
-  suites, the full deterministic gate, the Phase 6 source-surface absence
-  check, release-evidence freshness checks, and `git diff --check`.
-- Next atomic task: start S4 by preparing `v0.1.6` release readiness only if
-  all S0-S3 changes remain compatible documentation, tests, CI/runtime
-  metadata, version metadata, or guardrail fixes.
+- Last validation: S4 local release-readiness validation passed targeted
+  release docs/version tests, the full deterministic gate, and `git diff
+  --check` after aligning package/runtime/MCP version identity to `0.1.6` and
+  adding the `v0.1.6` release-readiness record.
+- Next atomic task: open the S4 release-readiness PR, wait for PR Windows
+  Harness, merge after review, then wait for post-merge `main` Windows Harness
+  before publication.
 - Known blockers: none.
 
 ## Phased Work
@@ -166,6 +168,11 @@ Stage-specific gates:
   guard and refreshed manual smoke freshness wording for the post-v0.1.5 path
   toward `v0.1.6`. No product behavior, schema, CLI/MCP shape, helper/watcher
   behavior, or capture surface changed.
+- During S4, chose the direct compatible `v0.1.6` path because S0-S4 changed
+  only documentation, tests, CI/runtime metadata, version metadata, release
+  evidence, and compatibility guardrails. The `v0.1.6`
+  release-readiness record explicitly accepts inherited `v0.1.0` manual UIA
+  smoke for this compatible path, with no observed-content artifacts committed.
 
 ## Validation Log
 
@@ -203,6 +210,15 @@ Stage-specific gates:
   - `rg -n "untrusted_observed_content|trust|search-captures|search-memory|memory|entries_fts|captures_fts" src tests docs harness -g "*.py" -g "*.md" -g "*.json"` - reviewed search and memory trust-boundary guardrails.
   - `rg -n "Phase 6|screenshot|OCR|screenshots_enabled|ocr_enabled|allowlist|spec-only|not implement|not implemented" README.md docs harness tests src -g "*.py" -g "*.md" -g "*.json"` - reviewed Phase 6 spec-only guardrails.
   - `python -m pytest tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_memory_pipeline.py -q` - passed.
+  - `python -m pytest -q` - passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage S4 release-readiness validation:
+  - `git fetch --tags --quiet` - passed; local tags include `v0.1.5`.
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed after aligning version identity to `0.1.6` and adding the release-readiness record.
   - `python -m pytest -q` - passed.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.

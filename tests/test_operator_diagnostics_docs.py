@@ -58,14 +58,18 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )[0]
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
 
+    assert "current\n`v0.1.6` release-readiness record" in readme_intro
     assert "latest published `v0.1.5` release" in readme_intro
-    assert "`v0.1.5` release record" in readme_intro
-    assert "active\npost-v0.1.5 maintenance plan" in readme_intro
+    assert "active post-v0.1.5 maintenance plan" in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "Post-v0.1.5 maintenance plan" in readme_operator_docs
+    assert "v0.1.6 maintenance release-readiness record" in readme_operator_docs
     assert "Post-v0.1.4 maintenance plan" in readme_operator_docs
     assert "v0.1.5 maintenance release record" in readme_operator_docs
     assert "v0.1.4 maintenance release record" in readme_operator_docs
+    assert readme_operator_docs.index("v0.1.6 maintenance release-readiness record") < readme_operator_docs.index(
+        "Post-v0.1.5 maintenance plan"
+    )
     assert readme_operator_docs.index("Post-v0.1.5 maintenance plan") < readme_operator_docs.index(
         "v0.1.5 maintenance release record"
     )
@@ -79,6 +83,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "v0.1.3 maintenance release record"
     )
     assert "next-round-plan-post-v0.1.5.md" in current_section
+    assert "release-v0.1.6.md" in current_section
     assert "release-v0.1.5.md" in current_section
     assert "next-round-plan-post-v0.1.4.md" not in current_section
     assert "release-v0.1.4.md" not in current_section
@@ -99,6 +104,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-v0.1.0-final.md" in historical_section
     assert "next-round-plan-post-v0.1.5.md" in checklist
     assert "next-round-plan-post-v0.1.5.md" in evidence
+    assert "release-v0.1.6.md" in checklist
+    assert "release-v0.1.6.md" in evidence
     assert "next-round-plan-post-v0.1.4.md" not in checklist
     assert "next-round-plan-post-v0.1.4.md" not in evidence
     assert "release-v0.1.5.md" in checklist
@@ -145,8 +152,8 @@ def test_post_v015_plan_is_active_without_expanding_scope():
     )
 
     for expected in (
-        "Current stage: S3 - Compatibility Guardrail Sweep.",
-        "Stage status: C - S3 complete; ready to enter S4 on the next turn.",
+        "Current stage: S4 - v0.1.6 Release Readiness.",
+        "Stage status: B - S4 local release-readiness is complete",
         "`v0.1.5` is published at\nhttps://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5",
         "targets `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`",
         "post-publication\nreconciliation `main` commit is\n`df15810c0b5022bebd1fe8a488f677e74fe8eae1`",
@@ -164,6 +171,8 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "audited operator-facing docs, scorecards, and tests",
         "source-level Phase 6 absence",
         "post-v0.1.5 path\n  toward `v0.1.6`",
+        "aligning package/runtime/MCP version identity to `0.1.6`",
+        "release-readiness record explicitly accepts inherited `v0.1.0` manual UIA",
     ):
         assert expected in plan
 
@@ -234,13 +243,14 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Stable release baseline | `v0.1.5`",
         "Latest maintenance plan | [Post-v0.1.5 maintenance plan]",
         "Published release record | [v0.1.5 maintenance release record]",
+        "Current release-readiness record | [v0.1.6 maintenance release-readiness record]",
         "Latest published release record | [v0.1.5 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
         "Last freshness decision | For the current post-v0.1.5 compatible maintenance path toward",
         "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
-        "requires fresh S4 acceptance or refresh for `v0.1.6`",
+        "explicitly accepted by the S4 release-readiness record",
+        "explicitly accepted by S4 for the compatible `v0.1.6` path",
         "historically accepted for `v0.1.5` as diagnostic context",
-        "S4 must explicitly accept the inherited evidence or record fresh smoke",
         "Fresh manual smoke is required if any helper, watcher, smoke script",
         "Do not paste observed text",
         "Do not save or commit raw watcher JSONL",
