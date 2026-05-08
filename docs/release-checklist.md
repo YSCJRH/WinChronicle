@@ -40,10 +40,10 @@ inherited historical evidence:
   stale, not current;
 - stale manual smoke can support context, but a hard release gate needs fresh
   evidence or an explicit documented decision to keep the older result;
-- for the post-v0.1.4 compatible maintenance path, inherited `v0.1.0` manual
-  smoke can be explicitly accepted for a future release only after a fresh P2
-  decision and only if no helper, watcher, smoke script, capture, privacy,
-  product CLI/MCP shape, or capture-surface behavior changes;
+- for the post-v0.1.4 compatible maintenance path toward `v0.1.5`, P2 has
+  explicitly accepted inherited `v0.1.0` manual smoke only if no helper,
+  watcher product behavior, manual smoke script, capture, privacy, product
+  CLI/MCP shape, or capture-surface behavior changes before release;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are
