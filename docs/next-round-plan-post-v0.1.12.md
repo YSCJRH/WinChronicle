@@ -29,17 +29,16 @@ service install, and no default background capture.
 ## Execution Cursor
 
 - Current stage: G - v0.1.13 Published Baseline Reconciliation.
-- Stage status: B - `v0.1.13` is published; baseline reconciliation
-  docs/tests are implemented locally and PR Windows Harness is pending.
-- Last completed evidence: `v0.1.13` is published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13, targets
-  `1070343d9bcfd60c48238835e26b6c32f9060ae7`, and post-publication `main`
-  Windows Harness run `25580877004` passed on that SHA.
-- Last validation: v0.1.13 publication validation passed with
-  `gh release view v0.1.13`, `git rev-parse v0.1.13`, and
-  `python -c "import winchronicle; print(winchronicle.__version__)"`.
-- Next atomic task: open the v0.1.13 publication reconciliation PR, then
-  establish the post-v0.1.13 maintenance plan before new implementation work.
+- Stage status: G - `v0.1.13` published; baseline reconciliation complete.
+- Last completed evidence: publication reconciliation PR #119 passed PR Windows
+  Harness run `25581510176`, merged as
+  `f4781a91f2120f3eca5088b87bf9034be752274f`, and post-merge `main` Windows
+  Harness run `25581662790` passed on that SHA.
+- Last validation: v0.1.13 publication reconciliation validation passed with
+  local deterministic gates, PR Windows Harness, and post-merge `main` Windows
+  Harness.
+- Next atomic task: follow the post-v0.1.13 maintenance plan before starting
+  new implementation work.
 - Known blockers: none.
 
 ## Phased Work
@@ -216,6 +215,9 @@ Stage-specific gates:
 - Published `v0.1.13` from `1070343d9bcfd60c48238835e26b6c32f9060ae7`. Do not
   retag `v0.1.13`; establish a post-v0.1.13 maintenance plan before starting
   new implementation work.
+- Reconciled `v0.1.13` publication evidence in PR #119, merged as
+  `f4781a91f2120f3eca5088b87bf9034be752274f`. This closes the post-v0.1.12
+  maintenance round.
 
 ## Validation Log
 
@@ -315,5 +317,16 @@ Stage-specific gates:
   - `gh release view v0.1.13 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; release URL https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13, not draft, not prerelease, published at `2026-05-08T21:42:32Z`, and target `1070343d9bcfd60c48238835e26b6c32f9060ae7`.
   - `git fetch --tags origin; git rev-parse v0.1.13` - passed and printed `1070343d9bcfd60c48238835e26b6c32f9060ae7`.
   - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.13`.
-- Pending v0.1.13 publication reconciliation PR Windows Harness.
-- Pending post-v0.1.13 maintenance plan.
+- v0.1.13 publication reconciliation local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 34 tests.
+  - `python -m pytest -q` - passed, 125 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- v0.1.13 publication reconciliation remote validation:
+  - PR #119 Windows Harness run `25581510176` - passed.
+  - PR #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`.
+  - Post-merge `main` Windows Harness run `25581662790` - passed on
+    `f4781a91f2120f3eca5088b87bf9034be752274f`.

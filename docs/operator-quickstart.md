@@ -157,11 +157,13 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Known limitations](known-limitations.md)
 - [Roadmap](roadmap.md)
 - [Contributing](../CONTRIBUTING.md)
+- [Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md)
 - [v0.1.13 maintenance release record](release-v0.1.13.md)
 - [v0.1.12 maintenance release record](release-v0.1.12.md)
-- [Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md)
 
 ## Historical Release Records
+
+- [Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md)
 
 - [Post-v0.1.11 maintenance plan](next-round-plan-post-v0.1.11.md)
 - [v0.1.11 maintenance release record](release-v0.1.11.md)
