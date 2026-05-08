@@ -135,17 +135,18 @@ def test_v014_release_record_is_published_and_compatible():
         assert f"`{tool_name}`" in text
 
 
-def test_v015_release_record_is_candidate_and_compatible():
+def test_v015_release_record_is_published_and_compatible():
     text = V015_RELEASE.read_text(encoding="utf-8")
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: release-readiness candidate, not yet published.",
-        "Release URL | Pending publication",
-        "Final tag target | Pending publication",
+        "Publication status: published maintenance release.",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5",
+        "Final tag target | `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`",
         "Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/71",
         "Candidate PR Windows Harness | Passed, run `25544005112`",
         "Candidate post-merge `main` Windows Harness | Passed, run `25544114712`",
+        "Final pre-publication `main` Windows Harness | Passed, run `25544832155`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4",
         "P1 post-merge `main` Windows Harness | Passed, run `25542239210`",
         "P2 post-merge `main` Windows Harness | Passed, run `25542706517`",
@@ -158,7 +159,8 @@ def test_v015_release_record_is_candidate_and_compatible():
         "no helper/watcher product behavior changes",
         "no screenshot capture code",
         "no OCR engine integration",
-        "Publication approval: pending.",
+        "Publication approval: completed by the active thread goal directing stage completion, remote push, and publication.",
+        "Deterministic gates: local P4 validation, PR Windows Harness, post-merge `main` Windows Harness, and GitHub release publication passed.",
         "P2 decision only because product UIA helper behavior",
     ):
         assert phrase in normalized

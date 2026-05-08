@@ -6,14 +6,12 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.4 maintenance release record](release-v0.1.4.md). The active
-post-v0.1.4 execution cursor lives in
+[v0.1.5 maintenance release record](release-v0.1.5.md). The post-v0.1.4
+execution cursor lives in
 [Post-v0.1.4 maintenance plan](next-round-plan-post-v0.1.4.md). The published
-`v0.1.4` maintenance release record is
-[v0.1.4 maintenance release record](release-v0.1.4.md). For release
-evidence shape, use [Release evidence guide](release-evidence.md). The current
-`v0.1.5` release-readiness record is
-[v0.1.5 release-readiness record](release-v0.1.5.md). The
+`v0.1.5` maintenance release record is
+[v0.1.5 maintenance release record](release-v0.1.5.md). For release evidence
+shape, use [Release evidence guide](release-evidence.md). The
 post-v0.1.3 plan is closed historical evidence.
 
 ## Deterministic Gates
@@ -32,12 +30,12 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.4` until the active post-v0.1.4 plan explicitly
-  prepares another version;
-- `v0.1.4` is the latest published release; its release URL, tag target, and
-  post-merge evidence are recorded in the release record;
-- the active post-v0.1.4 execution cursor must be followed before any
-  implementation;
+- the stable baseline is `v0.1.5` until a later plan explicitly prepares
+  another version;
+- `v0.1.5` is the latest published release; its release URL, tag target, and
+  Windows Harness evidence are recorded in the release record;
+- the post-v0.1.4 execution cursor produced `v0.1.5`; later implementation
+  should start from a new cursor;
 - manual UIA smoke inherited from an earlier release is labeled as inherited or
   stale, not current;
 - stale manual smoke can support context, but a hard release gate needs fresh
