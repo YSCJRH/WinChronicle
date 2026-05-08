@@ -42,10 +42,12 @@ historical records. After the post-v0.1.5 publication:
 - manual UIA smoke evidence inherited from `v0.1.0` or another older release
   must be labeled as inherited or stale;
 - a release record must not present inherited manual smoke as freshly run;
-- for the post-v0.1.4 compatible maintenance path toward `v0.1.5`, P2 has
-  explicitly accepted inherited `v0.1.0` manual smoke only if no helper,
+- for the current post-v0.1.5 compatible maintenance path toward `v0.1.6`,
+  inherited `v0.1.0` manual smoke remains contextual only if no helper,
   watcher product behavior, manual smoke script, capture, privacy, product
-  CLI/MCP shape, or capture-surface behavior changes before release;
+  CLI/MCP shape, or capture-surface behavior changes before release; the S4
+  release record must explicitly accept the inherited evidence or record fresh
+  smoke before publication;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are
