@@ -30,10 +30,10 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AB4 - Compatibility Guardrail Sweep.
-- Stage status: B - AB4 compatibility guardrail sweep docs/tests and local
-  validation are complete; PR Windows Harness and post-merge Windows Harness
-  are pending.
+- Current stage: AB5 - v0.1.14 Release Readiness.
+- Stage status: B - AB5 release-readiness metadata, release record, version
+  identity updates, and local validation are complete; PR Windows Harness,
+  post-merge Windows Harness, and publication are pending.
 - Last completed evidence: `v0.1.13` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13, targets
   `1070343d9bcfd60c48238835e26b6c32f9060ae7`, publication reconciliation PR
@@ -41,12 +41,14 @@ service install, no polling capture loop, and no default background capture.
   merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`, AB1 PR #121 merged
   as `1f557faf9ef2460cc456ea6966495b5f175ad809`, and AB2 PR #122 merged as
   `9cdb6f80b0665915dd403101911c14293d60946f`, and AB3 PR #123 merged as
-  `13f1a33ca6bcbc2cc8d5863ac0be9e48d0ccb204`.
-- Last validation: AB4 local validation passed with focused guardrail tests,
-  focused docs/version tests, full pytest, helper build, watcher build, install
-  CLI smoke, full harness, and `git diff --check`.
-- Next atomic task: open the AB4 compatibility guardrail sweep PR, verify PR
-  and post-merge Windows Harness, then continue to AB5.
+  `13f1a33ca6bcbc2cc8d5863ac0be9e48d0ccb204`, and AB4 PR #124 merged as
+  `cd5215e6e6333c7fe00fe47a526ea0d15dcf1bd7`.
+- Last validation: AB5 local validation passed with focused docs/version tests,
+  full pytest, helper build, watcher build, install CLI smoke, full harness,
+  and `git diff --check`.
+- Next atomic task: open the AB5 release-readiness PR, verify PR and post-merge
+  Windows Harness, then request or use explicit release approval for
+  `v0.1.14`.
 - Known blockers: none.
 
 ## Phased Work
@@ -219,6 +221,15 @@ Stage-specific gates:
   exact read-only MCP tools, disabled privacy surfaces, observed-content trust
   boundaries, watcher preview limits, durable memory contract, Phase 6
   spec-only status, and product targeted capture absence still hold.
+- Recorded AB4 remote validation as completed evidence: PR #124 passed Windows
+  Harness run `25584341353`, merged as
+  `cd5215e6e6333c7fe00fe47a526ea0d15dcf1bd7`, and post-merge `main` Windows
+  Harness run `25584426546` passed.
+- During AB5, chose the direct compatible `v0.1.14` release-readiness path
+  because AB0-AB4 changed documentation, tests, GitHub metadata evidence,
+  deterministic harness evidence, compatibility evidence, and release-planning
+  records only. AB5 is limited to release documentation, tests, and version
+  metadata.
 
 ## Validation Log
 
@@ -296,5 +307,22 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AB4 PR Windows Harness.
-- Pending AB4 post-merge `main` Windows Harness.
+- Stage AB4 remote validation:
+  - PR #124 Windows Harness run `25584341353` - passed.
+  - PR #124 merged as `cd5215e6e6333c7fe00fe47a526ea0d15dcf1bd7`.
+  - Post-merge `main` Windows Harness run `25584426546` - passed.
+- Stage AB5 initialization:
+  - `git rev-parse HEAD` - passed and printed `cd5215e6e6333c7fe00fe47a526ea0d15dcf1bd7`.
+  - `gh release view v0.1.14 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt` - confirmed release not found before AB5 readiness.
+  - `gh run view 25584426546 --json databaseId,status,conclusion,headSha,url,displayTitle` - passed; AB4 post-merge `main` Windows Harness concluded `success` on `cd5215e6e6333c7fe00fe47a526ea0d15dcf1bd7`.
+- Stage AB5 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 40 tests.
+  - `python -m pytest -q` - passed, 131 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AB5 PR Windows Harness.
+- Pending AB5 post-merge `main` Windows Harness.
+- Pending `v0.1.14` publication approval and GitHub release.
