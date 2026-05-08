@@ -26,17 +26,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Y2 - CI Runtime And Dependency Maintenance Scan.
-- Stage status: B - Y2 CI/runtime and dependency scan docs/tests are
-  implemented and local deterministic validation passed; PR Windows Harness
-  and post-merge Windows Harness are pending.
-- Last completed evidence: Y1 PR #103 passed PR Windows Harness run
-  `25571224423`, merged as `3ed5db90e4e630b3e3920a798001ae9ec7a4a14a`, and
-  post-merge `main` Windows Harness run `25571374301` passed on that SHA.
-- Last validation: Y2 CI/runtime docs tests, full pytest, helper build,
+- Current stage: Y3 - Compatibility Guardrail Sweep.
+- Stage status: B - Y3 compatibility guardrail docs/tests are implemented and
+  local deterministic validation passed; PR Windows Harness and post-merge
+  Windows Harness are pending.
+- Last completed evidence: Y2 PR #104 passed PR Windows Harness run
+  `25571923026`, merged as `1f1d44da805ed0d2d953eb043758bed62a6b35d4`, and
+  post-merge `main` Windows Harness run `25572048167` passed on that SHA.
+- Last validation: Y3 compatibility guardrail tests, full pytest, helper build,
   watcher build, install CLI smoke, full harness, and `git diff --check` passed
   locally.
-- Next atomic task: open the Y2 PR, then verify PR and post-merge Windows
+- Next atomic task: open the Y3 PR, then verify PR and post-merge Windows
   Harness.
 - Known blockers: none.
 
@@ -197,6 +197,15 @@ Stage-specific gates:
   `wheel` for dev. Existing Phase 6 tests continue to guard against
   screenshot/OCR/audio/keyboard/clipboard/network/LLM/control-oriented
   dependency drift.
+- Recorded Y2 PR #104 and post-merge Windows Harness run `25572048167` before
+  starting Y3; this keeps the active cursor aligned with the current `main`
+  baseline without retagging `v0.1.10`.
+- During Y3, treated the existing compatibility tests and scorecards as the
+  authoritative guardrails because they already cover version identity, exact
+  read-only MCP tools, disabled privacy surfaces, CLI and MCP trust-boundary
+  JSON shape, memory/search trust boundaries, watcher preview-only behavior,
+  product targeted capture absence, and Phase 6 spec-only status. No additional
+  product tests were needed because no drift was found.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -238,6 +247,20 @@ Stage-specific gates:
   - `pyproject.toml` inspection - passed; no screenshot/OCR/audio/keyboard/clipboard/network/LLM/control dependency drift.
   - `rg -n "screenshot|ocr|pillow|opencv|tesseract|easyocr|pytesseract|mss|dxcam|pyautogui|keyboard|clipboard|pyperclip|sounddevice|pyaudio|openai|anthropic|requests|httpx|aiohttp|selenium|playwright|comtypes|uiautomation|pywin32|pywinauto|pynput|whisper" pyproject.toml src tests harness docs resources .github` - reviewed; matches are existing disabled-surface contracts, specs, fixtures, docs, and tests rather than new runtime dependencies.
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_windows_harness_workflow.py tests/test_phase6_privacy_scorecard.py -q` - passed, 19 tests.
+  - `python -m pytest -q` - passed, 116 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+  - PR #104 Windows Harness run `25571923026` - passed.
+  - PR #104 merged as `1f1d44da805ed0d2d953eb043758bed62a6b35d4`.
+  - Post-merge `main` Windows Harness run `25572048167` - passed on `1f1d44da805ed0d2d953eb043758bed62a6b35d4`.
+- Stage Y3 compatibility guardrail sweep:
+  - `gh run view 25572048167 --json databaseId,status,conclusion,headSha,url,createdAt,updatedAt,name,displayTitle` - passed; run succeeded on `1f1d44da805ed0d2d953eb043758bed62a6b35d4`.
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py -q` - passed, 44 tests.
+  - `rg -n -e "--hwnd|--pid|--window-title|--window-title-regex|--process-name|screenshot|ocr|audio|keyboard|clipboard|network_upload|cloud_upload|llm_calls|desktop_control|write_memory|read_file|click|type" src\winchronicle tests\test_compatibility_contracts.py tests\test_mcp_tools.py tests\test_phase6_privacy_scorecard.py tests\test_watcher_events.py harness\scorecards docs\mcp-readonly-examples.md docs\watcher-preview.md` - reviewed; matches are existing disabled-surface contracts, sentinels, docs, tests, schema fields, or deterministic event/memory field names rather than new product capabilities.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py -q` - passed, 56 tests.
   - `python -m pytest -q` - passed, 116 tests.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
