@@ -26,17 +26,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Y0 - Post-v0.1.10 Baseline Cursor.
-- Stage status: B - Y0 publication reconciliation docs/tests are implemented
-  and local deterministic validation passed; PR Windows Harness and
-  post-merge Windows Harness are pending.
-- Last completed evidence: X4 PR #101 passed PR Windows Harness run
-  `25569414864`, merged as `28b062a531519d4360911b51dfc083782b6dcbad`, and
-  post-merge `main` Windows Harness run `25569567825` passed on that SHA.
-- Last validation: v0.1.10 publication validation passed:
-  `gh release view v0.1.10`, `git show-ref --tags v0.1.10`, and
-  `python -c "import winchronicle; print(winchronicle.__version__)"`.
-- Next atomic task: open the Y0 PR, then verify PR and post-merge Windows
+- Current stage: Y1 - Evidence Freshness And Entry Hygiene.
+- Stage status: B - Y1 evidence freshness docs/tests are implemented and local
+  deterministic validation passed; PR Windows Harness and post-merge Windows
+  Harness are pending.
+- Last completed evidence: Y0 PR #102 passed PR Windows Harness run
+  `25570444498`, merged as `049fbc3550efe71e553fb0e27be7344f4d686e5c`, and
+  post-merge `main` Windows Harness run `25570603780` passed on that SHA.
+- Last validation: Y1 evidence freshness docs tests, full pytest, helper
+  build, watcher build, install CLI smoke, full harness, and `git diff --check`
+  passed locally.
+- Next atomic task: open the Y1 PR, then verify PR and post-merge Windows
   Harness.
 - Known blockers: none.
 
@@ -175,6 +175,14 @@ Stage-specific gates:
 - Recorded PR #101 and post-merge Windows Harness run `25569567825` in this
   active plan instead of modifying the published release tag. Do not retag
   `v0.1.10`.
+- Recorded Y0 PR #102 and post-merge Windows Harness run `25570603780` before
+  starting Y1; this keeps the active cursor aligned with the current `main`
+  baseline without retagging `v0.1.10`.
+- During Y1, accepted inherited `v0.1.0` manual UIA smoke as inherited/stale
+  evidence for the post-v0.1.10 compatible maintenance path because Y0/Y1 only
+  changed docs/tests and did not change helper behavior, watcher product
+  behavior, manual smoke scripts, capture behavior, privacy behavior, product
+  CLI/MCP shape, capture surfaces, or release approver requirements.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -193,3 +201,18 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
+- Stage Y0 remote validation:
+  - PR #102 Windows Harness run `25570444498` - passed.
+  - PR #102 merged as `049fbc3550efe71e553fb0e27be7344f4d686e5c`.
+  - Post-merge `main` Windows Harness run `25570603780` - passed on `049fbc3550efe71e553fb0e27be7344f4d686e5c`.
+- Stage Y1 evidence freshness validation:
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 24 tests.
+  - Stale-current-wording `rg` scan across `README.md`, `docs`, and `tests` - passed with no matches.
+  - `python -m pytest -q` - passed, 116 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+  - Pending PR Windows Harness.
+  - Pending post-merge `main` Windows Harness.
