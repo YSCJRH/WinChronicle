@@ -60,6 +60,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[MCP and memory contract sweep after v0.1.13](mcp-memory-contract-sweep-post-v0.1.13.md)"
         in quickstart
     )
+    assert (
+        "[Compatibility guardrail sweep after v0.1.13](compatibility-guardrail-sweep-post-v0.1.13.md)"
+        in quickstart
+    )
     assert "[v0.1.13 maintenance release record](release-v0.1.13.md)" in quickstart
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
     assert (
@@ -84,6 +88,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[MCP and memory contract sweep after v0.1.13](docs/mcp-memory-contract-sweep-post-v0.1.13.md)"
+        in readme
+    )
+    assert (
+        "[Compatibility guardrail sweep after v0.1.13](docs/compatibility-guardrail-sweep-post-v0.1.13.md)"
         in readme
     )
     assert "[v0.1.13 maintenance release record](docs/release-v0.1.13.md)" in readme
@@ -118,6 +126,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Public metadata audit after v0.1.13" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.13" in readme_operator_docs
     assert "MCP and memory contract sweep after v0.1.13" in readme_operator_docs
+    assert "Compatibility guardrail sweep after v0.1.13" in readme_operator_docs
     assert "Post-v0.1.12 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.11 maintenance plan" in readme_operator_docs
     assert "v0.1.11 maintenance release record" in readme_operator_docs
@@ -142,6 +151,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "MCP and memory contract sweep after v0.1.13"
     )
     assert readme_operator_docs.index("MCP and memory contract sweep after v0.1.13") < readme_operator_docs.index(
+        "Compatibility guardrail sweep after v0.1.13"
+    )
+    assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.13") < readme_operator_docs.index(
         "Blueprint gap audit after v0.1.12"
     )
     assert readme_operator_docs.index("Post-v0.1.13 maintenance plan") < readme_operator_docs.index(
@@ -193,6 +205,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "public-metadata-audit-post-v0.1.13.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.13.md" in current_section
     assert "mcp-memory-contract-sweep-post-v0.1.13.md" in current_section
+    assert "compatibility-guardrail-sweep-post-v0.1.13.md" in current_section
     assert "release-v0.1.13.md" in current_section
     assert "release-v0.1.12.md" in current_section
     assert "next-round-plan-post-v0.1.12.md" not in current_section
@@ -943,14 +956,15 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "publication reconciliation on `main` is `f4781a91f2120f3eca5088b87bf9034be752274f`",
         "Windows Harness run `25581662790` passed",
         "reports `0.1.13`",
-        "Current stage: AB3 - MCP And Memory Operator Contract Sweep.",
-        "Stage status: B - AB3 MCP/memory contract sweep docs/tests and local validation are complete",
+        "Current stage: AB4 - Compatibility Guardrail Sweep.",
+        "Stage status: B - AB4 compatibility guardrail sweep docs/tests and local validation are complete",
         "publication reconciliation PR #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`",
         "AB0 PR #120 merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`",
         "AB1 PR #121 merged as `1f557faf9ef2460cc456ea6966495b5f175ad809`",
         "AB2 PR #122 merged as `9cdb6f80b0665915dd403101911c14293d60946f`",
-        "PR #122 passed Windows Harness run `25583319858`",
-        "post-merge `main` Windows Harness run `25583397242` passed",
+        "AB3 PR #123 merged as `13f1a33ca6bcbc2cc8d5863ac0be9e48d0ccb204`",
+        "PR #123 passed Windows Harness run `25583769517`",
+        "post-merge `main` Windows Harness run `25583884127` passed",
         "Stage AB0 - Post-v0.1.13 Baseline Cursor",
         "Stage AB1 - Public Metadata And Evidence Freshness Audit",
         "Stage AB2 - Helper And Watcher Preview Diagnostics Evidence",
@@ -1004,8 +1018,19 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "Stage AB3 local validation:",
         "passed, 38 tests.",
         "python -m pytest -q` - passed, 129 tests.",
-        "Pending AB3 PR Windows Harness.",
-        "Pending AB3 post-merge `main` Windows Harness.",
+        "Stage AB3 remote validation:",
+        "PR #123 Windows Harness run `25583769517` - passed.",
+        "PR #123 merged as `13f1a33ca6bcbc2cc8d5863ac0be9e48d0ccb204`.",
+        "Post-merge `main` Windows Harness run `25583884127` - passed.",
+        "Stage AB4 initialization:",
+        "passed, 45 tests.",
+        "existing disabled-surface contracts, sentinels, documentation, scorecards",
+        "local MCP smoke request variable name",
+        "Stage AB4 local validation:",
+        "passed, 39 tests.",
+        "python -m pytest -q` - passed, 130 tests.",
+        "Pending AB4 PR Windows Harness.",
+        "Pending AB4 post-merge `main` Windows Harness.",
     ):
         assert expected in normalized
 
@@ -1353,6 +1378,37 @@ def test_compatibility_guardrail_sweep_records_no_drift_decision():
         "No new product CLI/MCP targeted capture",
         "No new runtime\ndependency or implementation path was found",
         "No compatibility drift was found",
+    ):
+        assert expected in sweep
+
+
+def test_post_v013_compatibility_guardrail_sweep_records_no_drift_decision():
+    sweep = (
+        ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.13.md"
+    ).read_text(encoding="utf-8")
+
+    for expected in (
+        "Compatibility Guardrail Sweep After v0.1.13",
+        "does not change product behavior, schemas, CLI/MCP JSON shape",
+        "Version identity",
+        "Exact read-only MCP tool list",
+        "Disabled privacy surfaces",
+        "Observed-content trust boundary",
+        "Watcher preview limits",
+        "Durable memory contract",
+        "Phase 6 spec-only status",
+        "Product targeted capture absence",
+        "No write/control/file/screenshot/OCR/audio/keyboard/clipboard/network tools found",
+        "No screenshot/OCR implementation found",
+        "Product targeted capture remains absent",
+        "45 passed",
+        "matches are existing disabled-surface contracts, sentinels",
+        "allowed helper-only harness wording",
+        "No new product CLI/MCP targeted capture",
+        "No new runtime dependency or\nimplementation path was found",
+        "AB4 found no compatibility drift",
+        "compatible `v0.1.14` maintenance target",
+        "explicit release approval",
     ):
         assert expected in sweep
 
