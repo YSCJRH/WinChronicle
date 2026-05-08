@@ -26,18 +26,19 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: X0 - Post-v0.1.9 Baseline Cursor.
-- Stage status: B - baseline reconciliation docs/tests are implemented and
+- Current stage: X1 - Evidence Freshness And Entry Hygiene.
+- Stage status: B - X1 evidence freshness docs/tests are implemented and
   local deterministic validation passed; PR Windows Harness and post-merge
   Windows Harness are pending.
-- Last completed evidence: `v0.1.9` is published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.9 and targets
-  `d06ab5bc8bea7520bac2719adb457794c72911d3`.
-- Last validation: X0 docs/version tests, full pytest, helper build, watcher
+- Last completed evidence: X0 PR #97 passed PR Windows Harness run
+  `25566609049`, merged as `008c4d02dfef58004a2494c6102f434741a83047`, and
+  post-merge `main` Windows Harness run `25566750349` passed on that SHA.
+- Last validation: X1 docs/matrix tests, full pytest, helper build, watcher
   build, install CLI smoke, full harness, and `git diff --check` passed
   locally.
-- Next atomic task: open a small X0 PR, verify PR and post-merge Windows
-  Harness, then advance to X1 evidence freshness in the next branch.
+- Next atomic task: open a small X1 PR, verify PR and post-merge Windows
+  Harness, then advance to X2 CI runtime and dependency maintenance scan in the
+  next branch.
 - Known blockers: none.
 
 ## Phased Work
@@ -175,6 +176,14 @@ Stage-specific gates:
 - Recorded PR #96 and post-merge Windows Harness run `25565697723` in this
   active plan instead of modifying the published release tag. Do not retag
   `v0.1.9`.
+- Recorded X0 PR #97 and post-merge Windows Harness run `25566750349` before
+  starting X1; this keeps the active cursor aligned with the current `main`
+  baseline without retagging `v0.1.9`.
+- During X1, accepted inherited `v0.1.0` manual UIA smoke as inherited/stale
+  evidence for the post-v0.1.9 compatible maintenance path because X0/X1 only
+  changed docs/tests and did not change helper behavior, watcher product
+  behavior, manual smoke scripts, capture behavior, privacy behavior, product
+  CLI/MCP shape, capture surfaces, or release approver requirements.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -187,6 +196,19 @@ Stage-specific gates:
   - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.9`.
 - Stage X0 local validation:
   - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 23 tests.
+  - `python -m pytest -q` - passed, 114 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage X0 remote validation:
+  - PR #97 Windows Harness run `25566609049` - passed.
+  - PR #97 merged as `008c4d02dfef58004a2494c6102f434741a83047`.
+  - Post-merge `main` Windows Harness run `25566750349` - passed on `008c4d02dfef58004a2494c6102f434741a83047`.
+- Stage X1 evidence freshness validation:
+  - `rg -n "active post-v0\.1\.[0-8]|current post-v0\.1\.[0-8]|current cursor.*v0\.1\.[0-8]|latest published v0\.1\.[0-8]" README.md docs tests` - passed with no matches.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py tests/test_uia_helper_quality_matrix.py -q` - passed, 26 tests.
   - `python -m pytest -q` - passed, 114 tests.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.

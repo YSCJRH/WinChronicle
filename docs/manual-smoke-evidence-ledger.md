@@ -20,18 +20,18 @@ or token canaries.
 | Latest published release record | [v0.1.9 maintenance release record](release-v0.1.9.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
-| Last freshness decision | For the post-v0.1.8 compatible maintenance path that published `v0.1.9`, inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and watcher preview manual evidence was explicitly accepted by the W4 release-readiness record because no helper behavior, watcher product behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces changed. |
-| Next freshness decision | X1 release evidence freshness must explicitly accept inherited manual evidence for the compatible release path or record fresh manual smoke before publication. |
+| Last freshness decision | For the active post-v0.1.9 compatible maintenance path, inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and watcher preview manual evidence is explicitly accepted by X1 as inherited/stale evidence because X0/X1 changed only docs/tests and did not change helper behavior, watcher product behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approver requirements. |
+| Next freshness decision | X4 release readiness must explicitly accept inherited manual evidence for `v0.1.10` publication or record fresh manual smoke before publication. |
 
 ## Latest Known Manual Evidence
 
 | Gate | Release meaning | Latest known result | Freshness | Evidence source | Refresh requirement | Artifact policy |
 | --- | --- | --- | --- | --- | --- | --- |
-| Notepad targeted UIA smoke | Hard manual release gate | Pass | Inherited from `v0.1.0`; historically accepted for the compatible `v0.1.5` path, explicitly accepted by S4 for the compatible `v0.1.6` path, explicitly accepted by T4 for the compatible `v0.1.7` path, explicitly accepted by U4 for the compatible `v0.1.8` path, and explicitly accepted by W4 for the compatible `v0.1.9` path | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces change, or if the release approver requires fresh hard-gate evidence | Local JSON artifact path only; do not commit capture JSON |
-| Edge targeted UIA smoke | Hard manual release gate | Pass | Inherited from `v0.1.0`; historically accepted for the compatible `v0.1.5` path, explicitly accepted by S4 for the compatible `v0.1.6` path, explicitly accepted by T4 for the compatible `v0.1.7` path, explicitly accepted by U4 for the compatible `v0.1.8` path, and explicitly accepted by W4 for the compatible `v0.1.9` path | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces change, or if the release approver requires fresh hard-gate evidence | Local JSON artifact path only; do not commit local HTML or capture JSON |
-| VS Code metadata smoke | Conditional hard manual release gate when `code.cmd` is available | Pass with diagnostic warning | Inherited from `v0.1.0`; historically accepted for the compatible `v0.1.5` path, explicitly accepted by S4 for the compatible `v0.1.6` path, explicitly accepted by T4 for the compatible `v0.1.7` path, explicitly accepted by U4 for the compatible `v0.1.8` path, and explicitly accepted by W4 for the compatible `v0.1.9` path | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces change, or if the release approver requires fresh hard-gate evidence | Local JSON artifact only; do not commit editor contents |
-| VS Code strict Monaco marker | Diagnostic, non-blocking for v0.1 | Diagnostic failure, known Monaco/UIA limitation | Inherited diagnostic from `v0.1.0`; historically accepted for `v0.1.5` as diagnostic context only, explicitly accepted by S4 for `v0.1.6` as diagnostic context only, explicitly accepted by T4 for `v0.1.7` as diagnostic context only, explicitly accepted by U4 for `v0.1.8` as diagnostic context only, and explicitly accepted by W4 for `v0.1.9` as diagnostic context only | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh only if investigating Monaco/UIA exposure or changing smoke scripts | Local diagnostic artifact path only |
-| Watcher preview live smoke | Preview diagnostic/manual confidence gate | Heartbeat-only liveness diagnostic; deterministic watcher gates passed | Inherited diagnostic from `v0.1.0`; historically accepted for `v0.1.5` as diagnostic context, with deterministic watcher coverage current through harness, explicitly accepted by S4 for `v0.1.6` as diagnostic context only, explicitly accepted by T4 for `v0.1.7` as diagnostic context only, explicitly accepted by U4 for `v0.1.8` as diagnostic context only, and explicitly accepted by W4 for `v0.1.9` as diagnostic context only | [v0.1.0 final release readiness record](release-v0.1.0.md) and `python harness/scripts/run_harness.py` | Refresh only if watcher preview behavior or live smoke scripts change, or if release approval requires live evidence | Do not save or commit raw watcher JSONL |
+| Notepad targeted UIA smoke | Hard manual release gate | Pass | Inherited from `v0.1.0`; historically accepted for the compatible `v0.1.5` path, explicitly accepted by S4 for the compatible `v0.1.6` path, explicitly accepted by T4 for the compatible `v0.1.7` path, explicitly accepted by U4 for the compatible `v0.1.8` path, explicitly accepted by W4 for the compatible `v0.1.9` path, and accepted by X1 as inherited/stale evidence for the active post-v0.1.9 path | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces change, or if the release approver requires fresh hard-gate evidence | Local JSON artifact path only; do not commit capture JSON |
+| Edge targeted UIA smoke | Hard manual release gate | Pass | Inherited from `v0.1.0`; historically accepted for the compatible `v0.1.5` path, explicitly accepted by S4 for the compatible `v0.1.6` path, explicitly accepted by T4 for the compatible `v0.1.7` path, explicitly accepted by U4 for the compatible `v0.1.8` path, explicitly accepted by W4 for the compatible `v0.1.9` path, and accepted by X1 as inherited/stale evidence for the active post-v0.1.9 path | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces change, or if the release approver requires fresh hard-gate evidence | Local JSON artifact path only; do not commit local HTML or capture JSON |
+| VS Code metadata smoke | Conditional hard manual release gate when `code.cmd` is available | Pass with diagnostic warning | Inherited from `v0.1.0`; historically accepted for the compatible `v0.1.5` path, explicitly accepted by S4 for the compatible `v0.1.6` path, explicitly accepted by T4 for the compatible `v0.1.7` path, explicitly accepted by U4 for the compatible `v0.1.8` path, explicitly accepted by W4 for the compatible `v0.1.9` path, and accepted by X1 as inherited/stale evidence for the active post-v0.1.9 path | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces change, or if the release approver requires fresh hard-gate evidence | Local JSON artifact only; do not commit editor contents |
+| VS Code strict Monaco marker | Diagnostic, non-blocking for v0.1 | Diagnostic failure, known Monaco/UIA limitation | Inherited diagnostic from `v0.1.0`; historically accepted for `v0.1.5` as diagnostic context only, explicitly accepted by S4 for `v0.1.6` as diagnostic context only, explicitly accepted by T4 for `v0.1.7` as diagnostic context only, explicitly accepted by U4 for `v0.1.8` as diagnostic context only, explicitly accepted by W4 for `v0.1.9` as diagnostic context only, and accepted by X1 as inherited/stale diagnostic context for the active post-v0.1.9 path | [v0.1.0 final release readiness record](release-v0.1.0.md) | Refresh only if investigating Monaco/UIA exposure or changing smoke scripts | Local diagnostic artifact path only |
+| Watcher preview live smoke | Preview diagnostic/manual confidence gate | Heartbeat-only liveness diagnostic; deterministic watcher gates passed | Inherited diagnostic from `v0.1.0`; historically accepted for `v0.1.5` as diagnostic context, with deterministic watcher coverage current through harness, explicitly accepted by S4 for `v0.1.6` as diagnostic context only, explicitly accepted by T4 for `v0.1.7` as diagnostic context only, explicitly accepted by U4 for `v0.1.8` as diagnostic context only, explicitly accepted by W4 for `v0.1.9` as diagnostic context only, and accepted by X1 as inherited/stale diagnostic context for the active post-v0.1.9 path | [v0.1.0 final release readiness record](release-v0.1.0.md) and `python harness/scripts/run_harness.py` | Refresh only if watcher preview behavior or live smoke scripts change, or if release approval requires live evidence | Do not save or commit raw watcher JSONL |
 
 ## Command Patterns
 
@@ -65,26 +65,29 @@ smoke. These command patterns are evidence shapes only; replace
   record for that compatible path because helper behavior, watcher product
   behavior, manual smoke scripts, capture behavior, privacy behavior, product
   CLI/MCP shape, and capture surfaces are unchanged.
-- For the active post-v0.1.7 compatible maintenance path toward `v0.1.8`,
+- For the completed post-v0.1.7 compatible maintenance path toward `v0.1.8`,
   inherited `v0.1.0` manual smoke remained stale/inherited after the U1
   freshness decision, then is explicitly accepted by the U4
   release-readiness record for that compatible path because helper behavior,
   watcher product behavior, manual smoke scripts, capture behavior, privacy
   behavior, product CLI/MCP shape, and capture surfaces are unchanged.
-- For the active post-v0.1.8 path, inherited `v0.1.0` manual smoke remains
+- For the completed post-v0.1.8 path, inherited `v0.1.0` manual smoke remains
   stale/inherited after the W1 freshness decision. It is not fresh or current
   release evidence unless a later release-readiness record explicitly accepts
   it for a compatible release, or fresh manual smoke is recorded.
-- For the active post-v0.1.8 compatible maintenance path toward `v0.1.9`,
+- For the completed post-v0.1.8 compatible maintenance path toward `v0.1.9`,
   inherited `v0.1.0` manual smoke is explicitly accepted by the W4
   release-readiness record for that compatible path because helper behavior,
   watcher product behavior, manual smoke scripts, capture behavior, privacy
   behavior, product CLI/MCP shape, and capture surfaces are unchanged.
-- For the active post-v0.1.9 path, inherited `v0.1.0` manual smoke remains
-  stale/inherited until X1 makes a release-specific freshness decision. It is
-  not fresh or current release evidence unless a later release-readiness record
-  explicitly accepts it for a compatible release, or fresh manual smoke is
-  recorded.
+- For the active post-v0.1.9 compatible maintenance path, inherited
+  `v0.1.0` manual smoke is accepted by the X1 freshness decision as
+  inherited/stale evidence because X0/X1 changed only docs/tests and did not
+  change helper behavior, watcher product behavior, manual smoke scripts,
+  capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces,
+  or release approver requirements. This does not make it fresh or current
+  release evidence; X4 release readiness must explicitly accept inherited
+  evidence for `v0.1.10` publication or record fresh manual smoke.
 - Fresh manual smoke is required if any helper, watcher, smoke script, capture,
   privacy, product CLI/MCP shape, or capture-surface behavior changes, or if
   the release approver requires fresh hard-gate evidence.
