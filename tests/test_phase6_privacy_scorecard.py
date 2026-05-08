@@ -1,9 +1,11 @@
 import re
+import tomllib
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SCORECARD = ROOT / "harness" / "scorecards" / "phase6-privacy-enrichment.md"
+PYPROJECT = ROOT / "pyproject.toml"
 PRODUCTION_ROOTS = (ROOT / "src" / "winchronicle", ROOT / "resources")
 SOURCE_SUFFIXES = {".py", ".cs", ".csproj", ".ps1"}
 ALLOWED_PHASE6_SOURCE_SENTINELS = {
@@ -136,6 +138,48 @@ def test_phase6_has_no_source_surface_implementation_artifacts():
     assert unexpected_engine_mentions == []
 
 
+def test_phase6_has_no_direct_dependency_surface_implementation_artifacts():
+    package_metadata = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
+    dependencies = set(package_metadata["project"].get("dependencies", []))
+    for extra_dependencies in package_metadata["project"].get(
+        "optional-dependencies", {}
+    ).values():
+        dependencies.update(extra_dependencies)
+
+    normalized_names = {_normalize_dependency_name(dependency) for dependency in dependencies}
+    forbidden_direct_dependencies = {
+        "aiohttp",
+        "comtypes",
+        "easyocr",
+        "httpx",
+        "keyboard",
+        "mss",
+        "openai",
+        "opencv-contrib-python",
+        "opencv-python",
+        "paddleocr",
+        "pillow",
+        "pyaudio",
+        "pyautogui",
+        "pynput",
+        "pyperclip",
+        "pyscreenshot",
+        "pytesseract",
+        "pywin32",
+        "pywinauto",
+        "requests",
+        "sounddevice",
+        "uiautomation",
+        "whisper",
+    }
+    normalized_forbidden = {
+        _normalize_dependency_name(dependency)
+        for dependency in forbidden_direct_dependencies
+    }
+
+    assert normalized_names.isdisjoint(normalized_forbidden)
+
+
 def _production_source_files() -> list[Path]:
     return sorted(
         path
@@ -145,3 +189,8 @@ def _production_source_files() -> list[Path]:
         and path.suffix in SOURCE_SUFFIXES
         and not {"bin", "obj"}.intersection(path.relative_to(root).parts)
     )
+
+
+def _normalize_dependency_name(dependency: str) -> str:
+    name = re.split(r"\s*(?:[<>=!~]=?|;|\[)", dependency, maxsplit=1)[0]
+    return re.sub(r"[-_.]+", "-", name).lower()
