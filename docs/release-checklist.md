@@ -7,6 +7,8 @@ For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
 [v0.1.8 maintenance release record](release-v0.1.8.md). The active
+release-readiness record is
+[v0.1.9 release-readiness record](release-v0.1.9.md). The active
 post-v0.1.8 execution cursor lives in
 [Post-v0.1.8 maintenance plan](next-round-plan-post-v0.1.8.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
@@ -62,6 +64,11 @@ inherited historical evidence:
   fresh or current release evidence unless a later release-readiness record
   explicitly accepts it for a compatible release, or fresh manual smoke is
   recorded;
+- for the active post-v0.1.8 compatible maintenance path toward `v0.1.9`,
+  inherited `v0.1.0` manual smoke is explicitly accepted by the W4
+  release-readiness record because no helper, watcher product behavior, manual
+  smoke script, capture, privacy, product CLI/MCP shape, or capture-surface
+  behavior changed before release readiness;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are

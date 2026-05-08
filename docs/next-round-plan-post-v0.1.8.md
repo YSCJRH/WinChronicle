@@ -24,20 +24,18 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: W3 - Compatibility Guardrail Sweep.
-- Stage status: B - compatibility guardrail docs/tests are implemented and
-  full local deterministic validation passed; PR Windows Harness and post-merge
-  Windows Harness are pending.
-- Last completed evidence: W2 PR #94 passed PR Windows Harness run
-  `25564182547`, merged as `f9dff37828abdedb95511aeaf204a1313b75727c`, and
-  post-merge `main` Windows Harness run `25564339025` passed on that SHA.
+- Current stage: W4 - v0.1.9 Release Readiness.
+- Stage status: B - release-readiness version metadata and release record are
+  implemented and local deterministic validation passed; PR Windows Harness,
+  post-merge Windows Harness, and publication are pending.
+- Last completed evidence: W3 PR #95 passed PR Windows Harness run
+  `25564810377`, merged as `36d430c478e65ad107125b7e87ed4ec18ac18709`, and
+  post-merge `main` Windows Harness run `25564926634` passed on that SHA.
 - Last validation: W3 compatibility guardrail tests, full pytest, helper build,
-  watcher build, install CLI smoke, full harness, and `git diff --check`
-  passed locally. W2 PR Windows Harness and post-merge `main` Windows Harness
-  passed.
-- Next atomic task: run full W3 deterministic validation, open a small W3 PR,
-  verify PR and post-merge Windows Harness, then advance to W4 release
-  readiness in the next branch.
+  watcher build, install CLI smoke, full harness, `git diff --check`, PR
+  Windows Harness, and post-merge `main` Windows Harness passed.
+- Next atomic task: open the W4 release-readiness PR, verify PR and post-merge
+  Windows Harness, then publish `v0.1.9` if all gates pass.
 - Known blockers: none.
 
 ## Phased Work
@@ -213,6 +211,24 @@ Stage-specific gates:
   targeted capture absence. No compatibility drift requiring product code,
   schema, CLI/MCP shape, helper/watcher behavior, or capture-surface changes was
   found, so W3 records a no-action-needed compatibility sweep.
+- During W3, merged PR #95 as
+  `36d430c478e65ad107125b7e87ed4ec18ac18709`; PR Windows Harness
+  `25564810377` and post-merge `main` Windows Harness `25564926634` passed.
+- During W4, chose the direct compatible `v0.1.9` path because W0-W4 change
+  release evidence, documentation, tests, CI/runtime metadata, deterministic
+  harness evidence, compatibility evidence, and version metadata only. If any
+  product behavior, schema, CLI/MCP JSON shape, privacy behavior,
+  helper/watcher behavior, or capture-surface regression is found before
+  publication, stop the direct `v0.1.9` path and prepare a release candidate
+  instead.
+- During W4, the `v0.1.9` release-readiness record explicitly accepts inherited
+  `v0.1.0` manual UIA smoke for the compatible `v0.1.9` path only because
+  helper behavior, watcher product behavior, manual smoke scripts, capture
+  behavior, privacy behavior, product CLI/MCP shape, and capture surfaces are
+  unchanged.
+- During W4, aligned version identity to `0.1.9` across `pyproject.toml`,
+  `winchronicle.__version__`, and MCP `serverInfo.version` through the shared
+  version module.
 
 ## Validation Log
 
@@ -262,6 +278,17 @@ Stage-specific gates:
   - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_uia_helper_contract.py tests/test_windows_harness_workflow.py -q` - passed with 48 tests.
   - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_uia_helper_contract.py tests/test_windows_harness_workflow.py -q` - passed with 58 tests.
   - `python -m pytest -q` - passed with 112 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage W3 remote validation:
+  - PR #95 Windows Harness run `25564810377` - passed.
+  - Post-merge `main` Windows Harness run `25564926634` - passed on `36d430c478e65ad107125b7e87ed4ec18ac18709`.
+- Stage W4 release-readiness validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed with 22 tests.
+  - `python -m pytest -q` - passed with 113 tests.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
