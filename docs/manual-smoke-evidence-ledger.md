@@ -14,14 +14,14 @@ or token canaries.
 | Field | Value |
 | --- | --- |
 | Stable release baseline | `v0.1.7` |
-| Current maintenance plan | Establish post-v0.1.7 plan before new implementation |
+| Current maintenance plan | [Post-v0.1.7 maintenance plan](next-round-plan-post-v0.1.7.md) |
 | Latest completed maintenance plan | [Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md) |
 | Published release record | [v0.1.7 maintenance release record](release-v0.1.7.md) |
 | Latest published release record | [v0.1.7 maintenance release record](release-v0.1.7.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
 | Last freshness decision | For the post-v0.1.6 compatible maintenance path toward `v0.1.7`, inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and watcher preview manual evidence is explicitly accepted by the T4 release-readiness record because the release path changed documentation, tests, CI/runtime metadata, version metadata, deterministic harness evidence, and compatibility evidence without changing helper behavior, watcher product behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, or capture surfaces. Fresh manual smoke is still required if a later stage changes any of those boundaries or if the release approver requires fresh hard-gate evidence. |
-| Next freshness decision | The next post-v0.1.7 plan must make a release-specific freshness decision before any later publication path. |
+| Next freshness decision | Stage U1 of the post-v0.1.7 plan must make a release-specific freshness decision before any later publication path. |
 
 ## Latest Known Manual Evidence
 
@@ -60,11 +60,14 @@ smoke. These command patterns are evidence shapes only; replace
   the release path did not change helper behavior, watcher product behavior,
   manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP
   shape, or capture surfaces.
-- For the active post-v0.1.6 path toward `v0.1.7`, inherited `v0.1.0`
-  manual smoke is explicitly accepted by the T4 release-readiness record for
-  this compatible path because helper behavior, watcher product behavior,
-  manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP
-  shape, and capture surfaces are unchanged.
+- For the completed post-v0.1.6 path that published `v0.1.7`, inherited
+  `v0.1.0` manual smoke is explicitly accepted by the T4 release-readiness
+  record for that compatible path because helper behavior, watcher product
+  behavior, manual smoke scripts, capture behavior, privacy behavior, product
+  CLI/MCP shape, and capture surfaces are unchanged.
+- For the active post-v0.1.7 path, inherited `v0.1.0` manual smoke remains
+  stale/inherited until U1 or a later release-readiness record explicitly
+  accepts it or fresh manual smoke is recorded.
 - Fresh manual smoke is required if any helper, watcher, smoke script, capture,
   privacy, product CLI/MCP shape, or capture-surface behavior changes, or if
   the release approver requires fresh hard-gate evidence.
