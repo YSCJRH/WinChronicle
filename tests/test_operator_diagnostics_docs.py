@@ -60,11 +60,15 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
 
     assert "latest published `v0.1.5` release" in readme_intro
     assert "`v0.1.5` release record" in readme_intro
-    assert "post-v0.1.4 maintenance plan that produced it" in readme_intro
+    assert "active\npost-v0.1.5 maintenance plan" in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
+    assert "Post-v0.1.5 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.4 maintenance plan" in readme_operator_docs
     assert "v0.1.5 maintenance release record" in readme_operator_docs
     assert "v0.1.4 maintenance release record" in readme_operator_docs
+    assert readme_operator_docs.index("Post-v0.1.5 maintenance plan") < readme_operator_docs.index(
+        "v0.1.5 maintenance release record"
+    )
     assert readme_operator_docs.index("v0.1.5 maintenance release record") < readme_operator_docs.index(
         "Post-v0.1.4 maintenance plan"
     )
@@ -74,9 +78,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert readme_operator_docs.index("v0.1.4 maintenance release record") < readme_operator_docs.index(
         "v0.1.3 maintenance release record"
     )
-    assert "next-round-plan-post-v0.1.4.md" in current_section
+    assert "next-round-plan-post-v0.1.5.md" in current_section
     assert "release-v0.1.5.md" in current_section
+    assert "next-round-plan-post-v0.1.4.md" not in current_section
     assert "release-v0.1.4.md" not in current_section
+    assert "next-round-plan-post-v0.1.4.md" in historical_section
     assert "release-v0.1.4.md" in historical_section
     assert "next-round-plan-post-v0.1.3.md" not in current_section
     assert "release-v0.1.3.md" not in current_section
@@ -91,14 +97,16 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.1.md" in historical_section
     assert "release-v0.1.1.md" in historical_section
     assert "next-round-plan-v0.1.0-final.md" in historical_section
-    assert "next-round-plan-post-v0.1.4.md" in checklist
-    assert "next-round-plan-post-v0.1.4.md" in evidence
+    assert "next-round-plan-post-v0.1.5.md" in checklist
+    assert "next-round-plan-post-v0.1.5.md" in evidence
+    assert "next-round-plan-post-v0.1.4.md" not in checklist
+    assert "next-round-plan-post-v0.1.4.md" not in evidence
     assert "release-v0.1.5.md" in checklist
     assert "release-v0.1.5.md" in evidence
     assert "release-v0.1.4.md" not in checklist
     assert "release-v0.1.4.md" not in evidence
-    assert "post-v0.1.3 plan is closed historical evidence" in checklist
-    assert "post-v0.1.3 cursor is closed historical evidence" in evidence
+    assert "post-v0.1.4 plan is closed historical evidence" in checklist
+    assert "post-v0.1.4 cursor is closed historical evidence" in evidence
     assert "Before a compatible `v0.1.1` maintenance release" not in matrix
     assert "For compatible maintenance releases after `v0.1.4`" in matrix
     assert "published\n`v0.1.4` maintenance release record" in matrix
@@ -113,7 +121,7 @@ def test_post_v014_plan_is_active_without_expanding_scope():
 
     for expected in (
         "Current stage: G - v0.1.5 Published Baseline Reconciliation.",
-        "Stage status: G - v0.1.5 published; publication reconciliation in progress.",
+        "Stage status: G - v0.1.5 published; baseline reconciliation complete.",
         "Windows Harness run `25432718007` passed on that SHA",
         "`v0.1.5` is published at\nhttps://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5",
         "pre-publication\n`main` Windows Harness run `25544832155` passed",
@@ -131,6 +139,31 @@ def test_post_v014_plan_is_active_without_expanding_scope():
         assert expected in plan
 
 
+def test_post_v015_plan_is_active_without_expanding_scope():
+    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.5.md").read_text(
+        encoding="utf-8"
+    )
+
+    for expected in (
+        "Current stage: S0 - Post-v0.1.5 Baseline Cursor.",
+        "Stage status: C - S0 complete; ready to enter S1 on the next turn.",
+        "`v0.1.5` is published at\nhttps://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.5",
+        "targets `89f0c1d5e6c094ed36c0ecf75e18bb7afcd5aaf4`",
+        "post-publication\nreconciliation `main` commit is\n`df15810c0b5022bebd1fe8a488f677e74fe8eae1`",
+        "Windows Harness run `25546003233` passed on that SHA",
+        "Stage S0 - Post-v0.1.5 Baseline Cursor",
+        "Stage S1 - CI Runtime Maintenance Decision",
+        "Stage S2 - Release Evidence And Entry Hygiene",
+        "Stage S3 - Compatibility Guardrail Sweep",
+        "Stage S4 - v0.1.6 Release Readiness",
+        "No screenshot capture, OCR, audio recording, keyboard capture, clipboard",
+        "Product CLI still does not expose targeted `--hwnd`, `--pid`, or",
+        "MCP remains read-only",
+        "Known blockers: none.",
+    ):
+        assert expected in plan
+
+
 def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
     checklist = (ROOT / "docs" / "release-checklist.md").read_text(encoding="utf-8")
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
@@ -142,7 +175,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "## Evidence Freshness",
         "stable baseline is `v0.1.5`",
         "`v0.1.5` is the latest published release",
-        "post-v0.1.4 execution cursor produced `v0.1.5`",
+        "active post-v0.1.5 execution cursor must be followed",
         "manual UIA smoke inherited from an earlier release is labeled as inherited or",
         "inherited `v0.1.0` manual",
         "P2 has\n  explicitly accepted inherited `v0.1.0` manual smoke",
@@ -156,7 +189,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "Release evidence must name which facts are current",
         "`v0.1.5` is the stable baseline",
         "`v0.1.5` is the latest published release",
-        "post-v0.1.4 execution cursor produced `v0.1.5`",
+        "active post-v0.1.5 execution cursor must be followed",
         "manual UIA smoke evidence inherited from `v0.1.0`",
         "must be labeled as inherited or stale",
         "must not present inherited manual smoke as freshly run",
@@ -193,7 +226,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
 
     for expected in (
         "Stable release baseline | `v0.1.5`",
-        "Latest maintenance plan | [Post-v0.1.4 maintenance plan]",
+        "Latest maintenance plan | [Post-v0.1.5 maintenance plan]",
         "Published release record | [v0.1.5 maintenance release record]",
         "Latest published release record | [v0.1.5 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
@@ -215,7 +248,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     assert "Manual smoke evidence ledger" in checklist
     assert "Manual smoke evidence ledger" in evidence
     assert "Current stage: G - v0.1.5 Published Baseline Reconciliation." in plan
-    assert "Stage status: G - v0.1.5 published; publication reconciliation in progress." in plan
+    assert "Stage status: G - v0.1.5 published; baseline reconciliation complete." in plan
     assert "Windows Harness run `25432718007` passed on that SHA" in plan
     assert "Stage P0 - Post-v0.1.4 Baseline Cursor" in plan
     assert "Stage P1 entry-hygiene validation:" in plan

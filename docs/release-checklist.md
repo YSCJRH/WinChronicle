@@ -6,13 +6,13 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.5 maintenance release record](release-v0.1.5.md). The post-v0.1.4
+[v0.1.5 maintenance release record](release-v0.1.5.md). The active post-v0.1.5
 execution cursor lives in
-[Post-v0.1.4 maintenance plan](next-round-plan-post-v0.1.4.md). The published
+[Post-v0.1.5 maintenance plan](next-round-plan-post-v0.1.5.md). The published
 `v0.1.5` maintenance release record is
 [v0.1.5 maintenance release record](release-v0.1.5.md). For release evidence
 shape, use [Release evidence guide](release-evidence.md). The
-post-v0.1.3 plan is closed historical evidence.
+post-v0.1.4 plan is closed historical evidence.
 
 ## Deterministic Gates
 
@@ -34,8 +34,8 @@ inherited historical evidence:
   another version;
 - `v0.1.5` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- the post-v0.1.4 execution cursor produced `v0.1.5`; later implementation
-  should start from a new cursor;
+- the active post-v0.1.5 execution cursor must be followed before any
+  implementation;
 - manual UIA smoke inherited from an earlier release is labeled as inherited or
   stale, not current;
 - stale manual smoke can support context, but a hard release gate needs fresh
