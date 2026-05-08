@@ -5,6 +5,8 @@ evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
 [v0.1.9 maintenance release record](release-v0.1.9.md). The active
+release-readiness record is
+[v0.1.10 release-readiness record](release-v0.1.10.md), and the active
 post-v0.1.9 maintenance cursor is recorded in
 [Post-v0.1.9 maintenance plan](next-round-plan-post-v0.1.9.md). The
 post-v0.1.8 cursor is completed historical evidence.
@@ -35,9 +37,15 @@ historical records. After the `v0.1.9` publication:
   another version;
 - `v0.1.9` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
+- `v0.1.10` is the active release-readiness candidate and must remain pending
+  until local X4 validation, PR Windows Harness, post-merge `main` Windows
+  Harness, and GitHub release publication pass;
 - the post-v0.1.9 execution cursor is active and records PR #96 plus
   post-merge Windows Harness run `25565697723`, and X0 PR #97 plus
-  post-merge Windows Harness run `25566750349`;
+  post-merge Windows Harness run `25566750349`, X1 PR #98 plus post-merge
+  Windows Harness run `25567503424`, X2 PR #99 plus post-merge Windows Harness
+  run `25568061526`, and X3 PR #100 plus post-merge Windows Harness run
+  `25568639603`;
 - the post-v0.1.8 execution cursor is completed historical context;
 - the post-v0.1.7 execution cursor is completed historical context;
 - the post-v0.1.6 execution cursor is completed historical context;
@@ -79,6 +87,11 @@ historical records. After the `v0.1.9` publication:
 - the X1 decision does not make inherited manual smoke fresh or current release
   evidence; release readiness must explicitly accept inherited evidence for
   publication or record fresh manual smoke;
+- for the active `v0.1.10` release-readiness candidate, inherited `v0.1.0`
+  manual smoke is explicitly accepted by the X4 release-readiness record
+  because no helper, watcher product behavior, manual smoke script, capture,
+  privacy, product CLI/MCP shape, or capture-surface behavior changed before
+  release readiness;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are
