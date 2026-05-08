@@ -4,13 +4,13 @@ Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
-[v0.1.13 maintenance release record](release-v0.1.13.md). The completed
-post-v0.1.12 maintenance cursor is recorded in
-[Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md). The previous
+[v0.1.13 maintenance release record](release-v0.1.13.md). The active
+post-v0.1.13 maintenance cursor is recorded in
+[Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md). The previous
 stable release record is
 [v0.1.12 maintenance release record](release-v0.1.12.md), the completed
-post-v0.1.11 maintenance cursor is recorded in
-[Post-v0.1.11 maintenance plan](next-round-plan-post-v0.1.11.md), and the
+post-v0.1.12 maintenance cursor is recorded in
+[Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md), and the
 post-v0.1.10 cursor is completed historical evidence.
 
 ## Evidence Location
@@ -39,6 +39,8 @@ historical records. After the `v0.1.13` publication:
   another version;
 - `v0.1.13` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
+- the post-v0.1.13 execution cursor is active and records post-publication
+  reconciliation PR #119 plus post-merge Windows Harness run `25581662790`;
 - the post-v0.1.12 execution cursor is completed historical context and records
   PR #118 plus post-merge Windows Harness run `25580877004`;
 - the post-v0.1.11 execution cursor is completed historical context and
