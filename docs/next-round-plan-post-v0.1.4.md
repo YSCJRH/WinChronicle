@@ -20,7 +20,7 @@ service install, and no default background capture.
 ## Execution Cursor
 
 - Current stage: G - v0.1.5 Published Baseline Reconciliation.
-- Stage status: G - v0.1.5 published; publication reconciliation in progress.
+- Stage status: G - v0.1.5 published; baseline reconciliation complete.
 - Last completed evidence: `v0.1.4` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.4 and targets
   `31164abe0a391a4cf4e2bf5741395fe7a8ae8750`. The post-publication
@@ -60,8 +60,7 @@ service install, and no default background capture.
   validation passed after the version bump and release-readiness record. The
   pre-publication `main` Windows Harness run `25544832155` passed on the final
   release tag target.
-- Next atomic task: establish the post-v0.1.5 next-round plan from the
-  published baseline.
+- Next atomic task: follow the active post-v0.1.5 next-round plan.
 - Known blockers: none.
 
 ## Phased Work
