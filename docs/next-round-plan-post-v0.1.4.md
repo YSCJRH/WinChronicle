@@ -64,7 +64,8 @@ service install, and no default background capture.
 - Next atomic task: publish `v0.1.5` only after explicit publication approval,
   then reconcile the release record with the final tag target, release URL, and
   post-publication evidence.
-- Known blockers: none.
+- Known blockers: explicit `v0.1.5` publication approval has not been
+  provided.
 
 ## Phased Work
 

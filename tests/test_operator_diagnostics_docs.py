@@ -121,7 +121,7 @@ def test_post_v014_plan_is_active_without_expanding_scope():
         "No screenshot capture, OCR, audio recording, keyboard capture, clipboard",
         "Product CLI still does not expose targeted `--hwnd`, `--pid`, or",
         "MCP remains read-only",
-        "Known blockers: none.",
+        "Known blockers: explicit `v0.1.5` publication approval has not been\n  provided.",
         "Stage P0 - Post-v0.1.4 Baseline Cursor",
         "Stage P1 - Release Evidence And Entry Hygiene",
         "Stage P2 - Manual Smoke Freshness Decision",
