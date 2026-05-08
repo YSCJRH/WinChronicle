@@ -24,17 +24,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: W0 - Post-v0.1.8 Baseline Cursor.
-- Stage status: B - baseline cursor docs/tests are implemented and local
+- Current stage: W1 - Evidence Freshness And Entry Hygiene.
+- Stage status: B - evidence-freshness docs/tests are implemented and local
   deterministic validation passed; PR Windows Harness and post-merge Windows
   Harness are pending.
-- Last completed evidence: `v0.1.8` is published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.8 and targets
-  `1ea1e378aedb0a509d202fd32bc69704dbe903d4`.
-- Last validation: W0 docs tests, full pytest, helper build, watcher build,
+- Last completed evidence: W0 PR #92 passed PR Windows Harness run
+  `25562785206`, merged as `6d44aad77eedfb2480147ae8c112c3e001da4710`, and
+  post-merge `main` Windows Harness run `25562905132` passed on that SHA.
+- Last validation: W1 docs tests, full pytest, helper build, watcher build,
   install CLI smoke, full harness, and `git diff --check` passed.
-- Next atomic task: open a small W0 PR, verify PR and post-merge Windows
-  Harness, then advance to W1 evidence freshness in the next branch.
+- Next atomic task: open a small W1 PR, verify PR and post-merge Windows
+  Harness, then advance to W2 CI/runtime scan in the next branch.
 - Known blockers: none.
 
 ## Phased Work
@@ -177,6 +177,16 @@ Stage-specific gates:
   planning contract, not implementation authorization.
 - Kept inherited manual UIA smoke as historical context only until W1 makes a
   release-specific freshness decision.
+- During W0, merged PR #92 as
+  `6d44aad77eedfb2480147ae8c112c3e001da4710`; PR Windows Harness
+  `25562785206` and post-merge `main` Windows Harness `25562905132` passed.
+- During W1, decided that inherited `v0.1.0` manual UIA smoke remains
+  stale/inherited for the active post-v0.1.8 maintenance path. It is not fresh
+  or current release evidence unless a later release-readiness record
+  explicitly accepts it for a compatible release, or fresh manual smoke is
+  rerun and recorded. No fresh manual smoke is required in W1 because no helper
+  behavior, watcher product behavior, manual smoke scripts, capture behavior,
+  privacy behavior, product CLI/MCP shape, or capture surfaces changed.
 
 ## Validation Log
 
@@ -186,6 +196,17 @@ Stage-specific gates:
   - `git show-ref --tags v0.1.8` - passed; local tag points to `1ea1e378aedb0a509d202fd32bc69704dbe903d4`.
   - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.8`.
   - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_uia_helper_quality_matrix.py tests/test_version_identity.py -q` - passed after establishing this active cursor and updating operator entry-point tests.
+  - `python -m pytest -q` - passed with `112 passed`.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Stage W0 remote validation:
+  - PR #92 Windows Harness run `25562785206` - passed.
+  - Post-merge `main` Windows Harness run `25562905132` - passed on `6d44aad77eedfb2480147ae8c112c3e001da4710`.
+- Stage W1 evidence-freshness validation:
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py tests/test_uia_helper_quality_matrix.py -q` - passed after advancing this cursor to W1 and recording the active post-v0.1.8 manual smoke freshness decision.
   - `python -m pytest -q` - passed with `112 passed`.
   - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
