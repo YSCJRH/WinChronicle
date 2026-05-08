@@ -4,7 +4,9 @@ Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
-[v0.1.7 maintenance release record](release-v0.1.7.md). The active
+[v0.1.7 maintenance release record](release-v0.1.7.md). The current
+release-readiness record is
+[v0.1.8 maintenance release-readiness record](release-v0.1.8.md). The active
 post-v0.1.7 maintenance cursor is recorded in
 [Post-v0.1.7 maintenance plan](next-round-plan-post-v0.1.7.md). The
 post-v0.1.6 cursor is completed historical evidence.
@@ -52,11 +54,12 @@ historical records. After the `v0.1.7` publication:
   record because no helper, watcher product behavior, manual smoke script,
   capture, privacy, product CLI/MCP shape, or capture-surface behavior changed
   before release readiness;
-- for the active post-v0.1.7 maintenance path, inherited `v0.1.0` manual
-  smoke remains stale/inherited after the U1 freshness decision and is not
-  fresh or current release evidence unless a later release-readiness record
-  explicitly accepts it for a compatible release, or fresh manual smoke is
-  recorded;
+- for the active post-v0.1.7 compatible maintenance path toward `v0.1.8`,
+  inherited `v0.1.0` manual smoke remained stale/inherited after the U1
+  freshness decision, then is explicitly accepted by the U4
+  release-readiness record because no helper, watcher product behavior, manual
+  smoke script, capture, privacy, product CLI/MCP shape, or capture-surface
+  behavior changed before release readiness;
 - deterministic harness smoke changes require fresh deterministic gate
   evidence, but do not by themselves refresh or invalidate manual UIA smoke
   evidence when product UIA behavior and manual UIA smoke scripts are

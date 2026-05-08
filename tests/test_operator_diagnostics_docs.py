@@ -59,11 +59,13 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
     readme_intro_normalized = " ".join(readme_intro.split())
 
+    assert "`v0.1.8` release-readiness record" in readme_intro_normalized
     assert "latest published `v0.1.7` release record" in readme_intro_normalized
     assert "active post-v0.1.7 maintenance plan" in readme_intro_normalized
     assert "completed post-v0.1.6 maintenance plan" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
+    assert "v0.1.8 maintenance release-readiness record" in readme_operator_docs
     assert "v0.1.7 maintenance release record" in readme_operator_docs
     assert "Post-v0.1.7 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.6 maintenance plan" in readme_operator_docs
@@ -72,6 +74,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Post-v0.1.4 maintenance plan" in readme_operator_docs
     assert "v0.1.5 maintenance release record" in readme_operator_docs
     assert "v0.1.4 maintenance release record" in readme_operator_docs
+    assert readme_operator_docs.index("v0.1.8 maintenance release-readiness record") < readme_operator_docs.index(
+        "v0.1.7 maintenance release record"
+    )
     assert readme_operator_docs.index("v0.1.7 maintenance release record") < readme_operator_docs.index(
         "Post-v0.1.7 maintenance plan"
     )
@@ -81,6 +86,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert readme_operator_docs.index("Post-v0.1.6 maintenance plan") < readme_operator_docs.index(
         "v0.1.6 maintenance release record"
     )
+    assert "release-v0.1.8.md" in current_section
     assert "release-v0.1.7.md" in current_section
     assert "next-round-plan-post-v0.1.7.md" in current_section
     assert "next-round-plan-post-v0.1.6.md" not in current_section
@@ -123,6 +129,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.1.md" in historical_section
     assert "release-v0.1.1.md" in historical_section
     assert "next-round-plan-v0.1.0-final.md" in historical_section
+    assert "release-v0.1.8.md" in checklist
+    assert "release-v0.1.8.md" in evidence
     assert "next-round-plan-post-v0.1.7.md" in checklist
     assert "next-round-plan-post-v0.1.7.md" in evidence
     assert "release-v0.1.7.md" in checklist
@@ -275,14 +283,18 @@ def test_post_v017_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: U3 - Compatibility Guardrail Sweep.",
-        "Stage status: B - compatibility guardrail sweep docs/tests are implemented",
+        "Current stage: U4 - v0.1.8 Release Readiness.",
+        "Stage status: B - release-readiness docs, tests, release record, and version",
         "`v0.1.7` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.7",
         "targets `0b5969509754f78b218f823d0e6bb7a0ea61392b`",
         "PR #86 merged as `5e310f9c37836c5e6baa1bee7f89f91f701ff6e8`",
         "PR Windows Harness run `25556946503` passed",
         "post-merge `main` Windows Harness run `25557058094` passed",
-        "Next atomic task: open a small U3 PR",
+        "U3 PR #90 passed PR Windows Harness run `25560353073`",
+        "merged as `8a25ec8abf2f91a912aaffd807ae4a4897847578`",
+        "post-merge `main` Windows Harness run `25560483461` passed",
+        "Next atomic task: open the U4 PR",
+        "publish `v0.1.8` if no product",
         "PR #87 Windows Harness run `25557993996` - passed",
         "`3ca1d2772c16ac11b7cfef8f4fe8b6fc28cb6636`",
         "Post-merge `main` Windows Harness run `25558154805` - passed",
@@ -324,6 +336,15 @@ def test_post_v017_plan_is_active_without_expanding_scope():
         "version identity, exact read-only MCP",
         "Phase 6 spec-only and dependency/source absence",
         "no-action-needed compatibility guardrail sweep",
+        "During U3, merged PR #90 as",
+        "`8a25ec8abf2f91a912aaffd807ae4a4897847578`",
+        "`25560353073`",
+        "`25560483461`",
+        "During U4, chose the direct compatible `v0.1.8` path",
+        "During U4, the `v0.1.8` release-readiness record explicitly accepts",
+        "aligned version identity to `0.1.8`",
+        "Stage U4 release-readiness validation:",
+        "`python -m pytest -q` - passed with `111 passed`",
         "No fresh manual smoke is required in U1",
         "Do not retag `v0.1.7`",
         "release-readiness record explicitly accepts it",
@@ -353,9 +374,9 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "inherited `v0.1.0` manual smoke was explicitly accepted by S4",
         "post-v0.1.6 compatible maintenance path toward `v0.1.7`",
         "inherited\n  `v0.1.0` manual smoke is explicitly accepted by the T4",
-        "active post-v0.1.7 maintenance path",
-        "stale/inherited after the U1 freshness decision",
-        "not\n  fresh or current release evidence",
+        "active post-v0.1.7 compatible maintenance path toward `v0.1.8`",
+        "remained stale/inherited after the U1",
+        "explicitly accepted by the U4",
         "capture-surface behavior changed before release",
         "no observed-content artifact is committed to refresh evidence",
         "deterministic harness smoke changes require fresh deterministic gate",
@@ -378,9 +399,9 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "inherited `v0.1.0` manual smoke was explicitly accepted by S4",
         "post-v0.1.6 compatible maintenance path toward `v0.1.7`",
         "inherited\n  `v0.1.0` manual smoke is explicitly accepted by the T4",
-        "active post-v0.1.7 maintenance path",
-        "stale/inherited after the U1 freshness decision",
-        "not\n  fresh or current release evidence",
+        "active post-v0.1.7 compatible maintenance path toward `v0.1.8`",
+        "remained stale/inherited after the U1",
+        "explicitly accepted by the U4",
         "capture-surface behavior changed before release",
         "never observed content",
         "deterministic harness smoke changes require fresh deterministic gate",
@@ -414,23 +435,23 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     for expected in (
         "Stable release baseline | `v0.1.7`",
         "Current maintenance plan | [Post-v0.1.7 maintenance plan]",
+        "Current release-readiness record | [v0.1.8 maintenance release-readiness record]",
         "Latest completed maintenance plan | [Post-v0.1.6 maintenance plan]",
         "Published release record | [v0.1.7 maintenance release record]",
         "Latest published release record | [v0.1.7 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
-        "Last freshness decision | For the active post-v0.1.7 maintenance path",
+        "Last freshness decision | For the active post-v0.1.7 compatible maintenance path toward `v0.1.8`",
         "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
-        "remains stale/inherited",
-        "U1 does not treat it as fresh or current release evidence",
-        "No fresh manual smoke is required in U1",
+        "remained stale/inherited after U1",
+        "explicitly accepted by the U4 release-readiness record",
         "explicitly accepted by S4 for the compatible `v0.1.6` path",
         "explicitly accepted by T4 for the compatible `v0.1.7` path",
+        "explicitly accepted by U4 for the compatible `v0.1.8` path",
         "historically accepted for `v0.1.5` as diagnostic context",
-        "Next freshness decision | U4 release readiness must explicitly accept inherited manual evidence",
+        "Next freshness decision | After `v0.1.8` publication",
         "manual smoke is explicitly accepted by the T4 release-readiness\n  record",
-        "For the active post-v0.1.7 path, inherited `v0.1.0` manual smoke remains",
-        "stale/inherited after the U1 freshness decision",
-        "not fresh or current\n  release evidence",
+        "For the active post-v0.1.7 compatible maintenance path toward `v0.1.8`",
+        "then is explicitly accepted by the U4",
         "Fresh manual smoke is required if any helper, watcher, smoke script",
         "Do not paste observed text",
         "Do not save or commit raw watcher JSONL",
