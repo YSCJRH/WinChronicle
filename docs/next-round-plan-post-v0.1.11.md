@@ -26,18 +26,19 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Z1 - Evidence Freshness And Entry Hygiene.
-- Stage status: B - Z1 evidence freshness docs/tests are implemented and local
+- Current stage: Z2 - CI Runtime And Dependency Maintenance Scan.
+- Stage status: B - Z2 CI/runtime and dependency scan docs/tests are
+  implemented and local
   deterministic validation passed; PR Windows Harness and post-merge Windows
   Harness are pending.
-- Last completed evidence: Z0 PR #107 passed PR Windows Harness run
-  `25573927712`, merged as
-  `8ca63acf7298564385f2a7ca777ff973aa7cb09b`, and post-merge `main`
-  Windows Harness run `25574042929` passed on that SHA.
-- Last validation: Z1 docs freshness scan, focused docs tests, full pytest,
-  helper build, watcher build, install CLI smoke, full harness, and
-  `git diff --check` passed locally.
-- Next atomic task: open the Z1 PR, then verify PR and post-merge Windows
+- Last completed evidence: Z1 PR #108 passed PR Windows Harness run
+  `25574694437`, merged as
+  `a24ae2435264790ba8c2cac243c996ce3db0ce88`, and post-merge `main`
+  Windows Harness run `25574855474` passed on that SHA.
+- Last validation: Z2 CI/runtime and dependency maintenance scan, focused docs
+  tests, full pytest, helper build, watcher build, install CLI smoke, full
+  harness, and `git diff --check` passed locally.
+- Next atomic task: open the Z2 PR, then verify PR and post-merge Windows
   Harness.
 - Known blockers: none.
 
@@ -189,6 +190,19 @@ Stage-specific gates:
   This does not make inherited manual smoke fresh or current release evidence;
   Z4 must explicitly accept inherited evidence before `v0.1.12` publication or
   record fresh manual smoke.
+- Recorded Z1 PR #108 and post-merge Windows Harness run `25574855474` as the
+  evidence freshness and entry hygiene completion evidence.
+- During Z2, reviewed the latest `main` Windows Harness run `25574855474` and
+  found no deprecation, action-runtime, failed-log, or runner maintenance signal
+  requiring workflow changes.
+- During Z2, kept the existing CI gate order unchanged:
+  `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"`, `windows-2025-vs2026`,
+  `actions/checkout@v6`, `actions/setup-python@v6`, `actions/setup-dotnet@v5`,
+  pytest, helper build, watcher build, full harness, and `git diff --check`.
+- During Z2, confirmed `pyproject.toml` remains limited to deterministic
+  project dependencies: runtime `jsonschema`, and dev `pytest`, `jsonschema`,
+  and `wheel`. No screenshot/OCR/audio/keyboard/clipboard/network/LLM
+  dependency drift was found.
 
 ## Validation Log
 
@@ -218,5 +232,23 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending Z1 PR Windows Harness.
-- Pending Z1 post-merge `main` Windows Harness.
+- Stage Z1 remote validation:
+  - PR #108 Windows Harness run `25574694437` - passed.
+  - PR #108 merged as `a24ae2435264790ba8c2cac243c996ce3db0ce88`.
+  - Post-merge `main` Windows Harness run `25574855474` - passed on
+    `a24ae2435264790ba8c2cac243c996ce3db0ce88`.
+- Stage Z2 CI/runtime and dependency scan:
+  - `gh run view 25574855474 --json databaseId,status,conclusion,headSha,displayTitle,createdAt,updatedAt,url,jobs` - passed; run and deterministic harness job concluded `success`.
+  - `gh run view 25574855474 --log | Select-String -Pattern "warning|deprecated|deprecation|Node 20|Node.js 20|node20|error|failed"` - reviewed; no deprecation, action-runtime, or failed-log maintenance signal was found.
+  - `rg -n "uses: actions/(checkout|setup-python|setup-dotnet)@|runs-on:|FORCE_JAVASCRIPT_ACTIONS_TO_NODE24|python-version|dotnet-version" .github/workflows/windows-harness.yml` - passed; existing Node 24, runner, and action versions remain current for this plan.
+  - `rg --files -g "pyproject.toml" -g "requirements*" -g "poetry.lock" -g "uv.lock" -g "Pipfile*" -g "package*.json"` - passed; only `pyproject.toml` is present.
+  - `rg -n "pillow|opencv|tesseract|ocr|screenshot|imagegrab|pyautogui|mss|keyboard|clipboard|pyperclip|requests|httpx|aiohttp|openai|anthropic" pyproject.toml .github/workflows/windows-harness.yml` - passed with no matches.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 26 tests.
+  - `python -m pytest -q` - passed, 118 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending Z2 PR Windows Harness.
+- Pending Z2 post-merge `main` Windows Harness.
