@@ -1,40 +1,42 @@
-# v0.1.9 Maintenance Release Readiness Record
+# v0.1.9 Maintenance Release Record
 
-This record prepares the compatible `v0.1.9` maintenance release from the
-published `v0.1.8` baseline. It records commands, results, commit identifiers,
-CI URLs, environment notes, and local artifact paths only. It does not commit
-observed-content artifacts.
+This record captures the published compatible `v0.1.9` maintenance release
+from the published `v0.1.8` baseline. It records commands, results, commit
+identifiers, CI URLs, environment notes, and local artifact paths only. It does
+not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.9` is a compatible maintenance release candidate. The direct compatible
-release path is allowed because W0-W4 change release evidence, documentation,
-tests, CI/runtime metadata, compatibility evidence, and version metadata only.
-No product behavior, schema, CLI/MCP JSON shape, privacy behavior,
-helper/watcher behavior, or capture-surface change is included.
+`v0.1.9` is published. The W4 release-readiness PR, PR Windows Harness,
+post-merge `main` Windows Harness, and GitHub release publication passed.
+
+The direct compatible release path is allowed because W0-W4 change release
+evidence, documentation, tests, CI/runtime metadata, compatibility evidence,
+and version metadata only. No product behavior, schema, CLI/MCP JSON shape,
+privacy behavior, helper/watcher behavior, or capture-surface change is
+included.
 
 If any product behavior, schema, CLI/MCP JSON shape, privacy behavior,
-helper/watcher behavior, or capture-surface regression is found before
-publication, stop the direct `v0.1.9` path and prepare a release candidate
-instead.
+helper/watcher behavior, or capture-surface regression is found after
+publication, prepare a follow-up release candidate instead of retagging
+`v0.1.9`.
 
-Publication status: release-readiness candidate, pending PR Windows Harness,
-post-merge `main` Windows Harness, and GitHub release publication.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.9` |
-| Stage | Release-readiness candidate |
+| Stage | Published maintenance release |
 | Evidence date | 2026-05-08, Asia/Shanghai |
 | Base `main` SHA before W4 readiness | `36d430c478e65ad107125b7e87ed4ec18ac18709` |
-| Candidate PR | Pending |
-| Candidate PR Windows Harness | Pending |
-| Candidate post-merge `main` Windows Harness | Pending |
-| Publication status | Pending |
-| Release URL | Pending |
-| Final tag target | Pending |
+| Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/96 |
+| Candidate PR Windows Harness | Passed, run `25565589238`, https://github.com/YSCJRH/WinChronicle/actions/runs/25565589238 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25565697723`, https://github.com/YSCJRH/WinChronicle/actions/runs/25565697723 |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.9 |
+| Final tag target | `d06ab5bc8bea7520bac2719adb457794c72911d3` |
 | Previous stable release | `v0.1.8` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.8 |
 | `v0.1.8` tag target | `1ea1e378aedb0a509d202fd32bc69704dbe903d4` |
@@ -82,8 +84,8 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The W4 PR Windows Harness and post-merge `main` Windows Harness must pass
-before publication.
+The W4 PR Windows Harness and post-merge `main` Windows Harness passed before
+publication.
 
 ## Release Notes
 
@@ -170,13 +172,11 @@ This maintenance release does not expand the capture surface from `v0.1.8`.
 
 ## Release Decision Summary
 
-- Release path: compatible `v0.1.9` maintenance release candidate.
-- Fallback path: release candidate if any product or contract change is
-  required before publication; follow-up release candidate if any product or
-  contract change is required after publication.
-- Deterministic gates: local W4 validation passed; PR Windows Harness and
-  post-merge `main` Windows Harness must pass before GitHub release
-  publication.
+- Release path: compatible `v0.1.9` maintenance release, published.
+- Fallback path: follow-up release candidate if any product or contract change
+  is required after publication.
+- Deterministic gates: local W4 validation, PR Windows Harness, post-merge
+  `main` Windows Harness, and GitHub release publication passed.
 - Manual UIA gates: inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code
   strict diagnostic, and watcher preview manual evidence is explicitly accepted
   by this W4 record for the compatible `v0.1.9` path only because product UIA
@@ -184,5 +184,7 @@ This maintenance release does not expand the capture surface from `v0.1.8`.
   behavior, privacy behavior, product CLI/MCP shape, and capture surfaces are
   unchanged.
 - Privacy/scope confirmation: unchanged and recorded above.
-- Publication approval: authorized by the active thread goal after required
-  local, PR, and post-merge release gates pass.
+- Publication approval: completed by the active thread goal directing stage
+  completion, remote push, and publication.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.9.
+- Final tag target: `d06ab5bc8bea7520bac2719adb457794c72911d3`.
