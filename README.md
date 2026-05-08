@@ -128,6 +128,7 @@ available through `search-captures`.
 - [Release evidence guide](docs/release-evidence.md)
 - [Manual smoke evidence template](docs/manual-smoke-evidence-template.md)
 - [Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)
+- [Deterministic demo](docs/deterministic-demo.md)
 - [Windows UIA smoke gates](docs/windows-uia-smoke.md)
 - [Operator diagnostics](docs/operator-diagnostics.md)
 - [Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)

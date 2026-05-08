@@ -28,17 +28,17 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AA1 - Blueprint Gap And Public Surface Audit.
-- Stage status: B - AA1 audit docs/tests are implemented locally; PR Windows
+- Current stage: AA2 - Deterministic Demo And Operator Experience Refresh.
+- Stage status: B - AA2 demo docs/tests are implemented locally; PR Windows
   Harness and post-merge Windows Harness are pending.
-- Last completed evidence: AA0 PR #113 passed PR Windows Harness run
-  `25578139342`, merged as
-  `4a5c5d53d9a6981e81a3ba61625cea847a87d88f`, and post-merge `main`
-  Windows Harness run `25578252392` passed on that SHA.
-- Last validation: AA1 focused docs tests, full pytest, helper build, watcher
+- Last completed evidence: AA1 PR #114 passed PR Windows Harness run
+  `25578768178`, merged as
+  `b5b5bd7725c47f85fd4811eee3b5798577621e53`, and post-merge `main`
+  Windows Harness run `25578855299` passed on that SHA.
+- Last validation: AA2 focused docs tests, full pytest, helper build, watcher
   build, install CLI smoke, full harness, and `git diff --check` passed
   locally.
-- Next atomic task: open the AA1 PR, then verify PR and post-merge Windows
+- Next atomic task: open the AA2 PR, then verify PR and post-merge Windows
   Harness.
 - Known blockers: none.
 
@@ -180,6 +180,12 @@ Stage-specific gates:
   deterministic public demo consolidation, public roadmap, issue templates,
   harness-first contribution entry, manual smoke freshness tracking, and
   manually maintained GitHub metadata/social surface.
+- Recorded AA1 PR #114 and post-merge Windows Harness run `25578855299` as the
+  blueprint gap audit completion evidence.
+- During AA2, consolidated the deterministic public demo into a fixture-only
+  operator path that covers capture search, memory generation/search, watcher
+  fixture replay, read-only MCP smoke, privacy status, and artifact policy
+  without adding live UIA smoke to default CI.
 
 ## Validation Log
 
@@ -212,5 +218,19 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AA1 PR Windows Harness.
-- Pending AA1 post-merge `main` Windows Harness.
+- Stage AA1 remote validation:
+  - PR #114 Windows Harness run `25578768178` - passed.
+  - PR #114 merged as `b5b5bd7725c47f85fd4811eee3b5798577621e53`.
+  - Post-merge `main` Windows Harness run `25578855299` - passed on
+    `b5b5bd7725c47f85fd4811eee3b5798577621e53`.
+- Stage AA2 deterministic demo validation:
+  - First `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` attempt failed because the AA2 cursor assertions still expected an AA1-only evidence phrase; the assertion was corrected to the AA2 cursor.
+  - `python -m pytest tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 17 tests.
+  - `python -m pytest -q` - passed, 122 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AA2 PR Windows Harness.
+- Pending AA2 post-merge `main` Windows Harness.
