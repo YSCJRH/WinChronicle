@@ -41,6 +41,10 @@ historical records. After the `v0.1.13` publication:
   Windows Harness evidence are recorded in the release record;
 - the post-v0.1.13 execution cursor is active and records post-publication
   reconciliation PR #119 plus post-merge Windows Harness run `25581662790`;
+- public metadata evidence should record the command/result for repository
+  description, homepage, topics, release metadata, and social preview status or
+  manual follow-up items; never record observed-content artifacts for this
+  check;
 - the post-v0.1.12 execution cursor is completed historical context and records
   PR #118 plus post-merge Windows Harness run `25580877004`;
 - the post-v0.1.11 execution cursor is completed historical context and

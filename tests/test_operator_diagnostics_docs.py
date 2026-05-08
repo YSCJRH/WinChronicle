@@ -48,6 +48,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Roadmap](roadmap.md)" in quickstart
     assert "[Contributing](../CONTRIBUTING.md)" in quickstart
     assert "[Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md)" in quickstart
+    assert (
+        "[Public metadata audit after v0.1.13](public-metadata-audit-post-v0.1.13.md)"
+        in quickstart
+    )
     assert "[v0.1.13 maintenance release record](release-v0.1.13.md)" in quickstart
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
     assert (
@@ -62,6 +66,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Roadmap](docs/roadmap.md)" in readme
     assert "[Contributing](CONTRIBUTING.md)" in readme
     assert "[Post-v0.1.13 maintenance plan](docs/next-round-plan-post-v0.1.13.md)" in readme
+    assert (
+        "[Public metadata audit after v0.1.13](docs/public-metadata-audit-post-v0.1.13.md)"
+        in readme
+    )
     assert "[v0.1.13 maintenance release record](docs/release-v0.1.13.md)" in readme
 
 
@@ -83,6 +91,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     readme_intro_normalized = " ".join(readme_intro.split())
 
     assert "active post-v0.1.13 maintenance plan" in readme_intro_normalized
+    assert "public metadata audit" in readme_intro_normalized
     assert "latest published `v0.1.13` release record" in readme_intro_normalized
     assert "completed post-v0.1.12 maintenance plan" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
@@ -90,6 +99,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.12 maintenance release record" in readme_operator_docs
     assert "v0.1.13 maintenance release record" in readme_operator_docs
     assert "Post-v0.1.13 maintenance plan" in readme_operator_docs
+    assert "Public metadata audit after v0.1.13" in readme_operator_docs
     assert "Post-v0.1.12 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.11 maintenance plan" in readme_operator_docs
     assert "v0.1.11 maintenance release record" in readme_operator_docs
@@ -107,6 +117,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Post-v0.1.4 maintenance plan" in readme_operator_docs
     assert "v0.1.5 maintenance release record" in readme_operator_docs
     assert "v0.1.4 maintenance release record" in readme_operator_docs
+    assert readme_operator_docs.index("Public metadata audit after v0.1.13") < readme_operator_docs.index(
+        "Blueprint gap audit after v0.1.12"
+    )
     assert readme_operator_docs.index("Post-v0.1.13 maintenance plan") < readme_operator_docs.index(
         "v0.1.13 maintenance release record"
     )
@@ -153,6 +166,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "v0.1.6 maintenance release record"
     )
     assert "next-round-plan-post-v0.1.13.md" in current_section
+    assert "public-metadata-audit-post-v0.1.13.md" in current_section
     assert "release-v0.1.13.md" in current_section
     assert "release-v0.1.12.md" in current_section
     assert "next-round-plan-post-v0.1.12.md" not in current_section
@@ -219,6 +233,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-v0.1.13.md" in evidence
     assert "next-round-plan-post-v0.1.13.md" in checklist
     assert "next-round-plan-post-v0.1.13.md" in evidence
+    assert "public metadata and evidence-freshness checks" in checklist
+    assert "public metadata evidence should record" in evidence
     assert "release-v0.1.12.md" in checklist
     assert "release-v0.1.12.md" in evidence
     assert "next-round-plan-post-v0.1.12.md" in checklist
@@ -901,10 +917,12 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "publication reconciliation on `main` is `f4781a91f2120f3eca5088b87bf9034be752274f`",
         "Windows Harness run `25581662790` passed",
         "reports `0.1.13`",
-        "Current stage: AB0 - Post-v0.1.13 Baseline Cursor.",
-        "Stage status: B - AB0 baseline cursor docs/tests and local validation are complete",
+        "Current stage: AB1 - Public Metadata And Evidence Freshness Audit.",
+        "Stage status: B - AB1 public metadata audit docs/tests and local validation are complete",
         "publication reconciliation PR #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`",
         "post-merge `main` Windows Harness run `25581662790` passed",
+        "AB0 PR #120 merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`",
+        "post-merge `main` Windows Harness run `25582374884` passed",
         "Stage AB0 - Post-v0.1.13 Baseline Cursor",
         "Stage AB1 - Public Metadata And Evidence Freshness Audit",
         "Stage AB2 - Helper And Watcher Preview Diagnostics Evidence",
@@ -926,10 +944,69 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "Stage AB0 local validation:",
         "python -m pytest -q` - passed, 126 tests.",
         "python harness/scripts/run_harness.py` - passed.",
-        "Pending AB0 PR Windows Harness.",
-        "Pending AB0 post-merge `main` Windows Harness.",
+        "Stage AB0 remote validation:",
+        "PR #120 Windows Harness run `25582300531` - passed.",
+        "PR #120 merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`.",
+        "Post-merge `main` Windows Harness run `25582374884` - passed.",
+        "Stage AB1 initialization:",
+        "gh repo view YSCJRH/WinChronicle",
+        "description, homepage, and topics are empty or not configured",
+        "gh release view v0.1.13",
+        "Stage AB1 local validation:",
+        "passed, 36 tests.",
+        "python -m pytest -q` - passed, 127 tests.",
+        "python harness/scripts/run_install_cli_smoke.py` - passed.",
+        "Pending AB1 PR Windows Harness.",
+        "Pending AB1 post-merge `main` Windows Harness.",
     ):
         assert expected in normalized
+
+
+def test_public_metadata_audit_records_manual_gaps_without_scope_expansion():
+    audit = (ROOT / "docs" / "public-metadata-audit-post-v0.1.13.md").read_text(
+        encoding="utf-8"
+    )
+
+    for expected in (
+        "Public Metadata Audit After v0.1.13",
+        "does not change product behavior, schemas,\nCLI/MCP JSON shape",
+        "gh repo view YSCJRH/WinChronicle",
+        "Visibility | `PUBLIC`",
+        "Default branch | `main`",
+        "Description | Empty",
+        "Homepage URL | Empty",
+        "Repository topics | Empty / not configured",
+        "gh release view v0.1.13",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13",
+        "Target | `1070343d9bcfd60c48238835e26b6c32f9060ae7`",
+        "Draft | `false`",
+        "Prerelease | `false`",
+        "Published at | `2026-05-08T21:42:32Z`",
+        "README.md` starts with \"UIA-first local memory for Windows agents.\"",
+        "docs/operator-quickstart.md` links release checklist",
+        "docs/roadmap.md` maps fixture/privacy, helper, watcher, MCP, memory",
+        ".github/ISSUE_TEMPLATE/harness_first_task.yml",
+        "docs/release-checklist.md`, `docs/release-evidence.md`",
+        "GitHub repository description",
+        "GitHub homepage URL",
+        "GitHub topics",
+        "Social preview image",
+        "manual maintainer checklist item",
+        "no required product-code change",
+    ):
+        assert expected in audit
+
+    for forbidden in (
+        "authorize screenshots",
+        "OCR",
+        "network upload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service install",
+        "default background capture",
+    ):
+        assert forbidden in audit
 
 
 def test_blueprint_gap_audit_records_evidence_and_no_scope_expansion():
