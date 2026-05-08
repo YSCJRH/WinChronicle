@@ -169,6 +169,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.1.md" in historical_section
     assert "release-v0.1.1.md" in historical_section
     assert "next-round-plan-v0.1.0-final.md" in historical_section
+    assert "release-v0.1.12.md" in checklist
+    assert "release-v0.1.12.md" in evidence
     assert "release-v0.1.11.md" in checklist
     assert "release-v0.1.11.md" in evidence
     assert "next-round-plan-post-v0.1.11.md" in checklist
@@ -655,8 +657,8 @@ def test_post_v0111_plan_is_active_without_expanding_scope():
     normalized = " ".join(plan.split())
 
     for expected in (
-        "Current stage: Z3 - Compatibility Guardrail Sweep.",
-        "Stage status: B - Z3 compatibility guardrail docs/tests are implemented",
+        "Current stage: Z4 - v0.1.12 Release Readiness.",
+        "Stage status: B - Z4 release-readiness docs/tests/version metadata are implemented",
         "`v0.1.11` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.11",
         "targets `1724b0e47e6f6b915a99842fb971d7f9c503f65a`",
         "Windows Harness run `25573347339` passed",
@@ -666,9 +668,12 @@ def test_post_v0111_plan_is_active_without_expanding_scope():
         "PR #108 Windows Harness run `25574694437`",
         "`a24ae2435264790ba8c2cac243c996ce3db0ce88`",
         "Windows Harness run `25574855474` - passed",
-        "Z2 PR #109 passed PR Windows Harness run `25575316043`",
+        "PR #109 Windows Harness run `25575316043`",
         "`6ac84e7ff62a4d5bd11ac4a9ffec85cbf51a3991`",
-        "Windows Harness run `25575439821` passed",
+        "Windows Harness run `25575439821` - passed",
+        "Z3 PR #110 passed PR Windows Harness run `25575910225`",
+        "`86be82cb153269bad68fb92806fa7701a1e8579c`",
+        "Windows Harness run `25576068774` passed",
         "Stage Z0 - Post-v0.1.11 Baseline Cursor",
         "Stage Z1 - Evidence Freshness And Entry Hygiene",
         "Stage Z2 - CI Runtime And Dependency Maintenance Scan",
@@ -702,6 +707,10 @@ def test_post_v0111_plan_is_active_without_expanding_scope():
         "watcher preview-only behavior",
         "product targeted capture absence",
         "No additional product tests or code changes were needed",
+        "Recorded Z3 PR #110 and post-merge Windows Harness run `25576068774`",
+        "During Z4, chose the direct compatible `v0.1.12` path",
+        "aligned package, runtime, and MCP server version identity to `0.1.12`",
+        "the `v0.1.12` release-readiness record explicitly accepts",
         "Stage Z0 initialization:",
         "Stage Z0 local validation:",
         "Stage Z0 remote validation:",
@@ -712,8 +721,10 @@ def test_post_v0111_plan_is_active_without_expanding_scope():
         "Stage Z3 compatibility guardrail sweep:",
         "current_context`, `search_captures`, `search_memory`, `read_recent_capture`, `recent_activity`, and `privacy_status`",
         "product targeted capture remained disabled",
-        "Pending Z3 PR Windows Harness.",
-        "Pending Z3 post-merge `main` Windows Harness.",
+        "Stage Z3 remote validation:",
+        "Stage Z4 release-readiness validation:",
+        "Pending Z4 PR Windows Harness.",
+        "Pending Z4 post-merge `main` Windows Harness.",
         "python -c \"import winchronicle; print(winchronicle.__version__)\"",
     ):
         assert expected in normalized

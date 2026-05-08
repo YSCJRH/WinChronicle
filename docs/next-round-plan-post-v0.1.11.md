@@ -26,19 +26,20 @@ service install, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Z3 - Compatibility Guardrail Sweep.
-- Stage status: B - Z3 compatibility guardrail docs/tests are
+- Current stage: Z4 - v0.1.12 Release Readiness.
+- Stage status: B - Z4 release-readiness docs/tests/version metadata are
   implemented and local
   deterministic validation passed; PR Windows Harness and post-merge Windows
   Harness are pending.
-- Last completed evidence: Z2 PR #109 passed PR Windows Harness run
-  `25575316043`, merged as
-  `6ac84e7ff62a4d5bd11ac4a9ffec85cbf51a3991`, and post-merge `main`
-  Windows Harness run `25575439821` passed on that SHA.
-- Last validation: Z3 compatibility guardrail sweep, focused compatibility
-  tests, full pytest, helper build, watcher build, install CLI smoke, full
+- Last completed evidence: Z3 PR #110 passed PR Windows Harness run
+  `25575910225`, merged as
+  `86be82cb153269bad68fb92806fa7701a1e8579c`, and post-merge `main`
+  Windows Harness run `25576068774` passed on that SHA.
+- Last validation: Z4 release-readiness checks, version identity tests,
+  release evidence docs tests, full pytest, helper build, watcher build,
+  install CLI smoke, full
   harness, and `git diff --check` passed locally.
-- Next atomic task: open the Z3 PR, then verify PR and post-merge Windows
+- Next atomic task: open the Z4 PR, then verify PR and post-merge Windows
   Harness.
 - Known blockers: none.
 
@@ -212,6 +213,18 @@ Stage-specific gates:
 - During Z3, found no product behavior, schema, CLI/MCP JSON shape, privacy
   behavior, helper/watcher behavior, or capture-surface drift. No additional
   product tests or code changes were needed.
+- Recorded Z3 PR #110 and post-merge Windows Harness run `25576068774` as the
+  compatibility guardrail sweep completion evidence.
+- During Z4, chose the direct compatible `v0.1.12` path because Z0-Z4 changed
+  only release evidence, documentation, tests, CI/runtime scan evidence,
+  compatibility evidence, and version metadata.
+- During Z4, aligned package, runtime, and MCP server version identity to
+  `0.1.12`.
+- During Z4, the `v0.1.12` release-readiness record explicitly accepts
+  inherited `v0.1.0` manual UIA smoke for the compatible `v0.1.12` path only
+  because helper behavior, watcher product behavior, manual smoke scripts,
+  capture behavior, privacy behavior, product CLI/MCP shape, and capture
+  surfaces are unchanged.
 
 ## Validation Log
 
@@ -278,5 +291,18 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending Z3 PR Windows Harness.
-- Pending Z3 post-merge `main` Windows Harness.
+- Stage Z3 remote validation:
+  - PR #110 Windows Harness run `25575910225` - passed.
+  - PR #110 merged as `86be82cb153269bad68fb92806fa7701a1e8579c`.
+  - Post-merge `main` Windows Harness run `25576068774` - passed on
+    `86be82cb153269bad68fb92806fa7701a1e8579c`.
+- Stage Z4 release-readiness validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 28 tests.
+  - `python -m pytest -q` - passed, 119 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending Z4 PR Windows Harness.
+- Pending Z4 post-merge `main` Windows Harness.

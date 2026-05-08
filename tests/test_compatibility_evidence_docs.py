@@ -18,6 +18,7 @@ V018_RELEASE = ROOT / "docs" / "release-v0.1.8.md"
 V019_RELEASE = ROOT / "docs" / "release-v0.1.9.md"
 V0110_RELEASE = ROOT / "docs" / "release-v0.1.10.md"
 V0111_RELEASE = ROOT / "docs" / "release-v0.1.11.md"
+V0112_RELEASE = ROOT / "docs" / "release-v0.1.12.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -30,6 +31,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "exact read-only MCP tool list",
         "Phase 6 screenshot/OCR work remains specification-only",
         "product targeted capture flags are exposed",
+        "v0.1.12 maintenance release record",
         "v0.1.11 maintenance release record",
     ):
         assert phrase in normalized
@@ -49,6 +51,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Phase 6 remains specification-only",
         "no screenshot capture code",
         "OCR engine integration",
+        "v0.1.12 maintenance release record",
         "v0.1.11 maintenance release record",
     ):
         assert phrase in normalized
@@ -424,6 +427,48 @@ def test_v0111_release_record_is_published_and_compatible():
         "GitHub release publication passed.",
         "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.11.",
         "Final tag target: `1724b0e47e6f6b915a99842fb971d7f9c503f65a`.",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
+def test_v0112_release_record_is_ready_and_compatible():
+    text = V0112_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Publication status: ready maintenance release candidate.",
+        "Release | `v0.1.12`",
+        "Stage | Ready maintenance release candidate",
+        "Base `main` SHA before Z4 readiness | `86be82cb153269bad68fb92806fa7701a1e8579c`",
+        "Candidate PR | Pending",
+        "Candidate PR Windows Harness | Pending",
+        "Candidate post-merge `main` Windows Harness | Pending",
+        "Release URL | Pending until publication",
+        "Final tag target | Pending until publication",
+        "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.11",
+        "`v0.1.11` tag target | `1724b0e47e6f6b915a99842fb971d7f9c503f65a`",
+        "Z0 PR Windows Harness | Passed, run `25573927712`",
+        "Z1 PR Windows Harness | Passed, run `25574694437`",
+        "Z2 PR Windows Harness | Passed, run `25575316043`",
+        "Z3 PR Windows Harness | Passed, run `25575910225`",
+        "Z3 post-merge `main` Windows Harness | Passed, run `25576068774`",
+        "must report `0.1.12`",
+        "exact read-only MCP tool list remains unchanged",
+        "Phase 6 remains specification-only",
+        "no new capture surfaces",
+        "no helper/watcher product behavior changes",
+        "no screenshot capture code",
+        "no OCR engine integration",
+        "explicitly accepts inherited `v0.1.0` Notepad",
+        "`python -m pytest -q` | Pass | `119 passed`",
+        "Fallback path: release candidate if any product or contract change",
+        "Publication approval: completed by the active thread goal",
+        "Deterministic gates: local Z4 validation passed",
+        "Release URL: pending until publication.",
+        "Final tag target: pending until publication.",
     ):
         assert phrase in normalized
 
