@@ -26,6 +26,7 @@ V0116_RC0_RELEASE = ROOT / "docs" / "release-candidate-v0.1.16-rc.0.md"
 V0116_FINAL_PLAN = ROOT / "docs" / "next-round-plan-v0.1.16-final-release.md"
 V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 V0117_RELEASE = ROOT / "docs" / "release-v0.1.17.md"
+V0118_RELEASE = ROOT / "docs" / "release-v0.1.18.md"
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
@@ -75,6 +76,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Next blueprint lane selection after v0.1.17",
         "Privacy-policy contract parity audit after v0.1.17",
         "Privacy-check release-readiness decision after v0.1.17",
+        "v0.1.18 release-readiness record",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -118,6 +120,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Next blueprint lane selection after v0.1.17",
         "Privacy-policy contract parity audit after v0.1.17",
         "Privacy-check release-readiness decision after v0.1.17",
+        "v0.1.18 release-readiness record",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -903,6 +906,62 @@ def test_v0117_release_record_is_published_and_scoped():
         assert f"`{tool_name}`" in text
 
 
+def test_v0118_release_readiness_record_is_ready_and_scoped():
+    text = V0118_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "`v0.1.18` is ready for PR review as a compatible maintenance release candidate.",
+        "Publication status: ready for reviewed `v0.1.18` maintenance publication.",
+        "Release | `v0.1.18`",
+        "Stage | `v0.1.18` release-readiness record",
+        "Base `main` SHA before this record | `db9b388298facd0a8b387f86bc0dcfa1fa546bc5`",
+        "Candidate branch | `codex/v0.1.18-release-readiness-record`",
+        "Release URL | Pending: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18",
+        "Previous stable release | `v0.1.17`",
+        "`v0.1.17` tag target | `5b260edc3bddc48986e52179b2ffd261856a89ac`",
+        "Privacy-policy parity PR | https://github.com/YSCJRH/WinChronicle/pull/185",
+        "PR #185 Windows Harness | Passed, run `25611312314`",
+        "PR #185 post-merge `main` Windows Harness | Passed, run `25611363701`",
+        "Privacy-check release decision PR | https://github.com/YSCJRH/WinChronicle/pull/186",
+        "PR #186 Windows Harness | Passed, run `25611769944`",
+        "PR #186 post-merge `main` Windows Harness | Passed, run `25611836358`",
+        "`gh release view v0.1.18 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt`",
+        "release not found, confirming no existing `v0.1.18` release to retag",
+        "`git ls-remote --tags origin v0.1.18 v0.1.18-rc.0` | Pass | no remote tags returned",
+        "runtime/resource/version diff was limited to `src/winchronicle/capture.py` before the `0.1.18` version bump",
+        "`108 passed`",
+        "`204 passed`",
+        "`git diff --check` | Pass | no whitespace errors",
+        "`git diff --name-only -- src\\winchronicle resources pyproject.toml` | Pass | printed `pyproject.toml` and `src/winchronicle/_version.py`",
+        "`python harness/scripts/run_harness.py` | Pass | full harness passed",
+        "Deterministic watcher fixture and fake-helper preview | Pass",
+        "Notepad targeted UIA smoke | Pass",
+        "Edge targeted UIA smoke | Pass",
+        "VS Code metadata smoke | Pass with diagnostic warning",
+        "VS Code strict Monaco marker | Diagnostic failure, non-blocking",
+        "Real watcher/helper short preview | Heartbeat-only liveness diagnostic",
+        "Controlled Notepad live watcher retry | Heartbeat-only liveness diagnostic",
+        "`captures_written: 0`, `denylisted_skipped: 0`, `duplicates_skipped: 0`, `heartbeats: 9`",
+        "Aligns package, runtime, and MCP server version identity to `0.1.18`",
+        "post-`v0.1.17` privacy-check validation hardening from PR #185",
+        "already-normalized denylisted captures fail as already-written violations",
+        "must report `0.1.18`",
+        "exact read-only MCP tool list remains unchanged",
+        "Product CLI exposes no targeted `--hwnd`, `--pid`, `--window-title`",
+        "Phase 6 remains specification-only",
+        "does not expand the capture surface beyond `v0.1.17`",
+        "Do not retag or modify `v0.1.17` or `v0.1.16`",
+        "Release path: direct `v0.1.18` compatible maintenance publication",
+        "Publication approval: standing user goal authorizes publishing after review",
+        "GitHub release publication: pending.",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
 def test_post_v0117_plan_is_active_without_expanding_scope():
     text = POST_V0117_PLAN.read_text(encoding="utf-8")
     normalized = _normalized(text)
@@ -915,14 +974,17 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "PR #160 Windows Harness run `25601966464` passed",
         "post-merge `main` Windows Harness run `25602018700` passed",
         "Current stage: v0.1.18 Release-Readiness Record.",
-        "Stage status: Privacy-check release-readiness decision selected a narrow `v0.1.18` release-readiness path",
-        "Last completed evidence: Privacy-policy contract parity audit PR #185 merged as `ea5283e7ae9f2029fa97c1e9a65fff87eedb813e`",
-        "PR Windows Harness run `25611312314` passed",
-        "post-merge `main` Windows Harness run `25611363701` passed",
-        "verified the post-PR #185 `main` Windows Harness concluded `success`",
-        "is limited to `src/winchronicle/capture.py`",
-        "warrants a `v0.1.18` release-readiness path",
-        "Next atomic task: create the narrow `v0.1.18` release-readiness record",
+        "`v0.1.18` release-readiness is being prepared for the post-`v0.1.17` privacy-check validation hardening",
+        "Last completed evidence: Privacy-check release-readiness decision PR #186 merged as `db9b388298facd0a8b387f86bc0dcfa1fa546bc5`",
+        "PR Windows Harness run `25611769944` passed",
+        "post-merge `main` Windows Harness run `25611836358` passed",
+        "verified the post-PR #186 `main` Windows Harness concluded `success`",
+        "was limited to `src/winchronicle/capture.py`",
+        "bumps version identity to `0.1.18`",
+        "Local release-readiness validation passed: focused docs/privacy/version tests reported 108 tests",
+        "full pytest reported 204 tests",
+        "`src\\winchronicle`/`resources`/`pyproject.toml` diff is version metadata only",
+        "Next atomic task: open the reviewed `v0.1.18` release-readiness PR",
         "sample-only allowlist marker",
         "Live UIA smoke remains manual and outside default CI",
         "Stage AG0 - Post-v0.1.17 Baseline Cursor",
@@ -935,10 +997,13 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "Next Blueprint Lane - Fixture And Privacy Baseline Contract Parity Audit",
         "Fixture And Privacy Baseline - Privacy Policy Contract Parity Audit",
         "Release Decision - Privacy-Check Validation Hardening",
+        "v0.1.18 Release Readiness",
         "Select the Fixture and privacy baseline lane",
         "Harden `privacy-check` so denylisted fixture dry-runs still pass as skipped",
         "Treat watcher-preview parity as out of scope for this audit",
         "Do not publish immediately from this decision alone.",
+        "Record `docs/release-v0.1.18.md`.",
+        "Rerun fresh hard-gate manual UIA smoke because privacy-check validation behavior changed after `v0.1.17`.",
         "credit-card Luhn-positive redaction as a documented v0.1 non-goal",
         "`v0.1.17` is the latest published stable release and must not be retagged",
         "`v0.1.16` remains the previous stable release and must not be retagged",
@@ -1143,6 +1208,15 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "existing normalized password-field semantics",
         "plain WinChronicle token-canary redaction",
         "Selected the next step as a release-readiness decision for the narrow privacy-check validation hardening",
+        "Started the `v0.1.18` release-readiness record after PR #186 merged as `db9b388298facd0a8b387f86bc0dcfa1fa546bc5`",
+        "post-merge `main` Windows Harness run `25611836358` passed",
+        "Completed local validation for the `v0.1.18` release-readiness branch",
+        "focused docs/privacy/version tests passed with 108 tests",
+        "full pytest passed with 204 tests",
+        "v0.1.18 release-readiness local validation:",
+        "passed, 108 tests",
+        "passed, 204 tests",
+        "printed `pyproject.toml` and `src/winchronicle/_version.py`",
         "Next blueprint lane selection local validation:",
         "passed, 94 tests",
         "passed, 191 tests",
