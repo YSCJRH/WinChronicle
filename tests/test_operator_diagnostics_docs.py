@@ -324,7 +324,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "completed post-v0.1.17 MCP/memory contract sweep" in readme_intro_normalized
     assert "completed post-v0.1.17 compatibility guardrail sweep" in readme_intro_normalized
     assert "completed post-v0.1.17 release-readiness decision" in readme_intro_normalized
-    assert "current Phase 6 privacy contract preflight" in readme_intro_normalized
+    assert "completed Phase 6 privacy contract preflight" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
@@ -700,8 +700,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "AG6 post-AG5 cursor\n  reconciliation PR #167" in evidence
     assert "post-AG6 `main` Windows Harness run\n  `25605064828`" in checklist
     assert "post-AG6 `main` Windows Harness run\n  `25605064828`" in evidence
-    assert "current Phase 6 privacy-enrichment contract\n  preflight" in checklist
-    assert "current Phase 6 privacy-enrichment contract\n  preflight" in evidence
+    assert "Phase 6 privacy-enrichment contract preflight PR #168" in checklist
+    assert "Phase 6 privacy-enrichment contract preflight PR #168" in evidence
+    assert "post-preflight `main` Windows Harness run `25605600008`" in checklist
+    assert "post-preflight `main` Windows Harness run `25605600008`" in evidence
+    assert "current\n  Phase 6 privacy-enrichment contract fixture expansion" in checklist
+    assert "current\n  Phase 6 privacy-enrichment contract fixture expansion" in evidence
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist
