@@ -27,6 +27,7 @@ V0116_FINAL_PLAN = ROOT / "docs" / "next-round-plan-v0.1.16-final-release.md"
 V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 V0117_RELEASE = ROOT / "docs" / "release-v0.1.17.md"
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
+PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 POST_V0116_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.16.md"
 PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
 HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
@@ -51,6 +52,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
         "Post-v0.1.17 maintenance plan",
+        "Public metadata audit after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -85,6 +87,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
         "Post-v0.1.17 maintenance plan",
+        "Public metadata audit after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -881,13 +884,17 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "AF7 publication reconciliation landed on `main` as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
         "PR #160 Windows Harness run `25601966464` passed",
         "post-merge `main` Windows Harness run `25602018700` passed",
-        "Current stage: AG0 - Post-v0.1.17 Baseline Cursor.",
-        "Stage status: AG0 review in progress; AF7 is complete.",
-        "Last completed evidence: AF7 publication reconciliation PR #160 merged as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
+        "Current stage: AG1 - Public Metadata And Evidence Freshness Follow-up.",
+        "Stage status: AG1 review in progress; AG0 landed through PR #161",
+        "Last completed evidence: AG0 baseline cursor PR #161 merged as `a994ab768deeaf08746bad296c1f8100d6ed22fb`",
+        "PR Windows Harness run `25602296648` passed",
+        "post-AG0 `main` Windows Harness run `25602345201`",
+        "gh repo view YSCJRH/WinChronicle",
         "gh release view v0.1.17",
-        "git ls-remote --tags origin v0.1.17",
-        "Next atomic task: land this post-v0.1.17 baseline cursor",
-        "then start AG1 public metadata and evidence freshness follow-up",
+        "gh release view v0.1.16",
+        "Next atomic task: land this AG1 public metadata/evidence freshness audit",
+        "then start AG2 helper and watcher preview diagnostics review",
+        "Empty GitHub description, homepage, topics, and unverifiable social preview remain manual maintainer checklist items",
         "Stage AG0 - Post-v0.1.17 Baseline Cursor",
         "Stage AG1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AG2 - Helper And Watcher Preview Diagnostics Review",
@@ -911,6 +918,14 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "PR #160 merged at `2026-05-09T13:14:04Z`",
         "PR #160 Windows Harness concluded `success`",
         "post-AF7 `main` Windows Harness concluded `success`",
+        "Stage AG0 completion:",
+        "PR #161 merged at `2026-05-09T13:30:52Z`",
+        "PR #161 Windows Harness concluded `success`",
+        "post-AG0 `main` Windows Harness concluded `success`",
+        "Stage AG1 initialization:",
+        "repository is public on `main`, with empty description, homepage, and topics",
+        "`v0.1.17` is published, not a draft, not a prerelease",
+        "`v0.1.16` remains published as the previous stable release",
     ):
         assert phrase in normalized
 
@@ -1059,6 +1074,50 @@ def test_post_v0116_plan_is_completed_without_expanding_scope():
 
     for tool_name in TOOL_NAMES:
         assert f"`{tool_name}`" in text
+
+
+def test_public_metadata_audit_post_v017_records_manual_gaps_without_scope_expansion():
+    text = PUBLIC_METADATA_V0117.read_text(encoding="utf-8")
+
+    for phrase in (
+        "Public Metadata Audit After v0.1.17",
+        "does not change product behavior, schemas,\nCLI/MCP JSON shape",
+        "gh repo view YSCJRH/WinChronicle",
+        "Visibility | `PUBLIC`",
+        "Default branch | `main`",
+        "Description | Empty",
+        "Homepage URL | Empty",
+        "Repository topics | Empty / not configured",
+        "gh release view v0.1.17",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17",
+        "Target | `5b260edc3bddc48986e52179b2ffd261856a89ac`",
+        "Draft | `false`",
+        "Prerelease | `false`",
+        "Published at | `2026-05-09T12:56:45Z`",
+        "gh release view v0.1.16",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16",
+        "Target | `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
+        "Run | `25602345201`",
+        "Head SHA | `a994ab768deeaf08746bad296c1f8100d6ed22fb`",
+        "README.md` starts with \"UIA-first local memory for Windows agents.\"",
+        "docs/operator-quickstart.md` links release checklist",
+        "active post-v0.1.17 plan",
+        "current post-v0.1.17 audit",
+        "published `v0.1.17` maintenance release",
+        "previous stable `v0.1.16` final release",
+        "historical `v0.1.16-rc.0` prerelease evidence",
+        "GitHub repository description",
+        "GitHub homepage URL",
+        "GitHub topics",
+        "Social preview image",
+        "manual maintainer checklist item",
+        "AF6 manual UIA smoke remains fresh for the published `v0.1.17` maintenance\n  release record only",
+        "no required product-code change",
+        "The next smallest implementation task is AG2",
+    ):
+        assert phrase in text
+
+    assert "This audit does not authorize screenshots" in text
 
 
 def test_public_metadata_audit_post_v016_records_manual_gaps_without_scope_expansion():
