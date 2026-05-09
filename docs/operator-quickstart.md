@@ -153,6 +153,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [UIA helper quality matrix](uia-helper-quality-matrix.md)
 - [Operator diagnostics](operator-diagnostics.md)
 - [Public metadata audit after v0.1.14](public-metadata-audit-post-v0.1.14.md)
+- [Helper and watcher diagnostics sweep after v0.1.14](helper-watcher-diagnostics-sweep-post-v0.1.14.md)
 - [Public metadata audit after v0.1.13](public-metadata-audit-post-v0.1.13.md)
 - [Helper and watcher diagnostics sweep after v0.1.13](helper-watcher-diagnostics-sweep-post-v0.1.13.md)
 - [MCP and memory contract sweep after v0.1.13](mcp-memory-contract-sweep-post-v0.1.13.md)

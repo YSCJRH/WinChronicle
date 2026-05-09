@@ -29,21 +29,21 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AC1 - Public Metadata And Evidence Freshness Follow-up.
-- Stage status: B - AC1 public metadata and evidence freshness docs/tests are
-  implemented and local validation passed; PR Windows Harness and post-merge
-  Windows Harness are pending.
+- Current stage: AC2 - Helper And Watcher Preview Diagnostics Review.
+- Stage status: B - AC2 helper/watcher diagnostics docs/tests are implemented
+  and local validation passed; PR Windows Harness and post-merge Windows
+  Harness are pending.
 - Last completed evidence: `v0.1.14` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.14, targets
   `e7e339f4e08828b9954599db76b87201dbcb139b`, publication reconciliation PR
-  #126 merged as `2627e17dd215d3b7233d237ca5f094eacaff2983`, AC0 PR #127
-  merged as `42ce9658b0189d37f2e7c80e1b57205ca13cb23e`, and post-merge
-  `main` Windows Harness run `25586359016` passed.
-- Last validation: AC1 local validation passed with focused docs/version
+  #126 merged as `2627e17dd215d3b7233d237ca5f094eacaff2983`, AC1 PR #128
+  merged as `157b9e195c5de85588c0df24130bbf99f10c4111`, and post-merge
+  `main` Windows Harness run `25586802404` passed.
+- Last validation: AC2 local validation passed with focused docs/version
   pytest, full pytest, helper build, watcher build, install CLI smoke, full
   harness, and `git diff --check`.
-- Next atomic task: open the AC1 PR, verify PR Windows Harness, merge AC1, and
-  verify post-merge Windows Harness before starting AC2.
+- Next atomic task: open the AC2 PR, verify PR Windows Harness, merge AC2, and
+  verify post-merge Windows Harness before starting AC3.
 - Known blockers: none.
 
 ## Phased Work
@@ -213,5 +213,20 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AC1 PR Windows Harness.
-- Pending AC1 post-merge `main` Windows Harness.
+- Stage AC1 remote validation:
+  - PR #128 Windows Harness run `25586734181` - passed.
+  - PR #128 merged as `157b9e195c5de85588c0df24130bbf99f10c4111`.
+  - Post-merge `main` Windows Harness run `25586802404` - passed.
+- Stage AC2 initialization:
+  - Reviewed `docs/uia-helper-quality-matrix.md`, `docs/watcher-preview.md`, `docs/operator-diagnostics.md`, `harness/scorecards/capture-quality.md`, `tests/test_cli.py`, `tests/test_uia_helper_contract.py`, and `tests/test_watcher_events.py`.
+  - `rg "helper timed out|helper returned invalid JSON|helper failed with exit code|watcher failed with exit code|watcher JSONL line|watcher timed out|duplicates_skipped|denylisted_skipped|raw watcher JSONL|capture-on-start|ElementNotAvailable|uia_stats" tests docs harness/scorecards` - passed; deterministic helper/watcher diagnostics coverage is present in tests, docs, and scorecards.
+- Stage AC2 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 43 tests.
+  - `python -m pytest -q` - passed, 134 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AC2 PR Windows Harness.
+- Pending AC2 post-merge `main` Windows Harness.
