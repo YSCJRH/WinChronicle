@@ -688,9 +688,9 @@ def test_v0116_final_release_plan_keeps_direct_final_gated_and_scoped():
         "No product code, schemas, CLI/MCP JSON shape, helper/watcher behavior, privacy runtime behavior, or capture surfaces changed",
         "Direct final release can proceed only after fresh final gates",
         "explicit final manual smoke evidence",
-        "Stage status: AE1 complete",
-        "AE1 deterministic final gates passed locally",
-        "Next atomic task: run AE2 fresh manual final UIA smoke",
+        "Stage status: AE2 complete",
+        "AE2 fresh manual final UIA smoke passed for Notepad, Edge",
+        "Next atomic task: prepare the AE3 `v0.1.16` final release record",
         "If final-readiness work requires any product or contract change",
         "prepare `v0.1.16-rc.1` instead",
         "Do not publish or retag `v0.1.16` during AE0",
@@ -707,6 +707,11 @@ def test_v0116_final_release_plan_keeps_direct_final_gated_and_scoped():
         "post-AE0 `main` Windows Harness concluded `success`",
         "`python -m pytest -q` - passed; 151 tests passed",
         "`python harness/scripts/run_harness.py` - passed",
+        "PR #145 Windows Harness run `25597196866`",
+        "post-AE1 `main` Windows Harness concluded `success`",
+        "Stage AE2 manual final smoke validation",
+        "VS Code strict remains a diagnostic non-blocking failure",
+        "`captures_written: 3`",
     ):
         assert phrase in normalized
 
