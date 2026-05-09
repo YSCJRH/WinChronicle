@@ -5,9 +5,11 @@ evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
 [v0.1.15 maintenance release record](release-v0.1.15.md). The active
-post-v0.1.15 maintenance cursor is recorded in
+`v0.1.16` final-release cursor is recorded in
+[v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md). The
+completed post-v0.1.15 prerelease path is recorded in
 [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md). The current
-published prerelease candidate is
+published prerelease candidate remains
 [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md)
 because AD2-AD4 include compatible privacy/runtime drift fixes. The previous
 published release record is
@@ -49,8 +51,14 @@ historical records. After the `v0.1.15` publication:
 - `v0.1.16-rc.0` is the current published prerelease candidate, not the latest
   published final release, because AD2-AD4 tighten privacy/runtime behavior
   and therefore require a prerelease path before direct final;
-- the active post-v0.1.15 execution cursor records AD4 PR #139, PR Windows
-  Harness run `25595449096`, and post-merge Windows Harness run `25595513141`;
+- the active `v0.1.16` final-release cursor records `v0.1.16-rc.0`
+  publication, the current `main` SHA
+  `b260ebaa8808bddcce20da166038511de23bf3b5`, post-prerelease-reconciliation
+  Windows Harness run `25596579705`, and docs/tests-only drift from the
+  prerelease tag;
+- the completed post-v0.1.15 execution cursor records AD4 PR #139, PR Windows
+  Harness run `25595449096`, post-merge Windows Harness run `25595513141`,
+  AD5 prerelease publication, and publication reconciliation evidence;
 - the completed post-v0.1.14 execution cursor records `v0.1.15` publication,
   PR #132, PR #133, publication reconciliation PR #134, post-merge Windows
   Harness run `25589775129`, and release
@@ -90,6 +98,9 @@ historical records. After the `v0.1.15` publication:
 - for the post-v0.1.15 release-candidate path toward `v0.1.16-rc.0`, AD5
   records fresh manual UIA smoke because AD2-AD4 changed privacy/runtime
   behavior;
+- for the active `v0.1.16` final-release path, fresh final manual UIA smoke is
+  required before final publication; do not silently promote `v0.1.16-rc.0`
+  smoke evidence to final evidence;
 - for the post-v0.1.5 compatible maintenance path that published `v0.1.6`,
   inherited `v0.1.0` manual smoke was explicitly accepted by S4 because no helper,
   watcher product behavior, manual smoke script, capture, privacy, product

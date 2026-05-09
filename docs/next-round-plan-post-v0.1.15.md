@@ -32,7 +32,8 @@ service install, no polling capture loop, and no default background capture.
 
 - Current stage: AD5 - v0.1.16-rc.0 Published Prerelease Reconciliation.
 - Stage status: AD5 complete; `v0.1.16-rc.0` is published as a prerelease and
-  publication reconciliation has passed.
+  publication reconciliation has passed. The active next cursor is now
+  [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md).
 - Last completed evidence: AD4 added the post-v0.1.15 compatibility guardrail
   sweep and two narrow privacy/compatibility drift fixes in PR #139, merged as
   `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`, and post-merge `main` Windows
@@ -40,9 +41,9 @@ service install, no polling capture loop, and no default background capture.
 - Last validation: publication reconciliation PR #142 Windows Harness run
   `25596387380` and post-merge `main` Windows Harness run `25596453899`
   passed after `v0.1.16-rc.0` publication.
-- Next atomic task: start the post-`v0.1.16-rc.0` final-readiness decision for
-  direct `v0.1.16` or a follow-up release candidate, using the prerelease
-  evidence without retagging `v0.1.16-rc.0`.
+- Next atomic task: continue the post-`v0.1.16-rc.0` final-readiness decision
+  in [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md),
+  using the prerelease evidence without retagging `v0.1.16-rc.0`.
 - Known blockers: none for the `v0.1.16-rc.0` prerelease publication stage.
 
 ## Phased Work
