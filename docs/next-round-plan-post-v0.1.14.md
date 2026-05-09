@@ -29,21 +29,21 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AC3 - MCP And Memory Contract Review.
-- Stage status: B - AC3 MCP/memory contract docs/tests are implemented and
-  local validation passed; PR Windows Harness and post-merge Windows Harness
-  are pending.
+- Current stage: AC4 - Compatibility Guardrail Sweep.
+- Stage status: B - AC4 compatibility guardrail docs/tests are implemented
+  and local validation passed; PR Windows Harness and post-merge Windows
+  Harness are pending.
 - Last completed evidence: `v0.1.14` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.14, targets
   `e7e339f4e08828b9954599db76b87201dbcb139b`, publication reconciliation PR
-  #126 merged as `2627e17dd215d3b7233d237ca5f094eacaff2983`, AC2 PR #129
-  merged as `7d65cbbb4778f5cf253191c2d3da1e21c54b7b58`, and post-merge
-  `main` Windows Harness run `25587281619` passed.
-- Last validation: AC3 local validation passed with focused docs/version
-  pytest, full pytest, helper build, watcher build, install CLI smoke, full
-  harness, and `git diff --check`.
-- Next atomic task: open the AC3 PR and verify PR/post-merge Windows Harness
-  before starting AC4.
+  #126 merged as `2627e17dd215d3b7233d237ca5f094eacaff2983`, AC3 PR #130
+  merged as `79637edd43ac15b425d5a2600a61472c9e27e031`, and post-merge
+  `main` Windows Harness run `25587885292` passed.
+- Last validation: AC4 local validation passed with focused guardrail tests,
+  focused docs/version pytest, full pytest, helper build, watcher build,
+  install CLI smoke, full harness, boundary scans, and `git diff --check`.
+- Next atomic task: open the AC4 PR and verify PR/post-merge Windows Harness
+  before starting AC5 release readiness.
 - Known blockers: none.
 
 ## Phased Work
@@ -243,5 +243,21 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AC3 PR Windows Harness.
-- Pending AC3 post-merge `main` Windows Harness.
+- Stage AC3 remote validation:
+  - PR #130 Windows Harness run `25587827078` - passed.
+  - PR #130 merged as `79637edd43ac15b425d5a2600a61472c9e27e031`.
+  - Post-merge `main` Windows Harness run `25587885292` - passed.
+- Stage AC4 initialization:
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py tests/test_version_identity.py -q` - passed, 45 tests.
+  - `rg -n -e "--hwnd|--pid|--window-title|--window-title-regex|--process-name|screenshot|ocr|audio|keyboard|clipboard|network_upload|cloud_upload|llm_calls|desktop_control|write_memory|read_file|click|type" src/winchronicle tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py harness/scorecards docs/mcp-readonly-examples.md docs/watcher-preview.md docs/deterministic-demo.md docs/roadmap.md CONTRIBUTING.md .github` - reviewed; matches are existing disabled-surface contracts, sentinels, documentation, scorecards, deterministic fixtures/tests, schema field names, or allowed helper-only harness wording.
+  - `rg -n -g "*.py" -g "*.cs" -g "*.md" -g "*.json" -g "*.yml" -e "SetForegroundWindow|AttachThreadInput|SendInput|mouse_event|keybd_event|GetAsyncKeyState|OpenClipboard|GetClipboardData|BitBlt|CopyFromScreen|PrintWindow|Tesseract|OpenAI|Anthropic|requests|httpx|aiohttp|selenium|playwright" src resources tests harness .github docs CONTRIBUTING.md README.md` - reviewed; matches are prior compatibility sweep command text, historical plan evidence, privacy-policy canary text, deterministic fixture/golden content, explicit forbidden-term tests, and the local MCP smoke request variable name.
+- Stage AC4 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 45 tests.
+  - `python -m pytest -q` - passed, 136 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AC4 PR Windows Harness.
+- Pending AC4 post-merge `main` Windows Harness.
