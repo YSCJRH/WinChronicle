@@ -325,6 +325,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "completed post-v0.1.17 compatibility guardrail sweep" in readme_intro_normalized
     assert "completed post-v0.1.17 release-readiness decision" in readme_intro_normalized
     assert "completed Phase 6 privacy contract preflight" in readme_intro_normalized
+    assert "current Phase 6 privacy contract fixture expansion" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
@@ -338,6 +339,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Compatibility guardrail sweep after v0.1.17" in readme_operator_docs
     assert "Release-readiness decision after v0.1.17" in readme_operator_docs
     assert "Phase 6 privacy contract preflight after v0.1.17" in readme_operator_docs
+    assert "Phase 6 privacy contract fixture expansion after v0.1.17" in readme_operator_docs
     assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.16" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
@@ -411,6 +413,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Phase 6 privacy contract preflight after v0.1.17"
     )
     assert readme_operator_docs.index("Phase 6 privacy contract preflight after v0.1.17") < readme_operator_docs.index(
+        "Phase 6 privacy contract fixture expansion after v0.1.17"
+    )
+    assert readme_operator_docs.index(
+        "Phase 6 privacy contract fixture expansion after v0.1.17"
+    ) < readme_operator_docs.index(
         "Post-v0.1.16 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.16 maintenance plan") < readme_operator_docs.index(
@@ -544,6 +551,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "compatibility-guardrail-sweep-post-v0.1.17.md" in current_section
     assert "release-readiness-decision-post-v0.1.17.md" in current_section
     assert "phase6-privacy-contract-preflight-post-v0.1.17.md" in current_section
+    assert "phase6-privacy-contract-fixture-expansion-post-v0.1.17.md" in current_section
     assert "next-round-plan-post-v0.1.16.md" in current_section
     assert "public-metadata-audit-post-v0.1.16.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in current_section
@@ -658,6 +666,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-readiness-decision-post-v0.1.17.md" in evidence
     assert "phase6-privacy-contract-preflight-post-v0.1.17.md" in checklist
     assert "phase6-privacy-contract-preflight-post-v0.1.17.md" in evidence
+    assert "phase6-privacy-contract-fixture-expansion-post-v0.1.17.md" in checklist
+    assert "phase6-privacy-contract-fixture-expansion-post-v0.1.17.md" in evidence
     assert "next-round-plan-post-v0.1.16.md" in checklist
     assert "next-round-plan-post-v0.1.16.md" in evidence
     assert "public-metadata-audit-post-v0.1.16.md" in checklist
@@ -704,8 +714,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Phase 6 privacy-enrichment contract preflight PR #168" in evidence
     assert "post-preflight `main` Windows Harness run `25605600008`" in checklist
     assert "post-preflight `main` Windows Harness run `25605600008`" in evidence
-    assert "current\n  Phase 6 privacy-enrichment contract fixture expansion" in checklist
-    assert "current\n  Phase 6 privacy-enrichment contract fixture expansion" in evidence
+    assert "Phase 6 preflight\n  reconciliation PR #169" in checklist
+    assert "Phase 6 preflight\n  reconciliation PR #169" in evidence
+    assert "post-reconciliation `main` Windows Harness run\n  `25605945162`" in checklist
+    assert "post-reconciliation `main` Windows Harness run\n  `25605945162`" in evidence
+    assert "current Phase 6 privacy-enrichment contract fixture\n  expansion" in checklist
+    assert "current Phase 6 privacy-enrichment contract fixture\n  expansion" in evidence
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist

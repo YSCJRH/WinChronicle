@@ -17,6 +17,7 @@ PHASE6_CONTRACT_SCHEMA = (
 PHASE6_CONTRACT_FIXTURE = (
     ROOT / "harness" / "fixtures" / "phase6" / "privacy_enrichment_contract_spec_only.json"
 )
+PHASE6_FIXTURE_DIR = ROOT / "harness" / "fixtures" / "phase6"
 PHASE6_INVALID_FIXTURES = (
     ROOT
     / "harness"
@@ -27,12 +28,37 @@ PHASE6_INVALID_FIXTURES = (
     / "harness"
     / "fixtures"
     / "phase6"
+    / "privacy_enrichment_contract_invalid_missing_cleanup.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_ocr_default_enabled.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
     / "privacy_enrichment_contract_invalid_raw_cache_ttl.json",
     ROOT
     / "harness"
     / "fixtures"
     / "phase6"
+    / "privacy_enrichment_contract_invalid_raw_mcp_exposure.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_runtime_allowlist_config.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
     / "privacy_enrichment_contract_invalid_runtime_status.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_screenshots_default_enabled.json",
 )
 PYPROJECT = ROOT / "pyproject.toml"
 PRODUCTION_ROOTS = (ROOT / "src" / "winchronicle", ROOT / "resources")
@@ -111,6 +137,10 @@ def test_phase6_privacy_scorecard_records_threat_model_and_preflight_artifacts()
         "negative fixtures for wildcard allowlists",
         "too-long raw cache TTL",
         "runtime status",
+        "default-enabled screenshots/OCR",
+        "missing raw cache cleanup",
+        "raw screenshot MCP exposure",
+        "runtime allowlist configuration",
         "sample shape examples only, not approved apps",
         "do not authorize screenshot capture, OCR, raw screenshot caches",
     )
@@ -216,6 +246,11 @@ def test_phase6_privacy_enrichment_contract_fixture_validates_as_spec_only():
 
 def test_phase6_privacy_enrichment_contract_rejects_committed_negative_fixtures():
     schema = _load_json(PHASE6_CONTRACT_SCHEMA)
+    committed_invalid_fixtures = tuple(
+        sorted(PHASE6_FIXTURE_DIR.glob("privacy_enrichment_contract_invalid_*.json"))
+    )
+
+    assert committed_invalid_fixtures == tuple(sorted(PHASE6_INVALID_FIXTURES))
 
     for fixture in PHASE6_INVALID_FIXTURES:
         with pytest.raises(ValidationError):
