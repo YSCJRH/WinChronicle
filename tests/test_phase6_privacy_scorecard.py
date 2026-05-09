@@ -635,7 +635,9 @@ def test_phase6_privacy_contract_deferred_fixture_closure_records_final_batch():
         "focused Phase 6/docs validation reported 92 tests",
         "full pytest reported 189 tests",
         "no runtime, helper/watcher, CLI/MCP output, privacy-runtime",
-        "After PR review and merge, reconcile the deferred-fixture-closure evidence",
+        "PR #181 Windows Harness run `25609874695` concluded `success`",
+        "Post-deferred-fixture-closure `main` Windows Harness run `25609934759`",
+        "Decide whether the completed Phase 6 contract-only closure warrants",
     )
     for phrase in required_phrases:
         assert phrase in normalized
