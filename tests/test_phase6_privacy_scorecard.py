@@ -17,6 +17,9 @@ PHASE6_CONTRACT_SCHEMA = (
 PHASE6_CONTRACT_FIXTURE = (
     ROOT / "harness" / "fixtures" / "phase6" / "privacy_enrichment_contract_spec_only.json"
 )
+PHASE6_CONTRACT_COVERAGE_AUDIT = (
+    ROOT / "docs" / "phase6-privacy-contract-coverage-audit-post-v0.1.17.md"
+)
 PHASE6_FIXTURE_DIR = ROOT / "harness" / "fixtures" / "phase6"
 PHASE6_INVALID_FIXTURES = (
     ROOT
@@ -269,43 +272,59 @@ def test_phase6_privacy_enrichment_contract_rejects_committed_negative_fixtures(
             validate(instance=_load_json(fixture), schema=schema)
 
 
-def test_phase6_privacy_enrichment_contract_rejects_unsafe_in_memory_variants():
+def test_phase6_privacy_enrichment_contract_unsafe_variants_have_committed_fixtures():
     schema = _load_json(PHASE6_CONTRACT_SCHEMA)
     baseline = _load_json(PHASE6_CONTRACT_FIXTURE)
 
-    unsafe_variants = []
+    variant_fixture_pairs = _unsafe_variant_fixture_pairs(baseline)
 
-    screenshots_enabled = copy.deepcopy(baseline)
-    screenshots_enabled["defaults"]["screenshots_enabled"] = True
-    unsafe_variants.append(screenshots_enabled)
+    assert {fixture for _, _, fixture in variant_fixture_pairs} == {
+        PHASE6_FIXTURE_DIR
+        / "privacy_enrichment_contract_invalid_screenshots_default_enabled.json",
+        PHASE6_FIXTURE_DIR / "privacy_enrichment_contract_invalid_ocr_default_enabled.json",
+        PHASE6_FIXTURE_DIR / "privacy_enrichment_contract_invalid_missing_cleanup.json",
+        PHASE6_FIXTURE_DIR / "privacy_enrichment_contract_invalid_raw_mcp_exposure.json",
+        PHASE6_FIXTURE_DIR
+        / "privacy_enrichment_contract_invalid_runtime_allowlist_config.json",
+        PHASE6_FIXTURE_DIR
+        / "privacy_enrichment_contract_invalid_runtime_capture_allowed.json",
+        PHASE6_FIXTURE_DIR / "privacy_enrichment_contract_invalid_missing_non_goal.json",
+    }
 
-    ocr_enabled = copy.deepcopy(baseline)
-    ocr_enabled["defaults"]["ocr_enabled"] = True
-    unsafe_variants.append(ocr_enabled)
-
-    missing_cleanup = copy.deepcopy(baseline)
-    missing_cleanup["raw_cache_policy"]["cleanup_required"] = False
-    unsafe_variants.append(missing_cleanup)
-
-    raw_screenshot_mcp = copy.deepcopy(baseline)
-    raw_screenshot_mcp["mcp_policy"]["raw_screenshot_exposure_default"] = True
-    unsafe_variants.append(raw_screenshot_mcp)
-
-    runtime_allowlist = copy.deepcopy(baseline)
-    runtime_allowlist["allowlist_policy"]["runtime_allowlist_config_allowed"] = True
-    unsafe_variants.append(runtime_allowlist)
-
-    allows_runtime_capture = copy.deepcopy(baseline)
-    allows_runtime_capture["future_opt_in_requirements"]["allows_runtime_capture_in_v0_1"] = True
-    unsafe_variants.append(allows_runtime_capture)
-
-    missing_non_goal = copy.deepcopy(baseline)
-    missing_non_goal["non_goals"].remove("arbitrary file reads")
-    unsafe_variants.append(missing_non_goal)
-
-    for variant in unsafe_variants:
+    for label, variant, fixture in variant_fixture_pairs:
+        assert fixture in PHASE6_INVALID_FIXTURES, label
+        assert variant == _load_json(fixture), label
         with pytest.raises(ValidationError):
             validate(instance=variant, schema=schema)
+
+
+def test_phase6_privacy_contract_coverage_audit_records_gaps_and_non_goals():
+    text = PHASE6_CONTRACT_COVERAGE_AUDIT.read_text(encoding="utf-8")
+    normalized = _normalize_markdown(text)
+
+    required_phrases = (
+        "docs/tests-only coverage audit",
+        "no screenshot capture, OCR, raw screenshot cache",
+        "The seven unsafe variants that were originally exercised in memory now map one-to-one to committed invalid fixtures",
+        "privacy_enrichment_contract_invalid_screenshots_default_enabled.json",
+        "privacy_enrichment_contract_invalid_ocr_default_enabled.json",
+        "privacy_enrichment_contract_invalid_missing_cleanup.json",
+        "privacy_enrichment_contract_invalid_raw_mcp_exposure.json",
+        "privacy_enrichment_contract_invalid_runtime_allowlist_config.json",
+        "privacy_enrichment_contract_invalid_runtime_capture_allowed.json",
+        "privacy_enrichment_contract_invalid_missing_non_goal.json",
+        "schema-enforced but not yet represented by their own targeted negative fixture",
+        "defaults.raw_screenshot_cache_enabled",
+        "defaults.global_allowlist_enabled",
+        "allowlist_policy.global_default_allowlist_allowed",
+        "allowlist_policy.implicit_all_apps_allowed",
+        "raw_cache_policy.enabled_by_default",
+        "mcp_policy.mcp_write_tools_allowed",
+        "Next Task",
+        "Land this coverage audit through PR and post-merge Windows Harness validation",
+    )
+    for phrase in required_phrases:
+        assert phrase in normalized
 
 
 def test_phase6_has_no_source_surface_implementation_artifacts():
@@ -403,6 +422,71 @@ def _production_source_files() -> list[Path]:
 def _normalize_dependency_name(dependency: str) -> str:
     name = re.split(r"\s*(?:[<>=!~]=?|;|\[)", dependency, maxsplit=1)[0]
     return re.sub(r"[-_.]+", "-", name).lower()
+
+
+def _unsafe_variant_fixture_pairs(baseline: dict) -> tuple[tuple[str, dict, Path], ...]:
+    screenshots_enabled = copy.deepcopy(baseline)
+    screenshots_enabled["defaults"]["screenshots_enabled"] = True
+
+    ocr_enabled = copy.deepcopy(baseline)
+    ocr_enabled["defaults"]["ocr_enabled"] = True
+
+    missing_cleanup = copy.deepcopy(baseline)
+    missing_cleanup["raw_cache_policy"]["cleanup_required"] = False
+
+    raw_screenshot_mcp = copy.deepcopy(baseline)
+    raw_screenshot_mcp["mcp_policy"]["raw_screenshot_exposure_default"] = True
+
+    runtime_allowlist = copy.deepcopy(baseline)
+    runtime_allowlist["allowlist_policy"]["runtime_allowlist_config_allowed"] = True
+
+    allows_runtime_capture = copy.deepcopy(baseline)
+    allows_runtime_capture["future_opt_in_requirements"]["allows_runtime_capture_in_v0_1"] = True
+
+    missing_non_goal = copy.deepcopy(baseline)
+    missing_non_goal["non_goals"].remove("arbitrary file reads")
+
+    return (
+        (
+            "default-enabled screenshots",
+            screenshots_enabled,
+            PHASE6_FIXTURE_DIR
+            / "privacy_enrichment_contract_invalid_screenshots_default_enabled.json",
+        ),
+        (
+            "default-enabled OCR",
+            ocr_enabled,
+            PHASE6_FIXTURE_DIR / "privacy_enrichment_contract_invalid_ocr_default_enabled.json",
+        ),
+        (
+            "missing raw cache cleanup",
+            missing_cleanup,
+            PHASE6_FIXTURE_DIR / "privacy_enrichment_contract_invalid_missing_cleanup.json",
+        ),
+        (
+            "raw screenshot MCP exposure",
+            raw_screenshot_mcp,
+            PHASE6_FIXTURE_DIR
+            / "privacy_enrichment_contract_invalid_raw_mcp_exposure.json",
+        ),
+        (
+            "runtime allowlist configuration",
+            runtime_allowlist,
+            PHASE6_FIXTURE_DIR
+            / "privacy_enrichment_contract_invalid_runtime_allowlist_config.json",
+        ),
+        (
+            "runtime capture allowed in v0.1",
+            allows_runtime_capture,
+            PHASE6_FIXTURE_DIR
+            / "privacy_enrichment_contract_invalid_runtime_capture_allowed.json",
+        ),
+        (
+            "missing required non-goal",
+            missing_non_goal,
+            PHASE6_FIXTURE_DIR / "privacy_enrichment_contract_invalid_missing_non_goal.json",
+        ),
+    )
 
 
 def _load_json(path: Path) -> dict:
