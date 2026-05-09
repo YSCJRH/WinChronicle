@@ -17,6 +17,8 @@ current compatibility guardrail review is
 [Compatibility guardrail sweep after v0.1.16](compatibility-guardrail-sweep-post-v0.1.16.md). The
 current release-readiness decision is
 [Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md). The
+current `v0.1.17` maintenance release-readiness record is
+[v0.1.17 maintenance release record](release-v0.1.17.md). The
 completed `v0.1.16` final-release cursor is recorded in
 [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md), and
 the historical prerelease record is
@@ -102,6 +104,10 @@ historical records. After the `v0.1.16` final publication:
   changes warrant a release-readiness path, distinguish release plans from
   immediate publication, and forbid retagging an already published stable
   release;
+- the current `v0.1.17` maintenance release-readiness record records the fresh
+  version decision, additive CLI JSON trust-boundary shape, fresh hard-gate
+  manual UIA smoke, heartbeat-only watcher diagnostic, and pending PR/post-merge
+  publication gates without retagging `v0.1.16`;
 - the post-v0.1.12 execution cursor is completed historical context and records
   PR #118 plus post-merge Windows Harness run `25580877004`;
 - the post-v0.1.11 execution cursor is completed historical context and
@@ -131,6 +137,12 @@ historical records. After the `v0.1.16` final publication:
   helper/watcher behavior, manual smoke scripts, capture behavior, privacy
   behavior, CLI/MCP shape, capture surfaces, or release approval requirements
   change;
+- for the `v0.1.17` maintenance release-readiness candidate, fresh hard-gate
+  manual UIA smoke was rerun because public CLI/runtime output shape changed
+  after `v0.1.16`; Notepad and Edge passed, VS Code metadata passed with the
+  known Monaco diagnostic warning, VS Code strict remains diagnostic and
+  non-blocking, and live watcher preview returned heartbeat-only liveness
+  evidence in this desktop state;
 - for the post-v0.1.5 compatible maintenance path that published `v0.1.6`,
   inherited `v0.1.0` manual smoke was explicitly accepted by S4 because no helper,
   watcher product behavior, manual smoke script, capture, privacy, product

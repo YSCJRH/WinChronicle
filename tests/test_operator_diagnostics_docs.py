@@ -69,6 +69,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md)"
         in quickstart
     )
+    assert "[v0.1.17 maintenance release record](release-v0.1.17.md)" in quickstart
     assert (
         "[v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md)"
         in quickstart
@@ -174,6 +175,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Release-readiness decision after v0.1.16](docs/release-readiness-decision-post-v0.1.16.md)"
         in readme
     )
+    assert "[v0.1.17 maintenance release record](docs/release-v0.1.17.md)" in readme
     assert (
         "[v0.1.16 final-release plan](docs/next-round-plan-v0.1.16-final-release.md)"
         in readme
@@ -268,6 +270,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.16 MCP/memory contract sweep" in readme_intro_normalized
     assert "current post-v0.1.16 compatibility guardrail sweep" in readme_intro_normalized
     assert "current post-v0.1.16 release-readiness decision" in readme_intro_normalized
+    assert "current `v0.1.17` maintenance release-readiness record" in readme_intro_normalized
     assert "latest published `v0.1.16` release record" in readme_intro_normalized
     assert "completed `v0.1.16` final-release plan" in readme_intro_normalized
     assert "historical `v0.1.16-rc.0` release-candidate record" in readme_intro_normalized
@@ -285,6 +288,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "MCP and memory contract sweep after v0.1.16" in readme_operator_docs
     assert "Compatibility guardrail sweep after v0.1.16" in readme_operator_docs
     assert "Release-readiness decision after v0.1.16" in readme_operator_docs
+    assert "v0.1.17 maintenance release record" in readme_operator_docs
     assert "v0.1.16 final-release plan" in readme_operator_docs
     assert "v0.1.16 final release record" in readme_operator_docs
     assert "v0.1.16-rc.0 release candidate record" in readme_operator_docs
@@ -355,6 +359,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )
     assert readme_operator_docs.index(
         "Release-readiness decision after v0.1.16"
+    ) < readme_operator_docs.index(
+        "v0.1.17 maintenance release record"
+    )
+    assert readme_operator_docs.index(
+        "v0.1.17 maintenance release record"
     ) < readme_operator_docs.index(
         "v0.1.16 final release record"
     )
@@ -457,6 +466,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "mcp-memory-contract-sweep-post-v0.1.16.md" in current_section
     assert "compatibility-guardrail-sweep-post-v0.1.16.md" in current_section
     assert "release-readiness-decision-post-v0.1.16.md" in current_section
+    assert "release-v0.1.17.md" in current_section
     assert "release-v0.1.16.md" in current_section
     assert "next-round-plan-v0.1.16-final-release.md" in current_section
     assert "next-round-plan-post-v0.1.15.md" in current_section
@@ -546,6 +556,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-v0.1.15.md" in evidence
     assert "release-v0.1.16.md" in checklist
     assert "release-v0.1.16.md" in evidence
+    assert "release-v0.1.17.md" in checklist
+    assert "release-v0.1.17.md" in evidence
     assert "release-candidate-v0.1.16-rc.0.md" in checklist
     assert "release-candidate-v0.1.16-rc.0.md" in evidence
     assert "next-round-plan-post-v0.1.16.md" in checklist
@@ -2839,24 +2851,25 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Stable release baseline | `v0.1.16`",
         "Current maintenance plan | [Post-v0.1.16 maintenance plan]",
         "Current release-readiness decision | [Release-readiness decision after v0.1.16]",
+        "Current release-readiness record | [v0.1.17 maintenance release record]",
         "Completed final-release plan | [v0.1.16 final-release plan]",
         "Previous prerelease record | [v0.1.16-rc.0 release candidate record]",
         "Previous maintenance plan | [Post-v0.1.15 maintenance plan]",
         "Published release record | [v0.1.16 final release record]",
         "Latest published release record | [v0.1.16 final release record]",
-        "Latest full manual UIA smoke source | [v0.1.16 final release record]",
-        "Last freshness decision | For the published `v0.1.16` final release",
-        "AE2 refreshed manual UIA smoke",
+        "Latest full manual UIA smoke source | [v0.1.17 maintenance release record]",
+        "Last freshness decision | For the `v0.1.17` maintenance release-readiness candidate",
+        "fresh hard-gate manual UIA smoke was rerun",
         "Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning",
         "manual smoke was explicitly accepted by the S4 release record",
         "`v0.1.0` manual smoke is explicitly accepted by the T4 release-readiness",
         "then is explicitly accepted by the U4",
         "manual smoke is explicitly accepted by the W4",
         "manual smoke is accepted by the X1 freshness decision as",
-        "Next freshness decision | Future post-v0.1.16 maintenance or release-readiness work must decide whether AE2 smoke remains current",
-        "Fresh for published `v0.1.16` final release in AE2",
-        "Fresh diagnostic for published `v0.1.16` final release in AE2",
-        "Pass; `captures_written: 3`, `heartbeats: 6`, `duplicates_skipped: 1`, `denylisted_skipped: 0`",
+        "Next freshness decision | After `v0.1.17` publication",
+        "Fresh for `v0.1.17` release-readiness in AF6",
+        "Fresh diagnostic for `v0.1.17` release-readiness in AF6",
+        "Heartbeat-only liveness diagnostic; `captures_written: 0`, `heartbeats: 9`, `duplicates_skipped: 0`, `denylisted_skipped: 0`",
         "manual smoke is explicitly accepted by the T4 release-readiness\n  record",
         "For the completed post-v0.1.7 compatible maintenance path toward `v0.1.8`",
         "then is explicitly accepted by the U4",
@@ -2885,6 +2898,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "The AF5 post-v0.1.16 release-readiness decision starts a narrow `v0.1.17`",
         "`v0.1.17` release-readiness record must decide whether to inherit or rerun",
         "AF1-AF4 include compatible public CLI/runtime output\n  changes",
+        "The AF6 `v0.1.17` release-readiness record reran fresh hard-gate manual UIA",
+        "live watcher preview returned heartbeat-only liveness evidence",
         "Deterministic harness smoke changes require fresh deterministic gate",
     ):
         assert expected in ledger
