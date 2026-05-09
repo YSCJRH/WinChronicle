@@ -29,21 +29,21 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AC2 - Helper And Watcher Preview Diagnostics Review.
-- Stage status: B - AC2 helper/watcher diagnostics docs/tests are implemented
-  and local validation passed; PR Windows Harness and post-merge Windows
-  Harness are pending.
+- Current stage: AC3 - MCP And Memory Contract Review.
+- Stage status: B - AC3 MCP/memory contract docs/tests are implemented and
+  local validation passed; PR Windows Harness and post-merge Windows Harness
+  are pending.
 - Last completed evidence: `v0.1.14` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.14, targets
   `e7e339f4e08828b9954599db76b87201dbcb139b`, publication reconciliation PR
-  #126 merged as `2627e17dd215d3b7233d237ca5f094eacaff2983`, AC1 PR #128
-  merged as `157b9e195c5de85588c0df24130bbf99f10c4111`, and post-merge
-  `main` Windows Harness run `25586802404` passed.
-- Last validation: AC2 local validation passed with focused docs/version
+  #126 merged as `2627e17dd215d3b7233d237ca5f094eacaff2983`, AC2 PR #129
+  merged as `7d65cbbb4778f5cf253191c2d3da1e21c54b7b58`, and post-merge
+  `main` Windows Harness run `25587281619` passed.
+- Last validation: AC3 local validation passed with focused docs/version
   pytest, full pytest, helper build, watcher build, install CLI smoke, full
   harness, and `git diff --check`.
-- Next atomic task: open the AC2 PR, verify PR Windows Harness, merge AC2, and
-  verify post-merge Windows Harness before starting AC3.
+- Next atomic task: open the AC3 PR and verify PR/post-merge Windows Harness
+  before starting AC4.
 - Known blockers: none.
 
 ## Phased Work
@@ -228,5 +228,20 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AC2 PR Windows Harness.
-- Pending AC2 post-merge `main` Windows Harness.
+- Stage AC2 remote validation:
+  - PR #129 Windows Harness run `25587197634` - passed.
+  - PR #129 merged as `7d65cbbb4778f5cf253191c2d3da1e21c54b7b58`.
+  - Post-merge `main` Windows Harness run `25587281619` - passed.
+- Stage AC3 initialization:
+  - Reviewed `docs/mcp-readonly-examples.md`, `harness/scorecards/mcp-quality.md`, `harness/scorecards/memory-quality.md`, `docs/deterministic-demo.md`, `docs/operator-quickstart.md`, `tests/test_mcp_tools.py`, `tests/test_memory_pipeline.py`, `tests/test_compatibility_contracts.py`, and `tests/test_state_compatibility.py`.
+  - `rg -n "current_context|search_captures|search_memory|read_recent_capture|recent_activity|privacy_status|untrusted_observed_content|entries_fts|idempotent|No write/control/file/screenshot/OCR/audio/keyboard/clipboard/network" docs harness tests src` - passed; deterministic MCP/memory trust-boundary and exact-tool coverage is present in tests, scorecards, docs, and source contracts.
+- Stage AC3 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 44 tests.
+  - `python -m pytest -q` - passed, 135 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending AC3 PR Windows Harness.
+- Pending AC3 post-merge `main` Windows Harness.
