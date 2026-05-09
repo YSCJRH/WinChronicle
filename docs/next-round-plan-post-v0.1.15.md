@@ -30,21 +30,20 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AD4 - Compatibility Guardrail Sweep.
-- Stage status: A - AD4 is the active compatibility guardrail evidence and
-  narrow drift-fix stage.
-- Last completed evidence: AD3 added the post-v0.1.15 MCP/memory contract
-  sweep, aligned read-only MCP examples, and fixed filtered MCP search parity
-  in PR #138, merged as `1f1f55b262a89ca41991401de493791dd1c41e5c`, and
-  post-merge `main` Windows Harness run `25594896165` passed.
-- Last validation: AD3 validated focused MCP/memory tests, full deterministic
-  harness, PR Windows Harness run `25594817396`, and post-merge `main`
-  Windows Harness run `25594896165`.
-- Next atomic task: complete AD4 by recording compatibility guardrail evidence
-  and strengthening tests only for discovered drift without changing schemas,
-  CLI/MCP JSON shape, MCP tool schemas, memory reducer behavior, privacy
-  behavior, helper/watcher behavior, or capture surfaces.
-- Known blockers: none.
+- Current stage: AD5 - v0.1.16-rc.0 Release Candidate Readiness.
+- Stage status: A - AD5 is the active release-candidate readiness stage.
+- Last completed evidence: AD4 added the post-v0.1.15 compatibility guardrail
+  sweep and two narrow privacy/compatibility drift fixes in PR #139, merged as
+  `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`, and post-merge `main` Windows
+  Harness run `25595513141` passed.
+- Last validation: AD5 local validation passed, including focused
+  docs/version tests, full pytest, .NET helper/watcher builds, install CLI
+  smoke, full harness, fresh manual UIA smoke, and `git diff --check`.
+- Next atomic task: push the AD5 release-candidate readiness PR, verify PR
+  Windows Harness, merge, verify post-merge `main` Windows Harness, and record
+  remote evidence before prerelease publication.
+- Known blockers: PR Windows Harness, post-merge Windows Harness, and
+  prerelease publication evidence are pending.
 
 ## Phased Work
 
@@ -103,19 +102,18 @@ service install, no polling capture loop, and no default background capture.
   durable memory contract, and product targeted capture absence.
 - Strengthen tests only for discovered drift.
 
-### Stage AD5 - v0.1.16 Release Readiness
+### Stage AD5 - v0.1.16-rc.0 Release Candidate Readiness
 
-- If AD0-AD4 only change documentation, tests, CI/runtime metadata, version
-  metadata, or compatible drift fixes, prepare a compatible `v0.1.16`
-  maintenance release.
-- Before release, align package and server version metadata to `0.1.16`, add a
-  release record, and record local gates plus PR and post-merge Windows Harness
-  evidence.
-- If any change alters product behavior, schema, CLI/MCP JSON shape, privacy
-  behavior, helper/watcher behavior, or capture surface, stop the direct
-  `v0.1.16` path and prepare a release candidate instead.
+- Because AD2-AD4 include compatible privacy/runtime drift fixes, prepare a
+  `v0.1.16-rc.0` release candidate before any direct `v0.1.16` final.
+- Before prerelease, align package and server version metadata to `0.1.16`,
+  add a release-candidate record, and record local gates plus PR and
+  post-merge Windows Harness evidence.
+- The release-candidate record must explicitly justify that the AD2-AD4 fixes
+  narrow exposure without adding schemas, CLI/MCP JSON shape changes, MCP tool
+  schemas, helper/watcher capture expansion, or capture surfaces.
 - Publication remains gated on local, PR, and post-merge validation plus
-  explicit release approval.
+  explicit prerelease publication approval.
 
 ## Public Interfaces And Non-goals
 
@@ -157,19 +155,20 @@ Stage-specific gates:
 - AD4: compatibility guardrails still prove exact MCP read-only tools,
   disabled privacy surfaces, product targeted capture absence, and Phase 6
   spec-only status.
-- AD5: release record includes local, PR, post-merge, release URL, tag target,
-  rollback notes, privacy/scope confirmation, and manual smoke freshness
-  decision.
+- AD5: release-candidate record includes local, PR, post-merge, release URL,
+  tag target, rollback notes, privacy/scope confirmation, and manual smoke
+  freshness decision.
 
 ## Assumptions
 
 - `v0.1.15` is the current stable published baseline and must not be retagged.
-- The next compatible release target is `v0.1.16`.
+- The next prerelease target is `v0.1.16-rc.0`; direct `v0.1.16` final must
+  wait for separate final-readiness evidence after the runtime/privacy fixes
+  have been reviewed through a release candidate.
 - Manual UIA smoke remains outside default CI.
-- Fresh manual UIA smoke is required only if helper behavior, watcher product
-  behavior, manual smoke scripts, capture behavior, privacy behavior,
-  product CLI/MCP shape, capture surfaces, or release approver requirements
-  change.
+- Fresh manual UIA smoke is required for AD5 unless the release owner records
+  an explicit exception, because AD2-AD4 changed privacy/runtime behavior while
+  keeping capture surfaces closed.
 - Phase 6 stays at spec/scorecard level for this round.
 
 ## Decision Log
@@ -201,6 +200,10 @@ Stage-specific gates:
 - Promoted narrow AD4 guardrail fixes after review found broader obvious-token
   canaries and helper/watcher pass-through target/control/privacy flag
   rejection were not covered by deterministic tests.
+- Chose a `v0.1.16-rc.0` release-candidate path for AD5 because review found
+  AD2-AD4 are compatible privacy/runtime drift fixes rather than docs-only
+  changes. The direct `v0.1.16` final path remains blocked until prerelease
+  review evidence is recorded.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -280,4 +283,29 @@ Stage-specific gates:
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed; includes 148 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, and preview watcher smoke.
+  - `git diff --check` - passed.
+- Stage AD4 completion:
+  - PR #139 Windows Harness run `25595449096` - passed.
+  - PR #139 merged as `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`.
+  - `gh run view 25595513141 --json databaseId,status,conclusion,headSha,url,displayTitle` - passed; post-AD4 `main` Windows Harness concluded `success` on `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`.
+- Stage AD5 initialization:
+  - `gh release view v0.1.16` - failed with release-not-found, confirming `v0.1.16` is not published.
+  - `git tag --list "v0.1.16*"` - passed and printed no matching local tags.
+  - `git rev-parse HEAD` - passed and printed `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`.
+  - `git rev-parse v0.1.15` - passed and printed `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`.
+  - Release-readiness review found the direct `v0.1.16` final path should stop because AD2-AD4 include compatible privacy/runtime drift fixes; AD5 now prepares `v0.1.16-rc.0` instead.
+- Stage AD5 manual smoke validation:
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-notepad.ps1 -ArtifactDir <artifact-root>\notepad -TimeoutSeconds 30` - passed; artifact `<artifact-root>\notepad\notepad-capture.json`.
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-edge.ps1 -ArtifactDir <artifact-root>\edge -TimeoutSeconds 45` - passed; artifact `<artifact-root>\edge\edge-capture.json`.
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-vscode.ps1 -ArtifactDir <artifact-root>\vscode-metadata -TimeoutSeconds 45` - passed with diagnostic warning; metadata passed, editor marker was not exposed through UIA.
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-vscode.ps1 -Strict -ArtifactDir <artifact-root>\vscode-strict -TimeoutSeconds 45` - diagnostic failure, non-blocking; known Monaco/UIA limitation.
+  - `python -m winchronicle watch --watcher dotnet --watcher-arg resources/win-uia-watcher/bin/Debug/net8.0-windows/win-uia-watcher.dll --helper dotnet --helper-arg resources/win-uia-helper/bin/Debug/net8.0-windows/win-uia-helper.dll --duration 5 --depth 2 --heartbeat-ms 500 --capture-on-start` with temporary `WINCHRONICLE_HOME` - passed; `captures_written: 3`, `heartbeats: 7`, `duplicates_skipped: 1`, `denylisted_skipped: 0`.
+- Stage AD5 local validation:
+  - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.16`.
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed; 52 tests passed.
+  - `python -m pytest -q` - passed; 149 tests passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed; includes 149 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
   - `git diff --check` - passed.

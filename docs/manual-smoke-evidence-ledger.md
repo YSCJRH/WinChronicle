@@ -16,13 +16,13 @@ or token canaries.
 | Stable release baseline | `v0.1.15` |
 | Current maintenance plan | [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md) |
 | Latest completed maintenance plan | [Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md) |
-| Current release-readiness record | None; `v0.1.15` is published and the next candidate is not selected yet |
+| Current release-readiness record | [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md) |
 | Published release record | [v0.1.15 maintenance release record](release-v0.1.15.md) |
 | Latest published release record | [v0.1.15 maintenance release record](release-v0.1.15.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
-| Last freshness decision | For the post-v0.1.14 compatible maintenance path that published `v0.1.15`, inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code strict diagnostic, and watcher preview manual evidence was accepted by AC5 because AC0-AC5 did not change helper behavior, watcher product behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approver requirements. This does not make inherited manual smoke fresh or current release evidence. |
-| Next freshness decision | The next maintenance plan after `v0.1.15` publication must decide whether inherited manual evidence remains acceptable or whether fresh manual smoke is required before the next release. |
+| Last freshness decision | For the current `v0.1.16-rc.0` release-candidate path, AD5 refreshed manual UIA smoke because AD2-AD4 changed privacy/runtime behavior while keeping capture surfaces closed. Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning, VS Code strict remains a diagnostic non-blocking failure, and watcher preview live smoke passed. Artifact paths are local only. |
+| Next freshness decision | A future direct `v0.1.16` final or follow-up release candidate must decide whether this `v0.1.16-rc.0` manual smoke remains current or whether fresh manual smoke is required again. |
 
 ## Latest Known Manual Evidence
 

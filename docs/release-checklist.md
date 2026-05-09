@@ -8,9 +8,12 @@ For operator setup and the current documentation map, start with
 The latest published release record is
 [v0.1.15 maintenance release record](release-v0.1.15.md). The active
 post-v0.1.15 execution cursor lives in
-[Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md). For release
+[Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md). The current
+release-readiness candidate is
+[v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md)
+because AD2-AD4 include compatible privacy/runtime drift fixes. For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
-previous stable release record is
+previous published release record is
 [v0.1.14 maintenance release record](release-v0.1.14.md), the completed
 post-v0.1.14 execution cursor is recorded in
 [Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md), the completed
@@ -40,6 +43,11 @@ inherited historical evidence:
   another version;
 - `v0.1.15` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
+- `v0.1.16-rc.0` is the current release-candidate readiness record, not the
+  latest published final release, because AD2-AD4 tighten privacy/runtime
+  behavior and therefore require a prerelease path before direct final;
+- the active post-v0.1.15 execution cursor records AD4 PR #139, PR Windows
+  Harness run `25595449096`, and post-merge Windows Harness run `25595513141`;
 - the completed post-v0.1.14 execution cursor records `v0.1.15` publication,
   PR #132, PR #133, publication reconciliation PR #134, post-merge Windows
   Harness run `25589775129`, and release
@@ -77,6 +85,9 @@ inherited historical evidence:
   stale, not current;
 - stale manual smoke can support context, but a hard release gate needs fresh
   evidence or an explicit documented decision to keep the older result;
+- for the post-v0.1.15 release-candidate path toward `v0.1.16-rc.0`, AD5
+  records fresh manual UIA smoke because AD2-AD4 changed privacy/runtime
+  behavior;
 - for the post-v0.1.5 compatible maintenance path that published `v0.1.6`,
   inherited `v0.1.0` manual smoke was explicitly accepted by S4 because no helper,
   watcher product behavior, manual smoke script, capture, privacy, product
