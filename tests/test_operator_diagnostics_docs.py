@@ -48,6 +48,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Deterministic demo](deterministic-demo.md)" in quickstart
     assert "[Roadmap](roadmap.md)" in quickstart
     assert "[Contributing](../CONTRIBUTING.md)" in quickstart
+    assert "[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md)" in quickstart
     assert "[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)"
@@ -140,6 +141,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         in quickstart
     )
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
+    assert (
+        "[Post-v0.1.17 maintenance plan](docs/next-round-plan-post-v0.1.17.md)"
+        in readme
+    )
     assert (
         "[Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)"
         in readme
@@ -264,12 +269,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
     readme_intro_normalized = " ".join(readme_intro.split())
 
-    assert "active post-v0.1.16 maintenance plan" in readme_intro_normalized
-    assert "current post-v0.1.16 public metadata audit" in readme_intro_normalized
-    assert "current post-v0.1.16 helper/watcher diagnostics sweep" in readme_intro_normalized
-    assert "current post-v0.1.16 MCP/memory contract sweep" in readme_intro_normalized
-    assert "current post-v0.1.16 compatibility guardrail sweep" in readme_intro_normalized
-    assert "current post-v0.1.16 release-readiness decision" in readme_intro_normalized
+    assert "active post-v0.1.17 maintenance plan" in readme_intro_normalized
+    assert "completed post-v0.1.16 maintenance plan and publication reconciliation" in readme_intro_normalized
     assert "latest published `v0.1.17` release record" in readme_intro_normalized
     assert "previous published `v0.1.16` release record" in readme_intro_normalized
     assert "completed `v0.1.16` final-release plan" in readme_intro_normalized
@@ -282,6 +283,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.13 maintenance release record" in readme_operator_docs
     assert "v0.1.14 maintenance release record" in readme_operator_docs
     assert "v0.1.15 maintenance release record" in readme_operator_docs
+    assert "Post-v0.1.17 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.16" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
@@ -335,6 +337,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )
     assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.13") < readme_operator_docs.index(
         "Blueprint gap audit after v0.1.12"
+    )
+    assert readme_operator_docs.index("Post-v0.1.17 maintenance plan") < readme_operator_docs.index(
+        "Post-v0.1.16 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.16 maintenance plan") < readme_operator_docs.index(
         "Public metadata audit after v0.1.16"
@@ -460,6 +465,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert readme_operator_docs.index("Post-v0.1.6 maintenance plan") < readme_operator_docs.index(
         "v0.1.6 maintenance release record"
     )
+    assert "next-round-plan-post-v0.1.17.md" in current_section
     assert "next-round-plan-post-v0.1.16.md" in current_section
     assert "public-metadata-audit-post-v0.1.16.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in current_section
@@ -560,6 +566,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-v0.1.17.md" in evidence
     assert "release-candidate-v0.1.16-rc.0.md" in checklist
     assert "release-candidate-v0.1.16-rc.0.md" in evidence
+    assert "next-round-plan-post-v0.1.17.md" in checklist
+    assert "next-round-plan-post-v0.1.17.md" in evidence
     assert "next-round-plan-post-v0.1.16.md" in checklist
     assert "next-round-plan-post-v0.1.16.md" in evidence
     assert "public-metadata-audit-post-v0.1.16.md" in checklist
@@ -586,8 +594,10 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.16` is the previous stable release" in evidence
     assert "v0.1.16-rc.0` is historical prerelease evidence" in checklist
     assert "v0.1.16-rc.0` is historical prerelease evidence" in evidence
-    assert "active post-v0.1.16 execution cursor records" in checklist
-    assert "active post-v0.1.16 execution cursor records" in evidence
+    assert "active post-v0.1.17 execution cursor records" in checklist
+    assert "active post-v0.1.17 execution cursor records" in evidence
+    assert "completed post-v0.1.16 execution cursor records" in checklist
+    assert "completed post-v0.1.16 execution cursor records" in evidence
     assert "Public metadata audit after v0.1.16" in checklist
     assert "Public metadata audit after v0.1.16" in evidence
     assert "public metadata and evidence-freshness checks" in checklist
@@ -2692,12 +2702,15 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "`v0.1.17` is the latest published release",
         "`v0.1.16` is the previous stable release",
         "`v0.1.16-rc.0` is historical prerelease evidence",
-        "active post-v0.1.16 execution cursor records the `v0.1.16` baseline",
-        "and the `v0.1.17` maintenance publication",
+        "active post-v0.1.17 execution cursor records `v0.1.17` publication",
+        "AF7\n  publication reconciliation",
+        "PR Windows Harness run `25601966464`",
+        "post-merge Windows Harness run `25602018700`",
+        "post-v0.1.17 baseline",
+        "completed post-v0.1.16 execution cursor records the `v0.1.16` baseline",
         "final tag target\n  `5b260edc3bddc48986e52179b2ffd261856a89ac`",
         "PR #159",
-        "PR Windows Harness run `25601571665`",
-        "post-merge Windows Harness run `25601624151`",
+        "PR #160",
         "release metadata/tag\n  verification",
         "completed post-v0.1.14 execution cursor records `v0.1.15` publication",
         "PR #132, PR #133, publication reconciliation PR #134, post-merge Windows",
@@ -2765,12 +2778,15 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "`v0.1.17` is the latest published release",
         "`v0.1.16` is the previous stable release",
         "`v0.1.16-rc.0` is historical prerelease evidence",
-        "active post-v0.1.16 execution cursor records the `v0.1.16` baseline",
-        "and the `v0.1.17` maintenance publication",
+        "active post-v0.1.17 execution cursor records `v0.1.17` publication",
+        "AF7\n  publication reconciliation",
+        "PR Windows Harness run `25601966464`",
+        "post-merge Windows Harness run `25602018700`",
+        "post-v0.1.17 baseline",
+        "completed post-v0.1.16 execution cursor records the `v0.1.16` baseline",
         "final tag target\n  `5b260edc3bddc48986e52179b2ffd261856a89ac`",
         "PR #159",
-        "PR Windows Harness run `25601571665`",
-        "post-merge Windows Harness run `25601624151`",
+        "PR #160",
         "release metadata/tag\n  verification",
         "completed post-v0.1.14 execution cursor records `v0.1.15` publication",
         "PR #132, PR #133, publication reconciliation PR #134, post-merge Windows",
@@ -2859,12 +2875,13 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
 
     for expected in (
         "Stable release baseline | `v0.1.17`",
-        "Current maintenance plan | [Post-v0.1.16 maintenance plan]",
+        "Current maintenance plan | [Post-v0.1.17 maintenance plan]",
+        "Previous maintenance plan | [Post-v0.1.16 maintenance plan]",
         "Current release-readiness decision | [Release-readiness decision after v0.1.16]",
         "Current release record | [v0.1.17 maintenance release record]",
         "Completed final-release plan | [v0.1.16 final-release plan]",
         "Previous prerelease record | [v0.1.16-rc.0 release candidate record]",
-        "Previous maintenance plan | [Post-v0.1.15 maintenance plan]",
+        "Previous pre-v0.1.16 maintenance plan | [Post-v0.1.15 maintenance plan]",
         "Published release record | [v0.1.17 maintenance release record]",
         "Latest published release record | [v0.1.17 maintenance release record]",
         "Previous stable release record | [v0.1.16 final release record]",

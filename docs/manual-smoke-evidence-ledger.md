@@ -14,12 +14,13 @@ or token canaries.
 | Field | Value |
 | --- | --- |
 | Stable release baseline | `v0.1.17` |
-| Current maintenance plan | [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md) |
+| Current maintenance plan | [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md) |
+| Previous maintenance plan | [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md) |
 | Current release-readiness decision | [Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md) |
 | Current release record | [v0.1.17 maintenance release record](release-v0.1.17.md) |
 | Completed final-release plan | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) |
 | Previous prerelease record | [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md) |
-| Previous maintenance plan | [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md) |
+| Previous pre-v0.1.16 maintenance plan | [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md) |
 | Published release record | [v0.1.17 maintenance release record](release-v0.1.17.md) |
 | Latest published release record | [v0.1.17 maintenance release record](release-v0.1.17.md) |
 | Previous stable release record | [v0.1.16 final release record](release-v0.1.16.md) |
