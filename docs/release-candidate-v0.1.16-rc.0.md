@@ -1,15 +1,16 @@
 # v0.1.16-rc.0 Release Candidate Record
 
-This record prepares the `v0.1.16-rc.0` release-candidate readiness path from
+This record captures the published `v0.1.16-rc.0` prerelease candidate from
 the published `v0.1.15` baseline. It records commands, results, commit
 identifiers, CI URLs, environment notes, and local artifact paths only. It does
 not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.16-rc.0` is a release-candidate readiness candidate. Local AD5
-validation, fresh manual UIA smoke, PR Windows Harness, and post-merge `main`
-Windows Harness passed. GitHub prerelease publication is pending.
+`v0.1.16-rc.0` is published as a prerelease candidate. Local AD5 validation,
+fresh manual UIA smoke, PR Windows Harness, post-merge `main` Windows Harness,
+final pre-publication `main` Windows Harness, and GitHub prerelease publication
+passed.
 
 The release-candidate path is required before direct `v0.1.16` final because
 AD2-AD4 included compatible runtime drift fixes, not only documentation and
@@ -28,23 +29,25 @@ candidate PR and rerun local and Windows Harness gates. If a regression is
 found after prerelease publication, publish a follow-up release candidate
 instead of retagging `v0.1.16-rc.0`.
 
-Publication status: release-candidate readiness; not yet published.
+Publication status: published prerelease candidate.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release candidate | `v0.1.16-rc.0` |
-| Stage | AD5 release-candidate readiness |
+| Stage | AD5 published prerelease candidate |
 | Evidence date | 2026-05-09, Asia/Shanghai |
 | Base `main` SHA before AD5 readiness | `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39` |
 | Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/140 |
 | Candidate PR Windows Harness | Passed, run `25596082939`, https://github.com/YSCJRH/WinChronicle/actions/runs/25596082939 |
 | Candidate post-merge `main` Windows Harness | Passed, run `25596122521`, https://github.com/YSCJRH/WinChronicle/actions/runs/25596122521 |
 | Candidate post-merge `main` SHA | `bca4b6485f194a46bca7fa6e1e3866b5105479da` |
-| Publication status | Release-candidate readiness; not yet published |
-| Release URL | Pending |
-| Final tag target | Pending |
+| Final pre-publication `main` Windows Harness | Passed, run `25596273094`, https://github.com/YSCJRH/WinChronicle/actions/runs/25596273094 |
+| Publication status | Published prerelease candidate |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16-rc.0 |
+| Published at | 2026-05-09T08:18:01Z |
+| Final tag target | `70caf364f68d8c159eb74bbbc23e7469db22a244` |
 | Previous stable release | `v0.1.15` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15 |
 | `v0.1.15` tag target | `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2` |
@@ -86,8 +89,9 @@ Environment:
 | `python -c "import winchronicle; print(winchronicle.__version__)"` | Pass | printed `0.1.16` |
 | `git diff --check` | Pass | no whitespace errors |
 
-The AD5 PR Windows Harness and post-merge `main` Windows Harness passed.
-GitHub prerelease publication is pending.
+The AD5 PR Windows Harness, post-merge `main` Windows Harness, final
+pre-publication `main` Windows Harness, and GitHub prerelease publication
+passed.
 
 ## Manual UIA Smoke Gates
 
@@ -191,20 +195,20 @@ expanding the capture surface from `v0.1.15`.
 
 ## Release Decision Summary
 
-- Release path: `v0.1.16-rc.0` release-candidate readiness, not direct
+- Release path: `v0.1.16-rc.0` published prerelease candidate, not direct
   `v0.1.16` final.
 - Reason: AD2-AD4 include compatible runtime/privacy drift fixes.
 - Fallback path: follow-up release candidate if any product or contract
   regression is found.
-- Deterministic gates: AD5 local validation, PR Windows Harness, and
-  post-merge `main` Windows Harness passed; GitHub prerelease publication is
-  pending.
+- Deterministic gates: AD5 local validation, PR Windows Harness, post-merge
+  `main` Windows Harness, final pre-publication `main` Windows Harness, and
+  GitHub prerelease publication passed.
 - Manual UIA gates: fresh manual UIA smoke passed for Notepad and Edge; VS
   Code metadata passed with the known Monaco diagnostic warning; VS Code
   strict marker remains a diagnostic non-blocking failure; watcher preview
   live smoke passed.
 - Privacy/scope confirmation: no capture-surface expansion and recorded above.
-- Publication approval: pending final prerelease publication decision after
-  local, PR, and post-merge validation.
-- Release URL: pending.
-- Final tag target: pending.
+- Publication approval: completed by the active thread goal directing stage
+  completion, remote push, review, and publication.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16-rc.0.
+- Final tag target: `70caf364f68d8c159eb74bbbc23e7469db22a244`.

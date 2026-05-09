@@ -628,14 +628,18 @@ def test_v0116_rc0_release_candidate_record_is_ready_and_scoped():
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: release-candidate readiness; not yet published.",
+        "Publication status: published prerelease candidate.",
         "Release candidate | `v0.1.16-rc.0`",
-        "Stage | AD5 release-candidate readiness",
+        "Stage | AD5 published prerelease candidate",
         "Base `main` SHA before AD5 readiness | `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`",
         "Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/140",
         "Candidate PR Windows Harness | Passed, run `25596082939`",
         "Candidate post-merge `main` Windows Harness | Passed, run `25596122521`",
         "Candidate post-merge `main` SHA | `bca4b6485f194a46bca7fa6e1e3866b5105479da`",
+        "Final pre-publication `main` Windows Harness | Passed, run `25596273094`",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16-rc.0",
+        "Published at | 2026-05-09T08:18:01Z",
+        "Final tag target | `70caf364f68d8c159eb74bbbc23e7469db22a244`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15",
         "`v0.1.15` tag target | `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`",
         "AD4 PR Windows Harness | Passed, run `25595449096`",
@@ -655,8 +659,9 @@ def test_v0116_rc0_release_candidate_record_is_ready_and_scoped():
         "VS Code strict marker remains a diagnostic non-blocking failure",
         "watcher preview live smoke passed",
         "follow-up release candidate if any product or contract regression",
-        "Release URL: pending.",
-        "Final tag target: pending.",
+        "GitHub prerelease publication passed",
+        "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16-rc.0.",
+        "Final tag target: `70caf364f68d8c159eb74bbbc23e7469db22a244`.",
     ):
         assert phrase in normalized
 

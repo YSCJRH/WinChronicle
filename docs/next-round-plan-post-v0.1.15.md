@@ -30,20 +30,21 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AD5 - v0.1.16-rc.0 Release Candidate Readiness.
-- Stage status: A - AD5 is the active release-candidate readiness stage.
+- Current stage: AD5 - v0.1.16-rc.0 Published Prerelease Reconciliation.
+- Stage status: A - `v0.1.16-rc.0` is published as a prerelease; publication
+  reconciliation is in progress.
 - Last completed evidence: AD4 added the post-v0.1.15 compatibility guardrail
   sweep and two narrow privacy/compatibility drift fixes in PR #139, merged as
   `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`, and post-merge `main` Windows
   Harness run `25595513141` passed.
-- Last validation: AD5 local validation, PR Windows Harness run
-  `25596082939`, and post-merge `main` Windows Harness run `25596122521`
-  passed for the `v0.1.16-rc.0` release-candidate readiness PR.
-- Next atomic task: record the AD5 remote CI evidence on `main`, publish the
-  `v0.1.16-rc.0` prerelease after review, and reconcile the published release
-  URL/tag target.
-- Known blockers: prerelease publication and post-publication reconciliation
-  evidence are pending.
+- Last validation: final pre-publication `main` Windows Harness run
+  `25596273094` passed on `70caf364f68d8c159eb74bbbc23e7469db22a244`, and
+  GitHub published `v0.1.16-rc.0` as a prerelease at that tag target.
+- Next atomic task: complete the `v0.1.16-rc.0` publication reconciliation PR
+  by recording the release URL, tag target, and final post-publication
+  Windows Harness evidence.
+- Known blockers: post-publication reconciliation PR and post-merge Windows
+  Harness evidence are pending.
 
 ## Phased Work
 
@@ -313,3 +314,12 @@ Stage-specific gates:
   - PR #140 Windows Harness run `25596082939` - passed.
   - PR #140 merged as `bca4b6485f194a46bca7fa6e1e3866b5105479da`.
   - `gh run view 25596122521 --json databaseId,status,conclusion,headSha,url,displayTitle` - passed; post-AD5-readiness `main` Windows Harness concluded `success` on `bca4b6485f194a46bca7fa6e1e3866b5105479da`.
+- Stage AD5 CI evidence PR completion:
+  - PR #141 Windows Harness run `25596204971` - passed.
+  - PR #141 merged as `70caf364f68d8c159eb74bbbc23e7469db22a244`.
+  - `gh run view 25596273094 --json databaseId,status,conclusion,headSha,url,displayTitle` - passed; final pre-publication `main` Windows Harness concluded `success` on `70caf364f68d8c159eb74bbbc23e7469db22a244`.
+- Stage AD5 prerelease publication:
+  - `gh release create v0.1.16-rc.0 --target 70caf364f68d8c159eb74bbbc23e7469db22a244 --title "v0.1.16-rc.0" --prerelease --notes ...` - passed.
+  - `gh release view v0.1.16-rc.0 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name` - passed; the release is published, not a draft, marked prerelease, published at `2026-05-09T08:18:01Z`, and targets `70caf364f68d8c159eb74bbbc23e7469db22a244`.
+  - `git fetch --tags --force` - passed and fetched `v0.1.16-rc.0`.
+  - `git ls-remote --tags origin v0.1.16-rc.0` - passed and printed `70caf364f68d8c159eb74bbbc23e7469db22a244`.
