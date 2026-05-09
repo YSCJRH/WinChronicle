@@ -59,7 +59,7 @@ Expected operator signals:
 | Watcher exits nonzero | `ERROR: watcher failed with exit code <code>` | The watcher or surfaced helper path failed. Raw stdout/stderr is suppressed. | Exit code and command. |
 | Watcher emits malformed JSONL | `ERROR: watcher JSONL line <n> is malformed` | The dispatcher rejected an event line without saving raw JSONL. | Line number and command. |
 | Watcher timeout | `ERROR: watcher timed out` | The watcher command exceeded the wrapper timeout. | Command, duration, and environment notes. |
-| Denylist or lock screen skip | JSON with `denylisted_skipped > 0` and unchanged `captures_written` | Privacy gate skipped observed content before storage. | JSON counts only. |
+| Denylist or lock screen skip | JSON with `denylisted_skipped > 0` and unchanged `captures_written` | Privacy gate skipped observed content before storage. Title-denylist diagnostics use a stable content-free reason. | JSON counts only; do not record the matched title. |
 | Duplicate skip | JSON with `duplicates_skipped > 0` | Content fingerprint prevented duplicate persistence. | JSON counts only. |
 
 Do not save or commit raw watcher JSONL from live runs. The Python preview path

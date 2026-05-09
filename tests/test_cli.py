@@ -165,6 +165,28 @@ def test_capture_frontmost_cli_skips_when_helper_returns_no_capture(tmp_path, mo
     assert not (tmp_path / "state" / "capture-buffer").exists()
 
 
+def test_capture_once_cli_title_denylist_skip_does_not_echo_title(
+    tmp_path, monkeypatch, capsys
+):
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(tmp_path / "state"))
+    sensitive_title = "Private key recovery phrase"
+    fixture = json.loads(
+        (ROOT / "harness" / "fixtures" / "uia" / "notepad_basic.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    fixture["window"]["title"] = sensitive_title
+    fixture_path = tmp_path / "title_denylisted.json"
+    fixture_path.write_text(json.dumps(fixture), encoding="utf-8")
+
+    assert main(["capture-once", "--fixture", str(fixture_path)]) == 0
+
+    output = capsys.readouterr().out.strip()
+    assert output == "SKIPPED: denylisted title pattern"
+    assert sensitive_title not in output
+    assert not (tmp_path / "state" / "capture-buffer").exists()
+
+
 def test_capture_frontmost_cli_reports_invalid_helper_json_without_stderr_leak(
     tmp_path, monkeypatch, capsys
 ):

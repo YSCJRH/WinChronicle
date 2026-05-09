@@ -1342,7 +1342,7 @@ static class PrivacyGate
         {
             if (pattern.IsMatch(title))
             {
-                return $"denylisted title: {title}";
+                return "denylisted title pattern";
             }
         }
 

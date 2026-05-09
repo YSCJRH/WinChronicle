@@ -185,6 +185,15 @@ def test_capture_frontmost_wrapper_reports_timeout_without_stdout_leak(tmp_path)
         )
 
 
+def test_uia_helper_title_denylist_reason_is_content_free():
+    source = (ROOT / "resources" / "win-uia-helper" / "Program.cs").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'return "denylisted title pattern";' in source
+    assert 'return $"denylisted title: {title}";' not in source
+
+
 @pytest.mark.skipif(sys.platform != "win32", reason="UIA helper is Windows-only.")
 def test_uia_helper_targeted_capture_requires_harness_environment():
     if shutil.which("dotnet") is None:
