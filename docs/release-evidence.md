@@ -18,7 +18,7 @@ completed post-v0.1.17 compatibility guardrail review is
 [Compatibility guardrail sweep after v0.1.17](compatibility-guardrail-sweep-post-v0.1.17.md). The
 completed post-v0.1.17 release-readiness decision is
 [Release-readiness decision after v0.1.17](release-readiness-decision-post-v0.1.17.md). The
-current Phase 6 privacy contract preflight is
+completed Phase 6 privacy contract preflight is
 [Phase 6 privacy contract preflight after v0.1.17](phase6-privacy-contract-preflight-post-v0.1.17.md). The
 completed post-v0.1.16 maintenance cursor is recorded in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
@@ -93,8 +93,9 @@ historical records. After the `v0.1.17` maintenance publication:
   run `25604269757`, AG5 release-readiness decision PR #166 with post-AG5
   `main` Windows Harness run `25604682902`, AG6 post-AG5 cursor
   reconciliation PR #167 with post-AG6 `main` Windows Harness run
-  `25605064828`, and the current Phase 6 privacy-enrichment contract
-  preflight;
+  `25605064828`, Phase 6 privacy-enrichment contract preflight PR #168 with
+  post-preflight `main` Windows Harness run `25605600008`, and the current
+  Phase 6 privacy-enrichment contract fixture expansion;
 - the completed post-v0.1.17 public metadata/evidence freshness audit records
   repository metadata, `v0.1.17` release metadata, previous stable `v0.1.16`
   release metadata, post-AG0 `main` Windows Harness evidence, manual repository

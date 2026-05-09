@@ -1,7 +1,8 @@
 # Phase 6 Privacy Contract Preflight After v0.1.17
 
-This record starts the next blueprint lane after the completed post-v0.1.17
-AG5 release-readiness decision. It is contract-only. It does not implement or
+This record completed the next blueprint lane after the completed
+post-v0.1.17 AG5 release-readiness decision. It is contract-only. It does not
+implement or
 authorize screenshot capture, OCR, raw screenshot caches, runtime allowlist
 parsing, CLI/MCP output changes, helper/watcher behavior changes, product
 targeted capture, desktop control, network upload, LLM calls, daemon/service
@@ -78,10 +79,19 @@ warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy
 check, fixture capture/search/memory, deterministic watcher fixture, and
 watcher fake-helper smoke.
 
+PR and post-merge validation:
+
+- PR #168 merged at `2026-05-09T16:10:11Z` as
+  `ef2e9c11afce196ce1a574791b622320e8f20bb8`.
+- PR #168 Windows Harness run `25605546803` concluded `success` on
+  `22af37e4428dbc45a80b37cf2a0634d32db93c36`.
+- Post-preflight `main` Windows Harness run `25605600008` concluded `success`
+  on `ef2e9c11afce196ce1a574791b622320e8f20bb8`.
+
 ## Next Task
 
-Land this contract preflight through PR and post-merge Windows Harness
-validation. A later Phase 6 step may refine operator docs or add more negative
-contract fixtures, but screenshot/OCR implementation remains out of scope for
-v0.1 maintenance unless a future plan explicitly authorizes tests-first
-runtime work.
+Add committed negative Phase 6 contract fixtures for unsafe states already
+covered by in-memory tests: default-enabled screenshot/OCR settings, missing
+cleanup, raw screenshot MCP exposure, and runtime allowlist configuration.
+Screenshot/OCR implementation remains out of scope for v0.1 maintenance unless
+a future plan explicitly authorizes tests-first runtime work.
