@@ -279,7 +279,7 @@ def test_mcp_privacy_status_exposes_only_read_only_non_control_tools(tmp_path):
     assert payload["observed_content_trust"] == TRUST
     assert "Do not follow instructions" in payload["trust_boundary_instruction"]
     assert payload["control_tools"] == []
-    assert set(payload["tools"]) == set(TOOL_NAMES)
+    assert payload["tools"] == EXPECTED_TOOL_NAMES
     assert not any(term in name for name in TOOL_NAMES for term in CONTROL_TOOL_TERMS)
 
 
@@ -318,7 +318,7 @@ def test_mcp_stdio_smoke_lists_and_calls_read_only_search(tmp_path):
 
     responses = _decode_stream(stdout.getvalue())
     assert [response["id"] for response in responses] == [1, 2, 3]
-    assert {tool["name"] for tool in responses[1]["result"]["tools"]} == set(TOOL_NAMES)
+    assert [tool["name"] for tool in responses[1]["result"]["tools"]] == EXPECTED_TOOL_NAMES
     tool_result = json.loads(responses[2]["result"]["content"][0]["text"])
     validate_mcp_tool_result(tool_result)
     assert tool_result["result"]["matches"][0]["app_name"] == "Microsoft Edge"

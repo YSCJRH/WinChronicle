@@ -7,6 +7,7 @@ import pytest
 from winchronicle.capture import capture_once_from_fixture
 from winchronicle.cli import main
 from winchronicle.memory import generate_memory_entries
+from winchronicle.mcp.server import search_memory_tool
 from winchronicle.paths import state_paths
 from winchronicle.privacy import TRUST, TRUST_BOUNDARY_INSTRUCTION
 from winchronicle.schema import validate_memory_entry
@@ -194,6 +195,43 @@ def test_memory_generation_does_not_write_unredacted_secret_canaries(tmp_path, m
         assert "xoxb-winchronicle-canary-token" not in markdown
         assert "-----BEGIN PRIVATE KEY-----" not in markdown
         assert "[REDACTED:" in markdown
+
+
+def test_memory_secret_canaries_are_absent_from_sqlite_search_and_mcp(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    for fixture_name in ("password_field.json", "secrets_visible_text.json"):
+        capture_once_from_fixture(ROOT / "harness" / "fixtures" / "privacy" / fixture_name, home)
+
+    generate_memory_entries(home)
+    raw_canaries = (
+        "CorrectHorseBatteryStaple!",
+        "sk-winchronicle-test-canary",
+        "ghp_winchroniclecanary",
+        "xoxb-winchronicle-canary-token",
+        "eyJhbGciOiJIUzI1NiJ9",
+        "-----BEGIN PRIVATE KEY-----",
+    )
+
+    with sqlite3.connect(state_paths(home)["db"]) as conn:
+        entry_bodies = [row[0] for row in conn.execute("SELECT body FROM entries").fetchall()]
+        fts_exists = conn.execute(
+            "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'entries_fts'"
+        ).fetchone()
+        fts_bodies = (
+            [row[0] for row in conn.execute("SELECT body FROM entries_fts").fetchall()]
+            if fts_exists
+            else []
+        )
+
+    for body in entry_bodies + fts_bodies:
+        for canary in raw_canaries:
+            assert canary not in body
+
+    for canary in raw_canaries:
+        assert search_memory_entries(canary, home) == []
+        tool_result = search_memory_tool(canary, home=home)
+        assert tool_result["result"]["matches"] == []
 
 
 def test_generate_memory_and_search_memory_cli(tmp_path, monkeypatch, capsys):

@@ -27,23 +27,23 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AG2 - Helper And Watcher Preview Diagnostics Review.
-- Stage status: AG2 review in progress; AG1 landed through PR #162 and
+- Current stage: AG3 - MCP And Memory Contract Review.
+- Stage status: AG3 review in progress; AG2 landed through PR #163 and
   post-merge Windows Harness.
-- Last completed evidence: AG1 public metadata audit PR #162 merged as
-  `0a5d72ea12ac030161ed387286dc15dc63c80b01`, PR Windows Harness run
-  `25602763122` passed, and post-AG1 `main` Windows Harness run `25602836902`
+- Last completed evidence: AG2 helper/watcher diagnostics review PR #163
+  merged as `461eb8b14f6733f5abfe87524da2358730da3b59`, PR Windows Harness run
+  `25603218933` passed, and post-AG2 `main` Windows Harness run `25603274783`
   passed on that SHA.
-- Last validation: `gh run view 25602836902 --json
+- Last validation: `gh run view 25603274783 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AG1 `main` Windows Harness concluded `success`; current
-  helper/watcher docs and tests still cover timeout, malformed output, invalid
-  embedded helper payload, no observed-content echo, duplicate skip, denylist
-  skip, heartbeat-only diagnostics, raw watcher JSONL policy, and diagnostic
-  artifact policy.
-- Next atomic task: land this AG2 helper/watcher diagnostics review through PR
-  and post-merge Windows Harness validation, then start AG3 MCP and memory
-  contract review.
+  verified the post-AG2 `main` Windows Harness concluded `success`; current
+  MCP/memory docs and tests still cover exact read-only MCP tools, rejected
+  write/control/file/network/targeted-capture tool names, observed-content
+  trust metadata, CLI/MCP capture and memory search parity, durable memory
+  goldens, idempotence, FTS indexing, and secret exclusion.
+- Next atomic task: land this AG3 MCP/memory contract review through PR and
+  post-merge Windows Harness validation, then start AG4 compatibility guardrail
+  sweep.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -86,6 +86,8 @@ service install, no polling capture loop, and no default background capture.
   artifact policy.
 - Add `docs/helper-watcher-diagnostics-sweep-post-v0.1.17.md`.
 - Keep real UIA smoke manual and outside default CI.
+- Completed in PR #163 with PR Windows Harness run `25603218933` and
+  post-merge `main` Windows Harness run `25603274783`.
 
 ### Stage AG3 - MCP And Memory Contract Review
 
@@ -94,6 +96,8 @@ service install, no polling capture loop, and no default background capture.
 - Strengthen narrow docs/tests/code only if evidence drifts from the exact
   read-only MCP tool list, durable memory contract, or observed-content trust
   boundary.
+- Add `docs/mcp-memory-contract-sweep-post-v0.1.17.md`.
+- Keep real UIA smoke manual and outside default CI.
 
 ### Stage AG4 - Compatibility Guardrail Sweep
 
@@ -176,6 +180,12 @@ Every implementation stage should run:
 - Started AG2 as a docs/tests-only helper/watcher diagnostics review because
   the current evidence surface already covers the expected v0.1 preview failure
   modes, and no product drift has been found.
+- Completed AG2 after PR #163 merged as
+  `461eb8b14f6733f5abfe87524da2358730da3b59` and post-merge `main` Windows
+  Harness run `25603274783` passed.
+- Started AG3 as a docs/tests-only MCP/memory contract review because exact
+  read-only MCP tool list, trust metadata, durable memory, and forbidden tool
+  boundary behavior are already covered by deterministic tests and scorecards.
 
 ## Validation Log
 
@@ -216,3 +226,26 @@ Every implementation stage should run:
   - stale AG0/AG1 cursor and v0.1.16 helper/watcher typo scan across
     `README.md`, `docs`, and `tests` - passed with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 172 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AG2 completion:
+  - `gh pr view 163 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #163 merged at `2026-05-09T14:16:40Z` as `461eb8b14f6733f5abfe87524da2358730da3b59`.
+  - `gh run view 25603218933 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #163 Windows Harness concluded `success` on `17c56a8f067988826bec965d1d7f0176f72da25e`.
+  - `gh run view 25603274783 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AG2 `main` Windows Harness concluded `success` on `461eb8b14f6733f5abfe87524da2358730da3b59`.
+- Stage AG3 initialization:
+  - Reviewed `docs/mcp-readonly-examples.md`, `docs/deterministic-demo.md`,
+    `harness/scorecards/mcp-quality.md`, `harness/scorecards/memory-quality.md`,
+    `tests/test_mcp_tools.py`, `tests/test_memory_pipeline.py`,
+    `harness/scripts/run_mcp_smoke.py`, `src/winchronicle/mcp/server.py`, and
+    `src/winchronicle/memory.py`.
+  - Found no new MCP/memory contract drift requiring product code, schema,
+    CLI/MCP JSON shape, memory reducer, SQLite schema, privacy runtime, helper,
+    watcher, or capture-surface changes.
+- Stage AG3 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_mcp_tools.py tests/test_memory_pipeline.py tests/test_version_identity.py -q` - passed, 93 tests.
+  - `python -m pytest -q` - passed, 175 tests.
+  - `git diff --check` - passed.
+  - stale AG2 cursor scan across `README.md`, `docs`, and `tests` - passed
+    with no matches.
+  - `python harness/scripts/run_harness.py` - passed, including 175 pytest
+    tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke,
+    MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory,
+    deterministic watcher fixture, and watcher fake-helper smoke.
