@@ -324,6 +324,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "completed post-v0.1.17 MCP/memory contract sweep" in readme_intro_normalized
     assert "completed post-v0.1.17 compatibility guardrail sweep" in readme_intro_normalized
     assert "completed post-v0.1.17 release-readiness decision" in readme_intro_normalized
+    assert "current Phase 6 privacy contract preflight" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
@@ -336,6 +337,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "MCP and memory contract sweep after v0.1.17" in readme_operator_docs
     assert "Compatibility guardrail sweep after v0.1.17" in readme_operator_docs
     assert "Release-readiness decision after v0.1.17" in readme_operator_docs
+    assert "Phase 6 privacy contract preflight after v0.1.17" in readme_operator_docs
     assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.16" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
@@ -406,6 +408,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Release-readiness decision after v0.1.17"
     )
     assert readme_operator_docs.index("Release-readiness decision after v0.1.17") < readme_operator_docs.index(
+        "Phase 6 privacy contract preflight after v0.1.17"
+    )
+    assert readme_operator_docs.index("Phase 6 privacy contract preflight after v0.1.17") < readme_operator_docs.index(
         "Post-v0.1.16 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.16 maintenance plan") < readme_operator_docs.index(
@@ -538,6 +543,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "mcp-memory-contract-sweep-post-v0.1.17.md" in current_section
     assert "compatibility-guardrail-sweep-post-v0.1.17.md" in current_section
     assert "release-readiness-decision-post-v0.1.17.md" in current_section
+    assert "phase6-privacy-contract-preflight-post-v0.1.17.md" in current_section
     assert "next-round-plan-post-v0.1.16.md" in current_section
     assert "public-metadata-audit-post-v0.1.16.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in current_section
@@ -650,6 +656,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "compatibility-guardrail-sweep-post-v0.1.17.md" in evidence
     assert "release-readiness-decision-post-v0.1.17.md" in checklist
     assert "release-readiness-decision-post-v0.1.17.md" in evidence
+    assert "phase6-privacy-contract-preflight-post-v0.1.17.md" in checklist
+    assert "phase6-privacy-contract-preflight-post-v0.1.17.md" in evidence
     assert "next-round-plan-post-v0.1.16.md" in checklist
     assert "next-round-plan-post-v0.1.16.md" in evidence
     assert "public-metadata-audit-post-v0.1.16.md" in checklist
@@ -688,8 +696,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "AG5 release-readiness decision PR #166" in evidence
     assert "post-AG5\n  `main` Windows Harness run `25604682902`" in checklist
     assert "post-AG5\n  `main` Windows Harness run `25604682902`" in evidence
-    assert "Phase 6 privacy-enrichment contract preflight" in checklist
-    assert "Phase 6 privacy-enrichment contract preflight" in evidence
+    assert "AG6 post-AG5 cursor\n  reconciliation PR #167" in checklist
+    assert "AG6 post-AG5 cursor\n  reconciliation PR #167" in evidence
+    assert "post-AG6 `main` Windows Harness run\n  `25605064828`" in checklist
+    assert "post-AG6 `main` Windows Harness run\n  `25605064828`" in evidence
+    assert "current Phase 6 privacy-enrichment contract\n  preflight" in checklist
+    assert "current Phase 6 privacy-enrichment contract\n  preflight" in evidence
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist
