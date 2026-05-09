@@ -384,7 +384,10 @@ def test_phase6_privacy_contract_gap_fixtures_record_targeted_expansion():
         "Product code must not read them in v0.1",
         "focused Phase 6/docs validation reported 89 tests",
         "full pytest reported 186 tests",
-        "Land this targeted gap fixture expansion through PR and post-merge Windows Harness validation",
+        "PR #176 Windows Harness run `25608336721` concluded `success`",
+        "Post-gap-fixtures `main` Windows Harness run `25608403951` concluded `success`",
+        "Audit the remaining Phase 6 schema-enforced branches",
+        "raw cache local-state/encryption/artifact controls",
     )
     for phrase in required_phrases:
         assert phrase in normalized

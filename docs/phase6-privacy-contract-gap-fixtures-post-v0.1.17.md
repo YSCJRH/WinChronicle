@@ -60,9 +60,20 @@ warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy
 check, fixture capture/search/memory, deterministic watcher fixture, and
 watcher fake-helper smoke.
 
+PR and post-merge validation:
+
+- PR #176 merged at `2026-05-09T18:18:56Z` as
+  `05811145444af93178b957bd1a3fc11b47f64cfd`.
+- PR #176 Windows Harness run `25608336721` concluded `success` on
+  `d9fc229304ce7f613db7b06c3f89c29190ae0981`.
+- Post-gap-fixtures `main` Windows Harness run `25608403951` concluded
+  `success` on `05811145444af93178b957bd1a3fc11b47f64cfd`.
+
 ## Next Task
 
-Land this targeted gap fixture expansion through PR and post-merge Windows
-Harness validation. Screenshot/OCR implementation remains out of scope for
-v0.1 maintenance unless a future plan explicitly authorizes tests-first
-runtime work.
+Audit the remaining Phase 6 schema-enforced branches that still do not have a
+targeted committed invalid fixture, especially opt-in requirement booleans,
+raw cache local-state/encryption/artifact controls, derived text pipeline
+controls, and MCP trust-boundary requirements. Screenshot/OCR implementation
+remains out of scope for v0.1 maintenance unless a future plan explicitly
+authorizes tests-first runtime work.
