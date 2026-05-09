@@ -20,8 +20,8 @@ post-v0.1.16 maintenance plan, the current post-v0.1.16 public metadata audit,
 the current post-v0.1.16 helper/watcher diagnostics sweep, the current
 post-v0.1.16 MCP/memory contract sweep, the current post-v0.1.16 compatibility
 guardrail sweep, the current post-v0.1.16 release-readiness decision, the
-current `v0.1.17` maintenance release-readiness record, the latest published
-`v0.1.16` release record, the completed `v0.1.16` final-release plan, the
+latest published `v0.1.17` release record, the previous published `v0.1.16`
+release record, the completed `v0.1.16` final-release plan, the
 historical `v0.1.16-rc.0` release-candidate record, the previous published
 `v0.1.15` release record, and older completed maintenance plans.
 

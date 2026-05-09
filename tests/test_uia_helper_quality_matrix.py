@@ -75,16 +75,16 @@ def test_uia_helper_quality_matrix_uses_latest_manual_smoke_evidence():
     assert "For compatible maintenance releases after `v0.1.9`" in text
     assert "Historical\nmaintenance records from `v0.1.4` onward" in text
     assert "current\n`v0.1.3` readiness round" not in text
-    assert "Latest full manual `v0.1.17` readiness: pass" in rows["Notepad"][
+    assert "Latest full manual `v0.1.17` release: pass" in rows["Notepad"][
         "Current result"
     ]
-    assert "Latest full manual `v0.1.17` readiness: pass" in rows["Microsoft Edge"][
+    assert "Latest full manual `v0.1.17` release: pass" in rows["Microsoft Edge"][
         "Current result"
     ]
-    assert "Latest full manual `v0.1.17` readiness: pass with diagnostic warning" in rows[
+    assert "Latest full manual `v0.1.17` release: pass with diagnostic warning" in rows[
         "VS Code metadata"
     ]["Current result"]
-    assert "Latest full manual `v0.1.17` readiness: diagnostic failure" in rows[
+    assert "Latest full manual `v0.1.17` release: diagnostic failure" in rows[
         "VS Code strict Monaco marker"
     ]["Current result"]
     assert "docs/release-v0.1.17.md" in text

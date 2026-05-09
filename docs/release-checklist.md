@@ -6,8 +6,9 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.16 final release record](release-v0.1.16.md). The active
-post-v0.1.16 execution cursor lives in
+[v0.1.17 maintenance release record](release-v0.1.17.md). The previous stable
+release record is [v0.1.16 final release record](release-v0.1.16.md). The
+active post-v0.1.16 execution cursor lives in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
 current public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md). The
@@ -19,7 +20,7 @@ current compatibility guardrail review is
 [Compatibility guardrail sweep after v0.1.16](compatibility-guardrail-sweep-post-v0.1.16.md). The
 current release-readiness decision is
 [Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md). The
-current `v0.1.17` maintenance release-readiness record is
+current `v0.1.17` maintenance release record is
 [v0.1.17 maintenance release record](release-v0.1.17.md). The
 completed `v0.1.16` final-release cursor is recorded in
 [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md), and
@@ -54,18 +55,21 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.16` until a later plan explicitly prepares
+- the stable baseline is `v0.1.17` until a later plan explicitly prepares
   another version;
-- `v0.1.16` is the latest published release; its release URL, tag target,
+- `v0.1.17` is the latest published release; its release URL, tag target,
   published timestamp, and Windows Harness evidence are recorded in the release
   record;
+- `v0.1.16` is the previous stable release; its release URL, tag target, and
+  published timestamp remain recorded in the final release record;
 - `v0.1.16-rc.0` is historical prerelease evidence, not the latest published
   final release;
-- the active post-v0.1.16 execution cursor records `v0.1.16` publication,
-  final tag target `255f2a01cddde330d756a87359c4d3a8be4b11a2`, published
-  timestamp `2026-05-09T09:31:17Z`, AE4 PR #148, PR Windows Harness run
-  `25598038285`, post-merge Windows Harness run `25598080136`, and the
-  post-v0.1.16 baseline;
+- the active post-v0.1.16 execution cursor records the `v0.1.16` baseline
+  publication and the `v0.1.17` maintenance publication, final tag target
+  `5b260edc3bddc48986e52179b2ffd261856a89ac`, published timestamp
+  `2026-05-09T12:56:45Z`, PR #159, PR Windows Harness run `25601571665`,
+  post-merge Windows Harness run `25601624151`, and release metadata/tag
+  verification;
 - the completed post-v0.1.15 execution cursor records AD4 PR #139, PR Windows
   Harness run `25595449096`, post-merge Windows Harness run `25595513141`,
   AD5 prerelease publication, and publication reconciliation evidence;
@@ -99,10 +103,11 @@ inherited historical evidence:
 - release-readiness decisions record whether current maintenance changes
   warrant a release-readiness path, distinguish release plans from immediate
   publication, and forbid retagging an already published stable release;
-- the current `v0.1.17` maintenance release-readiness record records the fresh
+- the current `v0.1.17` maintenance release record records the fresh
   version decision, additive CLI JSON trust-boundary shape, fresh hard-gate
-  manual UIA smoke, heartbeat-only watcher diagnostic, and pending PR/post-merge
-  publication gates without retagging `v0.1.16`;
+  manual UIA smoke, heartbeat-only watcher diagnostic, passed PR/post-merge
+  publication gates, release URL, published timestamp, and immutable final tag
+  target without retagging `v0.1.16`;
 - the post-v0.1.12 execution cursor is completed historical context and records
   PR #118 plus post-merge Windows Harness run `25580877004`;
 - the post-v0.1.11 execution cursor is completed historical context and
@@ -133,7 +138,7 @@ inherited historical evidence:
   helper/watcher behavior, manual smoke scripts, capture behavior, privacy
   behavior, CLI/MCP shape, capture surfaces, or release approval requirements
   change;
-- for the `v0.1.17` maintenance release-readiness candidate, fresh hard-gate
+- for the published `v0.1.17` maintenance release, fresh hard-gate
   manual UIA smoke was rerun because public CLI/runtime output shape changed
   after `v0.1.16`; Notepad and Edge passed, VS Code metadata passed with the
   known Monaco diagnostic warning, VS Code strict remains diagnostic and

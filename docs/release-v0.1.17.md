@@ -1,38 +1,39 @@
 # v0.1.17 Maintenance Release Record
 
-This record prepares the narrow `v0.1.17` maintenance release from the
-published `v0.1.16` stable baseline. It records commands, results, commit
+This record captures the published narrow `v0.1.17` maintenance release from
+the published `v0.1.16` stable baseline. It records commands, results, commit
 identifiers, CI URLs, environment notes, and local artifact paths only. It does
 not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.17` is a pre-publication release-readiness candidate. The candidate
+`v0.1.17` is published as a compatible maintenance release. The release
 contains compatible privacy, trust-boundary, diagnostics, documentation, and
 test hardening accumulated after `v0.1.16`. It does not retag `v0.1.16` and it
 does not expand the v0.1 product boundary.
 
-Publication is allowed only after the release-readiness PR, PR Windows Harness,
+Publication completed after the release-readiness PR, PR Windows Harness,
 post-merge `main` Windows Harness, release metadata verification, and remote tag
-verification pass. Until then, the latest published stable release remains
-`v0.1.16`.
+verification passed. `v0.1.17` is now the latest published stable release;
+`v0.1.16` remains the previous stable release.
 
-Publication status: pre-publication release-readiness candidate.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.17` |
-| Stage | AF6 v0.1.17 maintenance release readiness |
+| Stage | AF6 v0.1.17 published maintenance release |
 | Evidence date | 2026-05-09, Asia/Shanghai |
 | Base `main` SHA before this record | `bbf6d3c64d7fef435e66d64d4e3b19d2390c391b` |
 | Candidate branch | `codex/v017-release-readiness` |
 | Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/159 |
-| Publication status | Pre-publication release-readiness candidate |
-| Release URL | Pending |
-| Published at | Pending |
-| Final tag target | Pending |
+| Publication reconciliation branch | `codex/v017-publication-reconciliation` |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17 |
+| Published at | `2026-05-09T12:56:45Z` |
+| Final tag target | `5b260edc3bddc48986e52179b2ffd261856a89ac` |
 | Previous stable release | `v0.1.16` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16 |
 | `v0.1.16` tag target | `255f2a01cddde330d756a87359c4d3a8be4b11a2` |
@@ -41,8 +42,8 @@ Publication status: pre-publication release-readiness candidate.
 | AF5 decision merge SHA | `bbf6d3c64d7fef435e66d64d4e3b19d2390c391b` |
 | AF5 PR Windows Harness | Passed, run `25600947496`, https://github.com/YSCJRH/WinChronicle/actions/runs/25600947496 |
 | AF5 post-merge `main` Windows Harness | Passed, run `25600994238`, https://github.com/YSCJRH/WinChronicle/actions/runs/25600994238 |
-| Candidate PR Windows Harness | Pending |
-| Candidate post-merge `main` Windows Harness | Pending |
+| Candidate PR Windows Harness | Passed, run `25601571665`, https://github.com/YSCJRH/WinChronicle/actions/runs/25601571665 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25601624151`, https://github.com/YSCJRH/WinChronicle/actions/runs/25601624151 |
 
 Environment:
 
@@ -56,7 +57,7 @@ Environment:
 - Controlled Notepad watcher temporary state:
   `C:\Users\34793\AppData\Local\Temp\winchronicle-v017-smoke-4791eae86c294272b651b9d57a7c3b04\watch-state-notepad`.
 
-## Preflight Publication Checks
+## Publication Checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
@@ -65,6 +66,9 @@ Environment:
 | `git tag --list "v0.1.17*"` before readiness | Pass | no local tags returned |
 | `gh release view v0.1.16 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` | Pass | `v0.1.16` remains published, not a draft, not a prerelease |
 | `git rev-parse v0.1.16` | Pass | `255f2a01cddde330d756a87359c4d3a8be4b11a2` |
+| `gh release create v0.1.17 --target 5b260edc3bddc48986e52179b2ffd261856a89ac` | Pass | release created at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17 |
+| `gh release view v0.1.17 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` | Pass | `v0.1.17` is published, not a draft, not a prerelease, published at `2026-05-09T12:56:45Z`, and targets `5b260edc3bddc48986e52179b2ffd261856a89ac` |
+| `git ls-remote --tags origin v0.1.17` | Pass | `5b260edc3bddc48986e52179b2ffd261856a89ac` |
 
 ## Deterministic Gates
 
@@ -77,8 +81,10 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The candidate PR Windows Harness and post-merge `main` Windows Harness are
-pending until this record lands through review.
+The candidate PR Windows Harness and post-merge `main` Windows Harness passed
+before publication. This publication reconciliation updates the mainline
+evidence record after the tag was created; the `v0.1.17` tag remains immutable
+at `5b260edc3bddc48986e52179b2ffd261856a89ac`.
 
 ## Manual UIA Smoke Gates
 
@@ -129,8 +135,7 @@ conditional VS Code targeted UIA hard gates plus deterministic watcher gates.
 - Keeps screenshots, OCR, audio, keyboard capture, clipboard capture, network
   upload, LLM calls, desktop control, product targeted capture, daemon/service
   install, polling capture loops, and default background capture out of v0.1.
-- Records fresh manual hard-gate UIA smoke for the `v0.1.17`
-  release-readiness path.
+- Records fresh manual hard-gate UIA smoke for the `v0.1.17` release path.
 
 ## Compatibility Evidence
 
@@ -153,8 +158,7 @@ conditional VS Code targeted UIA hard gates plus deterministic watcher gates.
 
 ## Privacy And Scope Confirmation
 
-This release-readiness candidate does not expand the capture surface beyond
-`v0.1.16`.
+This maintenance release does not expand the capture surface beyond `v0.1.16`.
 
 - Local-first: captured content remains local; no cloud or network upload is
   implemented.
@@ -184,15 +188,11 @@ This release-readiness candidate does not expand the capture surface beyond
 
 ## Rollback Notes
 
-- Keep `v0.1.16` as the latest stable release until `v0.1.17` publication is
-  verified.
-- Do not retag or modify `v0.1.16`.
+- Keep `v0.1.17` as the latest stable release after publication verification.
+- Keep `v0.1.16` as the previous stable release.
+- Do not retag or modify `v0.1.17` or `v0.1.16`.
 - Do not create or retag `v0.1.17-rc.0` unless a later regression requires a
   candidate path instead of direct maintenance publication.
-- If a regression is found before publication and requires product code,
-  schema, CLI/MCP JSON shape, privacy behavior, helper/watcher behavior, or
-  capture-surface changes, stop the direct maintenance path and prepare a
-  follow-up release candidate instead.
 - If a regression is found after publication and requires product code,
   schema, CLI/MCP JSON shape, privacy behavior, helper/watcher behavior, or
   capture-surface changes, publish a follow-up release instead of retagging
@@ -200,21 +200,23 @@ This release-readiness candidate does not expand the capture surface beyond
 
 ## Release Decision Summary
 
-- Release path: direct `v0.1.17` compatible maintenance publication after PR
-  review, PR Windows Harness, post-merge `main` Windows Harness, and explicit
-  publication verification.
-- Fallback path: `v0.1.17-rc.0` or a later maintenance release if any product
-  or contract change is required before publication.
-- Deterministic gates: passed locally; PR Windows Harness and post-merge `main`
-  Windows Harness remain required before publication.
+- Release path: direct `v0.1.17` compatible maintenance publication completed
+  after PR review, PR Windows Harness, post-merge `main` Windows Harness, and
+  explicit publication verification.
+- Fallback path: a later maintenance release if any product or contract change
+  is required after publication.
+- Deterministic gates: local validation, PR Windows Harness, and post-merge
+  `main` Windows Harness passed.
 - Manual hard gates: Notepad passed; Edge passed.
 - Conditional hard gate: VS Code metadata passed because `code.cmd` is
   available.
 - Diagnostic non-blocking gate: VS Code strict Monaco marker failed as a known
   limitation, with local artifact path recorded.
 - Watcher preview: live preview returned heartbeat-only liveness evidence in
-  this desktop state; deterministic watcher gates remain required before
-  publication readiness.
+  this desktop state; deterministic watcher gates passed before publication.
 - Privacy/scope confirmation: unchanged and recorded above.
 - Publication approval: standing user goal authorizes publishing after review
   and validation.
+- GitHub release publication: passed.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17.
+- Final tag target: `5b260edc3bddc48986e52179b2ffd261856a89ac`.

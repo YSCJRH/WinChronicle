@@ -2,12 +2,18 @@
 
 ## Summary
 
-`v0.1.16` is published at
-https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16. The final release
-tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`, and the release is not
-a draft or prerelease. The release was published at `2026-05-09T09:31:17Z`
-after AE3 release-record review and post-merge Windows Harness run
-`25597678444` passed on the tag target.
+`v0.1.17` is published at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17. The maintenance
+release tag targets `5b260edc3bddc48986e52179b2ffd261856a89ac`, and the
+release is not a draft or prerelease. The release was published at
+`2026-05-09T12:56:45Z` after AF6 release-readiness review, PR Windows Harness
+run `25601571665`, post-merge Windows Harness run `25601624151`, release
+metadata verification, and remote tag verification passed.
+
+`v0.1.16` remains the previous stable release at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16. Its final release
+tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`, and it was published
+at `2026-05-09T09:31:17Z`.
 
 The post-v0.1.16 baseline should continue blueprint-aligned maintenance without
 expanding the v0.1 product boundary. The next round should start with a
@@ -23,22 +29,22 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AF6 - v0.1.17 Release Readiness.
-- Stage status: AF6 review in progress; AF5 is complete.
-- Last completed evidence:
-  `docs/release-readiness-decision-post-v0.1.16.md` and AF5 decision PR #158
-  merged as `bbf6d3c64d7fef435e66d64d4e3b19d2390c391b`, PR Windows Harness run
-  `25600947496` passed, and post-merge `main` Windows Harness run
-  `25600994238` passed on that SHA.
-- Last validation: `docs/release-v0.1.17.md` records the AF6 release-readiness
-  candidate, version identity `0.1.17`, fresh hard-gate manual UIA smoke,
-  heartbeat-only watcher diagnostic evidence, immutable `v0.1.16` release
-  metadata, and compatible runtime/output hardenings without capture-surface
-  expansion.
-- Next atomic task: land the `v0.1.17` release-readiness record through PR and
-  post-merge Windows Harness validation, then publish `v0.1.17` and reconcile
-  the release metadata without retagging `v0.1.16`.
-- Known blockers: none for the published `v0.1.16` final release.
+- Current stage: AF7 - v0.1.17 Publication Reconciliation.
+- Stage status: AF7 review in progress; AF6 release publication is complete.
+- Last completed evidence: `docs/release-v0.1.17.md` and release-readiness PR
+  #159 merged as `5b260edc3bddc48986e52179b2ffd261856a89ac`, PR Windows
+  Harness run `25601571665` passed, post-merge `main` Windows Harness run
+  `25601624151` passed on that SHA, and GitHub release publication created
+  `v0.1.17` at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17.
+- Last validation: `gh release view v0.1.17 --json
+  tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` verified
+  the published, non-draft, non-prerelease release at
+  `2026-05-09T12:56:45Z`; `git ls-remote --tags origin v0.1.17` verified the
+  remote tag target `5b260edc3bddc48986e52179b2ffd261856a89ac`.
+- Next atomic task: land this `v0.1.17` publication reconciliation through PR
+  and post-merge Windows Harness validation, then start the post-v0.1.17
+  maintenance cursor.
+- Known blockers: none for the published `v0.1.17` maintenance release.
 
 ## Phased Work
 
@@ -112,6 +118,20 @@ service install, no polling capture loop, and no default background capture.
   Windows Harness before publication.
 - Do not retag `v0.1.16`; publish `v0.1.17` only after validation and review.
 
+### Stage AF7 - v0.1.17 Publication Reconciliation
+
+- Reconcile `docs/release-v0.1.17.md`, freshness docs, and this cursor with the
+  published release URL, published timestamp, final tag target, PR Windows
+  Harness run, post-merge `main` Windows Harness run, and remote tag
+  verification.
+- Keep the `v0.1.17` tag immutable at
+  `5b260edc3bddc48986e52179b2ffd261856a89ac`.
+- Do not retag `v0.1.17`.
+- Keep `v0.1.16` as the previous stable release and do not retag it.
+- Do not change product code, schemas, CLI/MCP JSON shape, helper/watcher
+  behavior, capture surfaces, version metadata, or privacy behavior.
+- After AF7 lands, start a post-v0.1.17 maintenance cursor.
+
 ## Public Interfaces And Non-goals
 
 - CLI command set remains unchanged:
@@ -144,12 +164,14 @@ Every implementation stage should run:
 
 ## Assumptions
 
-- `v0.1.16` is the latest published stable release and must not be retagged.
+- `v0.1.17` is the latest published stable release and must not be retagged.
+- `v0.1.16` is the previous stable release and must not be retagged.
 - `v0.1.16-rc.0` remains historical prerelease evidence and must not be
   retagged.
 - Manual UIA smoke for `v0.1.16` was freshly run in AE2 and is current for the
-  final release record only. Future releases must make a new freshness
-  decision.
+  final release record only. Manual UIA smoke for `v0.1.17` was freshly rerun
+  in AF6 and is the latest full manual UIA smoke source until a later plan makes
+  a new freshness decision.
 - Phase 6 stays at spec/scorecard level for this round.
 
 ## Decision Log
@@ -193,6 +215,12 @@ Every implementation stage should run:
   version identity is bumped to `0.1.17`, fresh hard-gate manual UIA smoke was
   rerun, and `v0.1.16` remains immutable until `v0.1.17` publication is
   verified.
+- Published `v0.1.17` after PR #159, PR Windows Harness run `25601571665`,
+  post-merge `main` Windows Harness run `25601624151`, GitHub release
+  publication, release metadata verification, and remote tag verification
+  passed.
+- Started AF7 as a publication reconciliation to update mainline docs after the
+  immutable `v0.1.17` tag was created.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -307,3 +335,11 @@ Every implementation stage should run:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed; includes 167 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
   - `git diff --check` - passed.
+- Stage AF6 completion and publication:
+  - PR #159 Windows Harness run `25601571665` - passed.
+  - PR #159 merged as `5b260edc3bddc48986e52179b2ffd261856a89ac`.
+  - `gh run view 25601624151 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF6 `main` Windows Harness concluded `success` on `5b260edc3bddc48986e52179b2ffd261856a89ac`.
+  - `gh release create v0.1.17 --target 5b260edc3bddc48986e52179b2ffd261856a89ac` - passed; release created at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17.
+  - `gh release view v0.1.17 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.17` is published, not a draft, not a prerelease, published at `2026-05-09T12:56:45Z`, and targets `5b260edc3bddc48986e52179b2ffd261856a89ac`.
+  - `git ls-remote --tags origin v0.1.17` - passed and printed `5b260edc3bddc48986e52179b2ffd261856a89ac`.
+  - `gh release view v0.1.16 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.16` remains published as the previous stable release, not a draft, not a prerelease, published at `2026-05-09T09:31:17Z`, and targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
