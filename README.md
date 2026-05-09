@@ -24,7 +24,8 @@ completed Phase 6 privacy contract preflight, the completed Phase 6 privacy
 contract fixture expansion, the completed Phase 6 remaining negative contract
 fixture expansion, the completed Phase 6 contract coverage audit, the completed
 Phase 6 contract gap fixture expansion, the completed Phase 6 residual schema
-coverage audit, the current Phase 6 residual policy fixture expansion, the
+coverage audit, the completed Phase 6 residual policy fixture expansion, the
+current Phase 6 deferred fixture coverage decision, the
 completed post-v0.1.16 maintenance plan and publication reconciliation, the
 latest published `v0.1.17` release record, the previous published `v0.1.16`
 release record, the completed `v0.1.16` final-release plan, the historical

@@ -96,9 +96,20 @@ warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy
 check, fixture capture/search/memory, deterministic watcher fixture, and
 watcher fake-helper smoke.
 
+PR and post-merge validation:
+
+- PR #179 merged at `2026-05-09T19:03:47Z` as
+  `013ea612eb6cfe885130d0646ce816038fab2da4`.
+- PR #179 Windows Harness run `25609287443` concluded `success` on
+  `d0576d133792dba88b8d1cb746ea5312314d15f5`.
+- Post-residual-policy-fixtures `main` Windows Harness run `25609341275`
+  concluded `success` on `013ea612eb6cfe885130d0646ce816038fab2da4`.
+
 ## Next Task
 
-Land this residual policy fixture expansion through PR and post-merge Windows
-Harness validation. Screenshot/OCR implementation remains out of scope for
-v0.1 maintenance unless a future plan explicitly authorizes tests-first
-runtime work.
+Decide whether to add lower-priority deferred Phase 6 contract fixtures for
+the sample-only allowlist marker, empty allowlist arrays, alternate
+`app_name` selector shape variants, and deeper `non_goals` variants, or close
+Phase 6 fixture coverage as adequate for the v0.1 maintenance boundary.
+Screenshot/OCR implementation remains out of scope for v0.1 maintenance unless
+a future plan explicitly authorizes tests-first runtime work.

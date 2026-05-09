@@ -30,7 +30,7 @@ completed Phase 6 privacy contract gap fixture expansion is
 [Phase 6 privacy contract gap fixtures after v0.1.17](phase6-privacy-contract-gap-fixtures-post-v0.1.17.md). The
 completed Phase 6 residual schema coverage audit is
 [Phase 6 privacy contract residual schema coverage audit after v0.1.17](phase6-privacy-contract-residual-schema-coverage-audit-post-v0.1.17.md). The
-current Phase 6 residual policy fixture expansion is
+completed Phase 6 residual policy fixture expansion is
 [Phase 6 privacy contract residual policy fixtures after v0.1.17](phase6-privacy-contract-residual-policy-fixtures-post-v0.1.17.md). The
 completed post-v0.1.16 maintenance cursor is recorded in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
@@ -122,8 +122,10 @@ historical records. After the `v0.1.17` maintenance publication:
   Windows Harness run `25608403951`, Phase 6 gap fixture reconciliation PR
   #177 with post-reconciliation `main` Windows Harness run `25608660366`, and
   Phase 6 residual schema coverage audit PR #178 with post-residual-audit
-  `main` Windows Harness run `25609004391`, and the current Phase 6 residual
-  policy fixture expansion;
+  `main` Windows Harness run `25609004391`, Phase 6 residual policy fixture
+  expansion PR #179 with post-residual-policy-fixtures `main` Windows Harness
+  run `25609341275`, and the current Phase 6 deferred fixture coverage
+  decision;
 - the completed post-v0.1.17 public metadata/evidence freshness audit records
   repository metadata, `v0.1.17` release metadata, previous stable `v0.1.16`
   release metadata, post-AG0 `main` Windows Harness evidence, manual repository

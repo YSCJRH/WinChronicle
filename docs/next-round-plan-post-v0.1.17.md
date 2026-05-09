@@ -27,16 +27,17 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Phase 6 Residual Policy Fixture Expansion.
-- Stage status: residual policy fixture expansion complete locally; awaiting
-  PR and post-merge Windows Harness validation.
-- Last completed evidence: Phase 6 residual schema coverage audit PR #178
-  merged as `0d85e8ce41bb5779e8be23126c811be6489fc00f`, PR Windows Harness
-  run `25608946219` passed, and post-residual-audit `main` Windows Harness
-  run `25609004391` passed on that SHA.
-- Last validation: `gh run view 25609004391 --json
+- Current stage: Phase 6 Deferred Fixture Coverage Decision.
+- Stage status: residual policy fixture expansion complete; the next Phase 6
+  step is to decide whether the remaining lower-priority schema branches need
+  targeted fixtures or should stay documented as deferred coverage.
+- Last completed evidence: Phase 6 residual policy fixture expansion PR #179
+  merged as `013ea612eb6cfe885130d0646ce816038fab2da4`, PR Windows Harness
+  run `25609287443` passed, and post-residual-policy-fixtures `main` Windows
+  Harness run `25609341275` passed on that SHA.
+- Last validation: `gh run view 25609341275 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-residual-audit `main` Windows Harness concluded
+  verified the post-residual-policy-fixtures `main` Windows Harness concluded
   `success`;
   `git diff
   --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
@@ -46,8 +47,10 @@ service install, no polling capture loop, and no default background capture.
   audit, gap fixtures, residual schema audit, residual policy fixtures, and
   their reconciliations contain no runtime, helper/watcher, CLI/MCP output,
   privacy-runtime, capture-surface, or version-metadata change.
-- Next atomic task: land the residual policy fixture expansion through PR and
-  post-merge Windows Harness validation.
+- Next atomic task: decide whether to add lower-priority deferred fixtures for
+  the sample-only allowlist marker, empty allowlist arrays, alternate
+  `app_name` selector shape variants, and deeper `non_goals` variants, or close
+  Phase 6 fixture coverage as adequate for the v0.1 maintenance boundary.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -324,6 +327,13 @@ Every implementation stage should run:
   invalid fixtures for future opt-in, raw-cache artifact, derived-text
   pipeline, and MCP trust-boundary policy branches, with no product runtime
   behavior change.
+- Completed the Phase 6 residual policy fixture expansion after PR #179 merged
+  as `013ea612eb6cfe885130d0646ce816038fab2da4` and post-merge `main`
+  Windows Harness run `25609341275` passed.
+- Selected the next Phase 6 step as a deferred fixture coverage decision for
+  lower-priority schema branches: the sample-only allowlist marker, empty
+  allowlist arrays, alternate `app_name` selector shape variants, and deeper
+  `non_goals` variants.
 
 ## Validation Log
 
@@ -573,3 +583,7 @@ Every implementation stage should run:
   - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
   - `python -m pytest -q` - passed, 188 tests.
   - `python harness/scripts/run_harness.py` - passed, including 188 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Phase 6 privacy-enrichment residual policy fixture completion:
+  - `gh pr view 179 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #179 merged at `2026-05-09T19:03:47Z` as `013ea612eb6cfe885130d0646ce816038fab2da4`.
+  - `gh run view 25609287443 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #179 Windows Harness concluded `success` on `d0576d133792dba88b8d1cb746ea5312314d15f5`.
+  - `gh run view 25609341275 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-residual-policy-fixtures `main` Windows Harness concluded `success` on `013ea612eb6cfe885130d0646ce816038fab2da4`.
