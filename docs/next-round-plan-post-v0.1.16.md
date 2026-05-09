@@ -23,20 +23,19 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AF3 - MCP And Memory Contract Review.
-- Stage status: AF3 review in progress; AF2 completion reconciliation is
-  complete.
-- Last completed evidence: AF2 completion PR #153 merged as
-  `3f819b9c2fa9aaaffc2e23ad72c8142c94cd8a15`, PR Windows Harness run
-  `25599243227` passed, and post-merge `main` Windows Harness run
-  `25599306888` passed on that SHA.
+- Current stage: AF4 - Compatibility Guardrail Sweep.
+- Stage status: AF3 complete; AF4 is ready to start.
+- Last completed evidence: AF3 MCP/memory review PR #154 merged as
+  `f55638cf213b40c07d01f1872a7ff828b3a85d6f`, PR Windows Harness run
+  `25599715499` passed, and post-merge `main` Windows Harness run
+  `25599772190` passed on that SHA.
 - Last validation: `docs/mcp-memory-contract-sweep-post-v0.1.16.md` records
   the AF3 `generate-memory` manifest trust-boundary fix, literal standalone
   MCP smoke tool-list guardrail, expanded forbidden MCP stdio call evidence,
   exact read-only MCP tool list, durable memory contract, and deterministic
   no-capture-surface expansion decision.
-- Next atomic task: land this AF3 review through PR and post-merge Windows
-  Harness validation, then record AF3 completion before starting AF4.
+- Next atomic task: start AF4 by re-running compatibility guardrails and
+  confirming the v0.1 boundary still holds.
 - Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
@@ -143,6 +142,7 @@ Every implementation stage should run:
   `generate-memory` manifest JSON omitted observed-content trust metadata and
   that standalone MCP smoke should freeze a literal tool list plus the full
   forbidden write/file/network/control term set.
+- Completed AF3 after PR #154 and post-merge `main` Windows Harness passed.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -190,3 +190,17 @@ Every implementation stage should run:
   - PR #153 Windows Harness run `25599243227` - passed.
   - PR #153 merged as `3f819b9c2fa9aaaffc2e23ad72c8142c94cd8a15`.
   - `gh run view 25599306888 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF2-completion `main` Windows Harness concluded `success` on `3f819b9c2fa9aaaffc2e23ad72c8142c94cd8a15`.
+- Stage AF3 local validation:
+  - `python -m pytest tests/test_mcp_tools.py tests/test_memory_pipeline.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed; 80 tests passed.
+  - `python harness/scripts/run_mcp_smoke.py` - passed.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python -m pytest tests/test_phase6_privacy_scorecard.py tests/test_mcp_tools.py tests/test_memory_pipeline.py -q` - passed; 25 tests passed.
+  - `python -m pytest -q` - passed; 162 tests passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed; 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed; 0 warnings, 0 errors.
+  - `python harness/scripts/run_harness.py` - passed; includes 162 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
+  - `git diff --check` - passed.
+- Stage AF3 completion:
+  - PR #154 Windows Harness run `25599715499` - passed.
+  - PR #154 merged as `f55638cf213b40c07d01f1872a7ff828b3a85d6f`.
+  - `gh run view 25599772190 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF3 `main` Windows Harness concluded `success` on `f55638cf213b40c07d01f1872a7ff828b3a85d6f`.
