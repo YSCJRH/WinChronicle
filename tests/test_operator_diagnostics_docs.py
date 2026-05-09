@@ -270,8 +270,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.16 MCP/memory contract sweep" in readme_intro_normalized
     assert "current post-v0.1.16 compatibility guardrail sweep" in readme_intro_normalized
     assert "current post-v0.1.16 release-readiness decision" in readme_intro_normalized
-    assert "current `v0.1.17` maintenance release-readiness record" in readme_intro_normalized
-    assert "latest published `v0.1.16` release record" in readme_intro_normalized
+    assert "latest published `v0.1.17` release record" in readme_intro_normalized
+    assert "previous published `v0.1.16` release record" in readme_intro_normalized
     assert "completed `v0.1.16` final-release plan" in readme_intro_normalized
     assert "historical `v0.1.16-rc.0` release-candidate record" in readme_intro_normalized
     assert "previous published `v0.1.15` release record" in readme_intro_normalized
@@ -580,8 +580,10 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.14.md" in evidence
     assert "next-round-plan-post-v0.1.13.md" in checklist
     assert "next-round-plan-post-v0.1.13.md" in evidence
-    assert "v0.1.16` is the latest published release" in checklist
-    assert "v0.1.16` is the latest published release" in evidence
+    assert "v0.1.17` is the latest published release" in checklist
+    assert "v0.1.17` is the latest published release" in evidence
+    assert "v0.1.16` is the previous stable release" in checklist
+    assert "v0.1.16` is the previous stable release" in evidence
     assert "v0.1.16-rc.0` is historical prerelease evidence" in checklist
     assert "v0.1.16-rc.0` is historical prerelease evidence" in evidence
     assert "active post-v0.1.16 execution cursor records" in checklist
@@ -2686,13 +2688,17 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "stable baseline is `v0.1.16`",
-        "`v0.1.16` is the latest published release",
+        "stable baseline is `v0.1.17`",
+        "`v0.1.17` is the latest published release",
+        "`v0.1.16` is the previous stable release",
         "`v0.1.16-rc.0` is historical prerelease evidence",
-        "active post-v0.1.16 execution cursor records `v0.1.16` publication",
-        "AE4 PR #148",
-        "PR Windows Harness run\n  `25598038285`",
-        "post-merge Windows Harness run `25598080136`",
+        "active post-v0.1.16 execution cursor records the `v0.1.16` baseline",
+        "and the `v0.1.17` maintenance publication",
+        "final tag target\n  `5b260edc3bddc48986e52179b2ffd261856a89ac`",
+        "PR #159",
+        "PR Windows Harness run `25601571665`",
+        "post-merge Windows Harness run `25601624151`",
+        "release metadata/tag\n  verification",
         "completed post-v0.1.14 execution cursor records `v0.1.15` publication",
         "PR #132, PR #133, publication reconciliation PR #134, post-merge Windows",
         "Harness run `25589775129`",
@@ -2755,13 +2761,17 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "`v0.1.16` is the stable baseline",
-        "`v0.1.16` is the latest published release",
+        "`v0.1.17` is the stable baseline",
+        "`v0.1.17` is the latest published release",
+        "`v0.1.16` is the previous stable release",
         "`v0.1.16-rc.0` is historical prerelease evidence",
-        "active post-v0.1.16 execution cursor records `v0.1.16` publication",
-        "AE4 PR #148",
-        "PR Windows Harness run\n  `25598038285`",
-        "post-merge Windows Harness run `25598080136`",
+        "active post-v0.1.16 execution cursor records the `v0.1.16` baseline",
+        "and the `v0.1.17` maintenance publication",
+        "final tag target\n  `5b260edc3bddc48986e52179b2ffd261856a89ac`",
+        "PR #159",
+        "PR Windows Harness run `25601571665`",
+        "post-merge Windows Harness run `25601624151`",
+        "release metadata/tag\n  verification",
         "completed post-v0.1.14 execution cursor records `v0.1.15` publication",
         "PR #132, PR #133, publication reconciliation PR #134, post-merge Windows",
         "Harness run `25589775129`",
@@ -2848,17 +2858,18 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         assert gate in ledger
 
     for expected in (
-        "Stable release baseline | `v0.1.16`",
+        "Stable release baseline | `v0.1.17`",
         "Current maintenance plan | [Post-v0.1.16 maintenance plan]",
         "Current release-readiness decision | [Release-readiness decision after v0.1.16]",
-        "Current release-readiness record | [v0.1.17 maintenance release record]",
+        "Current release record | [v0.1.17 maintenance release record]",
         "Completed final-release plan | [v0.1.16 final-release plan]",
         "Previous prerelease record | [v0.1.16-rc.0 release candidate record]",
         "Previous maintenance plan | [Post-v0.1.15 maintenance plan]",
-        "Published release record | [v0.1.16 final release record]",
-        "Latest published release record | [v0.1.16 final release record]",
+        "Published release record | [v0.1.17 maintenance release record]",
+        "Latest published release record | [v0.1.17 maintenance release record]",
+        "Previous stable release record | [v0.1.16 final release record]",
         "Latest full manual UIA smoke source | [v0.1.17 maintenance release record]",
-        "Last freshness decision | For the `v0.1.17` maintenance release-readiness candidate",
+        "Last freshness decision | For the published `v0.1.17` maintenance release",
         "fresh hard-gate manual UIA smoke was rerun",
         "Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning",
         "manual smoke was explicitly accepted by the S4 release record",
@@ -2866,9 +2877,9 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "then is explicitly accepted by the U4",
         "manual smoke is explicitly accepted by the W4",
         "manual smoke is accepted by the X1 freshness decision as",
-        "Next freshness decision | After `v0.1.17` publication",
-        "Fresh for `v0.1.17` release-readiness in AF6",
-        "Fresh diagnostic for `v0.1.17` release-readiness in AF6",
+        "Next freshness decision | Future post-v0.1.17 maintenance or release-readiness work",
+        "Fresh for published `v0.1.17` maintenance release in AF6",
+        "Fresh diagnostic for published `v0.1.17` maintenance release in AF6",
         "Heartbeat-only liveness diagnostic; `captures_written: 0`, `heartbeats: 9`, `duplicates_skipped: 0`, `denylisted_skipped: 0`",
         "manual smoke is explicitly accepted by the T4 release-readiness\n  record",
         "For the completed post-v0.1.7 compatible maintenance path toward `v0.1.8`",
