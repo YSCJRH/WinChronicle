@@ -87,7 +87,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md)"
         in quickstart
     )
-    assert "[v0.1.18 release-readiness record](release-v0.1.18.md)" in quickstart
+    assert "[v0.1.18 maintenance release record](release-v0.1.18.md)" in quickstart
     assert "[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)"
@@ -220,7 +220,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Privacy-check release-readiness decision after v0.1.17](docs/privacy-check-release-readiness-decision-post-v0.1.17.md)"
         in readme
     )
-    assert "[v0.1.18 release-readiness record](docs/release-v0.1.18.md)" in readme
+    assert "[v0.1.18 maintenance release record](docs/release-v0.1.18.md)" in readme
     assert (
         "[Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)"
         in readme
@@ -347,8 +347,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
 
     assert "active post-v0.1.17 maintenance plan" in readme_intro_normalized
     assert "completed post-v0.1.16 maintenance plan and publication reconciliation" in readme_intro_normalized
-    assert "latest published `v0.1.17` release record" in readme_intro_normalized
-    assert "previous published `v0.1.16` release record" in readme_intro_normalized
+    assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
+    assert "previous published `v0.1.17` release record" in readme_intro_normalized
     assert "completed `v0.1.16` final-release plan" in readme_intro_normalized
     assert "historical `v0.1.16-rc.0` release-candidate record" in readme_intro_normalized
     assert "previous published `v0.1.15` release record" in readme_intro_normalized
@@ -370,7 +370,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "completed next blueprint lane selection" in readme_intro_normalized
     assert "completed privacy-policy contract parity audit" in readme_intro_normalized
     assert "completed privacy-check release-readiness decision" in readme_intro_normalized
-    assert "current `v0.1.18` release-readiness record" in readme_intro_normalized
+    assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
@@ -395,7 +395,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Next blueprint lane selection after v0.1.17" in readme_operator_docs
     assert "Privacy-policy contract parity audit after v0.1.17" in readme_operator_docs
     assert "Privacy-check release-readiness decision after v0.1.17" in readme_operator_docs
-    assert "v0.1.18 release-readiness record" in readme_operator_docs
+    assert "v0.1.18 maintenance release record" in readme_operator_docs
     assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.16" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
@@ -524,10 +524,10 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert readme_operator_docs.index(
         "Privacy-check release-readiness decision after v0.1.17"
     ) < readme_operator_docs.index(
-        "v0.1.18 release-readiness record"
+        "v0.1.18 maintenance release record"
     )
     assert readme_operator_docs.index(
-        "v0.1.18 release-readiness record"
+        "v0.1.18 maintenance release record"
     ) < readme_operator_docs.index(
         "Post-v0.1.16 maintenance plan"
     )
@@ -828,10 +828,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.14.md" in evidence
     assert "next-round-plan-post-v0.1.13.md" in checklist
     assert "next-round-plan-post-v0.1.13.md" in evidence
-    assert "v0.1.17` is the latest published release" in checklist
-    assert "v0.1.17` is the latest published release" in evidence
-    assert "v0.1.16` is the previous stable release" in checklist
-    assert "v0.1.16` is the previous stable release" in evidence
+    assert "v0.1.18` is the latest published release" in checklist
+    assert "v0.1.18` is the latest published release" in evidence
+    assert "v0.1.17` is the previous stable release" in checklist
+    assert "v0.1.17` is the previous stable release" in evidence
+    assert "current `v0.1.17` maintenance release record" not in checklist
+    assert "current `v0.1.17` maintenance release record" not in evidence
     assert "v0.1.16-rc.0` is historical prerelease evidence" in checklist
     assert "v0.1.16-rc.0` is historical prerelease evidence" in evidence
     assert "active post-v0.1.17 execution cursor records" in checklist
@@ -922,8 +924,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "privacy-check release-readiness\n  decision PR #186" in evidence
     assert "post-PR #186 `main` Windows Harness run\n  `25611836358`" in checklist
     assert "post-PR #186 `main` Windows Harness run\n  `25611836358`" in evidence
-    assert "current `v0.1.18` release-readiness record bumps version" in checklist
-    assert "current `v0.1.18` release-readiness record bumps version" in evidence
+    assert "`v0.1.18` release-readiness PR #187" in checklist
+    assert "`v0.1.18` release-readiness PR #187" in evidence
+    assert "post-PR #187 `main` Windows Harness run" in checklist
+    assert "post-PR #187 `main` Windows Harness run" in evidence
+    assert "published `v0.1.18` maintenance release record targets" in checklist
+    assert "published `v0.1.18` maintenance release record targets" in evidence
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist
@@ -3358,9 +3364,10 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "stable baseline is `v0.1.17`",
-        "`v0.1.17` is the latest published release",
-        "`v0.1.16` is the previous stable release",
+        "stable baseline is `v0.1.18`",
+        "`v0.1.18` is the latest published release",
+        "`v0.1.17` is the previous stable release",
+        "`v0.1.16` is historical stable release evidence",
         "`v0.1.16-rc.0` is historical prerelease evidence",
         "active post-v0.1.17 execution cursor records `v0.1.17` publication",
         "AF7\n  publication reconciliation",
@@ -3434,9 +3441,10 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "`v0.1.17` is the stable baseline",
-        "`v0.1.17` is the latest published release",
-        "`v0.1.16` is the previous stable release",
+        "`v0.1.18` is the stable baseline",
+        "`v0.1.18` is the latest published release",
+        "`v0.1.17` is the previous stable release",
+        "`v0.1.16` is historical stable release evidence",
         "`v0.1.16-rc.0` is historical prerelease evidence",
         "active post-v0.1.17 execution cursor records `v0.1.17` publication",
         "AF7\n  publication reconciliation",
@@ -3534,26 +3542,26 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         assert gate in ledger
 
     for expected in (
-        "Stable release baseline | `v0.1.17`",
+        "Stable release baseline | `v0.1.18`",
         "Current maintenance plan | [Post-v0.1.17 maintenance plan]",
         "Current public metadata audit | [Public metadata audit after v0.1.17]",
         "Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.17]",
         "Current MCP/memory contract sweep | [MCP and memory contract sweep after v0.1.17]",
         "Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.17]",
-        "Latest release-readiness decision | [v0.1.18 release-readiness record]",
+        "Latest release-readiness decision | [v0.1.18 maintenance release record]",
         "Previous release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.16 maintenance plan]",
         "Previous public metadata audit | [Public metadata audit after v0.1.16]",
         "Previous post-v0.1.16 release-readiness decision | [Release-readiness decision after v0.1.16]",
-        "Current release record | [v0.1.17 maintenance release record]",
+        "Current release record | [v0.1.18 maintenance release record]",
         "Completed final-release plan | [v0.1.16 final-release plan]",
         "Previous prerelease record | [v0.1.16-rc.0 release candidate record]",
         "Previous pre-v0.1.16 maintenance plan | [Post-v0.1.15 maintenance plan]",
-        "Published release record | [v0.1.17 maintenance release record]",
-        "Latest published release record | [v0.1.17 maintenance release record]",
-        "Previous stable release record | [v0.1.16 final release record]",
-        "Latest full manual UIA smoke source | [v0.1.18 release-readiness record]",
-        "Last freshness decision | For the `v0.1.18` release-readiness record",
+        "Published release record | [v0.1.18 maintenance release record]",
+        "Latest published release record | [v0.1.18 maintenance release record]",
+        "Previous stable release record | [v0.1.17 maintenance release record]",
+        "Latest full manual UIA smoke source | [v0.1.18 maintenance release record]",
+        "Last freshness decision | For the published `v0.1.18` maintenance release",
         "fresh hard-gate manual UIA smoke was rerun because privacy-check validation behavior changed after `v0.1.17`",
         "Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning",
         "VS Code strict remains a diagnostic non-blocking failure",
@@ -3563,8 +3571,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "manual smoke is explicitly accepted by the W4",
         "manual smoke is accepted by the X1 freshness decision as",
         "Next freshness decision | Future post-v0.1.18 maintenance or release-readiness work",
-        "Fresh for the `v0.1.18` release-readiness record; previous fresh source was published `v0.1.17` maintenance in AF6",
-        "Fresh diagnostic for the `v0.1.18` release-readiness record",
+        "Fresh for the published `v0.1.18` maintenance release; previous fresh source was published `v0.1.17` maintenance in AF6",
+        "Fresh diagnostic for the published `v0.1.18` maintenance release",
         "Heartbeat-only liveness diagnostic; `captures_written: 0`, `heartbeats: 9`, `duplicates_skipped: 0`, `denylisted_skipped: 0`",
         "manual smoke is explicitly accepted by the T4 release-readiness\n  record",
         "For the completed post-v0.1.7 compatible maintenance path toward `v0.1.8`",
@@ -3595,6 +3603,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "`v0.1.17` release-readiness record must decide whether to inherit or rerun",
         "AF1-AF4 include compatible public CLI/runtime output\n  changes",
         "The AF6 `v0.1.17` release-readiness record reran fresh hard-gate manual UIA",
+        "The published `v0.1.17` maintenance release kept that AF6 manual smoke as",
         "live watcher preview returned heartbeat-only liveness evidence",
         "The privacy-check release-readiness decision after `v0.1.17` starts a",
         "narrow `v0.1.18` release-readiness path",
@@ -3604,6 +3613,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Deterministic harness smoke changes require fresh deterministic gate",
     ):
         assert expected in ledger
+
+    assert "The published `v0.1.17` maintenance release keeps that AF6 manual smoke" not in ledger
 
     assert "[Manual smoke evidence ledger](manual-smoke-evidence-ledger.md)" in quickstart
     assert "[Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)" in readme

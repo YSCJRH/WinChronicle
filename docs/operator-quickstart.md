@@ -160,7 +160,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Next blueprint lane selection after v0.1.17](next-blueprint-lane-selection-post-v0.1.17.md)
 - [Privacy-policy contract parity audit after v0.1.17](privacy-policy-contract-parity-audit-post-v0.1.17.md)
 - [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md)
-- [v0.1.18 release-readiness record](release-v0.1.18.md)
+- [v0.1.18 maintenance release record](release-v0.1.18.md)
 - [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)
 - [Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)
 - [Helper and watcher diagnostics sweep after v0.1.16](helper-watcher-diagnostics-sweep-post-v0.1.16.md)
