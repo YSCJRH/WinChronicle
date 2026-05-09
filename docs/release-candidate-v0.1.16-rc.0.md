@@ -48,6 +48,9 @@ Publication status: published prerelease candidate.
 | Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16-rc.0 |
 | Published at | 2026-05-09T08:18:01Z |
 | Final tag target | `70caf364f68d8c159eb74bbbc23e7469db22a244` |
+| Publication reconciliation PR | https://github.com/YSCJRH/WinChronicle/pull/142 |
+| Publication reconciliation PR Windows Harness | Passed, run `25596387380`, https://github.com/YSCJRH/WinChronicle/actions/runs/25596387380 |
+| Publication reconciliation post-merge `main` Windows Harness | Passed, run `25596453899`, https://github.com/YSCJRH/WinChronicle/actions/runs/25596453899 |
 | Previous stable release | `v0.1.15` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15 |
 | `v0.1.15` tag target | `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2` |
@@ -90,8 +93,9 @@ Environment:
 | `git diff --check` | Pass | no whitespace errors |
 
 The AD5 PR Windows Harness, post-merge `main` Windows Harness, final
-pre-publication `main` Windows Harness, and GitHub prerelease publication
-passed.
+pre-publication `main` Windows Harness, GitHub prerelease publication,
+publication reconciliation PR Windows Harness, and publication reconciliation
+post-merge `main` Windows Harness passed.
 
 ## Manual UIA Smoke Gates
 
@@ -201,8 +205,10 @@ expanding the capture surface from `v0.1.15`.
 - Fallback path: follow-up release candidate if any product or contract
   regression is found.
 - Deterministic gates: AD5 local validation, PR Windows Harness, post-merge
-  `main` Windows Harness, final pre-publication `main` Windows Harness, and
-  GitHub prerelease publication passed.
+  `main` Windows Harness, final pre-publication `main` Windows Harness,
+  GitHub prerelease publication, publication reconciliation PR Windows
+  Harness, and publication reconciliation post-merge `main` Windows Harness
+  passed.
 - Manual UIA gates: fresh manual UIA smoke passed for Notepad and Edge; VS
   Code metadata passed with the known Monaco diagnostic warning; VS Code
   strict marker remains a diagnostic non-blocking failure; watcher preview
