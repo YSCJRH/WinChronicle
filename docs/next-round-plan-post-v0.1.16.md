@@ -23,20 +23,20 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AF2 - Helper And Watcher Preview Diagnostics Review.
-- Stage status: AF2 review is in progress; helper and watcher diagnostics
-  evidence is being recorded without expanding the product capture surface.
-- Last completed evidence: AF1 completion reconciliation PR #151 merged as
-  `da5136c80fae1c4a7199279b05fa7e8dee449782`, PR Windows Harness run
-  `25598644752` passed, and post-merge `main` Windows Harness run
-  `25598686029` passed on that SHA.
+- Current stage: AF3 - MCP And Memory Contract Review.
+- Stage status: AF2 complete; AF3 is ready to start.
+- Last completed evidence: AF2 diagnostics review PR #152 merged as
+  `382cfab357cf13264b141d0bb1eefefc7c9eaf77`, PR Windows Harness run
+  `25599095958` passed, and post-merge `main` Windows Harness run
+  `25599141386` passed on that SHA.
 - Last validation: `docs/helper-watcher-diagnostics-sweep-post-v0.1.16.md`
-  records that helper/watcher timeout, malformed output, invalid embedded
-  helper payloads, no observed-content echo, duplicate skip, denylist skip,
-  heartbeat-only liveness, and diagnostic artifact policy remain covered by
-  deterministic docs/tests.
-- Next atomic task: land AF2 by validating the diagnostics sweep through PR and
-  post-merge Windows Harness, then record AF2 completion before starting AF3.
+  records the AF2 content-free `watch --events` validation diagnostic fix and
+  deterministic coverage for helper/watcher timeout, malformed output, invalid
+  embedded helper payloads, no observed-content echo, duplicate skip,
+  denylist skip, heartbeat-only liveness, and diagnostic artifact policy.
+- Next atomic task: start AF3 by reviewing read-only MCP examples, memory docs,
+  deterministic demo guidance, and scorecards for trust-boundary and
+  response-shape consistency.
 - Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
@@ -135,6 +135,7 @@ Every implementation stage should run:
   `watch --events` validation diagnostic leak, so AF2 includes a content-free
   CLI wrapper fix plus deterministic evidence without expanding capture
   surfaces.
+- Completed AF2 after PR #152 and post-merge `main` Windows Harness passed.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -166,3 +167,15 @@ Every implementation stage should run:
   - PR #151 Windows Harness run `25598644752` - passed.
   - PR #151 merged as `da5136c80fae1c4a7199279b05fa7e8dee449782`.
   - `gh run view 25598686029 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF1-completion `main` Windows Harness concluded `success` on `da5136c80fae1c4a7199279b05fa7e8dee449782`.
+- Stage AF2 local validation:
+  - `python -m pytest tests/test_cli.py tests/test_watcher_events.py tests/test_uia_helper_quality_matrix.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed; 92 tests passed.
+  - `python -m pytest -q` - passed; 160 tests passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed; 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed; 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed; includes 160 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
+  - `git diff --check` - passed.
+- Stage AF2 completion:
+  - PR #152 Windows Harness run `25599095958` - passed.
+  - PR #152 merged as `382cfab357cf13264b141d0bb1eefefc7c9eaf77`.
+  - `gh run view 25599141386 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF2 `main` Windows Harness concluded `success` on `382cfab357cf13264b141d0bb1eefefc7c9eaf77`.
