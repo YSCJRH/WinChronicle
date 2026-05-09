@@ -28,7 +28,7 @@ Publication status: pre-publication release-readiness candidate.
 | Evidence date | 2026-05-09, Asia/Shanghai |
 | Base `main` SHA before this record | `bbf6d3c64d7fef435e66d64d4e3b19d2390c391b` |
 | Candidate branch | `codex/v017-release-readiness` |
-| Candidate PR | Pending |
+| Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/159 |
 | Publication status | Pre-publication release-readiness candidate |
 | Release URL | Pending |
 | Published at | Pending |

@@ -819,6 +819,7 @@ def test_v0117_release_record_is_ready_and_scoped():
         "Stage | AF6 v0.1.17 maintenance release readiness",
         "Base `main` SHA before this record | `bbf6d3c64d7fef435e66d64d4e3b19d2390c391b`",
         "Candidate branch | `codex/v017-release-readiness`",
+        "Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/159",
         "Previous stable release | `v0.1.16`",
         "`v0.1.16` tag target | `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
         "AF5 decision PR | https://github.com/YSCJRH/WinChronicle/pull/158",
