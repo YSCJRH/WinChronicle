@@ -2,6 +2,7 @@ import json
 import sys
 from pathlib import Path
 
+from winchronicle.capture import load_json, normalize_fixture
 from winchronicle.cli import main
 from winchronicle.mcp.server import privacy_status
 from winchronicle.privacy import DISABLED_SURFACE_STATUS, TRUST
@@ -204,6 +205,19 @@ def test_capture_once_cli_title_denylist_skip_does_not_echo_title(
     assert output == "SKIPPED: denylisted title pattern"
     assert sensitive_title not in output
     assert not (tmp_path / "state" / "capture-buffer").exists()
+
+
+def test_privacy_check_cli_fails_normalized_denylisted_capture(tmp_path, capsys):
+    capture = normalize_fixture(
+        load_json(ROOT / "harness" / "fixtures" / "privacy" / "lock_app.json")
+    )
+    capture_path = tmp_path / "bad_lock_app_capture.json"
+    capture_path.write_text(json.dumps(capture), encoding="utf-8")
+
+    assert main(["privacy-check", str(capture_path)]) == 1
+
+    output = capsys.readouterr().out.strip()
+    assert output == "FAIL: denylisted normalized capture would already be stored"
 
 
 def test_capture_frontmost_cli_reports_invalid_helper_json_without_stderr_leak(

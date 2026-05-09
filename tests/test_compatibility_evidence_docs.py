@@ -44,6 +44,9 @@ NEXT_BLUEPRINT_LANE_SELECTION = ROOT / "docs" / "next-blueprint-lane-selection-p
 PRIVACY_POLICY_PARITY_AUDIT = (
     ROOT / "docs" / "privacy-policy-contract-parity-audit-post-v0.1.17.md"
 )
+PRIVACY_CHECK_RELEASE_DECISION = (
+    ROOT / "docs" / "privacy-check-release-readiness-decision-post-v0.1.17.md"
+)
 RELEASE_DECISION_V0116 = ROOT / "docs" / "release-readiness-decision-post-v0.1.16.md"
 
 
@@ -71,6 +74,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Phase 6 contract closure release-readiness decision after v0.1.17",
         "Next blueprint lane selection after v0.1.17",
         "Privacy-policy contract parity audit after v0.1.17",
+        "Privacy-check release-readiness decision after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -113,6 +117,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Phase 6 contract closure release-readiness decision after v0.1.17",
         "Next blueprint lane selection after v0.1.17",
         "Privacy-policy contract parity audit after v0.1.17",
+        "Privacy-check release-readiness decision after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -909,15 +914,15 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "AF7 publication reconciliation landed on `main` as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
         "PR #160 Windows Harness run `25601966464` passed",
         "post-merge `main` Windows Harness run `25602018700` passed",
-        "Current stage: Privacy-Check Release-Readiness Decision.",
-        "Stage status: Privacy-policy contract parity audit identified and fixed a narrow privacy-check validation gap",
-        "Last completed evidence: Next blueprint lane selection PR #184 merged as `998403d739570dd81677d4f8b3b8244b8a769caf`",
-        "PR Windows Harness run `25610819243` passed",
-        "post-merge `main` Windows Harness run `25610880531` passed",
-        "verified the post-PR #184 `main` Windows Harness concluded `success`",
-        "printed no files through the lane-selection baseline",
-        "adds a narrow privacy-check runtime fix",
-        "Next atomic task: record whether the privacy-check runtime hardening warrants a `v0.1.18`",
+        "Current stage: v0.1.18 Release-Readiness Record.",
+        "Stage status: Privacy-check release-readiness decision selected a narrow `v0.1.18` release-readiness path",
+        "Last completed evidence: Privacy-policy contract parity audit PR #185 merged as `ea5283e7ae9f2029fa97c1e9a65fff87eedb813e`",
+        "PR Windows Harness run `25611312314` passed",
+        "post-merge `main` Windows Harness run `25611363701` passed",
+        "verified the post-PR #185 `main` Windows Harness concluded `success`",
+        "is limited to `src/winchronicle/capture.py`",
+        "warrants a `v0.1.18` release-readiness path",
+        "Next atomic task: create the narrow `v0.1.18` release-readiness record",
         "sample-only allowlist marker",
         "Live UIA smoke remains manual and outside default CI",
         "Stage AG0 - Post-v0.1.17 Baseline Cursor",
@@ -929,9 +934,11 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "Completed Blueprint Lane - Phase 6 Privacy-Enrichment Contract Closure",
         "Next Blueprint Lane - Fixture And Privacy Baseline Contract Parity Audit",
         "Fixture And Privacy Baseline - Privacy Policy Contract Parity Audit",
+        "Release Decision - Privacy-Check Validation Hardening",
         "Select the Fixture and privacy baseline lane",
         "Harden `privacy-check` so denylisted fixture dry-runs still pass as skipped",
         "Treat watcher-preview parity as out of scope for this audit",
+        "Do not publish immediately from this decision alone.",
         "credit-card Luhn-positive redaction as a documented v0.1 non-goal",
         "`v0.1.17` is the latest published stable release and must not be retagged",
         "`v0.1.16` remains the previous stable release and must not be retagged",
@@ -1135,7 +1142,7 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "existing normalized denylisted captures",
         "existing normalized password-field semantics",
         "plain WinChronicle token-canary redaction",
-        "Selected the next step as a release-readiness decision for the narrow privacy-check runtime hardening",
+        "Selected the next step as a release-readiness decision for the narrow privacy-check validation hardening",
         "Next blueprint lane selection local validation:",
         "passed, 94 tests",
         "passed, 191 tests",
@@ -1884,7 +1891,7 @@ def test_privacy_policy_contract_parity_audit_records_runtime_hardening():
         "Trust boundary",
         "Watcher preview parity",
         "Out of scope for this audit.",
-        "The only runtime change made by this audit is a privacy-check hardening",
+        "The only product change made by this audit is privacy-check validation hardening",
         "does not change capture, helper, watcher, CLI/MCP output, schema, or storage behavior",
         "No schema expansion, CLI/MCP output expansion",
         "Result: passed; focused privacy/docs validation reported 110 tests",
@@ -1894,7 +1901,49 @@ def test_privacy_policy_contract_parity_audit_records_runtime_hardening():
         "does not authorize screenshot capture",
         "product targeted capture",
         "MCP write tools",
-        "record a release-readiness decision for the narrow privacy-check runtime fix",
+        "record a release-readiness decision for the narrow privacy-check validation fix",
+    ):
+        assert phrase in normalized
+
+
+def test_privacy_check_release_decision_starts_v018_readiness():
+    text = PRIVACY_CHECK_RELEASE_DECISION.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Privacy-Check Release-Readiness Decision After v0.1.17",
+        "start a narrow `v0.1.18` release-readiness path",
+        "Do not retag `v0.1.17`",
+        "Immediate publication is not warranted",
+        "Is a release-readiness path warranted? | Yes.",
+        "Is immediate publication warranted? | No.",
+        "Should `v0.1.17` be retagged? | No.",
+        "Should the next release-readiness target be `v0.1.18`? | Yes.",
+        "Is fresh manual UIA smoke decided here? | No.",
+        "Create the narrow `v0.1.18` release-readiness record.",
+        "`src/winchronicle/capture.py`",
+        "Privacy-check validation behavior changed",
+        "No helper/watcher binary, dependency, or package-version metadata change",
+        "Latest published release remains",
+        "https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17",
+        "`v0.1.17` is not a draft or prerelease",
+        "`serverInfo.version` remain `0.1.17`",
+        "Privacy-policy contract parity audit PR #185 merged as `ea5283e7ae9f2029fa97c1e9a65fff87eedb813e`",
+        "PR #185 Windows Harness run `25611312314` concluded `success`",
+        "Post-PR #185 `main` Windows Harness run `25611363701` concluded `success`",
+        "python -m pytest tests/test_cli.py tests/test_privacy_check.py tests/test_redaction.py",
+        "git diff --name-only v0.1.17..HEAD -- src\\winchronicle resources pyproject.toml",
+        "limited to `src/winchronicle/capture.py`",
+        "git diff --name-only -- src\\winchronicle resources pyproject.toml",
+        "Result: passed; focused privacy-check release-decision validation reported 107 tests",
+        "full pytest reported 203 tests",
+        "current decision branch printed no files under `src\\winchronicle`, `resources`, or `pyproject.toml`",
+        "full deterministic harness passed, including 203 pytest tests",
+        "privacy-positive but not release-complete",
+        "does not authorize implementation of screenshot capture",
+        "product targeted capture",
+        "default background capture",
+        "Create the narrow `v0.1.18` release-readiness record",
     ):
         assert phrase in normalized
 
