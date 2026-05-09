@@ -75,6 +75,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Phase 6 contract closure release-readiness decision after v0.1.17](phase6-contract-closure-release-readiness-decision-post-v0.1.17.md)"
         in quickstart
     )
+    assert (
+        "[Next blueprint lane selection after v0.1.17](next-blueprint-lane-selection-post-v0.1.17.md)"
+        in quickstart
+    )
     assert "[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)"
@@ -193,6 +197,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[Phase 6 contract closure release-readiness decision after v0.1.17](docs/phase6-contract-closure-release-readiness-decision-post-v0.1.17.md)"
+        in readme
+    )
+    assert (
+        "[Next blueprint lane selection after v0.1.17](docs/next-blueprint-lane-selection-post-v0.1.17.md)"
         in readme
     )
     assert (
@@ -341,6 +349,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "completed Phase 6 residual policy fixture expansion" in readme_intro_normalized
     assert "completed Phase 6 deferred fixture closure" in readme_intro_normalized
     assert "completed Phase 6 contract closure release-readiness decision" in readme_intro_normalized
+    assert "completed next blueprint lane selection" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
@@ -362,6 +371,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Phase 6 privacy contract residual policy fixtures after v0.1.17" in readme_operator_docs
     assert "Phase 6 privacy contract deferred fixture closure after v0.1.17" in readme_operator_docs
     assert "Phase 6 contract closure release-readiness decision after v0.1.17" in readme_operator_docs
+    assert "Next blueprint lane selection after v0.1.17" in readme_operator_docs
     assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.16" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
@@ -474,6 +484,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )
     assert readme_operator_docs.index(
         "Phase 6 contract closure release-readiness decision after v0.1.17"
+    ) < readme_operator_docs.index(
+        "Next blueprint lane selection after v0.1.17"
+    )
+    assert readme_operator_docs.index(
+        "Next blueprint lane selection after v0.1.17"
     ) < readme_operator_docs.index(
         "Post-v0.1.16 maintenance plan"
     )
@@ -616,6 +631,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "phase6-privacy-contract-residual-policy-fixtures-post-v0.1.17.md" in current_section
     assert "phase6-privacy-contract-deferred-fixture-closure-post-v0.1.17.md" in current_section
     assert "phase6-contract-closure-release-readiness-decision-post-v0.1.17.md" in current_section
+    assert "next-blueprint-lane-selection-post-v0.1.17.md" in current_section
     assert "next-round-plan-post-v0.1.16.md" in current_section
     assert "public-metadata-audit-post-v0.1.16.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in current_section
@@ -746,6 +762,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "phase6-privacy-contract-deferred-fixture-closure-post-v0.1.17.md" in evidence
     assert "phase6-contract-closure-release-readiness-decision-post-v0.1.17.md" in checklist
     assert "phase6-contract-closure-release-readiness-decision-post-v0.1.17.md" in evidence
+    assert "next-blueprint-lane-selection-post-v0.1.17.md" in checklist
+    assert "next-blueprint-lane-selection-post-v0.1.17.md" in evidence
     assert "next-round-plan-post-v0.1.16.md" in checklist
     assert "next-round-plan-post-v0.1.16.md" in evidence
     assert "public-metadata-audit-post-v0.1.16.md" in checklist
@@ -844,8 +862,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Phase 6 deferred fixture closure reconciliation PR #182" in evidence
     assert "post-reconciliation `main` Windows Harness run `25610156997`" in checklist
     assert "post-reconciliation `main` Windows Harness run `25610156997`" in evidence
-    assert "current next blueprint lane selection" in checklist
-    assert "current next blueprint lane selection" in evidence
+    assert "Phase 6 contract closure release-readiness decision PR #183" in checklist
+    assert "Phase 6 contract closure release-readiness decision PR #183" in evidence
+    assert "post-PR\n  #183 `main` Windows Harness run `25610538811`" in checklist
+    assert "post-PR\n  #183 `main` Windows Harness run `25610538811`" in evidence
+    assert "current Fixture and\n  privacy baseline contract parity audit" in checklist
+    assert "current Fixture and\n  privacy baseline contract parity audit" in evidence
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist

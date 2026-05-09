@@ -27,31 +27,34 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Next Blueprint Lane Selection.
-- Stage status: Phase 6 contract closure release-readiness decision is
-  recorded as no release-readiness or publication path; the next step is to
-  select the next blueprint lane.
-- Last completed evidence: Phase 6 deferred fixture closure reconciliation PR
-  #182 merged as `1675dce9378efb55a226ebe8ac4929a8b196bb04`, PR Windows
-  Harness run `25610106205` passed, and post-reconciliation `main` Windows
-  Harness run `25610156997` passed on that SHA.
-- Last validation: `gh run view 25610156997 --json
+- Current stage: Fixture And Privacy Baseline Contract Parity Audit.
+- Stage status: Next blueprint lane is selected as Fixture and privacy
+  baseline; the first task is a privacy-policy contract parity audit before
+  any behavior change.
+- Last completed evidence: Phase 6 contract closure release-readiness decision
+  PR #183 merged as `784a01385c5e77785bdcc3f2298df988f94e5c66`, PR Windows
+  Harness run `25610492799` passed, and post-merge `main` Windows Harness run
+  `25610538811` passed on that SHA.
+- Last validation: `gh run view 25610538811 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-reconciliation `main` Windows Harness concluded
+  verified the post-PR #183 `main` Windows Harness concluded
   `success`;
   `git diff
   --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` printed no files through the Phase 6 contract closure
-  release-readiness decision, so
+  pyproject.toml` printed no files through the next blueprint lane selection,
+  so
   AG1-AG6, the preflight, fixture expansion, remaining fixtures, coverage
   audit, gap fixtures, residual schema audit, residual policy fixtures, and
   their reconciliations contain no runtime, helper/watcher, CLI/MCP output,
   privacy-runtime, capture-surface, or version-metadata change. The Phase 6
   contract closure release-readiness decision likewise contains no such
-  runtime or package change.
-- Next atomic task: select the next blueprint lane and start with contracts,
-  fixtures, tests, and scorecards before any implementation behavior.
+  runtime or package change, and the next blueprint lane selection remains
+  docs/tests-only.
+- Next atomic task: start the privacy-policy contract parity audit by mapping
+  `harness/specs/privacy-policy.md`, deterministic privacy fixtures, redaction
+  and denylist tests, CLI status privacy fields, MCP `privacy_status`, and
+  `harness/scorecards/privacy-gates.md`.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -139,7 +142,7 @@ service install, no polling capture loop, and no default background capture.
 - Completed in PR #166 with PR Windows Harness run `25604616542` and
   post-merge `main` Windows Harness run `25604682902`.
 
-### Next Blueprint Lane - Phase 6 Privacy-Enrichment Contract Preflight
+### Completed Blueprint Lane - Phase 6 Privacy-Enrichment Contract Closure
 
 - Refine the Phase 6 threat model, opt-in requirements, per-app allowlist
   expectations, TTL/cache cleanup requirements, and tests-first task list.
@@ -148,6 +151,26 @@ service install, no polling capture loop, and no default background capture.
 - Keep Phase 6 implementation out of scope: do not implement screenshot
   capture, OCR, raw screenshot caches, or runtime allowlist parsing in this
   preflight.
+- Keep real UIA smoke manual and outside default CI.
+- Completed through the Phase 6 contract closure release-readiness decision in
+  PR #183 with post-merge `main` Windows Harness run `25610538811`.
+
+### Next Blueprint Lane - Fixture And Privacy Baseline Contract Parity Audit
+
+- Select the Fixture and privacy baseline lane because the roadmap identifies
+  fixtures, schemas, redaction tests, denylist tests, and scorecard evidence as
+  safe next work.
+- Start with a privacy-policy contract parity audit across
+  `harness/specs/privacy-policy.md`, `harness/scorecards/privacy-gates.md`,
+  deterministic privacy fixtures, redaction and denylist tests, CLI status
+  privacy fields, and MCP `privacy_status`.
+- Add or update contracts, fixtures, tests, scorecards, and documentation
+  before any behavior change.
+- Keep credit-card Luhn-positive redaction as a documented v0.1 non-goal unless
+  a future tests-first audit explicitly promotes it.
+- Do not change product code, schemas, CLI/MCP JSON shape, helper/watcher
+  behavior, capture surfaces, version metadata, or privacy runtime behavior in
+  the lane-selection step.
 - Keep real UIA smoke manual and outside default CI.
 
 ## Public Interfaces And Non-goals
@@ -357,6 +380,13 @@ Every implementation stage should run:
   retagged, no fresh manual UIA smoke decision is made, and Phase 6
   schema/fixture artifacts remain non-runtime planning and guardrail artifacts.
 - Selected the next step as next blueprint lane selection.
+- Completed the Phase 6 contract closure release-readiness decision after PR
+  #183 merged as `784a01385c5e77785bdcc3f2298df988f94e5c66` and post-merge
+  `main` Windows Harness run `25610538811` passed.
+- Recorded the next blueprint lane selection matrix and selected the Fixture
+  and privacy baseline lane.
+- Selected the first task in that lane as a privacy-policy contract parity
+  audit before any behavior change.
 
 ## Validation Log
 
@@ -636,3 +666,13 @@ Every implementation stage should run:
   - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
   - `python -m pytest -q` - passed, 190 tests.
   - `python harness/scripts/run_harness.py` - passed, including 190 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Phase 6 contract closure release-readiness decision completion:
+  - `gh pr view 183 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #183 merged at `2026-05-09T20:03:19Z` as `784a01385c5e77785bdcc3f2298df988f94e5c66`.
+  - `gh run view 25610492799 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #183 Windows Harness concluded `success` on `4fccc6ccb78ab322844e96e0bd3ca82e918aebcc`.
+  - `gh run view 25610538811 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-PR #183 `main` Windows Harness concluded `success` on `784a01385c5e77785bdcc3f2298df988f94e5c66`.
+- Next blueprint lane selection local validation:
+  - `python -m pytest tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 94 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
+  - `python -m pytest -q` - passed, 191 tests.
+  - `python harness/scripts/run_harness.py` - passed, including 191 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
