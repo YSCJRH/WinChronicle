@@ -42,9 +42,9 @@ coverage.
 
 ## Follow-Up Findings
 
-- The only runtime change made by this audit is a privacy-check hardening for
-  already-normalized artifacts. It does not change capture, helper, watcher,
-  CLI/MCP output, schema, or storage behavior.
+- The only product change made by this audit is privacy-check validation
+  hardening for already-normalized artifacts. It does not change capture,
+  helper, watcher, CLI/MCP output, schema, or storage behavior.
 - No schema expansion, CLI/MCP output expansion, helper/watcher behavior
   change, real UIA capture change, screenshot/OCR work, or version change is
   included in this audit.
@@ -59,7 +59,7 @@ coverage.
 Local validation for this parity audit:
 
 ```powershell
-python -m pytest tests/test_privacy_policy_contract.py tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q
+python -m pytest tests/test_privacy_policy_contract.py tests/test_privacy_check.py tests/test_redaction.py tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q
 python -m pytest -q
 git diff --check
 git diff --name-only -- src\winchronicle resources pyproject.toml
@@ -92,5 +92,5 @@ committed.
 ## Next Task
 
 After this parity audit is merged and the post-merge Windows Harness passes,
-record a release-readiness decision for the narrow privacy-check runtime fix
+record a release-readiness decision for the narrow privacy-check validation fix
 before selecting the next Fixture and privacy baseline follow-up.

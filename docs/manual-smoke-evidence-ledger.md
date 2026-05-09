@@ -19,7 +19,7 @@ or token canaries.
 | Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.17](helper-watcher-diagnostics-sweep-post-v0.1.17.md) |
 | Current MCP/memory contract sweep | [MCP and memory contract sweep after v0.1.17](mcp-memory-contract-sweep-post-v0.1.17.md) |
 | Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.17](compatibility-guardrail-sweep-post-v0.1.17.md) |
-| Latest release-readiness decision | [Release-readiness decision after v0.1.17](release-readiness-decision-post-v0.1.17.md) |
+| Latest release-readiness decision | [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md) |
 | Previous maintenance plan | [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md) |
 | Previous public metadata audit | [Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md) |
 | Previous release-readiness decision | [Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md) |
@@ -33,7 +33,7 @@ or token canaries.
 | Latest full manual UIA smoke source | [v0.1.17 maintenance release record](release-v0.1.17.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
 | Last freshness decision | For the published `v0.1.17` maintenance release, fresh hard-gate manual UIA smoke was rerun because public CLI/runtime output shape changed after `v0.1.16`. Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning, VS Code strict remains a diagnostic non-blocking failure, and watcher preview live smoke returned heartbeat-only liveness evidence. Artifact paths are local only. |
-| Next freshness decision | Future post-v0.1.17 maintenance or release-readiness work must decide whether to inherit `v0.1.17` manual smoke or rerun it. |
+| Next freshness decision | The future `v0.1.18` release-readiness record must decide whether to inherit `v0.1.17` manual smoke or rerun it. |
 
 ## Latest Known Manual Evidence
 
@@ -79,6 +79,11 @@ smoke. These command patterns are evidence shapes only; replace
 - The published `v0.1.17` maintenance release keeps that AF6 manual smoke as
   the latest full manual UIA smoke source, with publication verified against
   the final tag target and GitHub release metadata.
+- The privacy-check release-readiness decision after `v0.1.17` starts a
+  narrow `v0.1.18` release-readiness path for privacy-check validation
+  hardening, but it does not decide manual smoke freshness. The `v0.1.18`
+  release-readiness record must decide whether to inherit or rerun manual UIA
+  smoke.
 - Fresh manual smoke must use the
   [Manual smoke evidence template](manual-smoke-evidence-template.md).
 - Inherited evidence can provide context, but it is not current evidence unless

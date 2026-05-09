@@ -27,26 +27,26 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Privacy-Check Release-Readiness Decision.
-- Stage status: Privacy-policy contract parity audit identified and fixed a
-  narrow privacy-check validation gap for already-normalized captures; the next
-  step is an explicit release/no-release decision for that runtime privacy
-  hardening.
-- Last completed evidence: Next blueprint lane selection PR #184 merged as
-  `998403d739570dd81677d4f8b3b8244b8a769caf`, PR Windows Harness run
-  `25610819243` passed, and post-merge `main` Windows Harness run
-  `25610880531` passed on that SHA.
-- Last validation: `gh run view 25610880531 --json
+- Current stage: v0.1.18 Release-Readiness Record.
+- Stage status: Privacy-check release-readiness decision selected a narrow
+  `v0.1.18` release-readiness path for the post-`v0.1.17` privacy-check
+  validation hardening; immediate publication is not yet warranted.
+- Last completed evidence: Privacy-policy contract parity audit PR #185 merged
+  as `ea5283e7ae9f2029fa97c1e9a65fff87eedb813e`, PR Windows Harness run
+  `25611312314` passed, and post-merge `main` Windows Harness run
+  `25611363701` passed on that SHA.
+- Last validation: `gh run view 25611363701 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-PR #184 `main` Windows Harness concluded `success`;
+  verified the post-PR #185 `main` Windows Harness concluded `success`;
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` printed no files through the lane-selection baseline. The
-  privacy-policy contract parity audit adds a narrow privacy-check runtime fix
-  and targeted regression tests, without helper/watcher, CLI/MCP output,
-  schema, capture-surface, or version-metadata changes.
-- Next atomic task: record whether the privacy-check runtime hardening warrants
-  a `v0.1.18` release-readiness and publication path before selecting the next
-  Fixture and privacy baseline follow-up.
+  pyproject.toml` is limited to `src/winchronicle/capture.py`. The
+  privacy-check release-readiness decision records that this privacy-positive
+  validation change warrants a `v0.1.18` release-readiness path, without
+  helper/watcher, CLI/MCP output, schema, capture-surface, or version-metadata
+  changes.
+- Next atomic task: create the narrow `v0.1.18` release-readiness record with
+  a version bump decision, manual UIA smoke freshness decision, deterministic
+  evidence requirements, and publication path.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -179,8 +179,22 @@ service install, no polling capture loop, and no default background capture.
 - Treat watcher-preview parity as out of scope for this audit; do not change
   watcher, helper, capture, storage, schema, CLI/MCP output, or version
   behavior.
-- Next step after merge: decide whether the narrow privacy-check runtime fix
+- Next step after merge: decide whether the narrow privacy-check validation fix
   warrants a `v0.1.18` release-readiness and publication path.
+
+### Release Decision - Privacy-Check Validation Hardening
+
+- Record
+  `docs/privacy-check-release-readiness-decision-post-v0.1.17.md`.
+- Decide that the privacy-check validation hardening warrants a narrow
+  `v0.1.18` release-readiness path because it changes post-`v0.1.17`
+  validation behavior in `src/winchronicle/capture.py`.
+- Do not retag `v0.1.17`; it remains published and immutable.
+- Do not publish immediately from this decision alone.
+- Keep version metadata at `0.1.17` until the future `v0.1.18`
+  release-readiness branch explicitly decides and implements a version bump.
+- The future `v0.1.18` release-readiness record must decide manual UIA smoke
+  freshness before publication.
 
 ## Public Interfaces And Non-goals
 
@@ -402,7 +416,14 @@ Every implementation stage should run:
 - Added independent plain WinChronicle token-canary redaction and privacy-check
   coverage.
 - Selected the next step as a release-readiness decision for the narrow
-  privacy-check runtime hardening.
+  privacy-check validation hardening.
+- Completed the privacy-policy contract parity audit after PR #185 merged as
+  `ea5283e7ae9f2029fa97c1e9a65fff87eedb813e` and post-merge `main` Windows
+  Harness run `25611363701` passed.
+- Recorded the privacy-check release-readiness decision: start a narrow
+  `v0.1.18` release-readiness path, do not retag `v0.1.17`, do not publish
+  immediately, and leave manual UIA smoke freshness to the `v0.1.18`
+  release-readiness record.
 
 ## Validation Log
 
@@ -699,6 +720,16 @@ Every implementation stage should run:
   - `git diff --name-only -- src\winchronicle resources pyproject.toml` -
     passed with exactly `src/winchronicle/capture.py`.
   - `python harness/scripts/run_harness.py` - passed, including 201 pytest
+    tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke,
+    MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory,
+    deterministic watcher fixture, and watcher fake-helper smoke.
+- Privacy-check release-readiness decision local validation:
+  - `python -m pytest tests/test_cli.py tests/test_privacy_check.py tests/test_redaction.py tests/test_privacy_policy_contract.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py tests/test_version_identity.py -q` - passed, 107 tests.
+  - `python -m pytest -q` - passed, 203 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- src\winchronicle resources pyproject.toml` -
+    passed with no files.
+  - `python harness/scripts/run_harness.py` - passed, including 203 pytest
     tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke,
     MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory,
     deterministic watcher fixture, and watcher fake-helper smoke.
