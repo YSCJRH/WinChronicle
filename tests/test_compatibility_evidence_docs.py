@@ -27,6 +27,7 @@ V0116_FINAL_PLAN = ROOT / "docs" / "next-round-plan-v0.1.16-final-release.md"
 V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 V0117_RELEASE = ROOT / "docs" / "release-v0.1.17.md"
 V0118_RELEASE = ROOT / "docs" / "release-v0.1.18.md"
+POST_V0118_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.18.md"
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
@@ -77,6 +78,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Privacy-policy contract parity audit after v0.1.17",
         "Privacy-check release-readiness decision after v0.1.17",
         "v0.1.18 maintenance release record",
+        "Post-v0.1.18 maintenance plan",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -121,6 +123,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Privacy-policy contract parity audit after v0.1.17",
         "Privacy-check release-readiness decision after v0.1.17",
         "v0.1.18 maintenance release record",
+        "Post-v0.1.18 maintenance plan",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -981,6 +984,74 @@ def test_v0118_release_record_is_published_and_scoped():
 
     for tool_name in TOOL_NAMES:
         assert f"`{tool_name}`" in text
+
+
+def test_post_v0118_plan_is_active_without_expanding_scope():
+    text = POST_V0118_PLAN.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "WinChronicle Post-v0.1.18 Maintenance Plan",
+        "`v0.1.18` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18",
+        "release tag targets `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`",
+        "published at `2026-05-09T21:38:33Z`",
+        "PR #187 Windows Harness run `25612336939`",
+        "post-merge `main` Windows Harness run `25612391276`",
+        "publication reconciliation landed on `main` as `f40e165ce35464e5eb8df65f10ef153f8145177b`",
+        "PR #188 Windows Harness run `25612920731` passed",
+        "post-merge `main` Windows Harness run `25612977738`",
+        "Current stage: AH0 - Post-v0.1.18 Baseline Cursor.",
+        "Stage status: AH0 in progress.",
+        "Last completed evidence: v0.1.18 publication reconciliation PR #188 merged as",
+        "Next atomic task: land this AH0 baseline cursor PR",
+        "post-v0.1.18 public metadata and evidence-freshness follow-up",
+        "Stage AH0 - Post-v0.1.18 Baseline Cursor",
+        "Stage AH1 - Public Metadata And Evidence Freshness Follow-up",
+        "Stage AH2 - Helper And Watcher Preview Diagnostics Review",
+        "Stage AH3 - MCP And Memory Contract Review",
+        "Stage AH4 - Compatibility Guardrail Sweep",
+        "Stage AH5 - Release-Readiness Decision",
+        "`v0.1.18` is the latest published stable release and must not be retagged",
+        "`v0.1.17` remains the previous stable release and must not be retagged",
+        "Manual UIA smoke for `v0.1.18` was freshly rerun",
+        "Phase 6 stays at spec/scorecard level",
+        "Do not implement screenshot capture, OCR, audio recording",
+        "keyboard capture, clipboard capture, network upload, LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "MCP tool list remains unchanged and read-only",
+        "Product CLI still does not expose targeted `--hwnd`, `--pid`",
+        "Stage AH0 initialization:",
+        "gh release view v0.1.18",
+        "git ls-remote --tags origin v0.1.18",
+        "gh run view 25612920731",
+        "gh run view 25612977738",
+        "Stage AH0 local validation:",
+        "passed, 88 tests",
+        "passed, 205 tests",
+        "printed no files, confirming AH0 is docs/tests only",
+        "python harness/scripts/run_harness.py",
+        "watcher fake-helper smoke",
+    ):
+        assert phrase in normalized
+
+    for boundary in (
+        "MCP write tools",
+        "arbitrary file read tools",
+        "screenshot capture",
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network upload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service install",
+        "polling capture loop",
+        "default background capture",
+    ):
+        assert boundary in normalized
 
 
 def test_post_v0117_plan_is_active_without_expanding_scope():

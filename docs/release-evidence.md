@@ -6,8 +6,10 @@ smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
 [v0.1.18 maintenance release record](release-v0.1.18.md). The previous stable
 release record is [v0.1.17 maintenance release record](release-v0.1.17.md). The
-active post-v0.1.17 maintenance cursor is recorded in
-[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md), and the
+active post-v0.1.18 maintenance cursor is recorded in
+[Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md), and the
+completed post-v0.1.17 maintenance cursor is recorded in
+[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md). The
 completed post-v0.1.17 helper/watcher diagnostics review is
@@ -110,7 +112,12 @@ historical records. After the `v0.1.18` maintenance publication:
   published timestamp remain recorded in the final release record;
 - `v0.1.16-rc.0` is historical prerelease evidence, not the latest published
   final release;
-- the active post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
+- the active post-v0.1.18 execution cursor records `v0.1.18` publication,
+  `v0.1.18` publication reconciliation, PR #187, PR #188, PR Windows Harness
+  runs `25612336939` and `25612920731`, post-merge Windows Harness runs
+  `25612391276` and `25612977738`, the immutable final tag target
+  `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`, and the post-v0.1.18 baseline;
+- the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0
   baseline PR #161, PR Windows Harness run `25602296648`, post-AG0 `main`
