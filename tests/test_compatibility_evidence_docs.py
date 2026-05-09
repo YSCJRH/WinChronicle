@@ -25,6 +25,7 @@ V0115_RELEASE = ROOT / "docs" / "release-v0.1.15.md"
 V0116_RC0_RELEASE = ROOT / "docs" / "release-candidate-v0.1.16-rc.0.md"
 V0116_FINAL_PLAN = ROOT / "docs" / "next-round-plan-v0.1.16-final-release.md"
 V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
+V0117_RELEASE = ROOT / "docs" / "release-v0.1.17.md"
 POST_V0116_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.16.md"
 PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
 HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
@@ -44,6 +45,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Phase 6 screenshot/OCR work remains specification-only",
         "product targeted capture flags are exposed",
         "v0.1.15 maintenance release record",
+        "v0.1.17 maintenance release record",
         "v0.1.16 final release record",
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
@@ -76,6 +78,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "no screenshot capture code",
         "OCR engine integration",
         "v0.1.15 maintenance release record",
+        "v0.1.17 maintenance release record",
         "v0.1.16 final release record",
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
@@ -805,6 +808,54 @@ def test_v0116_final_release_record_is_ready_and_scoped():
         assert f"`{tool_name}`" in text
 
 
+def test_v0117_release_record_is_ready_and_scoped():
+    text = V0117_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "`v0.1.17` is a pre-publication release-readiness candidate.",
+        "Publication status: pre-publication release-readiness candidate.",
+        "Release | `v0.1.17`",
+        "Stage | AF6 v0.1.17 maintenance release readiness",
+        "Base `main` SHA before this record | `bbf6d3c64d7fef435e66d64d4e3b19d2390c391b`",
+        "Candidate branch | `codex/v017-release-readiness`",
+        "Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/159",
+        "Previous stable release | `v0.1.16`",
+        "`v0.1.16` tag target | `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
+        "AF5 decision PR | https://github.com/YSCJRH/WinChronicle/pull/158",
+        "AF5 PR Windows Harness | Passed, run `25600947496`",
+        "AF5 post-merge `main` Windows Harness | Passed, run `25600994238`",
+        "`gh release view v0.1.17` before readiness | Pass | release not found",
+        "`git ls-remote --tags origin v0.1.17 v0.1.17-rc.0` before readiness | Pass | no remote tags returned",
+        "`git tag --list \"v0.1.17*\"` before readiness | Pass | no local tags returned",
+        "`python -m pytest -q` | Pass | `167 passed`",
+        "`dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` | Pass | 0 warnings, 0 errors",
+        "`dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` | Pass | 0 warnings, 0 errors",
+        "`python harness/scripts/run_install_cli_smoke.py` | Pass",
+        "`python harness/scripts/run_harness.py` | Pass",
+        "`git diff --check` | Pass | no whitespace errors",
+        "Notepad targeted UIA smoke | Pass",
+        "Edge targeted UIA smoke | Pass",
+        "VS Code metadata smoke | Pass with diagnostic warning",
+        "VS Code strict Monaco marker | Diagnostic failure, non-blocking",
+        "Real watcher/helper short preview | Heartbeat-only liveness diagnostic",
+        "`captures_written: 0`, `denylisted_skipped: 0`, `duplicates_skipped: 0`, `heartbeats: 9`",
+        "Aligns package, runtime, and MCP server version identity to `0.1.17`",
+        "`generate-memory` manifest JSON trust fields",
+        "must report `0.1.17`",
+        "exact read-only MCP tool list remains unchanged",
+        "Product CLI exposes no targeted `--hwnd`, `--pid`, `--window-title`",
+        "Phase 6 remains specification-only",
+        "does not expand the capture surface beyond `v0.1.16`",
+        "Do not retag or modify `v0.1.16`",
+        "Publication approval: standing user goal authorizes publishing after review",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
 def test_post_v0116_plan_is_active_without_expanding_scope():
     text = POST_V0116_PLAN.read_text(encoding="utf-8")
     normalized = _normalized(text)
@@ -813,20 +864,22 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "`v0.1.16` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16",
         "tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
         "published at `2026-05-09T09:31:17Z`",
-        "Current stage: AF5 - Release-Readiness Decision.",
-        "Stage status: AF5 review in progress; AF4 is complete.",
-        "docs/compatibility-guardrail-sweep-post-v0.1.16.md",
-        "AF4 completion PR #157 merged as",
-        "`74aeadc2e8fd0917ab02e0f73009f87453b4b1e8`",
-        "PR Windows Harness run `25600542270` passed",
-        "post-merge `main` Windows Harness run `25600584258` passed",
+        "Current stage: AF6 - v0.1.17 Release Readiness.",
+        "Stage status: AF6 review in progress; AF5 is complete.",
         "docs/release-readiness-decision-post-v0.1.16.md",
-        "AF5 decision to start a narrow `v0.1.17` release-readiness plan",
+        "AF5 decision PR #158 merged as",
+        "`bbf6d3c64d7fef435e66d64d4e3b19d2390c391b`",
+        "PR Windows Harness run `25600947496` passed",
+        "post-merge `main` Windows Harness run `25600994238` passed",
+        "docs/release-v0.1.17.md",
+        "AF6 release-readiness candidate",
+        "version identity `0.1.17`",
+        "fresh hard-gate manual UIA smoke",
+        "heartbeat-only watcher diagnostic evidence",
         "immutable `v0.1.16` release metadata",
-        "stable `0.1.16` version identity",
-        "unreleased compatible runtime/output hardenings",
-        "Next atomic task: land this AF5 release-readiness decision",
-        "create the narrow `v0.1.17` release-readiness record",
+        "compatible runtime/output hardenings",
+        "Next atomic task: land the `v0.1.17` release-readiness record",
+        "then publish `v0.1.17`",
         "AF3 MCP/memory review PR #154 merged as",
         "`f55638cf213b40c07d01f1872a7ff828b3a85d6f`",
         "PR #154 Windows Harness run `25599715499`",
@@ -843,6 +896,7 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "Stage AF3 - MCP And Memory Contract Review",
         "Stage AF4 - Compatibility Guardrail Sweep",
         "Stage AF5 - Release-Readiness Decision",
+        "Stage AF6 - v0.1.17 Release Readiness",
         "manual UIA smoke freshness decision",
         "Do not retag `v0.1.16`",
         "CLI command set remains unchanged",
@@ -907,6 +961,19 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "65 tests passed",
         "166 tests passed",
         "python harness/scripts/run_harness.py",
+        "Stage AF5 completion:",
+        "PR #158 Windows Harness run `25600947496`",
+        "PR #158 merged as `bbf6d3c64d7fef435e66d64d4e3b19d2390c391b`",
+        "post-AF5 `main` Windows Harness concluded `success`",
+        "Stage AF6 manual smoke:",
+        "smoke-uia-notepad.ps1",
+        "smoke-uia-edge.ps1",
+        "smoke-uia-vscode.ps1",
+        "diagnostic failure, non-blocking",
+        "heartbeat-only liveness diagnostic",
+        "Stage AF6 local deterministic validation:",
+        "71 tests passed",
+        "167 tests passed",
     ):
         assert phrase in normalized
 

@@ -23,21 +23,21 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AF5 - Release-Readiness Decision.
-- Stage status: AF5 review in progress; AF4 is complete.
+- Current stage: AF6 - v0.1.17 Release Readiness.
+- Stage status: AF6 review in progress; AF5 is complete.
 - Last completed evidence:
-  `docs/compatibility-guardrail-sweep-post-v0.1.16.md` and AF4 completion PR
-  #157 merged as `74aeadc2e8fd0917ab02e0f73009f87453b4b1e8`, PR Windows
-  Harness run `25600542270` passed, and post-merge `main` Windows Harness run
-  `25600584258` passed on that SHA.
-- Last validation: `docs/release-readiness-decision-post-v0.1.16.md` records
-  the AF5 decision to start a narrow `v0.1.17` release-readiness plan, the
-  immutable `v0.1.16` release metadata, stable `0.1.16` version identity, and
-  unreleased compatible runtime/output hardenings without capture-surface
+  `docs/release-readiness-decision-post-v0.1.16.md` and AF5 decision PR #158
+  merged as `bbf6d3c64d7fef435e66d64d4e3b19d2390c391b`, PR Windows Harness run
+  `25600947496` passed, and post-merge `main` Windows Harness run
+  `25600994238` passed on that SHA.
+- Last validation: `docs/release-v0.1.17.md` records the AF6 release-readiness
+  candidate, version identity `0.1.17`, fresh hard-gate manual UIA smoke,
+  heartbeat-only watcher diagnostic evidence, immutable `v0.1.16` release
+  metadata, and compatible runtime/output hardenings without capture-surface
   expansion.
-- Next atomic task: land this AF5 release-readiness decision through PR and
-  post-merge Windows Harness validation, then create the narrow `v0.1.17`
-  release-readiness record before any publication decision.
+- Next atomic task: land the `v0.1.17` release-readiness record through PR and
+  post-merge Windows Harness validation, then publish `v0.1.17` and reconcile
+  the release metadata without retagging `v0.1.16`.
 - Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
@@ -97,6 +97,20 @@ service install, no polling capture loop, and no default background capture.
   lane with contracts, fixtures, tests, and scorecards first.
 - Do not retag `v0.1.16`; use a future compatible version only through an
   explicit release-readiness record.
+
+### Stage AF6 - v0.1.17 Release Readiness
+
+- Bump package/runtime/MCP version identity to `0.1.17` only on the
+  release-readiness branch.
+- Record a direct compatible maintenance release path in
+  `docs/release-v0.1.17.md`.
+- Rerun fresh hard-gate manual UIA smoke because AF1-AF4 changed public
+  CLI/runtime output shape after `v0.1.16`.
+- Treat heartbeat-only live watcher preview as diagnostic liveness evidence,
+  while deterministic watcher gates remain required.
+- Require local deterministic gates, PR Windows Harness, and post-merge `main`
+  Windows Harness before publication.
+- Do not retag `v0.1.16`; publish `v0.1.17` only after validation and review.
 
 ## Public Interfaces And Non-goals
 
@@ -174,6 +188,11 @@ Every implementation stage should run:
   latest published stable release, and AF1-AF4 warrant a narrow `v0.1.17`
   release-readiness plan because they include compatible unreleased
   runtime/output hardening.
+- Completed AF5 after PR #158 and post-merge `main` Windows Harness passed.
+- Started AF6 as a direct `v0.1.17` maintenance release-readiness candidate;
+  version identity is bumped to `0.1.17`, fresh hard-gate manual UIA smoke was
+  rerun, and `v0.1.16` remains immutable until `v0.1.17` publication is
+  verified.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -269,4 +288,22 @@ Every implementation stage should run:
   - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed; 65 tests passed.
   - `python -m pytest -q` - passed; 166 tests passed.
   - `python harness/scripts/run_harness.py` - passed; includes 166 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
+  - `git diff --check` - passed.
+- Stage AF5 completion:
+  - PR #158 Windows Harness run `25600947496` - passed.
+  - PR #158 merged as `bbf6d3c64d7fef435e66d64d4e3b19d2390c391b`.
+  - `gh run view 25600994238 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF5 `main` Windows Harness concluded `success` on `bbf6d3c64d7fef435e66d64d4e3b19d2390c391b`.
+- Stage AF6 manual smoke:
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-notepad.ps1 -ArtifactDir <artifact-root>\notepad -TimeoutSeconds 30` - passed.
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-edge.ps1 -ArtifactDir <artifact-root>\edge -TimeoutSeconds 45` - passed.
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-vscode.ps1 -ArtifactDir <artifact-root>\vscode-metadata -TimeoutSeconds 45` - passed with the known Monaco diagnostic warning.
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-vscode.ps1 -Strict -ArtifactDir <artifact-root>\vscode-strict -TimeoutSeconds 45` - diagnostic failure, non-blocking; known Monaco/UIA limitation.
+  - `python -m winchronicle watch --watcher dotnet --watcher-arg resources/win-uia-watcher/bin/Debug/net8.0-windows/win-uia-watcher.dll --helper dotnet --helper-arg resources/win-uia-helper/bin/Debug/net8.0-windows/win-uia-helper.dll --duration 5 --depth 2 --heartbeat-ms 500 --capture-on-start` with temporary `WINCHRONICLE_HOME` - heartbeat-only liveness diagnostic; `captures_written: 0`, `heartbeats: 9`, `duplicates_skipped: 0`, `denylisted_skipped: 0`.
+- Stage AF6 local deterministic validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_uia_helper_quality_matrix.py -q` - passed; 71 tests passed.
+  - `python -m pytest -q` - passed; 167 tests passed.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed; includes 167 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
   - `git diff --check` - passed.

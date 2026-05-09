@@ -20,10 +20,10 @@ post-v0.1.16 maintenance plan, the current post-v0.1.16 public metadata audit,
 the current post-v0.1.16 helper/watcher diagnostics sweep, the current
 post-v0.1.16 MCP/memory contract sweep, the current post-v0.1.16 compatibility
 guardrail sweep, the current post-v0.1.16 release-readiness decision, the
-latest published `v0.1.16` release record, the completed `v0.1.16`
-final-release plan, the historical `v0.1.16-rc.0` release-candidate record,
-the previous published `v0.1.15` release record, and older completed
-maintenance plans.
+current `v0.1.17` maintenance release-readiness record, the latest published
+`v0.1.16` release record, the completed `v0.1.16` final-release plan, the
+historical `v0.1.16-rc.0` release-candidate record, the previous published
+`v0.1.15` release record, and older completed maintenance plans.
 
 ## Why WinChronicle
 
@@ -136,6 +136,7 @@ available through `search-captures`.
 - [MCP and memory contract sweep after v0.1.16](docs/mcp-memory-contract-sweep-post-v0.1.16.md)
 - [Compatibility guardrail sweep after v0.1.16](docs/compatibility-guardrail-sweep-post-v0.1.16.md)
 - [Release-readiness decision after v0.1.16](docs/release-readiness-decision-post-v0.1.16.md)
+- [v0.1.17 maintenance release record](docs/release-v0.1.17.md)
 - [v0.1.16 final release record](docs/release-v0.1.16.md)
 - [v0.1.16 final-release plan](docs/next-round-plan-v0.1.16-final-release.md)
 - [Post-v0.1.15 maintenance plan](docs/next-round-plan-post-v0.1.15.md)
