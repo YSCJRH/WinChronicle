@@ -125,7 +125,9 @@ inherited historical evidence:
   expansion PR #179 with post-residual-policy-fixtures `main` Windows Harness
   run `25609341275`, Phase 6 residual policy evidence reconciliation PR #180
   with post-reconciliation `main` Windows Harness run `25609534616`, and the
-  current Phase 6 deferred fixture closure;
+  Phase 6 deferred fixture closure PR #181 with
+  post-deferred-fixture-closure `main` Windows Harness run `25609934759`, and
+  the current Phase 6 contract closure release-readiness decision;
 - the completed post-v0.1.17 public metadata/evidence freshness audit records
   repository metadata, `v0.1.17` release metadata, previous stable `v0.1.16`
   release metadata, post-AG0 `main` Windows Harness evidence, manual repository
