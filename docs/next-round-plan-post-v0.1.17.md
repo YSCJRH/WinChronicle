@@ -27,24 +27,23 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Post-AG5 blueprint lane cursor.
-- Stage status: AG5 complete; no post-v0.1.17 release-readiness or
-  publication path is open.
-- Last completed evidence: AG5 release-readiness decision PR #166 merged as
-  `a55f1024f2f0a131044eb6e288de945ec1dbb5b2`, PR Windows Harness run
-  `25604616542` passed, and post-AG5 `main` Windows Harness run `25604682902`
+- Current stage: Phase 6 Privacy-Enrichment Contract Preflight.
+- Stage status: contract preflight in progress; AG6 post-AG5 cursor
+  reconciliation landed through PR #167 and post-merge Windows Harness.
+- Last completed evidence: AG6 cursor reconciliation PR #167 merged as
+  `0b05b88018679d1fdaee8cb5e6440768badbc21a`, PR Windows Harness run
+  `25605013376` passed, and post-AG6 `main` Windows Harness run `25605064828`
   passed on that SHA.
-- Last validation: `gh run view 25604682902 --json
+- Last validation: `gh run view 25605064828 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AG5 `main` Windows Harness concluded `success`; `git diff
+  verified the post-AG6 `main` Windows Harness concluded `success`; `git diff
   --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` printed no files, so AG1-AG5 contain no runtime,
+  pyproject.toml` printed no files through AG6, so AG1-AG6 contain no runtime,
   helper/watcher, CLI/MCP output, privacy-runtime, capture-surface, or
   version-metadata change.
-- Next atomic task: start the Phase 6 privacy-enrichment contract preflight
-  with contracts, fixtures, tests, scorecards, and docs only; do not implement
-  screenshot capture or OCR.
+- Next atomic task: land the Phase 6 privacy-enrichment contract preflight
+  through PR and post-merge Windows Harness validation.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -242,6 +241,13 @@ Every implementation stage should run:
   next smallest lane selected as Phase 6 privacy-enrichment contract preflight:
   threat model, opt-in requirements, per-app allowlist expectations, TTL/cache
   cleanup requirements, tests, scorecards, and docs only.
+- Completed AG6 after PR #167 merged as
+  `0b05b88018679d1fdaee8cb5e6440768badbc21a` and post-merge `main` Windows
+  Harness run `25605064828` passed.
+- Started the Phase 6 privacy-enrichment contract preflight as a
+  specs/fixtures/tests/scorecards/docs-only lane. This preflight adds no
+  runtime parser, CLI/MCP output change, screenshot/OCR implementation, raw
+  screenshot cache, or capture-surface change.
 
 ## Validation Log
 
@@ -372,3 +378,13 @@ Every implementation stage should run:
   - `gh pr view 166 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #166 merged at `2026-05-09T15:25:36Z` as `a55f1024f2f0a131044eb6e288de945ec1dbb5b2`.
   - `gh run view 25604616542 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #166 Windows Harness concluded `success` on `db88fe4449008f932d5703fc01484020a4635585`.
   - `gh run view 25604682902 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AG5 `main` Windows Harness concluded `success` on `a55f1024f2f0a131044eb6e288de945ec1dbb5b2`.
+- Stage AG6 completion:
+  - `gh pr view 167 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #167 merged at `2026-05-09T15:44:18Z` as `0b05b88018679d1fdaee8cb5e6440768badbc21a`.
+  - `gh run view 25605013376 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #167 Windows Harness concluded `success` on `9128822ad6b08fdbae393cf5ea41d3de94ce94bf`.
+  - `gh run view 25605064828 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AG6 `main` Windows Harness concluded `success` on `0b05b88018679d1fdaee8cb5e6440768badbc21a`.
+- Phase 6 privacy-enrichment contract preflight local validation:
+  - `python -m pytest tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 87 tests.
+  - `python -m pytest -q` - passed, 184 tests.
+  - Product-source contract-artifact reference scan for `phase6-privacy-enrichment-contract`, `privacy_enrichment_contract`, `harness/fixtures/phase6`, and `harness\\fixtures\\phase6` across `src` and `resources` - passed with no matches.
+  - `git diff --check` - passed.
+  - `python harness/scripts/run_harness.py` - passed, including 184 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

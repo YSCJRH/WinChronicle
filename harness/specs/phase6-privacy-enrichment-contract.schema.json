@@ -1,0 +1,343 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://winchronicle.local/specs/phase6-privacy-enrichment-contract.schema.json",
+  "title": "WinChronicle Phase 6 Privacy Enrichment Contract Preflight",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_schema_version",
+    "status",
+    "defaults",
+    "future_opt_in_requirements",
+    "allowlist_policy",
+    "raw_cache_policy",
+    "derived_text_pipeline",
+    "mcp_policy",
+    "non_goals"
+  ],
+  "properties": {
+    "contract_schema_version": {
+      "const": 1
+    },
+    "status": {
+      "const": "spec_only"
+    },
+    "defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "screenshots_enabled",
+        "ocr_enabled",
+        "raw_screenshot_cache_enabled",
+        "global_allowlist_enabled"
+      ],
+      "properties": {
+        "screenshots_enabled": {
+          "const": false
+        },
+        "ocr_enabled": {
+          "const": false
+        },
+        "raw_screenshot_cache_enabled": {
+          "const": false
+        },
+        "global_allowlist_enabled": {
+          "const": false
+        }
+      }
+    },
+    "future_opt_in_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requires_explicit_screenshots_enabled_true",
+        "requires_explicit_ocr_enabled_true",
+        "requires_per_app_screenshot_allowlist",
+        "requires_per_app_ocr_allowlist",
+        "forbids_global_default_allowlist",
+        "forbids_implicit_all_apps",
+        "requires_uia_first_fallback_only",
+        "allows_runtime_capture_in_v0_1"
+      ],
+      "properties": {
+        "requires_explicit_screenshots_enabled_true": {
+          "const": true
+        },
+        "requires_explicit_ocr_enabled_true": {
+          "const": true
+        },
+        "requires_per_app_screenshot_allowlist": {
+          "const": true
+        },
+        "requires_per_app_ocr_allowlist": {
+          "const": true
+        },
+        "forbids_global_default_allowlist": {
+          "const": true
+        },
+        "forbids_implicit_all_apps": {
+          "const": true
+        },
+        "requires_uia_first_fallback_only": {
+          "const": true
+        },
+        "allows_runtime_capture_in_v0_1": {
+          "const": false
+        }
+      }
+    },
+    "allowlist_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "screenshots",
+        "ocr",
+        "sample_allowlist_entries_only",
+        "runtime_allowlist_config_allowed",
+        "global_default_allowlist_allowed",
+        "implicit_all_apps_allowed"
+      ],
+      "properties": {
+        "screenshots": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/app_selector"
+          }
+        },
+        "ocr": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/app_selector"
+          }
+        },
+        "sample_allowlist_entries_only": {
+          "const": true
+        },
+        "runtime_allowlist_config_allowed": {
+          "const": false
+        },
+        "global_default_allowlist_allowed": {
+          "const": false
+        },
+        "implicit_all_apps_allowed": {
+          "const": false
+        }
+      }
+    },
+    "raw_cache_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled_by_default",
+        "ttl_seconds_max",
+        "cleanup_required",
+        "local_state_directory_only",
+        "raw_artifacts_commit_forbidden",
+        "encryption_at_rest_required_or_exception_documented"
+      ],
+      "properties": {
+        "enabled_by_default": {
+          "const": false
+        },
+        "ttl_seconds_max": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600
+        },
+        "cleanup_required": {
+          "const": true
+        },
+        "local_state_directory_only": {
+          "const": true
+        },
+        "raw_artifacts_commit_forbidden": {
+          "const": true
+        },
+        "encryption_at_rest_required_or_exception_documented": {
+          "const": true
+        }
+      }
+    },
+    "derived_text_pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "redaction_before_storage",
+        "denylist_and_lock_screen_skip_before_storage",
+        "schema_validation_before_storage",
+        "sqlite_index_after_redaction",
+        "memory_from_redacted_text_only",
+        "prompt_injection_marked_untrusted"
+      ],
+      "properties": {
+        "redaction_before_storage": {
+          "const": true
+        },
+        "denylist_and_lock_screen_skip_before_storage": {
+          "const": true
+        },
+        "schema_validation_before_storage": {
+          "const": true
+        },
+        "sqlite_index_after_redaction": {
+          "const": true
+        },
+        "memory_from_redacted_text_only": {
+          "const": true
+        },
+        "prompt_injection_marked_untrusted": {
+          "const": true
+        }
+      }
+    },
+    "mcp_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_screenshot_exposure_default",
+        "requires_untrusted_observed_content_trust",
+        "mcp_write_tools_allowed"
+      ],
+      "properties": {
+        "raw_screenshot_exposure_default": {
+          "const": false
+        },
+        "requires_untrusted_observed_content_trust": {
+          "const": true
+        },
+        "mcp_write_tools_allowed": {
+          "const": false
+        }
+      }
+    },
+    "non_goals": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 14,
+      "items": {
+        "type": "string",
+        "enum": [
+          "audio recording",
+          "keyboard capture",
+          "clipboard capture",
+          "network upload",
+          "cloud upload",
+          "LLM calls",
+          "desktop control",
+          "MCP write tools",
+          "arbitrary file reads",
+          "product targeted capture",
+          "daemon/service install",
+          "polling capture loops",
+          "startup tasks",
+          "default background capture"
+        ]
+      },
+      "allOf": [
+        {
+          "contains": {
+            "const": "audio recording"
+          }
+        },
+        {
+          "contains": {
+            "const": "keyboard capture"
+          }
+        },
+        {
+          "contains": {
+            "const": "clipboard capture"
+          }
+        },
+        {
+          "contains": {
+            "const": "network upload"
+          }
+        },
+        {
+          "contains": {
+            "const": "cloud upload"
+          }
+        },
+        {
+          "contains": {
+            "const": "LLM calls"
+          }
+        },
+        {
+          "contains": {
+            "const": "desktop control"
+          }
+        },
+        {
+          "contains": {
+            "const": "MCP write tools"
+          }
+        },
+        {
+          "contains": {
+            "const": "arbitrary file reads"
+          }
+        },
+        {
+          "contains": {
+            "const": "product targeted capture"
+          }
+        },
+        {
+          "contains": {
+            "const": "daemon/service install"
+          }
+        },
+        {
+          "contains": {
+            "const": "polling capture loops"
+          }
+        },
+        {
+          "contains": {
+            "const": "startup tasks"
+          }
+        },
+        {
+          "contains": {
+            "const": "default background capture"
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "app_selector": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "process_name": {
+          "$ref": "#/$defs/non_wildcard_string"
+        },
+        "app_name": {
+          "$ref": "#/$defs/non_wildcard_string"
+        }
+      },
+      "anyOf": [
+        {
+          "required": ["process_name"]
+        },
+        {
+          "required": ["app_name"]
+        }
+      ]
+    },
+    "non_wildcard_string": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!.*\\*).+$",
+      "not": {
+        "enum": ["all", "ALL", "All", ".*", "<all>"]
+      }
+    }
+  }
+}
