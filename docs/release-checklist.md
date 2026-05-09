@@ -8,17 +8,19 @@ For operator setup and the current documentation map, start with
 The latest published release record is
 [v0.1.17 maintenance release record](release-v0.1.17.md). The previous stable
 release record is [v0.1.16 final release record](release-v0.1.16.md). The
-active post-v0.1.16 execution cursor lives in
+active post-v0.1.17 execution cursor lives in
+[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md), and the
+completed post-v0.1.16 execution cursor lives in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
-current public metadata/evidence freshness audit is
+completed post-v0.1.16 public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md). The
-current helper/watcher diagnostics review is
+completed post-v0.1.16 helper/watcher diagnostics review is
 [Helper and watcher diagnostics sweep after v0.1.16](helper-watcher-diagnostics-sweep-post-v0.1.16.md). The
-current MCP/memory contract review is
+completed post-v0.1.16 MCP/memory contract review is
 [MCP and memory contract sweep after v0.1.16](mcp-memory-contract-sweep-post-v0.1.16.md). The
-current compatibility guardrail review is
+completed post-v0.1.16 compatibility guardrail review is
 [Compatibility guardrail sweep after v0.1.16](compatibility-guardrail-sweep-post-v0.1.16.md). The
-current release-readiness decision is
+completed post-v0.1.16 release-readiness decision is
 [Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md). The
 current `v0.1.17` maintenance release record is
 [v0.1.17 maintenance release record](release-v0.1.17.md). The
@@ -64,11 +66,13 @@ inherited historical evidence:
   published timestamp remain recorded in the final release record;
 - `v0.1.16-rc.0` is historical prerelease evidence, not the latest published
   final release;
-- the active post-v0.1.16 execution cursor records the `v0.1.16` baseline
+- the active post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
+  publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
+  post-merge Windows Harness run `25602018700`, and the post-v0.1.17 baseline;
+- the completed post-v0.1.16 execution cursor records the `v0.1.16` baseline
   publication and the `v0.1.17` maintenance publication, final tag target
   `5b260edc3bddc48986e52179b2ffd261856a89ac`, published timestamp
-  `2026-05-09T12:56:45Z`, PR #159, PR Windows Harness run `25601571665`,
-  post-merge Windows Harness run `25601624151`, and release metadata/tag
+  `2026-05-09T12:56:45Z`, PR #159, PR #160, and release metadata/tag
   verification;
 - the completed post-v0.1.15 execution cursor records AD4 PR #139, PR Windows
   Harness run `25595449096`, post-merge Windows Harness run `25595513141`,

@@ -15,11 +15,11 @@ https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16. Its final release
 tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`, and it was published
 at `2026-05-09T09:31:17Z`.
 
-The post-v0.1.16 baseline should continue blueprint-aligned maintenance without
-expanding the v0.1 product boundary. The next round should start with a
-post-publication baseline cursor, then continue with public metadata/evidence
-freshness, helper/watcher diagnostics, MCP/memory contracts, compatibility
-guardrails, and any small drift discovered by those checks.
+The post-v0.1.16 maintenance round is complete. AF7 publication reconciliation
+landed on `main` as `110ace3f27d8bb9f1eff2c45449998fd0373a998`, PR #160
+Windows Harness run `25601966464` passed, and post-merge `main` Windows Harness
+run `25602018700` passed. The active next cursor is now
+[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md).
 
 Keep the v0.1 product boundary unchanged: local-first, UIA-first,
 harness-first, read-only MCP first, no screenshot/OCR implementation, no audio
@@ -30,20 +30,20 @@ service install, no polling capture loop, and no default background capture.
 ## Execution Cursor
 
 - Current stage: AF7 - v0.1.17 Publication Reconciliation.
-- Stage status: AF7 review in progress; AF6 release publication is complete.
-- Last completed evidence: `docs/release-v0.1.17.md` and release-readiness PR
-  #159 merged as `5b260edc3bddc48986e52179b2ffd261856a89ac`, PR Windows
-  Harness run `25601571665` passed, post-merge `main` Windows Harness run
-  `25601624151` passed on that SHA, and GitHub release publication created
-  `v0.1.17` at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17.
+- Stage status: AF7 complete; this post-v0.1.16 cursor is completed historical
+  context.
+- Last completed evidence: AF7 publication reconciliation PR #160 merged as
+  `110ace3f27d8bb9f1eff2c45449998fd0373a998`, PR Windows Harness run
+  `25601966464` passed, and post-merge `main` Windows Harness run
+  `25602018700` passed on that SHA.
 - Last validation: `gh release view v0.1.17 --json
   tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` verified
   the published, non-draft, non-prerelease release at
   `2026-05-09T12:56:45Z`; `git ls-remote --tags origin v0.1.17` verified the
-  remote tag target `5b260edc3bddc48986e52179b2ffd261856a89ac`.
-- Next atomic task: land this `v0.1.17` publication reconciliation through PR
-  and post-merge Windows Harness validation, then start the post-v0.1.17
-  maintenance cursor.
+  remote tag target `5b260edc3bddc48986e52179b2ffd261856a89ac`; post-AF7
+  `main` Windows Harness run `25602018700` concluded `success`.
+- Next atomic task: continue the post-v0.1.17 maintenance cursor in
+  [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md).
 - Known blockers: none for the published `v0.1.17` maintenance release.
 
 ## Phased Work
@@ -221,6 +221,10 @@ Every implementation stage should run:
   passed.
 - Started AF7 as a publication reconciliation to update mainline docs after the
   immutable `v0.1.17` tag was created.
+- Completed AF7 after PR #160 and post-merge `main` Windows Harness run
+  `25602018700` passed.
+- Started the active post-v0.1.17 baseline cursor in
+  [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md).
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -343,3 +347,7 @@ Every implementation stage should run:
   - `gh release view v0.1.17 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.17` is published, not a draft, not a prerelease, published at `2026-05-09T12:56:45Z`, and targets `5b260edc3bddc48986e52179b2ffd261856a89ac`.
   - `git ls-remote --tags origin v0.1.17` - passed and printed `5b260edc3bddc48986e52179b2ffd261856a89ac`.
   - `gh release view v0.1.16 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.16` remains published as the previous stable release, not a draft, not a prerelease, published at `2026-05-09T09:31:17Z`, and targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
+- Stage AF7 completion:
+  - PR #160 Windows Harness run `25601966464` - passed.
+  - PR #160 merged as `110ace3f27d8bb9f1eff2c45449998fd0373a998`.
+  - `gh run view 25602018700 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF7 `main` Windows Harness concluded `success` on `110ace3f27d8bb9f1eff2c45449998fd0373a998`.

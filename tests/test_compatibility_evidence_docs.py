@@ -26,6 +26,7 @@ V0116_RC0_RELEASE = ROOT / "docs" / "release-candidate-v0.1.16-rc.0.md"
 V0116_FINAL_PLAN = ROOT / "docs" / "next-round-plan-v0.1.16-final-release.md"
 V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 V0117_RELEASE = ROOT / "docs" / "release-v0.1.17.md"
+POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 POST_V0116_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.16.md"
 PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
 HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
@@ -49,6 +50,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "v0.1.16 final release record",
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
+        "Post-v0.1.17 maintenance plan",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -82,6 +84,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "v0.1.16 final release record",
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
+        "Post-v0.1.17 maintenance plan",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -867,7 +870,55 @@ def test_v0117_release_record_is_published_and_scoped():
         assert f"`{tool_name}`" in text
 
 
-def test_post_v0116_plan_is_active_without_expanding_scope():
+def test_post_v0117_plan_is_active_without_expanding_scope():
+    text = POST_V0117_PLAN.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "`v0.1.17` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17",
+        "release tag targets `5b260edc3bddc48986e52179b2ffd261856a89ac`",
+        "published at `2026-05-09T12:56:45Z`",
+        "AF7 publication reconciliation landed on `main` as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
+        "PR #160 Windows Harness run `25601966464` passed",
+        "post-merge `main` Windows Harness run `25602018700` passed",
+        "Current stage: AG0 - Post-v0.1.17 Baseline Cursor.",
+        "Stage status: AG0 review in progress; AF7 is complete.",
+        "Last completed evidence: AF7 publication reconciliation PR #160 merged as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
+        "gh release view v0.1.17",
+        "git ls-remote --tags origin v0.1.17",
+        "Next atomic task: land this post-v0.1.17 baseline cursor",
+        "then start AG1 public metadata and evidence freshness follow-up",
+        "Stage AG0 - Post-v0.1.17 Baseline Cursor",
+        "Stage AG1 - Public Metadata And Evidence Freshness Follow-up",
+        "Stage AG2 - Helper And Watcher Preview Diagnostics Review",
+        "Stage AG3 - MCP And Memory Contract Review",
+        "Stage AG4 - Compatibility Guardrail Sweep",
+        "Stage AG5 - Release-Readiness Decision",
+        "`v0.1.17` is the latest published stable release and must not be retagged",
+        "`v0.1.16` remains the previous stable release and must not be retagged",
+        "Manual UIA smoke for `v0.1.17` was freshly rerun in AF6",
+        "Do not retag `v0.1.17`",
+        "CLI command set remains unchanged",
+        "`generate-memory` manifest JSON includes the compatible AF3 trust-boundary fields",
+        "MCP tool list remains unchanged and read-only",
+        "Do not implement screenshot capture, OCR, audio recording",
+        "keyboard capture, clipboard capture, network upload, LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "Phase 6 remains privacy spec/scorecard only",
+        "Stage AG0 initialization:",
+        "gh release view v0.1.16",
+        "PR #160 merged at `2026-05-09T13:14:04Z`",
+        "PR #160 Windows Harness concluded `success`",
+        "post-AF7 `main` Windows Harness concluded `success`",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
+def test_post_v0116_plan_is_completed_without_expanding_scope():
     text = POST_V0116_PLAN.read_text(encoding="utf-8")
     normalized = _normalized(text)
 
@@ -878,18 +929,25 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
         "published at `2026-05-09T12:56:45Z`",
         "published at `2026-05-09T09:31:17Z`",
+        "post-v0.1.16 maintenance round is complete",
+        "active next cursor is now [Post-v0.1.17 maintenance plan]",
         "Current stage: AF7 - v0.1.17 Publication Reconciliation.",
-        "Stage status: AF7 review in progress; AF6 release publication is complete.",
+        "Stage status: AF7 complete; this post-v0.1.16 cursor is completed historical context.",
         "docs/release-v0.1.17.md",
-        "release-readiness PR #159 merged as",
+        "AF7 publication reconciliation PR #160 merged as",
+        "`110ace3f27d8bb9f1eff2c45449998fd0373a998`",
+        "PR Windows Harness run `25601966464` passed",
+        "post-merge `main` Windows Harness run `25602018700` passed",
+        "post-AF7 `main` Windows Harness run `25602018700` concluded `success`",
+        "PR #159 merged as",
         "`5b260edc3bddc48986e52179b2ffd261856a89ac`",
-        "PR Windows Harness run `25601571665` passed",
-        "post-merge `main` Windows Harness run `25601624151` passed",
-        "GitHub release publication created `v0.1.17`",
+        "PR #159, PR Windows Harness run `25601571665`",
+        "post-merge Windows Harness run `25601624151`",
+        "release created at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17",
         "gh release view v0.1.17",
         "git ls-remote --tags origin v0.1.17",
-        "Next atomic task: land this `v0.1.17` publication reconciliation",
-        "then start the post-v0.1.17 maintenance cursor",
+        "Next atomic task: continue the post-v0.1.17 maintenance cursor",
+        "next-round-plan-post-v0.1.17.md",
         "AF3 MCP/memory review PR #154 merged as",
         "`f55638cf213b40c07d01f1872a7ff828b3a85d6f`",
         "PR #154 Windows Harness run `25599715499`",
@@ -992,6 +1050,10 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "post-AF6 `main` Windows Harness concluded `success`",
         "gh release create v0.1.17",
         "`v0.1.17` is published, not a draft, not a prerelease",
+        "Stage AF7 completion:",
+        "PR #160 Windows Harness run `25601966464`",
+        "PR #160 merged as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
+        "post-AF7 `main` Windows Harness concluded `success`",
     ):
         assert phrase in normalized
 
