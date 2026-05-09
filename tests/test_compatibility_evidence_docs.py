@@ -37,6 +37,9 @@ HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0
 MCP_MEMORY_V0116 = ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.16.md"
 COMPATIBILITY_V0116 = ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.16.md"
 RELEASE_DECISION_V0117 = ROOT / "docs" / "release-readiness-decision-post-v0.1.17.md"
+PHASE6_CONTRACT_CLOSURE_RELEASE_DECISION = (
+    ROOT / "docs" / "phase6-contract-closure-release-readiness-decision-post-v0.1.17.md"
+)
 RELEASE_DECISION_V0116 = ROOT / "docs" / "release-readiness-decision-post-v0.1.16.md"
 
 
@@ -61,6 +64,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "MCP and memory contract sweep after v0.1.17",
         "Compatibility guardrail sweep after v0.1.17",
         "Release-readiness decision after v0.1.17",
+        "Phase 6 contract closure release-readiness decision after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -100,6 +104,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "MCP and memory contract sweep after v0.1.17",
         "Compatibility guardrail sweep after v0.1.17",
         "Release-readiness decision after v0.1.17",
+        "Phase 6 contract closure release-readiness decision after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -896,14 +901,16 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "AF7 publication reconciliation landed on `main` as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
         "PR #160 Windows Harness run `25601966464` passed",
         "post-merge `main` Windows Harness run `25602018700` passed",
-        "Current stage: Phase 6 Contract Closure Release-Readiness Decision.",
-        "Stage status: Phase 6 deferred fixture closure is complete and reconciled",
-        "Last completed evidence: Phase 6 deferred fixture closure PR #181 merged as `21b8da7d1dc5e84e8c3a49e3e6e852644ce06830`",
-        "PR Windows Harness run `25609874695` passed",
-        "post-deferred-fixture-closure `main` Windows Harness run `25609934759`",
-        "verified the post-deferred-fixture-closure `main` Windows Harness concluded `success`",
+        "Current stage: Next Blueprint Lane Selection.",
+        "Stage status: Phase 6 contract closure release-readiness decision is recorded as no release-readiness or publication path",
+        "Last completed evidence: Phase 6 deferred fixture closure reconciliation PR #182 merged as `1675dce9378efb55a226ebe8ac4929a8b196bb04`",
+        "PR Windows Harness run `25610106205` passed",
+        "post-reconciliation `main` Windows Harness run `25610156997` passed",
+        "verified the post-reconciliation `main` Windows Harness concluded `success`",
         "no runtime, helper/watcher, CLI/MCP output, privacy-runtime",
-        "Next atomic task: decide whether the completed Phase 6 contract-only closure",
+        "printed no files through the Phase 6 contract closure release-readiness decision",
+        "Phase 6 contract closure release-readiness decision likewise contains no such runtime or package change",
+        "Next atomic task: select the next blueprint lane and start with contracts, fixtures, tests, and scorecards",
         "sample-only allowlist marker",
         "Live UIA smoke remains manual and outside default CI",
         "Stage AG0 - Post-v0.1.17 Baseline Cursor",
@@ -1098,6 +1105,16 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "PR #181 Windows Harness concluded `success`",
         "post-deferred-fixture-closure `main` Windows Harness concluded `success`",
         "Selected the next Phase 6 step as a contract closure release-readiness decision",
+        "Phase 6 privacy-enrichment deferred fixture closure reconciliation completion:",
+        "PR #182 merged at `2026-05-09T19:44:58Z`",
+        "PR #182 Windows Harness concluded `success`",
+        "post-reconciliation `main` Windows Harness concluded `success`",
+        "Completed the Phase 6 deferred fixture closure reconciliation",
+        "Recorded the Phase 6 contract closure release-readiness decision",
+        "Selected the next step as next blueprint lane selection.",
+        "Phase 6 contract closure release-readiness decision local validation:",
+        "passed, 93 tests",
+        "passed, 190 tests",
     ):
         assert phrase in normalized
 
@@ -1681,6 +1698,62 @@ def test_release_readiness_decision_post_v017_declines_release_path():
         "privacy-neutral guardrails and evidence maintenance",
         "Start the Phase 6 privacy-enrichment contract preflight",
         "Do not implement screenshot capture, OCR, raw screenshot caches",
+    ):
+        assert phrase in normalized
+
+    for boundary in (
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network/cloud upload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service install",
+        "polling capture loops",
+        "default background capture",
+        "MCP write tools",
+        "arbitrary file read tools",
+    ):
+        assert boundary in normalized
+
+
+def test_phase6_contract_closure_release_decision_declines_publication_path():
+    text = PHASE6_CONTRACT_CLOSURE_RELEASE_DECISION.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Phase 6 Contract Closure Release-Readiness Decision After v0.1.17",
+        "no: do not start a release-readiness or publication path from these contract-only changes alone",
+        "Do not retag `v0.1.17`",
+        "did not change runtime code, package version identity, helper/watcher binaries, CLI/MCP output contracts",
+        "Is a release-readiness path warranted? | No.",
+        "Is immediate publication warranted? | No.",
+        "Should `v0.1.17` be retagged? | No.",
+        "Should a new version target be selected here? | No.",
+        "Is fresh manual UIA smoke decided here? | No.",
+        "Select the next blueprint lane with contracts, fixtures, tests, and scorecards first",
+        "`harness/specs`, `harness/fixtures/phase6`, `harness/scorecards` | Added the Phase 6 privacy-enrichment spec-only contract",
+        "`src/winchronicle`, `resources`, `pyproject.toml` | No diff from the published `v0.1.17` tag",
+        "Latest published release remains https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17",
+        "`v0.1.17` is not a draft or prerelease",
+        "Phase 6 deferred fixture closure PR #181 merged as `21b8da7d1dc5e84e8c3a49e3e6e852644ce06830`",
+        "PR #181 Windows Harness run `25609874695` concluded `success`",
+        "Post-deferred-fixture-closure `main` Windows Harness run `25609934759` concluded `success`",
+        "Phase 6 deferred fixture closure reconciliation PR #182 merged as `1675dce9378efb55a226ebe8ac4929a8b196bb04`",
+        "PR #182 Windows Harness run `25610106205` concluded `success`",
+        "Post-reconciliation `main` Windows Harness run `25610156997` concluded `success`",
+        r"git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml",
+        "runtime/resource/version diff command printed no files",
+        "focused Phase 6/docs validation reported 93 tests",
+        "full pytest reported 190 tests",
+        "product-source contract-artifact reference scan returned no matches",
+        "full deterministic harness passed, including 190 pytest tests",
+        "does not authorize implementation of screenshot capture",
+        "privacy-positive and runtime-neutral",
+        "Observed content remains untrusted",
+        "Do not implement screenshot capture, OCR, raw screenshot caches, runtime allowlist parsing",
     ):
         assert phrase in normalized
 

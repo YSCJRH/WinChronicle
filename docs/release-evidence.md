@@ -34,6 +34,8 @@ completed Phase 6 residual policy fixture expansion is
 [Phase 6 privacy contract residual policy fixtures after v0.1.17](phase6-privacy-contract-residual-policy-fixtures-post-v0.1.17.md). The
 completed Phase 6 deferred fixture closure is
 [Phase 6 privacy contract deferred fixture closure after v0.1.17](phase6-privacy-contract-deferred-fixture-closure-post-v0.1.17.md). The
+completed Phase 6 contract closure release-readiness decision is
+[Phase 6 contract closure release-readiness decision after v0.1.17](phase6-contract-closure-release-readiness-decision-post-v0.1.17.md). The
 completed post-v0.1.16 maintenance cursor is recorded in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
 completed post-v0.1.16 public metadata/evidence freshness audit is
@@ -130,7 +132,9 @@ historical records. After the `v0.1.17` maintenance publication:
   with post-reconciliation `main` Windows Harness run `25609534616`, and the
   Phase 6 deferred fixture closure PR #181 with
   post-deferred-fixture-closure `main` Windows Harness run `25609934759`, and
-  the current Phase 6 contract closure release-readiness decision;
+  Phase 6 deferred fixture closure reconciliation PR #182 with
+  post-reconciliation `main` Windows Harness run `25610156997`, and the
+  current next blueprint lane selection;
 - the completed post-v0.1.17 public metadata/evidence freshness audit records
   repository metadata, `v0.1.17` release metadata, previous stable `v0.1.16`
   release metadata, post-AG0 `main` Windows Harness evidence, manual repository
