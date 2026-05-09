@@ -33,6 +33,11 @@ PHASE6_INVALID_FIXTURES = (
     / "harness"
     / "fixtures"
     / "phase6"
+    / "privacy_enrichment_contract_invalid_missing_non_goal.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
     / "privacy_enrichment_contract_invalid_ocr_default_enabled.json",
     ROOT
     / "harness"
@@ -49,6 +54,11 @@ PHASE6_INVALID_FIXTURES = (
     / "fixtures"
     / "phase6"
     / "privacy_enrichment_contract_invalid_runtime_allowlist_config.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_runtime_capture_allowed.json",
     ROOT
     / "harness"
     / "fixtures"
@@ -141,6 +151,8 @@ def test_phase6_privacy_scorecard_records_threat_model_and_preflight_artifacts()
         "missing raw cache cleanup",
         "raw screenshot MCP exposure",
         "runtime allowlist configuration",
+        "runtime capture allowed in v0.1",
+        "missing required non-goal coverage",
         "sample shape examples only, not approved apps",
         "do not authorize screenshot capture, OCR, raw screenshot caches",
     )

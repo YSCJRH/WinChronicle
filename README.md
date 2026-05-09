@@ -142,6 +142,7 @@ available through `search-captures`.
 - [Release-readiness decision after v0.1.17](docs/release-readiness-decision-post-v0.1.17.md)
 - [Phase 6 privacy contract preflight after v0.1.17](docs/phase6-privacy-contract-preflight-post-v0.1.17.md)
 - [Phase 6 privacy contract fixture expansion after v0.1.17](docs/phase6-privacy-contract-fixture-expansion-post-v0.1.17.md)
+- [Phase 6 privacy contract remaining fixtures after v0.1.17](docs/phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md)
 - [Post-v0.1.16 maintenance plan](docs/next-round-plan-post-v0.1.16.md)
 - [Public metadata audit after v0.1.16](docs/public-metadata-audit-post-v0.1.16.md)
 - [Helper and watcher diagnostics sweep after v0.1.16](docs/helper-watcher-diagnostics-sweep-post-v0.1.16.md)

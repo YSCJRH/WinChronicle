@@ -43,11 +43,12 @@ fixture lives at
 negative fixtures for wildcard allowlists, too-long raw cache TTL, and runtime
 status. Additional negative fixtures cover default-enabled screenshots/OCR,
 missing raw cache cleanup, raw screenshot MCP exposure, and runtime allowlist
-configuration. The allowlist entries in the positive fixture are sample shape
-examples only, not approved apps. These artifacts are not runtime
-configuration. Product code must not read them in v0.1, and they do not
-authorize screenshot capture, OCR, raw screenshot caches, runtime allowlist
-parsing, or any new capture surface.
+configuration. Remaining negative fixtures cover runtime capture allowed in
+v0.1 and missing required non-goal coverage. The allowlist entries in the
+positive fixture are sample shape examples only, not approved apps. These
+artifacts are not runtime configuration. Product code must not read them in
+v0.1, and they do not authorize screenshot capture, OCR, raw screenshot
+caches, runtime allowlist parsing, or any new capture surface.
 
 ## Required Future Opt-In Contract
 
