@@ -147,6 +147,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Helper and watcher diagnostics sweep after v0.1.16](helper-watcher-diagnostics-sweep-post-v0.1.16.md)
 - [MCP and memory contract sweep after v0.1.16](mcp-memory-contract-sweep-post-v0.1.16.md)
 - [Compatibility guardrail sweep after v0.1.16](compatibility-guardrail-sweep-post-v0.1.16.md)
+- [Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md)
 - [v0.1.16 final release record](release-v0.1.16.md)
 - [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md)
 - [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md)

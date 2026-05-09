@@ -30,6 +30,7 @@ PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
 HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
 MCP_MEMORY_V0116 = ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.16.md"
 COMPATIBILITY_V0116 = ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.16.md"
+RELEASE_DECISION_V0116 = ROOT / "docs" / "release-readiness-decision-post-v0.1.16.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -51,6 +52,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Helper and watcher diagnostics sweep after v0.1.16",
         "MCP and memory contract sweep after v0.1.16",
         "Compatibility guardrail sweep after v0.1.16",
+        "Release-readiness decision after v0.1.16",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -82,6 +84,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Helper and watcher diagnostics sweep after v0.1.16",
         "MCP and memory contract sweep after v0.1.16",
         "Compatibility guardrail sweep after v0.1.16",
+        "Release-readiness decision after v0.1.16",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -811,21 +814,19 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
         "published at `2026-05-09T09:31:17Z`",
         "Current stage: AF5 - Release-Readiness Decision.",
-        "Stage status: AF4 complete; AF5 is ready to start.",
+        "Stage status: AF5 review in progress; AF4 is complete.",
         "docs/compatibility-guardrail-sweep-post-v0.1.16.md",
-        "AF4 compatibility guardrail PR #156 merged as",
-        "`20758124f5679be3a733ac0de8ed9c99e1d8777b`",
-        "PR Windows Harness run `25600358015` passed",
-        "post-merge `main` Windows Harness run `25600405807` passed",
-        "AF4 completion confirms the ordered MCP smoke guardrail",
-        "ordered MCP smoke guardrail",
-        "complete targeted-flag docs",
-        "`generate-memory` manifest compatibility shape",
-        "focused guardrail tests, boundary scan, control/capture dependency scan",
-        "full local harness, PR Windows Harness, and post-merge `main` Windows Harness passed",
-        "Next atomic task: start AF5",
-        "warrant a release-readiness plan",
-        "before the next blueprint implementation lane",
+        "AF4 completion PR #157 merged as",
+        "`74aeadc2e8fd0917ab02e0f73009f87453b4b1e8`",
+        "PR Windows Harness run `25600542270` passed",
+        "post-merge `main` Windows Harness run `25600584258` passed",
+        "docs/release-readiness-decision-post-v0.1.16.md",
+        "AF5 decision to start a narrow `v0.1.17` release-readiness plan",
+        "immutable `v0.1.16` release metadata",
+        "stable `0.1.16` version identity",
+        "unreleased compatible runtime/output hardenings",
+        "Next atomic task: land this AF5 release-readiness decision",
+        "create the narrow `v0.1.17` release-readiness record",
         "AF3 MCP/memory review PR #154 merged as",
         "`f55638cf213b40c07d01f1872a7ff828b3a85d6f`",
         "PR #154 Windows Harness run `25599715499`",
@@ -894,6 +895,18 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "PR #156 Windows Harness run `25600358015`",
         "PR #156 merged as `20758124f5679be3a733ac0de8ed9c99e1d8777b`",
         "post-AF4 `main` Windows Harness concluded `success`",
+        "Stage AF4 completion reconciliation:",
+        "PR #157 Windows Harness run `25600542270`",
+        "PR #157 merged as `74aeadc2e8fd0917ab02e0f73009f87453b4b1e8`",
+        "post-AF4-completion `main` Windows Harness concluded `success`",
+        "Stage AF5 release-readiness decision:",
+        "`v0.1.16` remains published, not a draft, not a prerelease",
+        "git diff --name-status v0.1.16..HEAD",
+        "include runtime/output changes in `src/winchronicle/cli.py`, `src/winchronicle/memory.py`, and `src/winchronicle/mcp/server.py`",
+        "runtime changes are narrow compatible privacy/trust-boundary hardenings",
+        "65 tests passed",
+        "166 tests passed",
+        "python harness/scripts/run_harness.py",
     ):
         assert phrase in normalized
 
@@ -1048,6 +1061,49 @@ def test_compatibility_guardrail_sweep_post_v016_records_precision_fixes():
         "found and fixed four narrow compatibility evidence drifts",
         "preserving the stable CLI command set",
         "The next smallest implementation task is to land this AF4 review",
+    ):
+        assert phrase in normalized
+
+
+def test_release_readiness_decision_post_v016_starts_v017_readiness():
+    text = RELEASE_DECISION_V0116.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Release-Readiness Decision After v0.1.16",
+        "AF5 record",
+        "start a narrow `v0.1.17` maintenance release-readiness plan",
+        "not immediate publication",
+        "Do not retag `v0.1.16`",
+        "compatible privacy, trust-boundary, diagnostics, documentation",
+        "include unreleased runtime/output changes",
+        "Is a release-readiness path warranted? | Yes.",
+        "Is immediate publication warranted? | No.",
+        "Should `v0.1.16` be retagged? | No.",
+        "Should the next release-readiness target be `v0.1.17`? | Yes.",
+        "Is fresh manual UIA smoke decided here? | No.",
+        "Create a narrow `v0.1.17` release-readiness record",
+        "`src/winchronicle/cli.py` | `watch --events` handles invalid embedded helper payloads",
+        "`src/winchronicle/memory.py` | `generate-memory` manifest JSON now includes `trust`",
+        "`src/winchronicle/mcp/server.py` | MCP control-like tool rejection was hardened",
+        "Additive CLI JSON trust-boundary change",
+        "Latest published release remains",
+        "https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16",
+        "`v0.1.16` is not a draft or prerelease",
+        "remain `0.1.16` until a release-readiness branch explicitly changes version",
+        "AF4 completion merged as `74aeadc2e8fd0917ab02e0f73009f87453b4b1e8`",
+        "run `25600584258` concluded `success`",
+        "AF5 does not accept or reject that evidence for `v0.1.17`",
+        "git diff --name-status v0.1.16..HEAD",
+        "runtime changes exist in `src/winchronicle/cli.py`",
+        "Result: passed, 65 tests.",
+        "Full AF5 validation:",
+        "full pytest reported 166 tests",
+        "full deterministic harness passed",
+        "does not authorize implementation of screenshot capture",
+        "privacy-positive guardrails",
+        "Land this AF5 release-readiness decision through PR and post-merge Windows Harness validation",
+        "create the narrow `v0.1.17` release-readiness record",
     ):
         assert phrase in normalized
 

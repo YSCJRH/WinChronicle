@@ -15,6 +15,7 @@ or token canaries.
 | --- | --- |
 | Stable release baseline | `v0.1.16` |
 | Current maintenance plan | [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md) |
+| Current release-readiness decision | [Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md) |
 | Completed final-release plan | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) |
 | Previous prerelease record | [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md) |
 | Previous maintenance plan | [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md) |
@@ -53,6 +54,13 @@ smoke. These command patterns are evidence shapes only; replace
 
 - A release record must cite this ledger when manual smoke is skipped,
   inherited, or refreshed.
+- The AF5 post-v0.1.16 release-readiness decision starts a narrow `v0.1.17`
+  release-readiness path. It does not decide manual smoke freshness; the
+  `v0.1.17` release-readiness record must decide whether to inherit or rerun
+  manual UIA smoke because AF1-AF4 include compatible public CLI/runtime output
+  changes, even though helper behavior, watcher product behavior, manual smoke
+  scripts, capture behavior, privacy behavior, and capture surfaces remain
+  unchanged.
 - Fresh manual smoke must use the
   [Manual smoke evidence template](manual-smoke-evidence-template.md).
 - Inherited evidence can provide context, but it is not current evidence unless

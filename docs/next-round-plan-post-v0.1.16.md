@@ -24,22 +24,20 @@ service install, no polling capture loop, and no default background capture.
 ## Execution Cursor
 
 - Current stage: AF5 - Release-Readiness Decision.
-- Stage status: AF4 complete; AF5 is ready to start.
+- Stage status: AF5 review in progress; AF4 is complete.
 - Last completed evidence:
-  `docs/compatibility-guardrail-sweep-post-v0.1.16.md` and AF4 compatibility
-  guardrail PR #156 merged as
-  `20758124f5679be3a733ac0de8ed9c99e1d8777b`, PR Windows Harness run
-  `25600358015` passed, and post-merge `main` Windows Harness run
-  `25600405807` passed on that SHA.
-- Last validation: AF4 completion confirms the ordered MCP smoke guardrail,
-  complete targeted-flag docs, `generate-memory` manifest compatibility shape,
-  focused guardrail tests, boundary scan, control/capture dependency scan,
-  full local harness, PR Windows Harness, and post-merge `main` Windows
-  Harness passed without capture-surface expansion.
-- Next atomic task: start AF5 by deciding whether the post-v0.1.16 docs,
-  harness, and compatibility-test changes warrant a release-readiness plan or
-  should remain maintenance evidence before the next blueprint implementation
-  lane.
+  `docs/compatibility-guardrail-sweep-post-v0.1.16.md` and AF4 completion PR
+  #157 merged as `74aeadc2e8fd0917ab02e0f73009f87453b4b1e8`, PR Windows
+  Harness run `25600542270` passed, and post-merge `main` Windows Harness run
+  `25600584258` passed on that SHA.
+- Last validation: `docs/release-readiness-decision-post-v0.1.16.md` records
+  the AF5 decision to start a narrow `v0.1.17` release-readiness plan, the
+  immutable `v0.1.16` release metadata, stable `0.1.16` version identity, and
+  unreleased compatible runtime/output hardenings without capture-surface
+  expansion.
+- Next atomic task: land this AF5 release-readiness decision through PR and
+  post-merge Windows Harness validation, then create the narrow `v0.1.17`
+  release-readiness record before any publication decision.
 - Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
@@ -172,6 +170,10 @@ Every implementation stage should run:
 - Chose AF5 as an explicit release-readiness decision because AF1-AF4 changed
   docs, deterministic tests, and harness guardrails without changing product
   behavior, capture surfaces, schemas, MCP tool schemas, or version metadata.
+- Started AF5 as a release-readiness decision; `v0.1.16` remains the immutable
+  latest published stable release, and AF1-AF4 warrant a narrow `v0.1.17`
+  release-readiness plan because they include compatible unreleased
+  runtime/output hardening.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -254,3 +256,17 @@ Every implementation stage should run:
   - PR #156 Windows Harness run `25600358015` - passed.
   - PR #156 merged as `20758124f5679be3a733ac0de8ed9c99e1d8777b`.
   - `gh run view 25600405807 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF4 `main` Windows Harness concluded `success` on `20758124f5679be3a733ac0de8ed9c99e1d8777b`.
+- Stage AF4 completion reconciliation:
+  - PR #157 Windows Harness run `25600542270` - passed.
+  - PR #157 merged as `74aeadc2e8fd0917ab02e0f73009f87453b4b1e8`.
+  - `gh run view 25600584258 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF4-completion `main` Windows Harness concluded `success` on `74aeadc2e8fd0917ab02e0f73009f87453b4b1e8`.
+- Stage AF5 release-readiness decision:
+  - `gh release view v0.1.16 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.16` remains published, not a draft, not a prerelease, published at `2026-05-09T09:31:17Z`, and targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
+  - `git rev-parse v0.1.16` - passed and printed `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
+  - `gh run view 25600584258 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; AF4 completion post-merge `main` Windows Harness concluded `success` on `74aeadc2e8fd0917ab02e0f73009f87453b4b1e8`.
+  - `git diff --name-status v0.1.16..HEAD` - passed; AF1-AF4 include runtime/output changes in `src/winchronicle/cli.py`, `src/winchronicle/memory.py`, and `src/winchronicle/mcp/server.py`.
+  - `git diff --stat v0.1.16..HEAD -- src/winchronicle/cli.py src/winchronicle/memory.py src/winchronicle/mcp/server.py` - passed; runtime changes are narrow compatible privacy/trust-boundary hardenings.
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed; 65 tests passed.
+  - `python -m pytest -q` - passed; 166 tests passed.
+  - `python harness/scripts/run_harness.py` - passed; includes 166 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
+  - `git diff --check` - passed.

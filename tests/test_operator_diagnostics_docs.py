@@ -66,6 +66,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         in quickstart
     )
     assert (
+        "[Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md)"
+        in quickstart
+    )
+    assert (
         "[v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md)"
         in quickstart
     )
@@ -167,6 +171,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         in readme
     )
     assert (
+        "[Release-readiness decision after v0.1.16](docs/release-readiness-decision-post-v0.1.16.md)"
+        in readme
+    )
+    assert (
         "[v0.1.16 final-release plan](docs/next-round-plan-v0.1.16-final-release.md)"
         in readme
     )
@@ -259,6 +267,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.16 helper/watcher diagnostics sweep" in readme_intro_normalized
     assert "current post-v0.1.16 MCP/memory contract sweep" in readme_intro_normalized
     assert "current post-v0.1.16 compatibility guardrail sweep" in readme_intro_normalized
+    assert "current post-v0.1.16 release-readiness decision" in readme_intro_normalized
     assert "latest published `v0.1.16` release record" in readme_intro_normalized
     assert "completed `v0.1.16` final-release plan" in readme_intro_normalized
     assert "historical `v0.1.16-rc.0` release-candidate record" in readme_intro_normalized
@@ -275,6 +284,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
     assert "MCP and memory contract sweep after v0.1.16" in readme_operator_docs
     assert "Compatibility guardrail sweep after v0.1.16" in readme_operator_docs
+    assert "Release-readiness decision after v0.1.16" in readme_operator_docs
     assert "v0.1.16 final-release plan" in readme_operator_docs
     assert "v0.1.16 final release record" in readme_operator_docs
     assert "v0.1.16-rc.0 release candidate record" in readme_operator_docs
@@ -340,6 +350,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )
     assert readme_operator_docs.index(
         "Compatibility guardrail sweep after v0.1.16"
+    ) < readme_operator_docs.index(
+        "Release-readiness decision after v0.1.16"
+    )
+    assert readme_operator_docs.index(
+        "Release-readiness decision after v0.1.16"
     ) < readme_operator_docs.index(
         "v0.1.16 final release record"
     )
@@ -441,6 +456,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in current_section
     assert "mcp-memory-contract-sweep-post-v0.1.16.md" in current_section
     assert "compatibility-guardrail-sweep-post-v0.1.16.md" in current_section
+    assert "release-readiness-decision-post-v0.1.16.md" in current_section
     assert "release-v0.1.16.md" in current_section
     assert "next-round-plan-v0.1.16-final-release.md" in current_section
     assert "next-round-plan-post-v0.1.15.md" in current_section
@@ -542,6 +558,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "mcp-memory-contract-sweep-post-v0.1.16.md" in evidence
     assert "compatibility-guardrail-sweep-post-v0.1.16.md" in checklist
     assert "compatibility-guardrail-sweep-post-v0.1.16.md" in evidence
+    assert "release-readiness-decision-post-v0.1.16.md" in checklist
+    assert "release-readiness-decision-post-v0.1.16.md" in evidence
     assert "next-round-plan-v0.1.16-final-release.md" in checklist
     assert "next-round-plan-v0.1.16-final-release.md" in evidence
     assert "next-round-plan-post-v0.1.15.md" in checklist
@@ -572,6 +590,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Compatibility guardrail sweep after v0.1.16" in evidence
     assert "compatibility guardrail sweeps record version identity" in checklist
     assert "compatibility guardrail evidence should record version identity" in evidence
+    assert "Release-readiness decision after v0.1.16" in checklist
+    assert "Release-readiness decision after v0.1.16" in evidence
+    assert "release-readiness decisions record whether current maintenance changes" in checklist
+    assert "warrant a release-readiness path" in checklist
+    assert "release-readiness decision evidence should record whether current maintenance" in evidence
+    assert "distinguish release plans from\n  immediate publication" in evidence
     assert "next-round-plan-post-v0.1.12.md" in checklist
     assert "next-round-plan-post-v0.1.12.md" in evidence
     assert "release-v0.1.10.md" not in checklist
@@ -2814,6 +2838,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     for expected in (
         "Stable release baseline | `v0.1.16`",
         "Current maintenance plan | [Post-v0.1.16 maintenance plan]",
+        "Current release-readiness decision | [Release-readiness decision after v0.1.16]",
         "Completed final-release plan | [v0.1.16 final-release plan]",
         "Previous prerelease record | [v0.1.16-rc.0 release candidate record]",
         "Previous maintenance plan | [Post-v0.1.15 maintenance plan]",
@@ -2857,6 +2882,9 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Do not paste observed text",
         "Do not save or commit raw watcher JSONL",
         "inherited/stale unless rerun",
+        "The AF5 post-v0.1.16 release-readiness decision starts a narrow `v0.1.17`",
+        "`v0.1.17` release-readiness record must decide whether to inherit or rerun",
+        "AF1-AF4 include compatible public CLI/runtime output\n  changes",
         "Deterministic harness smoke changes require fresh deterministic gate",
     ):
         assert expected in ledger
