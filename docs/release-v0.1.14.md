@@ -1,15 +1,14 @@
 # v0.1.14 Maintenance Release Record
 
-This record captures the compatible `v0.1.14` maintenance release-readiness
-candidate from the published `v0.1.13` baseline. It records commands, results,
-commit identifiers, CI URLs, environment notes, and local artifact paths only.
-It does not commit observed-content artifacts.
+This record captures the published compatible `v0.1.14` maintenance release
+from the published `v0.1.13` baseline. It records commands, results, commit
+identifiers, CI URLs, environment notes, and local artifact paths only. It does
+not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.14` is a release-readiness candidate. Local AB5 validation passed. PR
-Windows Harness, post-merge `main` Windows Harness, and GitHub release
-publication are pending.
+`v0.1.14` is published. Local AB5 validation, PR Windows Harness, post-merge
+`main` Windows Harness, and GitHub release publication passed.
 
 The direct compatible release path is allowed because AB0-AB4 changed
 documentation, tests, GitHub metadata evidence, deterministic harness evidence,
@@ -24,22 +23,22 @@ publication, prepare a release candidate instead of publishing `v0.1.14`
 directly. If such a regression is found after publication, publish a follow-up
 release candidate instead of retagging `v0.1.14`.
 
-Publication status: release-readiness candidate; not yet published.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.14` |
-| Stage | Release-readiness candidate |
+| Stage | Published maintenance release |
 | Evidence date | 2026-05-09, Asia/Shanghai |
 | Base `main` SHA before AB5 readiness | `cd5215e6e6333c7fe00fe47a526ea0d15dcf1bd7` |
-| Candidate PR | Pending |
-| Candidate PR Windows Harness | Pending |
-| Candidate post-merge `main` Windows Harness | Pending |
-| Publication status | Release-readiness candidate; not yet published |
-| Release URL | Pending |
-| Final tag target | Pending |
+| Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/125 |
+| Candidate PR Windows Harness | Passed, run `25585067457`, https://github.com/YSCJRH/WinChronicle/actions/runs/25585067457 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25585147402`, https://github.com/YSCJRH/WinChronicle/actions/runs/25585147402 |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.14 |
+| Final tag target | `e7e339f4e08828b9954599db76b87201dbcb139b` |
 | Previous stable release | `v0.1.13` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13 |
 | `v0.1.13` tag target | `1070343d9bcfd60c48238835e26b6c32f9060ae7` |
@@ -85,8 +84,8 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The AB5 PR Windows Harness and post-merge `main` Windows Harness must pass
-before publication.
+The AB5 PR Windows Harness, post-merge `main` Windows Harness, and GitHub
+release publication passed.
 
 ## Release Notes
 
@@ -173,13 +172,11 @@ This maintenance release does not expand the capture surface from `v0.1.13`.
 
 ## Release Decision Summary
 
-- Release path: compatible `v0.1.14` maintenance release-readiness candidate,
-  pending publication.
+- Release path: compatible `v0.1.14` maintenance release, published.
 - Fallback path: release candidate if any product or contract change is
   required before publication.
-- Deterministic gates: AB5 local validation passed; PR Windows Harness,
-  post-merge `main` Windows Harness, and GitHub release publication are
-  pending.
+- Deterministic gates: AB5 local validation, PR Windows Harness, post-merge
+  `main` Windows Harness, and GitHub release publication passed.
 - Manual UIA gates: inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code
   strict diagnostic, and watcher preview manual evidence is accepted by this
   AB5 record for the compatible `v0.1.14` path only because product UIA helper
@@ -187,6 +184,7 @@ This maintenance release does not expand the capture surface from `v0.1.13`.
   behavior, privacy behavior, product CLI/MCP shape, and capture surfaces are
   unchanged.
 - Privacy/scope confirmation: unchanged and recorded above.
-- Publication approval: pending explicit release approval.
-- Release URL: pending.
-- Final tag target: pending.
+- Publication approval: completed by the active thread goal directing stage
+  completion, remote push, and publication after required gates pass.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.14.
+- Final tag target: `e7e339f4e08828b9954599db76b87201dbcb139b`.

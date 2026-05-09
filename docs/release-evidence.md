@@ -4,13 +4,11 @@ Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
-[v0.1.13 maintenance release record](release-v0.1.13.md). The active
+[v0.1.14 maintenance release record](release-v0.1.14.md). The active
 post-v0.1.13 maintenance cursor is recorded in
-[Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md). The current
-compatible release-readiness candidate is
-[v0.1.14 maintenance release-readiness record](release-v0.1.14.md). The previous
+[Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md). The previous
 stable release record is
-[v0.1.12 maintenance release record](release-v0.1.12.md), the completed
+[v0.1.13 maintenance release record](release-v0.1.13.md), the completed
 post-v0.1.12 maintenance cursor is recorded in
 [Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md), and the
 post-v0.1.10 cursor is completed historical evidence.
@@ -37,15 +35,15 @@ Record only:
 Release evidence must name which facts are current and which are inherited from
 historical records. After the `v0.1.13` publication:
 
-- `v0.1.13` is the stable baseline until a later plan explicitly prepares
+- `v0.1.14` is the stable baseline until a later plan explicitly prepares
   another version;
-- `v0.1.13` is the latest published release; its release URL, tag target, and
+- `v0.1.14` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- `v0.1.14` is the current compatible release-readiness candidate; it must not
-  be treated as published until the GitHub release exists and the release record
-  is reconciled;
-- the post-v0.1.13 execution cursor is active and records post-publication
-  reconciliation PR #119 plus post-merge Windows Harness run `25581662790`;
+- the completed post-v0.1.13 execution cursor records `v0.1.14` publication,
+  PR #125, and post-merge Windows Harness run `25585147402`;
+- the post-v0.1.13 execution cursor also records the initial `v0.1.13`
+  post-publication reconciliation PR #119 plus post-merge Windows Harness run
+  `25581662790`;
 - public metadata evidence should record the command/result for repository
   description, homepage, topics, release metadata, and social preview status or
   manual follow-up items; never record observed-content artifacts for this
