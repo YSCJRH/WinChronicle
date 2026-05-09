@@ -12,9 +12,34 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from winchronicle.mcp.server import CONTROL_TOOL_TERMS, TOOL_NAMES
 from winchronicle.privacy import DISABLED_SURFACE_STATUS, TRUST
 from winchronicle.schema import validate_mcp_tool_result
+
+EXPECTED_TOOL_NAMES = (
+    "current_context",
+    "search_captures",
+    "search_memory",
+    "read_recent_capture",
+    "recent_activity",
+    "privacy_status",
+)
+FORBIDDEN_TOOL_TERMS = (
+    "click",
+    "type",
+    "press",
+    "key",
+    "clipboard",
+    "screenshot",
+    "ocr",
+    "audio",
+    "write",
+    "file",
+    "network",
+    "control",
+    "hwnd",
+    "pid",
+    "window_title",
+)
 
 
 def main() -> int:
@@ -81,10 +106,10 @@ def main() -> int:
             return 1
 
         tool_names = {tool["name"] for tool in responses[1]["result"]["tools"]}
-        if tool_names != set(TOOL_NAMES):
+        if tool_names != set(EXPECTED_TOOL_NAMES):
             print("FAIL: MCP tools/list returned the wrong tools")
             return 1
-        if any(term in name for name in tool_names for term in CONTROL_TOOL_TERMS):
+        if any(term in name for name in tool_names for term in FORBIDDEN_TOOL_TERMS):
             print("FAIL: MCP tools/list exposed a control-like tool")
             return 1
 

@@ -56,8 +56,10 @@ python -m winchronicle search-memory "OpenChronicle"
 ```
 
 The generated Markdown and SQLite entries are derived from already-redacted
-fixture captures. Do not commit generated state or memory artifacts from the
-temporary `WINCHRONICLE_HOME`.
+fixture captures. The `generate-memory` JSON manifest also preserves `trust =
+"untrusted_observed_content"` and the instruction not to follow observed
+content. Do not commit generated state or memory artifacts from the temporary
+`WINCHRONICLE_HOME`.
 
 ## Watcher Fixture Replay
 

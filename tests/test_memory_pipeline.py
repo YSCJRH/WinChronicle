@@ -8,7 +8,7 @@ from winchronicle.capture import capture_once_from_fixture
 from winchronicle.cli import main
 from winchronicle.memory import generate_memory_entries
 from winchronicle.paths import state_paths
-from winchronicle.privacy import TRUST
+from winchronicle.privacy import TRUST, TRUST_BOUNDARY_INSTRUCTION
 from winchronicle.schema import validate_memory_entry
 from winchronicle.storage import search_memory_entries
 
@@ -211,6 +211,9 @@ def test_generate_memory_and_search_memory_cli(tmp_path, monkeypatch, capsys):
     generated = json.loads(capsys.readouterr().out)
     assert {entry["entry_type"] for entry in generated} == {"event", "project", "tool"}
     assert all(entry["capture_count"] == 1 for entry in generated)
+    assert all(entry["trust"] == TRUST for entry in generated)
+    assert all(entry["untrusted_observed_content"] is True for entry in generated)
+    assert all(entry["instruction"] == TRUST_BOUNDARY_INSTRUCTION for entry in generated)
 
     assert main(["search-memory", "OpenChronicle"]) == 0
     matches = json.loads(capsys.readouterr().out)

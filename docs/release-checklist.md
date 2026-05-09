@@ -13,6 +13,8 @@ current public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md). The
 current helper/watcher diagnostics review is
 [Helper and watcher diagnostics sweep after v0.1.16](helper-watcher-diagnostics-sweep-post-v0.1.16.md). The
+current MCP/memory contract review is
+[MCP and memory contract sweep after v0.1.16](mcp-memory-contract-sweep-post-v0.1.16.md). The
 completed `v0.1.16` final-release cursor is recorded in
 [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md), and
 the historical prerelease record is
@@ -80,6 +82,10 @@ inherited historical evidence:
 - helper/watcher diagnostics sweeps record timeout, malformed output, no
   observed-content echo, duplicate skip, denylist skip, heartbeat-only liveness,
   and diagnostic artifact policy without promoting live UIA smoke to default CI;
+- MCP/memory contract sweeps record the exact read-only MCP tool list, forbidden
+  write/file/network/control tool boundary, durable memory contract, and
+  observed-content trust metadata for memory manifests without expanding capture
+  surfaces;
 - the post-v0.1.12 execution cursor is completed historical context and records
   PR #118 plus post-merge Windows Harness run `25580877004`;
 - the post-v0.1.11 execution cursor is completed historical context and
