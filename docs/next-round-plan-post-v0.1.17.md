@@ -27,24 +27,24 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AG5 - Release-Readiness Decision.
-- Stage status: AG5 review in progress; AG4 landed through PR #165 and
-  post-merge Windows Harness.
-- Last completed evidence: AG4 compatibility guardrail review PR #165 merged
-  as `ac01afc206852a8b2b52126d61aa91d633e4675b`, PR Windows Harness run
-  `25604208696` passed, and post-AG4 `main` Windows Harness run `25604269757`
+- Current stage: Post-AG5 blueprint lane cursor.
+- Stage status: AG5 complete; no post-v0.1.17 release-readiness or
+  publication path is open.
+- Last completed evidence: AG5 release-readiness decision PR #166 merged as
+  `a55f1024f2f0a131044eb6e288de945ec1dbb5b2`, PR Windows Harness run
+  `25604616542` passed, and post-AG5 `main` Windows Harness run `25604682902`
   passed on that SHA.
-- Last validation: `gh run view 25604269757 --json
+- Last validation: `gh run view 25604682902 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AG4 `main` Windows Harness concluded `success`; `git diff
+  verified the post-AG5 `main` Windows Harness concluded `success`; `git diff
   --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` printed no files, so AG1-AG4 contain no runtime,
+  pyproject.toml` printed no files, so AG1-AG5 contain no runtime,
   helper/watcher, CLI/MCP output, privacy-runtime, capture-surface, or
   version-metadata change.
-- Next atomic task: land this AG5 release-readiness decision through PR and
-  post-merge Windows Harness validation, then start the next smallest blueprint
-  implementation lane with contracts, fixtures, tests, and scorecards first.
+- Next atomic task: start the Phase 6 privacy-enrichment contract preflight
+  with contracts, fixtures, tests, scorecards, and docs only; do not implement
+  screenshot capture or OCR.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -129,6 +129,19 @@ service install, no polling capture loop, and no default background capture.
 - Add `docs/release-readiness-decision-post-v0.1.17.md`.
 - Record that no release-readiness or publication path is warranted from
   docs/tests/evidence maintenance alone.
+- Completed in PR #166 with PR Windows Harness run `25604616542` and
+  post-merge `main` Windows Harness run `25604682902`.
+
+### Next Blueprint Lane - Phase 6 Privacy-Enrichment Contract Preflight
+
+- Refine the Phase 6 threat model, opt-in requirements, per-app allowlist
+  expectations, TTL/cache cleanup requirements, and tests-first task list.
+- Add or update contracts, fixtures, tests, scorecards, and documentation
+  before any behavior change.
+- Keep Phase 6 implementation out of scope: do not implement screenshot
+  capture, OCR, raw screenshot caches, or runtime allowlist parsing in this
+  preflight.
+- Keep real UIA smoke manual and outside default CI.
 
 ## Public Interfaces And Non-goals
 
@@ -222,6 +235,13 @@ Every implementation stage should run:
   AG1-AG4 alone because they are docs/tests/evidence changes with no diff under
   `src/winchronicle`, `resources`, or `pyproject.toml` from the published
   `v0.1.17` tag.
+- Completed AG5 after PR #166 merged as
+  `a55f1024f2f0a131044eb6e288de945ec1dbb5b2` and post-merge `main` Windows
+  Harness run `25604682902` passed.
+- Returned the active cursor to blueprint implementation after AG5, with the
+  next smallest lane selected as Phase 6 privacy-enrichment contract preflight:
+  threat model, opt-in requirements, per-app allowlist expectations, TTL/cache
+  cleanup requirements, tests, scorecards, and docs only.
 
 ## Validation Log
 
@@ -348,3 +368,7 @@ Every implementation stage should run:
     tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke,
     MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory,
     deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AG5 completion:
+  - `gh pr view 166 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #166 merged at `2026-05-09T15:25:36Z` as `a55f1024f2f0a131044eb6e288de945ec1dbb5b2`.
+  - `gh run view 25604616542 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #166 Windows Harness concluded `success` on `db88fe4449008f932d5703fc01484020a4635585`.
+  - `gh run view 25604682902 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AG5 `main` Windows Harness concluded `success` on `a55f1024f2f0a131044eb6e288de945ec1dbb5b2`.

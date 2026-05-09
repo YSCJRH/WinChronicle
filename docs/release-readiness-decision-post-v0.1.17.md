@@ -45,6 +45,13 @@ capture storage, privacy runtime behavior, or capture surfaces.
 - AG4 completion post-merge `main` Windows Harness run `25604269757`
   concluded `success` on
   `ac01afc206852a8b2b52126d61aa91d633e4675b`.
+- AG5 PR Windows Harness run `25604616542` concluded `success` on
+  `db88fe4449008f932d5703fc01484020a4635585`.
+- AG5 merged as `a55f1024f2f0a131044eb6e288de945ec1dbb5b2` through PR #166
+  at `2026-05-09T15:25:36Z`.
+- AG5 completion post-merge `main` Windows Harness run `25604682902`
+  concluded `success` on
+  `a55f1024f2f0a131044eb6e288de945ec1dbb5b2`.
 - The latest full manual UIA smoke source remains the published `v0.1.17`
   release record. AG5 does not accept, reject, refresh, or publish with that
   evidence; a future release-readiness record must decide manual smoke
@@ -110,6 +117,21 @@ smoke, MCP smoke, install CLI smoke, privacy check, fixture
 capture/search/memory, deterministic watcher fixture, and watcher fake-helper
 smoke.
 
+AG5 PR and post-merge validation:
+
+```powershell
+gh pr view 166 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName
+gh run view 25604616542 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt
+gh run view 25604682902 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt
+```
+
+Result: passed; PR #166 merged at `2026-05-09T15:25:36Z` as
+`a55f1024f2f0a131044eb6e288de945ec1dbb5b2`, PR Windows Harness run
+`25604616542` concluded `success` on
+`db88fe4449008f932d5703fc01484020a4635585`, and post-AG5 `main` Windows
+Harness run `25604682902` concluded `success` on
+`a55f1024f2f0a131044eb6e288de945ec1dbb5b2`.
+
 ## Privacy And Security
 
 AG5 does not authorize implementation of screenshot capture, OCR, audio
@@ -130,7 +152,7 @@ committed.
 
 ## Next Task
 
-Land this AG5 release-readiness decision through PR and post-merge Windows
-Harness validation. After AG5 completion, start the next smallest blueprint
-implementation lane with contracts, fixtures, tests, and scorecards first
-instead of preparing a new release from docs/tests maintenance alone.
+Start the Phase 6 privacy-enrichment contract preflight with contracts,
+fixtures, tests, scorecards, and docs only. Do not implement screenshot
+capture, OCR, raw screenshot caches, runtime allowlist parsing, or any capture
+surface in that preflight.
