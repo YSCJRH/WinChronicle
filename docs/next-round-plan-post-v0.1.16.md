@@ -24,17 +24,17 @@ service install, no polling capture loop, and no default background capture.
 ## Execution Cursor
 
 - Current stage: AF1 - Public Metadata And Evidence Freshness Follow-up.
-- Stage status: AF1 in progress; public metadata and release metadata are
-  checked, and `docs/public-metadata-audit-post-v0.1.16.md` is prepared for
-  review.
-- Last completed evidence: AF0 baseline cursor PR #149 merged as
-  `85172956c978fbb6b3355d7e3e75e2ba25fc909a`, PR Windows Harness run
-  `25598203781` passed, and post-merge `main` Windows Harness run
-  `25598257646` passed on that SHA.
-- Last validation: `gh repo view`, `gh release view v0.1.16`, and
-  `gh run view 25598257646` passed for the AF1 public metadata audit.
-- Next atomic task: merge the AF1 public metadata audit after review and PR
-  Windows Harness, then wait for post-merge `main` Windows Harness.
+- Stage status: AF1 complete; public metadata and evidence freshness were
+  checked after `v0.1.16`, and AF2 is ready to start.
+- Last completed evidence: AF1 public metadata audit PR #150 merged as
+  `b7f65186bd009d625eb29756c642a1c34fc0cccb`, PR Windows Harness run
+  `25598506221` passed, and post-merge `main` Windows Harness run
+  `25598562659` passed on that SHA.
+- Last validation: `docs/public-metadata-audit-post-v0.1.16.md` records empty
+  GitHub description, homepage, and topics as manual maintainer follow-up
+  items, not product-code blockers.
+- Next atomic task: start AF2 by reviewing helper and watcher preview
+  diagnostics evidence without expanding the product capture surface.
 - Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
@@ -128,6 +128,7 @@ Every implementation stage should run:
   post-merge Windows Harness passed.
 - Chose AF1 as a docs-only audit because repository metadata gaps remain manual
   maintainer settings and do not require product-code changes.
+- Completed AF1 after PR #150 and post-merge `main` Windows Harness passed.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -151,3 +152,7 @@ Every implementation stage should run:
   - `python -m pytest -q` - passed; 155 tests passed.
   - `python harness/scripts/run_harness.py` - passed; includes 155 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
   - `git diff --check` - passed.
+- Stage AF1 completion:
+  - PR #150 Windows Harness run `25598506221` - passed.
+  - PR #150 merged as `b7f65186bd009d625eb29756c642a1c34fc0cccb`.
+  - `gh run view 25598562659 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF1 `main` Windows Harness concluded `success` on `b7f65186bd009d625eb29756c642a1c34fc0cccb`.
