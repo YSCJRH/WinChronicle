@@ -23,6 +23,7 @@ V0113_RELEASE = ROOT / "docs" / "release-v0.1.13.md"
 V0114_RELEASE = ROOT / "docs" / "release-v0.1.14.md"
 V0115_RELEASE = ROOT / "docs" / "release-v0.1.15.md"
 V0116_RC0_RELEASE = ROOT / "docs" / "release-candidate-v0.1.16-rc.0.md"
+V0116_FINAL_PLAN = ROOT / "docs" / "next-round-plan-v0.1.16-final-release.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -38,6 +39,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "v0.1.14 maintenance release record",
         "v0.1.15 maintenance release record",
         "v0.1.16-rc.0 release candidate record",
+        "v0.1.16 final-release plan",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -63,6 +65,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "v0.1.14 maintenance release record",
         "v0.1.15 maintenance release record",
         "v0.1.16-rc.0 release candidate record",
+        "v0.1.16 final-release plan",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -666,6 +669,37 @@ def test_v0116_rc0_release_candidate_record_is_ready_and_scoped():
         "publication reconciliation post-merge `main` Windows Harness passed",
         "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16-rc.0.",
         "Final tag target: `70caf364f68d8c159eb74bbbc23e7469db22a244`.",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
+def test_v0116_final_release_plan_keeps_direct_final_gated_and_scoped():
+    text = V0116_FINAL_PLAN.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "`v0.1.16-rc.0` is published as a prerelease",
+        "prerelease tag targets `70caf364f68d8c159eb74bbbc23e7469db22a244`",
+        "Windows Harness run `25596579705` passed",
+        "documentation and documentation-test evidence only",
+        "No product code, schemas, CLI/MCP JSON shape, helper/watcher behavior, privacy runtime behavior, or capture surfaces changed",
+        "Direct final release can proceed only after fresh final gates",
+        "explicit final manual smoke evidence",
+        "If final-readiness work requires any product or contract change",
+        "prepare `v0.1.16-rc.1` instead",
+        "Do not publish or retag `v0.1.16` during AE0",
+        "Rerun fresh final manual UIA smoke instead of automatically inheriting",
+        "Do not commit raw helper JSON, raw watcher JSONL, screenshots, OCR output",
+        "The final tag should target the post-merge `main` SHA",
+        "exact read-only MCP tool list",
+        "Phase 6 remains privacy spec/scorecard only",
+        "product targeted capture flags",
+        "gh release view v0.1.16",
+        "release not found",
+        "git diff --name-status v0.1.16-rc.0..HEAD",
     ):
         assert phrase in normalized
 

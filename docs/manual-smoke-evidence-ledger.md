@@ -14,7 +14,8 @@ or token canaries.
 | Field | Value |
 | --- | --- |
 | Stable release baseline | `v0.1.15` |
-| Current maintenance plan | [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md) |
+| Current final-release plan | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) |
+| Completed prerelease plan | [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md) |
 | Latest completed maintenance plan | [Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md) |
 | Current prerelease record | [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md) |
 | Published release record | [v0.1.15 maintenance release record](release-v0.1.15.md) |
@@ -22,7 +23,7 @@ or token canaries.
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
 | Last freshness decision | For the current `v0.1.16-rc.0` release-candidate path, AD5 refreshed manual UIA smoke because AD2-AD4 changed privacy/runtime behavior while keeping capture surfaces closed. Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning, VS Code strict remains a diagnostic non-blocking failure, and watcher preview live smoke passed. Artifact paths are local only. |
-| Next freshness decision | A future direct `v0.1.16` final or follow-up release candidate must decide whether this `v0.1.16-rc.0` manual smoke remains current or whether fresh manual smoke is required again. |
+| Next freshness decision | The active `v0.1.16` final-release plan requires fresh final manual UIA smoke in AE2 before final publication; do not silently promote `v0.1.16-rc.0` smoke evidence to final evidence. |
 
 ## Latest Known Manual Evidence
 
