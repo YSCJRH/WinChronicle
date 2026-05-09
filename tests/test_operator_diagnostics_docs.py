@@ -66,6 +66,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         in quickstart
     )
     assert (
+        "[MCP and memory contract sweep after v0.1.15](mcp-memory-contract-sweep-post-v0.1.15.md)"
+        in quickstart
+    )
+    assert (
         "[Helper and watcher diagnostics sweep after v0.1.14](helper-watcher-diagnostics-sweep-post-v0.1.14.md)"
         in quickstart
     )
@@ -127,6 +131,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[Helper and watcher diagnostics sweep after v0.1.15](docs/helper-watcher-diagnostics-sweep-post-v0.1.15.md)"
+        in readme
+    )
+    assert (
+        "[MCP and memory contract sweep after v0.1.15](docs/mcp-memory-contract-sweep-post-v0.1.15.md)"
         in readme
     )
     assert (
@@ -197,6 +205,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Post-v0.1.14 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.15" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.15" in readme_operator_docs
+    assert "MCP and memory contract sweep after v0.1.15" in readme_operator_docs
     assert "Public metadata audit after v0.1.14" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.14" in readme_operator_docs
     assert "MCP and memory contract sweep after v0.1.14" in readme_operator_docs
@@ -251,6 +260,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Helper and watcher diagnostics sweep after v0.1.15"
     )
     assert readme_operator_docs.index("Helper and watcher diagnostics sweep after v0.1.15") < readme_operator_docs.index(
+        "MCP and memory contract sweep after v0.1.15"
+    )
+    assert readme_operator_docs.index("MCP and memory contract sweep after v0.1.15") < readme_operator_docs.index(
         "Public metadata audit after v0.1.14"
     )
     assert readme_operator_docs.index("Public metadata audit after v0.1.14") < readme_operator_docs.index(
@@ -317,6 +329,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.14.md" in current_section
     assert "public-metadata-audit-post-v0.1.15.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.15.md" in current_section
+    assert "mcp-memory-contract-sweep-post-v0.1.15.md" in current_section
     assert "public-metadata-audit-post-v0.1.14.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.14.md" in current_section
     assert "mcp-memory-contract-sweep-post-v0.1.14.md" in current_section
@@ -1336,11 +1349,11 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "post-publication reconciliation on `main` is `54208c51819a45140e355272d8cb3f0e3fbff900`",
         "Windows Harness run `25589775129` passed",
         "reports `0.1.15`",
-        "Current stage: AD2 - Helper And Watcher Preview Diagnostics Review.",
-        "Stage status: A - AD2 is the active helper/watcher diagnostics evidence and narrow privacy diagnostic drift-fix stage.",
-        "AD1 added the post-v0.1.15 public metadata audit in PR #136",
-        "merged as `f2a7fbd3ef66275f0688015955d32e58ed330b1f`",
-        "post-merge `main` Windows Harness run `25593871698` passed",
+        "Current stage: AD3 - MCP And Memory Contract Review.",
+        "Stage status: A - AD3 is the active MCP/memory contract evidence and compatible read-only search parity drift-fix stage.",
+        "AD2 added the post-v0.1.15 helper/watcher diagnostics sweep",
+        "merged as `37335cd2cefabab4fa9e500b58ede2e96d1cb2de`",
+        "post-merge `main` Windows Harness run `25594302410` passed",
         "Stage AD0 - Post-v0.1.15 Baseline Cursor",
         "Stage AD1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AD2 - Helper And Watcher Preview Diagnostics Review",
@@ -1366,11 +1379,18 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "deterministic helper/watcher diagnostics coverage is present",
         "title-denylist skip reasons could echo matched window titles",
         "denylisted title pattern",
+        "Stage AD2 completion:",
+        "PR #137 Windows Harness run `25594230290`",
+        "Stage AD3 initialization:",
+        "docs/mcp-readonly-examples.md",
+        "deterministic MCP/memory trust-boundary and exact-tool coverage is present",
+        "MCP filtered search could miss valid matches beyond the first 50 raw results",
         "gh release view v0.1.15",
         "git rev-parse v0.1.15",
         "gh run view 25589775129",
         "gh run view 25593607384",
         "gh run view 25593871698",
+        "gh run view 25594302410",
         "printed `0.1.15`",
     ):
         assert expected in normalized
@@ -1461,6 +1481,61 @@ def test_helper_watcher_diagnostics_sweep_post_v015_records_drift_fix():
         "MCP write tools",
         "product targeted capture",
         "live UIA smoke in\ndefault CI",
+    ):
+        assert boundary in sweep
+
+
+def test_mcp_memory_contract_sweep_post_v015_records_drift_fixes():
+    sweep = (ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.15.md").read_text(
+        encoding="utf-8"
+    )
+
+    for expected in (
+        "MCP And Memory Contract Sweep After v0.1.15",
+        "documentation-only MCP example drift fix",
+        "compatible read-only MCP\nfiltered-search parity fix",
+        "does not change schemas",
+        "MCP tool schemas",
+        "MCP examples",
+        "MCP scorecard",
+        "Memory scorecard",
+        "Deterministic demo",
+        "Operator quickstart",
+        "Deterministic tests",
+        "current_context",
+        "search_captures",
+        "search_memory",
+        "read_recent_capture",
+        "recent_activity",
+        "privacy_status",
+        "trust = \"untrusted_observed_content\"",
+        "MCP `search_memory` parity",
+        "MCP `search_captures` parity",
+        "Memory FTS",
+        "Idempotent memory generation",
+        "Secret exclusion",
+        "Fixture-only demo",
+        "AD3 found no required schema, tool-list, tool-schema",
+        "`privacy_status` example omitted the existing `home`, `db_exists`, and\n  `capture_count` fields",
+        "MCP `search_captures` and `search_memory` applied filters after a raw\n  50-result fetch",
+        "No fresh manual UIA smoke is required for this AD3 sweep",
+        "The next smallest implementation task is AD4",
+    ):
+        assert expected in sweep
+
+    for boundary in (
+        "MCP write tools",
+        "arbitrary file reads",
+        "screenshot\ncapture",
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network\nupload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "live UIA smoke\nin default CI",
     ):
         assert boundary in sweep
 

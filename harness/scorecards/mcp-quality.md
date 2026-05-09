@@ -18,6 +18,9 @@ Phase 4 MCP acceptance criteria:
 - `search_memory` reads from the same SQLite memory index as the CLI
   `search-memory` path and returns only deterministic entry metadata,
   snippets, paths, and the observed-content trust boundary.
+- MCP filtered search must apply `app_name`, time, and `entry_type` filters
+  before the result limit so filtered results are not lost after the first 50
+  unfiltered raw matches.
 - `privacy_status` reports the same disabled privacy surfaces as CLI
   `status`: screenshots, OCR, audio, keyboard capture, clipboard capture,
   network upload, cloud upload, LLM calls, desktop control, product targeted

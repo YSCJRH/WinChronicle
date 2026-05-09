@@ -30,18 +30,20 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AD2 - Helper And Watcher Preview Diagnostics Review.
-- Stage status: A - AD2 is the active helper/watcher diagnostics evidence and
-  narrow privacy diagnostic drift-fix stage.
-- Last completed evidence: AD1 added the post-v0.1.15 public metadata audit
-  in PR #136, merged as `f2a7fbd3ef66275f0688015955d32e58ed330b1f`, and
-  post-merge `main` Windows Harness run `25593871698` passed.
-- Last validation: AD1 validated focused docs/version tests, full
-  deterministic harness, PR Windows Harness run `25593788484`, and
-  post-merge `main` Windows Harness run `25593871698`.
-- Next atomic task: complete AD2 by recording helper/watcher diagnostics
-  evidence and fixing any narrow privacy diagnostic drift without changing
-  schemas, CLI/MCP JSON shape, capture behavior, or capture surfaces.
+- Current stage: AD3 - MCP And Memory Contract Review.
+- Stage status: A - AD3 is the active MCP/memory contract evidence and
+  compatible read-only search parity drift-fix stage.
+- Last completed evidence: AD2 added the post-v0.1.15 helper/watcher
+  diagnostics sweep and fixed title-denylist diagnostic no-echo behavior in PR
+  #137, merged as `37335cd2cefabab4fa9e500b58ede2e96d1cb2de`, and
+  post-merge `main` Windows Harness run `25594302410` passed.
+- Last validation: AD2 validated focused diagnostics tests, full deterministic
+  harness, PR Windows Harness run `25594230290`, and post-merge `main`
+  Windows Harness run `25594302410`.
+- Next atomic task: complete AD3 by recording MCP/memory contract evidence and
+  fixing narrow MCP example or read-only search parity drift without changing
+  schemas, CLI/MCP JSON shape, MCP tool schemas, memory reducer behavior,
+  privacy behavior, or capture surfaces.
 - Known blockers: none.
 
 ## Phased Work
@@ -184,6 +186,13 @@ Stage-specific gates:
   preview diagnostics evidence without expanding live capture paths.
 - Promoted a narrow AD2 privacy diagnostic fix after review found that
   title-denylist skip reasons could echo matched window titles.
+- Chose AD3 as an MCP/memory contract sweep because existing tests and
+  scorecards define exact read-only tools, memory search parity, and
+  trust-boundary evidence.
+- Promoted a narrow AD3 documentation fix after review found the
+  `privacy_status` MCP example omitted existing local-state fields.
+- Promoted a narrow AD3 read-only search parity fix after review found MCP
+  filtered search could drop valid matches beyond the first 50 raw results.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -223,4 +232,22 @@ Stage-specific gates:
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed; includes 144 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, and preview watcher smoke.
+  - `git diff --check` - passed.
+- Stage AD2 completion:
+  - PR #137 Windows Harness run `25594230290` - passed.
+  - PR #137 merged as `37335cd2cefabab4fa9e500b58ede2e96d1cb2de`.
+  - `gh run view 25594302410 --json databaseId,status,conclusion,headSha,url,displayTitle` - passed; post-AD2 `main` Windows Harness concluded `success` on `37335cd2cefabab4fa9e500b58ede2e96d1cb2de`.
+- Stage AD3 initialization:
+  - Reviewed `docs/mcp-readonly-examples.md`, `docs/deterministic-demo.md`, `harness/scorecards/mcp-quality.md`, `harness/scorecards/memory-quality.md`, `docs/operator-quickstart.md`, `tests/test_mcp_tools.py`, and `tests/test_memory_pipeline.py`.
+  - `rg -n "current_context|search_captures|search_memory|read_recent_capture|recent_activity|privacy_status|untrusted_observed_content|entries_fts|idempotent|No write/control/file/screenshot/OCR/audio/keyboard/clipboard/network" docs harness tests src` - reviewed; deterministic MCP/memory trust-boundary and exact-tool coverage is present in tests, scorecards, docs, and source contracts.
+  - Review found the `privacy_status` MCP example omitted existing `home`, `db_exists`, and `capture_count` response fields and the `read_recent_capture` example showed `url: null` instead of the public empty-string storage shape; AD3 updated the examples and tests to match the implementation.
+  - Review found MCP filtered search could miss valid matches beyond the first 50 raw results; AD3 added deterministic >50-result parity tests and moved capture/memory filters into SQLite search.
+- Stage AD3 focused validation:
+  - `python -m pytest tests/test_mcp_tools.py tests/test_memory_pipeline.py tests/test_operator_diagnostics_docs.py -q` - passed; 51 tests passed.
+- Stage AD3 local validation:
+  - `python -m pytest -q` - passed; 147 tests passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed; includes 147 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, and preview watcher smoke.
   - `git diff --check` - passed.
