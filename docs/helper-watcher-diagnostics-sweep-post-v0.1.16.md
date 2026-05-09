@@ -5,8 +5,9 @@ published `v0.1.16` final release, AF1 public metadata audit, and AF1
 completion reconciliation. It records then-current deterministic evidence and
 added a narrow content-free CLI diagnostic fix. It does not change schemas,
 successful CLI/MCP JSON shape, helper/watcher capture behavior, privacy storage
-behavior, or capture surfaces. This sweep is now historical; the active
-helper/watcher diagnostics review is the post-v0.1.17 AG2 sweep.
+behavior, or capture surfaces. This sweep is now historical; the post-v0.1.17
+AG2 sweep superseded it, and the active helper/watcher diagnostics review is
+the post-v0.1.18 AH2 sweep.
 
 ## Reviewed Surfaces
 
