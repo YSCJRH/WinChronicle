@@ -15,9 +15,22 @@ REDACTION_RULES = [
             re.DOTALL,
         ),
     ),
-    ("api_key", re.compile(r"sk-[A-Za-z0-9_-]{20,}")),
-    ("github_token", re.compile(r"ghp_[A-Za-z0-9_]{20,}")),
-    ("slack_token", re.compile(r"xox[baprs]-[A-Za-z0-9-]{10,}")),
+    ("github_token", re.compile(r"(?:gh[pousr]_|github_pat_)[A-Za-z0-9_]{20,}")),
+    ("slack_token", re.compile(r"(?:xox[baprs]|xapp)-[A-Za-z0-9-]{10,}")),
+    (
+        "api_key",
+        re.compile(
+            r"sk-[A-Za-z0-9_-]{20,}"
+            r"|(?i:(?<=API_KEY=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
+            r"|(?<=OPENAI_API_KEY=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
+            r"|(?<=SERVICE_API_KEY=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
+            r"|(?<=SECRET_KEY=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
+            r"|(?<=ACCESS_TOKEN=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
+            r"|(?<=AUTH_TOKEN=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
+            r"|(?<=SERVICE_TOKEN=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
+            r"|(?<=BEARER_TOKEN=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,})"
+        ),
+    ),
     (
         "jwt",
         re.compile(r"\b[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b"),

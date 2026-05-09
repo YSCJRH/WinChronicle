@@ -17,6 +17,10 @@ ALLOWED_PHASE6_SOURCE_SENTINELS = {
     "src/winchronicle/mcp/server.py": {
         'CONTROL_TOOL_TERMS = ("click", "type", "press", "key", "clipboard", "screenshot", "ocr", "audio")',
     },
+    "src/winchronicle/cli.py": {
+        '"--screenshot",',
+        '"--ocr",',
+    },
     "resources/win-uia-helper/Program.cs": {
         '["screenshots"] = false,',
         '["ocr"] = false,',

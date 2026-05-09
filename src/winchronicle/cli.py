@@ -13,6 +13,21 @@ from .privacy import privacy_contract_payload
 from .storage import capture_count, init_db, memory_entry_count, search_captures, search_memory_entries
 
 
+FORBIDDEN_PASSTHROUGH_FLAGS = (
+    "--hwnd",
+    "--pid",
+    "--window-title",
+    "--window-title-regex",
+    "--process-name",
+    "--screenshot",
+    "--ocr",
+    "--audio",
+    "--keyboard",
+    "--clipboard",
+    "--control",
+)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="winchronicle")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -112,6 +127,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "capture-frontmost":
+        _reject_forbidden_passthrough(parser, args.helper_arg, "--helper-arg")
         if not 0 <= args.depth <= 80:
             parser.error("--depth must be between 0 and 80")
         try:
@@ -156,14 +172,17 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "watch":
-        paths = ensure_state()
         if args.events:
+            paths = ensure_state()
             result = dispatch_watcher_events(args.events, paths["home"])
         else:
+            _reject_forbidden_passthrough(parser, args.watcher_arg, "--watcher-arg")
+            _reject_forbidden_passthrough(parser, args.helper_arg, "--helper-arg")
             if not 0 <= args.depth <= 80:
                 parser.error("--depth must be between 0 and 80")
             if args.duration < 0:
                 parser.error("--duration must be non-negative")
+            paths = ensure_state()
             helper_command = [args.helper, *args.helper_arg] if args.helper else None
             try:
                 result = run_watcher_command(
@@ -191,3 +210,16 @@ def main(argv: list[str] | None = None) -> int:
 
     parser.error(f"unknown command: {args.command}")
     return 2
+
+
+def _reject_forbidden_passthrough(
+    parser: argparse.ArgumentParser,
+    values: list[str],
+    option_name: str,
+) -> None:
+    for value in values:
+        for forbidden in FORBIDDEN_PASSTHROUGH_FLAGS:
+            if value == forbidden or value.startswith(f"{forbidden}="):
+                parser.error(
+                    f"{option_name} cannot pass disabled WinChronicle surface flag {forbidden}"
+                )

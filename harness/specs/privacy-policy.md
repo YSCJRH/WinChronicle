@@ -60,9 +60,12 @@ Redaction runs before schema validation, file writes, and SQLite indexing.
 
 Current text patterns:
 
-- `api_key`: `sk-[A-Za-z0-9_-]{20,}`
-- `github_token`: `ghp_[A-Za-z0-9_]{20,}`
-- `slack_token`: `xox[baprs]-[A-Za-z0-9-]{10,}`
+- `api_key`: OpenAI-style `sk-[A-Za-z0-9_-]{20,}` tokens and long values
+  assigned to obvious key labels such as `API_KEY`, `SECRET_KEY`, or
+  `SERVICE_TOKEN`
+- `github_token`: classic `ghp_`, OAuth/action/user/server `gho_`, `ghu_`,
+  `ghs_`, `ghr_`, and fine-grained `github_pat_` tokens
+- `slack_token`: `xox[baprs]-` tokens and Slack app-level `xapp-` tokens
 - `jwt`: three long base64url-like segments separated by dots
 - `private_key`: PEM blocks from `BEGIN ... PRIVATE KEY` through matching `END`
 - `token_canary`: strings containing `winchronicle...canary`
