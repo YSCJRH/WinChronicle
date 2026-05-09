@@ -688,6 +688,9 @@ def test_v0116_final_release_plan_keeps_direct_final_gated_and_scoped():
         "No product code, schemas, CLI/MCP JSON shape, helper/watcher behavior, privacy runtime behavior, or capture surfaces changed",
         "Direct final release can proceed only after fresh final gates",
         "explicit final manual smoke evidence",
+        "Stage status: AE1 complete",
+        "AE1 deterministic final gates passed locally",
+        "Next atomic task: run AE2 fresh manual final UIA smoke",
         "If final-readiness work requires any product or contract change",
         "prepare `v0.1.16-rc.1` instead",
         "Do not publish or retag `v0.1.16` during AE0",
@@ -700,6 +703,10 @@ def test_v0116_final_release_plan_keeps_direct_final_gated_and_scoped():
         "gh release view v0.1.16",
         "release not found",
         "git diff --name-status v0.1.16-rc.0..HEAD",
+        "PR #144 Windows Harness run `25596958129`",
+        "post-AE0 `main` Windows Harness concluded `success`",
+        "`python -m pytest -q` - passed; 151 tests passed",
+        "`python harness/scripts/run_harness.py` - passed",
     ):
         assert phrase in normalized
 
