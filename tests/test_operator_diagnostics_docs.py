@@ -319,11 +319,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "historical `v0.1.16-rc.0` release-candidate record" in readme_intro_normalized
     assert "previous published `v0.1.15` release record" in readme_intro_normalized
     assert "older completed maintenance plans" in readme_intro_normalized
-    assert "current post-v0.1.17 public metadata audit" in readme_intro_normalized
-    assert "current post-v0.1.17 helper/watcher diagnostics sweep" in readme_intro_normalized
-    assert "current post-v0.1.17 MCP/memory contract sweep" in readme_intro_normalized
-    assert "current post-v0.1.17 compatibility guardrail sweep" in readme_intro_normalized
-    assert "current post-v0.1.17 release-readiness decision" in readme_intro_normalized
+    assert "completed post-v0.1.17 public metadata audit" in readme_intro_normalized
+    assert "completed post-v0.1.17 helper/watcher diagnostics sweep" in readme_intro_normalized
+    assert "completed post-v0.1.17 MCP/memory contract sweep" in readme_intro_normalized
+    assert "completed post-v0.1.17 compatibility guardrail sweep" in readme_intro_normalized
+    assert "completed post-v0.1.17 release-readiness decision" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
@@ -682,28 +682,34 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "AG2 helper/watcher diagnostics review PR #163" in evidence
     assert "AG3 MCP/memory contract\n  review PR #164" in checklist
     assert "AG3 MCP/memory contract\n  review PR #164" in evidence
-    assert "current AG4 compatibility guardrail review" in checklist
-    assert "current AG4 compatibility guardrail review" in evidence
-    assert "current post-v0.1.17 public metadata/evidence freshness audit" in checklist
-    assert "current post-v0.1.17 public metadata/evidence freshness audit" in evidence
+    assert "AG4 compatibility guardrail review PR #165" in checklist
+    assert "AG4 compatibility guardrail review PR #165" in evidence
+    assert "AG5 release-readiness decision PR #166" in checklist
+    assert "AG5 release-readiness decision PR #166" in evidence
+    assert "post-AG5\n  `main` Windows Harness run `25604682902`" in checklist
+    assert "post-AG5\n  `main` Windows Harness run `25604682902`" in evidence
+    assert "Phase 6 privacy-enrichment contract preflight" in checklist
+    assert "Phase 6 privacy-enrichment contract preflight" in evidence
+    assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
+    assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in evidence
-    assert "current post-v0.1.17 helper/watcher diagnostics review" in checklist
-    assert "current post-v0.1.17 helper/watcher diagnostics review" in evidence
+    assert "completed post-v0.1.17 helper/watcher diagnostics review" in checklist
+    assert "completed post-v0.1.17 helper/watcher diagnostics review" in evidence
     assert "raw watcher JSONL non-persistence" in checklist
     assert "raw watcher JSONL non-persistence" in evidence
     assert "no new product-code drift" in checklist
     assert "no new product-code drift" in evidence
-    assert "current post-v0.1.17 MCP/memory contract review" in checklist
-    assert "current post-v0.1.17 MCP/memory contract review" in evidence
+    assert "completed post-v0.1.17 MCP/memory contract review" in checklist
+    assert "completed post-v0.1.17 MCP/memory contract review" in evidence
     assert "no new MCP/memory contract drift" in checklist
     assert "no new MCP/memory\n  contract drift" in evidence
-    assert "current post-v0.1.17 compatibility guardrail review" in checklist
-    assert "current post-v0.1.17 compatibility guardrail review" in evidence
+    assert "completed post-v0.1.17 compatibility guardrail review" in checklist
+    assert "completed post-v0.1.17 compatibility guardrail review" in evidence
     assert "no\n  new compatibility drift" in checklist
     assert "no\n  new compatibility drift" in evidence
-    assert "current post-v0.1.17 release-readiness decision" in checklist
-    assert "current post-v0.1.17 release-readiness decision" in evidence
+    assert "completed post-v0.1.17 release-readiness decision" in checklist
+    assert "completed post-v0.1.17 release-readiness decision" in evidence
     assert "does not warrant a new release-readiness or\n  publication path" in checklist
     assert "does not warrant a new release-readiness or\n  publication path" in evidence
     assert "no runtime, helper/watcher, CLI/MCP\n  output" in checklist
@@ -3070,6 +3076,9 @@ def test_post_v017_release_readiness_decision_records_no_release_path():
         "AG4 completion merged as `ac01afc206852a8b2b52126d61aa91d633e4675b`",
         "AG4 PR Windows Harness run `25604208696` concluded `success`",
         "post-merge `main` Windows Harness run `25604269757`",
+        "AG5 PR Windows Harness run `25604616542` concluded `success`",
+        "AG5 merged as `a55f1024f2f0a131044eb6e288de945ec1dbb5b2` through PR #166",
+        "post-merge `main` Windows Harness run `25604682902`",
         "git fetch origin tag v0.1.17",
         "git diff --name-status v0.1.17..HEAD",
         "runtime/resource/version diff commands printed no files",
@@ -3077,10 +3086,14 @@ def test_post_v017_release_readiness_decision_records_no_release_path():
         "full pytest reported 179 tests",
         "stale AG4 cursor scan returned no matches",
         "full deterministic harness passed",
+        "AG5 PR and post-merge validation:",
+        "PR #166 merged at `2026-05-09T15:25:36Z`",
+        "PR Windows Harness run `25604616542` concluded `success`",
+        "post-AG5 `main` Windows Harness run `25604682902` concluded `success`",
         "AG5 does not authorize implementation of screenshot capture",
         "privacy-neutral guardrails and evidence maintenance",
-        "Land this AG5 release-readiness decision through PR and post-merge Windows Harness validation",
-        "start the next smallest blueprint implementation lane",
+        "Start the Phase 6 privacy-enrichment contract preflight",
+        "Do not implement screenshot capture, OCR, raw screenshot caches",
     ):
         assert expected in normalized
 

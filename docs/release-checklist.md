@@ -10,15 +10,15 @@ The latest published release record is
 release record is [v0.1.16 final release record](release-v0.1.16.md). The
 active post-v0.1.17 execution cursor lives in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md), and the
-current post-v0.1.17 public metadata/evidence freshness audit is
+completed post-v0.1.17 public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md). The
-current post-v0.1.17 helper/watcher diagnostics review is
+completed post-v0.1.17 helper/watcher diagnostics review is
 [Helper and watcher diagnostics sweep after v0.1.17](helper-watcher-diagnostics-sweep-post-v0.1.17.md). The
-current post-v0.1.17 MCP/memory contract review is
+completed post-v0.1.17 MCP/memory contract review is
 [MCP and memory contract sweep after v0.1.17](mcp-memory-contract-sweep-post-v0.1.17.md). The
-current post-v0.1.17 compatibility guardrail review is
+completed post-v0.1.17 compatibility guardrail review is
 [Compatibility guardrail sweep after v0.1.17](compatibility-guardrail-sweep-post-v0.1.17.md). The
-current post-v0.1.17 release-readiness decision is
+completed post-v0.1.17 release-readiness decision is
 [Release-readiness decision after v0.1.17](release-readiness-decision-post-v0.1.17.md). The
 completed post-v0.1.16 execution cursor lives in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
@@ -83,29 +83,32 @@ inherited historical evidence:
   Windows Harness run `25602345201`, the AG1 public metadata/evidence
   freshness follow-up, AG2 helper/watcher diagnostics review PR #163 with
   post-AG2 `main` Windows Harness run `25603274783`, AG3 MCP/memory contract
-  review PR #164 with post-AG3 `main` Windows Harness run `25603752386`, and
-  the current AG4 compatibility guardrail review;
-- the current post-v0.1.17 public metadata/evidence freshness audit records
+  review PR #164 with post-AG3 `main` Windows Harness run `25603752386`,
+  AG4 compatibility guardrail review PR #165 with post-AG4 `main` Windows Harness
+  run `25604269757`, AG5 release-readiness decision PR #166 with post-AG5
+  `main` Windows Harness run `25604682902`, and the next blueprint lane
+  cursor for Phase 6 privacy-enrichment contract preflight;
+- the completed post-v0.1.17 public metadata/evidence freshness audit records
   repository metadata, `v0.1.17` release metadata, previous stable `v0.1.16`
   release metadata, post-AG0 `main` Windows Harness evidence, manual repository
   metadata gaps, and does not treat empty GitHub metadata as a product-code
   blocker;
-- the current post-v0.1.17 helper/watcher diagnostics review records timeout,
+- the completed post-v0.1.17 helper/watcher diagnostics review records timeout,
   malformed output, invalid embedded helper payload, no observed-content echo,
   duplicate skip, denylist skip, heartbeat-only liveness, diagnostic artifact
   policy, raw watcher JSONL non-persistence, product targeted-capture
   pass-through rejection, and no new product-code drift;
-- the current post-v0.1.17 MCP/memory contract review records the exact
+- the completed post-v0.1.17 MCP/memory contract review records the exact
   read-only MCP tool list, forbidden write/file/network/control and targeted
   capture boundary, durable memory Markdown contract, memory manifest trust
   fields, CLI/MCP capture and memory search parity, fixture-only demo boundary,
   and no new MCP/memory contract drift;
-- the current post-v0.1.17 compatibility guardrail review records version
+- the completed post-v0.1.17 compatibility guardrail review records version
   identity, exact read-only MCP tools, disabled privacy surfaces,
   observed-content trust boundaries, watcher preview limits, durable memory
   contract, product targeted-capture absence, Phase 6 spec-only status, and no
   new compatibility drift;
-- the current post-v0.1.17 release-readiness decision records that AG1-AG4
+- the completed post-v0.1.17 release-readiness decision records that AG1-AG4
   docs/tests/evidence maintenance does not warrant a new release-readiness or
   publication path because there are no runtime, helper/watcher, CLI/MCP
   output, capture-surface, privacy-runtime, or version-metadata changes after
