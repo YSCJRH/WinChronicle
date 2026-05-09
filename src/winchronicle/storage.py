@@ -168,7 +168,15 @@ def capture_fingerprint_exists(
     return row is not None
 
 
-def search_captures(query: str, home: Path | str | None = None, limit: int = 10) -> list[dict[str, str]]:
+def search_captures(
+    query: str,
+    home: Path | str | None = None,
+    limit: int = 10,
+    *,
+    app_name: str | None = None,
+    since: str | None = None,
+    until: str | None = None,
+) -> list[dict[str, str]]:
     if not query.strip():
         return []
 
@@ -179,9 +187,23 @@ def search_captures(query: str, home: Path | str | None = None, limit: int = 10)
     with sqlite3.connect(paths["db"]) as conn:
         conn.row_factory = sqlite3.Row
         if _fts_table_exists(conn):
-            rows = _search_fts(conn, query, limit)
+            rows = _search_fts(
+                conn,
+                query,
+                limit,
+                app_name=app_name,
+                since=since,
+                until=until,
+            )
         else:
-            rows = _search_like_fallback(conn, query, limit)
+            rows = _search_like_fallback(
+                conn,
+                query,
+                limit,
+                app_name=app_name,
+                since=since,
+                until=until,
+            )
 
     return [_row_to_result(row, query) for row in rows]
 
@@ -320,6 +342,8 @@ def search_memory_entries(
     query: str,
     home: Path | str | None = None,
     limit: int = 10,
+    *,
+    entry_type: str | None = None,
 ) -> list[dict[str, str]]:
     if not query.strip():
         return []
@@ -331,9 +355,9 @@ def search_memory_entries(
     with sqlite3.connect(paths["db"]) as conn:
         conn.row_factory = sqlite3.Row
         if _entries_fts_table_exists(conn):
-            rows = _search_entries_fts(conn, query, limit)
+            rows = _search_entries_fts(conn, query, limit, entry_type=entry_type)
         else:
-            rows = _search_entries_like_fallback(conn, query, limit)
+            rows = _search_entries_like_fallback(conn, query, limit, entry_type=entry_type)
 
     return [_entry_row_to_result(row, query) for row in rows]
 
@@ -431,11 +455,30 @@ def _fts_query(query: str) -> str:
 
 
 def _search_fts(
-    conn: sqlite3.Connection, query: str, limit: int
+    conn: sqlite3.Connection,
+    query: str,
+    limit: int,
+    *,
+    app_name: str | None = None,
+    since: str | None = None,
+    until: str | None = None,
 ) -> list[sqlite3.Row]:
+    clauses = ["captures_fts MATCH ?"]
+    params: list[str | int] = [_fts_query(query)]
+    if app_name:
+        clauses.append("captures.app_name = ?")
+        params.append(app_name)
+    if since:
+        clauses.append("captures.timestamp >= ?")
+        params.append(since)
+    if until:
+        clauses.append("captures.timestamp <= ?")
+        params.append(until)
+    params.append(limit)
+    where = " AND ".join(clauses)
     try:
         return conn.execute(
-            """
+            f"""
             SELECT
                 captures.path,
                 captures.timestamp,
@@ -446,47 +489,88 @@ def _search_fts(
                 captures.url
             FROM captures_fts
             JOIN captures ON captures.path = captures_fts.path
-            WHERE captures_fts MATCH ?
+            WHERE {where}
             ORDER BY bm25(captures_fts), captures.timestamp DESC
             LIMIT ?
             """,
-            (_fts_query(query), limit),
+            tuple(params),
         ).fetchall()
     except sqlite3.OperationalError as exc:
         if _is_fts_unavailable(exc):
-            return _search_like_fallback(conn, query, limit)
+            return _search_like_fallback(
+                conn,
+                query,
+                limit,
+                app_name=app_name,
+                since=since,
+                until=until,
+            )
         raise
 
 
 def _search_like_fallback(
-    conn: sqlite3.Connection, query: str, limit: int
+    conn: sqlite3.Connection,
+    query: str,
+    limit: int,
+    *,
+    app_name: str | None = None,
+    since: str | None = None,
+    until: str | None = None,
 ) -> list[sqlite3.Row]:
     like = f"%{query.lower()}%"
+    clauses = [
+        """(
+            lower(visible_text) LIKE ?
+            OR lower(focused_text) LIKE ?
+            OR lower(title) LIKE ?
+            OR lower(app_name) LIKE ?
+            OR lower(coalesce(url, '')) LIKE ?
+        )"""
+    ]
+    params: list[str | int] = [like, like, like, like, like]
+    if app_name:
+        clauses.append("app_name = ?")
+        params.append(app_name)
+    if since:
+        clauses.append("timestamp >= ?")
+        params.append(since)
+    if until:
+        clauses.append("timestamp <= ?")
+        params.append(until)
+    params.append(limit)
+    where = " AND ".join(clauses)
     try:
         return conn.execute(
-            """
+            f"""
             SELECT path, timestamp, app_name, title, visible_text, focused_text, url
             FROM captures
-            WHERE lower(visible_text) LIKE ?
-               OR lower(focused_text) LIKE ?
-               OR lower(title) LIKE ?
-               OR lower(app_name) LIKE ?
-               OR lower(coalesce(url, '')) LIKE ?
+            WHERE {where}
             ORDER BY timestamp DESC
             LIMIT ?
             """,
-            (like, like, like, like, like, limit),
+            tuple(params),
         ).fetchall()
     except sqlite3.OperationalError:
         return []
 
 
 def _search_entries_fts(
-    conn: sqlite3.Connection, query: str, limit: int
+    conn: sqlite3.Connection,
+    query: str,
+    limit: int,
+    *,
+    entry_type: str | None = None,
 ) -> list[sqlite3.Row]:
+    clauses = ["entries_fts MATCH ?"]
+    params: list[str | int] = [_fts_query(query)]
+    if entry_type:
+        clauses.append("entries.entry_type = ?")
+        params.append(entry_type)
+    params.append(limit)
+    where = " AND ".join(clauses)
     try:
         return conn.execute(
-            """
+            f"""
             SELECT
                 entries.path,
                 entries.entry_type,
@@ -497,35 +581,55 @@ def _search_entries_fts(
                 entries.body
             FROM entries_fts
             JOIN entries ON entries.path = entries_fts.path
-            WHERE entries_fts MATCH ?
+            WHERE {where}
             ORDER BY bm25(entries_fts), entries.start_timestamp DESC
             LIMIT ?
             """,
-            (_fts_query(query), limit),
+            tuple(params),
         ).fetchall()
     except sqlite3.OperationalError as exc:
         if _is_fts_unavailable(exc):
-            return _search_entries_like_fallback(conn, query, limit)
+            return _search_entries_like_fallback(
+                conn,
+                query,
+                limit,
+                entry_type=entry_type,
+            )
         raise
 
 
 def _search_entries_like_fallback(
-    conn: sqlite3.Connection, query: str, limit: int
+    conn: sqlite3.Connection,
+    query: str,
+    limit: int,
+    *,
+    entry_type: str | None = None,
 ) -> list[sqlite3.Row]:
     like = f"%{query.lower()}%"
+    clauses = [
+        """(
+            lower(body) LIKE ?
+            OR lower(title) LIKE ?
+            OR lower(app_names) LIKE ?
+            OR lower(entry_type) LIKE ?
+        )"""
+    ]
+    params: list[str | int] = [like, like, like, like]
+    if entry_type:
+        clauses.append("entry_type = ?")
+        params.append(entry_type)
+    params.append(limit)
+    where = " AND ".join(clauses)
     try:
         return conn.execute(
-            """
+            f"""
             SELECT path, entry_type, title, start_timestamp, end_timestamp, app_names, body
             FROM entries
-            WHERE lower(body) LIKE ?
-               OR lower(title) LIKE ?
-               OR lower(app_names) LIKE ?
-               OR lower(entry_type) LIKE ?
+            WHERE {where}
             ORDER BY start_timestamp DESC
             LIMIT ?
             """,
-            (like, like, like, like, limit),
+            tuple(params),
         ).fetchall()
     except sqlite3.OperationalError:
         return []

@@ -48,19 +48,15 @@ def search_captures_tool(
     home: Path | str | None = None,
 ) -> dict[str, Any]:
     bounded_limit = _bounded_limit(limit)
-    raw_results = search_captures(query, home, limit=max(bounded_limit, 50))
-    matches: list[dict[str, Any]] = []
-    if bounded_limit:
-        for result in raw_results:
-            if app_name and result["app_name"] != app_name:
-                continue
-            if since and result["timestamp"] < since:
-                continue
-            if until and result["timestamp"] > until:
-                continue
-            matches.append(_observed_search_result(result))
-            if len(matches) >= bounded_limit:
-                break
+    raw_results = search_captures(
+        query,
+        home,
+        limit=bounded_limit,
+        app_name=app_name,
+        since=since,
+        until=until,
+    )
+    matches = [_observed_search_result(result) for result in raw_results]
 
     return _tool_result(
         "search_captures",
@@ -79,15 +75,13 @@ def search_memory_tool(
     home: Path | str | None = None,
 ) -> dict[str, Any]:
     bounded_limit = _bounded_limit(limit)
-    raw_results = search_memory_entries(query, home, limit=max(bounded_limit, 50))
-    matches: list[dict[str, Any]] = []
-    if bounded_limit:
-        for result in raw_results:
-            if entry_type and result["entry_type"] != entry_type:
-                continue
-            matches.append(_observed_search_result(result))
-            if len(matches) >= bounded_limit:
-                break
+    raw_results = search_memory_entries(
+        query,
+        home,
+        limit=bounded_limit,
+        entry_type=entry_type,
+    )
+    matches = [_observed_search_result(result) for result in raw_results]
 
     return _tool_result(
         "search_memory",
