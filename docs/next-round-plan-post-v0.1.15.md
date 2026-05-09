@@ -36,14 +36,14 @@ service install, no polling capture loop, and no default background capture.
   sweep and two narrow privacy/compatibility drift fixes in PR #139, merged as
   `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`, and post-merge `main` Windows
   Harness run `25595513141` passed.
-- Last validation: AD5 local validation passed, including focused
-  docs/version tests, full pytest, .NET helper/watcher builds, install CLI
-  smoke, full harness, fresh manual UIA smoke, and `git diff --check`.
-- Next atomic task: push the AD5 release-candidate readiness PR, verify PR
-  Windows Harness, merge, verify post-merge `main` Windows Harness, and record
-  remote evidence before prerelease publication.
-- Known blockers: PR Windows Harness, post-merge Windows Harness, and
-  prerelease publication evidence are pending.
+- Last validation: AD5 local validation, PR Windows Harness run
+  `25596082939`, and post-merge `main` Windows Harness run `25596122521`
+  passed for the `v0.1.16-rc.0` release-candidate readiness PR.
+- Next atomic task: record the AD5 remote CI evidence on `main`, publish the
+  `v0.1.16-rc.0` prerelease after review, and reconcile the published release
+  URL/tag target.
+- Known blockers: prerelease publication and post-publication reconciliation
+  evidence are pending.
 
 ## Phased Work
 
@@ -309,3 +309,7 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed; includes 149 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
   - `git diff --check` - passed.
+- Stage AD5 readiness PR completion:
+  - PR #140 Windows Harness run `25596082939` - passed.
+  - PR #140 merged as `bca4b6485f194a46bca7fa6e1e3866b5105479da`.
+  - `gh run view 25596122521 --json databaseId,status,conclusion,headSha,url,displayTitle` - passed; post-AD5-readiness `main` Windows Harness concluded `success` on `bca4b6485f194a46bca7fa6e1e3866b5105479da`.
