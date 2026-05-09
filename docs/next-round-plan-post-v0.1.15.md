@@ -30,19 +30,17 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AD0 - Post-v0.1.15 Baseline Cursor.
-- Stage status: A - AD0 is the active docs-only baseline cursor stage.
-- Last completed evidence: `v0.1.15` is published at
-  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15, targets
-  `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`, publication reconciliation PR
-  #134 merged as `54208c51819a45140e355272d8cb3f0e3fbff900`, and post-merge
-  `main` Windows Harness run `25589775129` passed.
-- Last validation: `v0.1.15` publication reconciliation validated release URL,
-  tag target, focused docs/version tests, full deterministic harness, PR
-  Windows Harness, and post-merge `main` Windows Harness.
-- Next atomic task: complete AD0 by adding this active cursor, updating
-  operator entry points, and validating documentation tests without changing
-  product code.
+- Current stage: AD1 - Public Metadata And Evidence Freshness Follow-up.
+- Stage status: A - AD1 is the active docs-only public metadata and evidence
+  freshness stage.
+- Last completed evidence: AD0 added this active post-v0.1.15 cursor in PR
+  #135, merged as `90fff5cc25b770634c92669e70c4067b58a8a6ea`, and
+  post-merge `main` Windows Harness run `25593607384` passed.
+- Last validation: AD0 validated focused docs/version tests, full
+  deterministic harness, PR Windows Harness run `25593554670`, and
+  post-merge `main` Windows Harness run `25593607384`.
+- Next atomic task: complete AD1 by adding post-v0.1.15 public metadata audit
+  evidence and updating operator entry points without changing product code.
 - Known blockers: none.
 
 ## Phased Work
@@ -178,6 +176,8 @@ Stage-specific gates:
   records, and version metadata only, without product behavior changes.
 - Chose AD0 as a docs-only active cursor so post-v0.1.15 work does not begin
   from a completed post-v0.1.14 plan.
+- Chose AD1 as a docs-only public metadata audit because the repository
+  metadata gaps are maintainer settings, not product-code blockers.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -189,3 +189,14 @@ Stage-specific gates:
   - `gh run view 25589775129 --json databaseId,status,conclusion,headSha,url,displayTitle` - passed; post-publication reconciliation `main` Windows Harness concluded `success` on `54208c51819a45140e355272d8cb3f0e3fbff900`.
   - `git rev-parse HEAD` - passed and printed `54208c51819a45140e355272d8cb3f0e3fbff900`.
   - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.15`.
+- Stage AD0 completion:
+  - PR #135 Windows Harness run `25593554670` - passed.
+  - PR #135 merged as `90fff5cc25b770634c92669e70c4067b58a8a6ea`.
+  - `gh run view 25593607384 --json databaseId,status,conclusion,headSha,url,displayTitle` - passed; post-AD0 `main` Windows Harness concluded `success` on `90fff5cc25b770634c92669e70c4067b58a8a6ea`.
+- Stage AD1 initialization:
+  - `gh repo view YSCJRH/WinChronicle --json nameWithOwner,visibility,defaultBranchRef,description,homepageUrl,repositoryTopics,url` - passed; repository is public on `main`, with empty description, homepage, and topics.
+  - `gh release view v0.1.15 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name` - passed; `v0.1.15` is published, not a draft or prerelease, and targets `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`.
+- Stage AD1 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed; 48 tests passed.
+  - `python harness/scripts/run_harness.py` - passed; includes 139 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, and preview watcher smoke.
+  - `git diff --check` - passed.
