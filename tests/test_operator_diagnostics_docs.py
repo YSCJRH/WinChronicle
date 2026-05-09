@@ -343,6 +343,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Phase 6 privacy contract preflight after v0.1.17" in readme_operator_docs
     assert "Phase 6 privacy contract fixture expansion after v0.1.17" in readme_operator_docs
     assert "Phase 6 privacy contract remaining fixtures after v0.1.17" in readme_operator_docs
+    assert "Phase 6 privacy contract coverage audit after v0.1.17" in readme_operator_docs
     assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.16" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
@@ -425,6 +426,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )
     assert readme_operator_docs.index(
         "Phase 6 privacy contract remaining fixtures after v0.1.17"
+    ) < readme_operator_docs.index(
+        "Phase 6 privacy contract coverage audit after v0.1.17"
+    )
+    assert readme_operator_docs.index(
+        "Phase 6 privacy contract coverage audit after v0.1.17"
     ) < readme_operator_docs.index(
         "Post-v0.1.16 maintenance plan"
     )
@@ -561,6 +567,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "phase6-privacy-contract-preflight-post-v0.1.17.md" in current_section
     assert "phase6-privacy-contract-fixture-expansion-post-v0.1.17.md" in current_section
     assert "phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md" in current_section
+    assert "phase6-privacy-contract-coverage-audit-post-v0.1.17.md" in current_section
     assert "next-round-plan-post-v0.1.16.md" in current_section
     assert "public-metadata-audit-post-v0.1.16.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in current_section
@@ -679,6 +686,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "phase6-privacy-contract-fixture-expansion-post-v0.1.17.md" in evidence
     assert "phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md" in checklist
     assert "phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md" in evidence
+    assert "phase6-privacy-contract-coverage-audit-post-v0.1.17.md" in checklist
+    assert "phase6-privacy-contract-coverage-audit-post-v0.1.17.md" in evidence
     assert "next-round-plan-post-v0.1.16.md" in checklist
     assert "next-round-plan-post-v0.1.16.md" in evidence
     assert "public-metadata-audit-post-v0.1.16.md" in checklist

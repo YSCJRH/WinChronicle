@@ -26,6 +26,8 @@ completed Phase 6 privacy contract fixture expansion is
 [Phase 6 privacy contract fixture expansion after v0.1.17](phase6-privacy-contract-fixture-expansion-post-v0.1.17.md). The
 completed Phase 6 remaining negative contract fixture expansion is
 [Phase 6 privacy contract remaining fixtures after v0.1.17](phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md). The
+current Phase 6 privacy contract coverage audit is
+[Phase 6 privacy contract coverage audit after v0.1.17](phase6-privacy-contract-coverage-audit-post-v0.1.17.md). The
 completed post-v0.1.16 execution cursor lives in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
 completed post-v0.1.16 public metadata/evidence freshness audit is

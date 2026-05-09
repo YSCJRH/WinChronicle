@@ -1037,8 +1037,14 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "PR #172 Windows Harness concluded `success`",
         "post-remaining-fixtures `main` Windows Harness concluded `success`",
         "Selected the next Phase 6 step as a contract coverage audit",
+        "Started the Phase 6 contract coverage audit",
+        "all historical unsafe in-memory variants now map one-to-one to committed invalid fixtures",
+        "high-signal schema-enforced branches",
         "Phase 6 privacy-enrichment remaining fixture reconciliation local validation:",
         "stale remaining-fixture-in-progress cursor scan",
+        "Phase 6 privacy-enrichment contract coverage audit local validation:",
+        "passed, 88 tests",
+        "passed, 185 tests",
     ):
         assert phrase in normalized
 
