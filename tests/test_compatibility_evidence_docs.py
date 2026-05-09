@@ -35,6 +35,8 @@ def test_release_checklist_requires_compatibility_evidence():
         "product targeted capture flags are exposed",
         "v0.1.13 maintenance release record",
         "v0.1.14 maintenance release record",
+        "Post-v0.1.14 maintenance plan",
+        "Post-v0.1.13 maintenance plan",
         "Post-v0.1.12 maintenance plan",
     ):
         assert phrase in normalized
@@ -56,6 +58,8 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "OCR engine integration",
         "v0.1.13 maintenance release record",
         "v0.1.14 maintenance release record",
+        "Post-v0.1.14 maintenance plan",
+        "Post-v0.1.13 maintenance plan",
         "Post-v0.1.12 maintenance plan",
     ):
         assert phrase in normalized

@@ -142,6 +142,8 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 
 ## Current Maintenance Docs
 
+- [Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md)
+- [v0.1.14 maintenance release record](release-v0.1.14.md)
 - [Release checklist](release-checklist.md)
 - [Release evidence guide](release-evidence.md)
 - [Manual smoke evidence template](manual-smoke-evidence-template.md)
@@ -161,13 +163,12 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Known limitations](known-limitations.md)
 - [Roadmap](roadmap.md)
 - [Contributing](../CONTRIBUTING.md)
-- [Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md)
-- [v0.1.14 maintenance release record](release-v0.1.14.md)
 - [v0.1.13 maintenance release record](release-v0.1.13.md)
 - [v0.1.12 maintenance release record](release-v0.1.12.md)
 
 ## Historical Release Records
 
+- [Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md)
 - [Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md)
 
 - [Post-v0.1.11 maintenance plan](next-round-plan-post-v0.1.11.md)
