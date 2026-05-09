@@ -55,6 +55,9 @@ Publication status: published final release.
 | AE3 PR | https://github.com/YSCJRH/WinChronicle/pull/147 |
 | AE3 PR Windows Harness | Passed, run `25597623991`, https://github.com/YSCJRH/WinChronicle/actions/runs/25597623991 |
 | AE3 post-merge `main` Windows Harness | Passed, run `25597678444`, https://github.com/YSCJRH/WinChronicle/actions/runs/25597678444 |
+| AE4 publication reconciliation PR | https://github.com/YSCJRH/WinChronicle/pull/148 |
+| AE4 publication reconciliation Windows Harness | Passed, run `25598038285`, https://github.com/YSCJRH/WinChronicle/actions/runs/25598038285 |
+| AE4 post-publication `main` Windows Harness | Passed, run `25598080136`, https://github.com/YSCJRH/WinChronicle/actions/runs/25598080136 |
 | AD5 release-candidate PR | https://github.com/YSCJRH/WinChronicle/pull/140 |
 | AD5 release-candidate PR Windows Harness | Passed, run `25596082939`, https://github.com/YSCJRH/WinChronicle/actions/runs/25596082939 |
 | AD5 final pre-publication `main` Windows Harness | Passed, run `25596273094`, https://github.com/YSCJRH/WinChronicle/actions/runs/25596273094 |
