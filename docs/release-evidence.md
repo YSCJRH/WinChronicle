@@ -98,9 +98,11 @@ historical records. After the `v0.1.15` publication:
 - for the post-v0.1.15 release-candidate path toward `v0.1.16-rc.0`, AD5
   records fresh manual UIA smoke because AD2-AD4 changed privacy/runtime
   behavior;
-- for the active `v0.1.16` final-release path, fresh final manual UIA smoke is
-  required before final publication; do not silently promote `v0.1.16-rc.0`
-  smoke evidence to final evidence;
+- for the active `v0.1.16` final-release path, AE2 records fresh final manual
+  UIA smoke; AE3 must cite that evidence or rerun smoke if product behavior,
+  helper/watcher behavior, manual smoke scripts, capture behavior, privacy
+  behavior, CLI/MCP shape, capture surfaces, or release approval requirements
+  change;
 - for the post-v0.1.5 compatible maintenance path that published `v0.1.6`,
   inherited `v0.1.0` manual smoke was explicitly accepted by S4 because no helper,
   watcher product behavior, manual smoke script, capture, privacy, product

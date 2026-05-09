@@ -38,21 +38,24 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AE1 - Deterministic Final Gate Refresh.
-- Stage status: AE1 complete; direct `v0.1.16` final planning remains open,
+- Current stage: AE2 - Manual Final Smoke Refresh.
+- Stage status: AE2 complete; direct `v0.1.16` final planning remains open,
   but `v0.1.16` is not published and final publication is not authorized by
   this plan.
-- Last completed evidence: AE0 created this final-release plan in PR #144,
-  merged as `c61c52ca67e40f689223d8307738f9b49f09deee`, and post-merge
-  Windows Harness run `25597001825` passed on that SHA.
-- Last validation: AE1 deterministic final gates passed locally on
-  `c61c52ca67e40f689223d8307738f9b49f09deee` without requiring product or
-  contract changes.
-- Next atomic task: run AE2 fresh manual final UIA smoke and record local
-  artifact paths only.
-- Known blockers: final publication is blocked until AE2, AE3, review,
-  PR Windows Harness, post-merge Windows Harness, and explicit publication
-  approval complete.
+- Last completed evidence: AE1 deterministic gate evidence was recorded in PR
+  #145, merged as `d990b77c0bd60b850c22f5783bf0126a8e137aa8`, and
+  post-merge Windows Harness run `25597248992` passed on that SHA.
+- Last validation: AE2 fresh manual final UIA smoke passed for Notepad, Edge,
+  VS Code metadata with the known Monaco warning, and watcher preview live
+  smoke. VS Code strict remains a diagnostic non-blocking failure. Artifact
+  paths are local only under
+  `C:\Users\34793\AppData\Local\Temp\winchronicle-ae2-final-smoke-a3da7c0177fc42059a484cf07435777a`.
+- Next atomic task: prepare the AE3 `v0.1.16` final release record and
+  publication decision, then request review and CI before any final
+  publication.
+- Known blockers: final publication is blocked until AE3, review, PR Windows
+  Harness, post-merge Windows Harness, and explicit publication approval
+  complete.
 
 ## Phased Work
 
@@ -192,6 +195,8 @@ Stage-specific gates:
   to deterministic final gates.
 - Kept the direct final path open after AE1 because all deterministic final
   gates passed and no product or contract change was required.
+- Completed AE2 with fresh final manual UIA smoke, while preserving the known
+  VS Code strict Monaco diagnostic as non-blocking.
 
 ## Validation Log
 
@@ -215,3 +220,14 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed; includes 151 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
   - `git diff --check` - passed.
+- Stage AE1 completion:
+  - PR #145 Windows Harness run `25597196866` - passed.
+  - PR #145 merged as `d990b77c0bd60b850c22f5783bf0126a8e137aa8`.
+  - `gh run view 25597248992 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AE1 `main` Windows Harness concluded `success` on `d990b77c0bd60b850c22f5783bf0126a8e137aa8`.
+- Stage AE2 manual final smoke validation:
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-notepad.ps1 -ArtifactDir <artifact-root>\notepad -TimeoutSeconds 30` - passed; artifact `<artifact-root>\notepad\notepad-capture.json`.
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-edge.ps1 -ArtifactDir <artifact-root>\edge -TimeoutSeconds 45` - passed; artifact `<artifact-root>\edge\edge-capture.json`.
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-vscode.ps1 -ArtifactDir <artifact-root>\vscode-metadata -TimeoutSeconds 45` - passed with diagnostic warning; metadata passed, editor marker was not exposed through UIA.
+  - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-vscode.ps1 -Strict -ArtifactDir <artifact-root>\vscode-strict -TimeoutSeconds 45` - diagnostic failure, non-blocking; known Monaco/UIA limitation.
+  - `python -m winchronicle watch --watcher dotnet --watcher-arg resources/win-uia-watcher/bin/Debug/net8.0-windows/win-uia-watcher.dll --helper dotnet --helper-arg resources/win-uia-helper/bin/Debug/net8.0-windows/win-uia-helper.dll --duration 5 --depth 2 --heartbeat-ms 500 --capture-on-start` with temporary `WINCHRONICLE_HOME` - passed; `captures_written: 3`, `heartbeats: 6`, `duplicates_skipped: 1`, `denylisted_skipped: 0`.
+  - Artifact root: `C:\Users\34793\AppData\Local\Temp\winchronicle-ae2-final-smoke-a3da7c0177fc42059a484cf07435777a`. Local artifacts were not committed.
