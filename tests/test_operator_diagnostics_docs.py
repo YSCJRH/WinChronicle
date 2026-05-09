@@ -48,6 +48,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Roadmap](roadmap.md)" in quickstart
     assert "[Contributing](../CONTRIBUTING.md)" in quickstart
     assert "[Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md)" in quickstart
+    assert (
+        "[v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md)"
+        in quickstart
+    )
     assert "[Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md)" in quickstart
     assert (
         "[v0.1.15 maintenance release record](release-v0.1.15.md)"
@@ -120,6 +124,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Roadmap](docs/roadmap.md)" in readme
     assert "[Contributing](CONTRIBUTING.md)" in readme
     assert "[Post-v0.1.15 maintenance plan](docs/next-round-plan-post-v0.1.15.md)" in readme
+    assert (
+        "[v0.1.16-rc.0 release candidate record](docs/release-candidate-v0.1.16-rc.0.md)"
+        in readme
+    )
     assert "[Post-v0.1.14 maintenance plan](docs/next-round-plan-post-v0.1.14.md)" in readme
     assert (
         "[v0.1.15 maintenance release record](docs/release-v0.1.15.md)"
@@ -199,6 +207,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     readme_intro_normalized = " ".join(readme_intro.split())
 
     assert "active post-v0.1.15 maintenance plan" in readme_intro_normalized
+    assert "current `v0.1.16-rc.0` release-candidate readiness record" in readme_intro_normalized
     assert "latest published `v0.1.15` release record" in readme_intro_normalized
     assert "previous published `v0.1.14` release record" in readme_intro_normalized
     assert "completed post-v0.1.14 maintenance plan" in readme_intro_normalized
@@ -209,6 +218,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.13 maintenance release record" in readme_operator_docs
     assert "v0.1.14 maintenance release record" in readme_operator_docs
     assert "v0.1.15 maintenance release record" in readme_operator_docs
+    assert "v0.1.16-rc.0 release candidate record" in readme_operator_docs
     assert "Post-v0.1.15 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.14 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.15" in readme_operator_docs
@@ -254,6 +264,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Blueprint gap audit after v0.1.12"
     )
     assert readme_operator_docs.index("Post-v0.1.15 maintenance plan") < readme_operator_docs.index(
+        "v0.1.16-rc.0 release candidate record"
+    )
+    assert readme_operator_docs.index("v0.1.16-rc.0 release candidate record") < readme_operator_docs.index(
         "Post-v0.1.14 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.14 maintenance plan") < readme_operator_docs.index(
@@ -338,6 +351,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "v0.1.6 maintenance release record"
     )
     assert "next-round-plan-post-v0.1.15.md" in current_section
+    assert "release-candidate-v0.1.16-rc.0.md" in current_section
     assert "next-round-plan-post-v0.1.14.md" in current_section
     assert "public-metadata-audit-post-v0.1.15.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.15.md" in current_section
@@ -423,6 +437,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-v0.1.14.md" in evidence
     assert "release-v0.1.15.md" in checklist
     assert "release-v0.1.15.md" in evidence
+    assert "release-candidate-v0.1.16-rc.0.md" in checklist
+    assert "release-candidate-v0.1.16-rc.0.md" in evidence
     assert "next-round-plan-post-v0.1.15.md" in checklist
     assert "next-round-plan-post-v0.1.15.md" in evidence
     assert "next-round-plan-post-v0.1.14.md" in checklist
@@ -431,6 +447,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.13.md" in evidence
     assert "v0.1.15` is the latest published release" in checklist
     assert "v0.1.15` is the latest published release" in evidence
+    assert "v0.1.16-rc.0` is the current release-candidate readiness record" in checklist
+    assert "v0.1.16-rc.0` is the current release-candidate readiness record" in evidence
     assert "public metadata and evidence-freshness checks" in checklist
     assert "public metadata evidence should record" in evidence
     assert "next-round-plan-post-v0.1.12.md" in checklist
@@ -1362,18 +1380,18 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "post-publication reconciliation on `main` is `54208c51819a45140e355272d8cb3f0e3fbff900`",
         "Windows Harness run `25589775129` passed",
         "reports `0.1.15`",
-        "Current stage: AD4 - Compatibility Guardrail Sweep.",
-        "Stage status: A - AD4 is the active compatibility guardrail evidence and narrow drift-fix stage.",
-        "AD3 added the post-v0.1.15 MCP/memory contract sweep",
-        "merged as `1f1f55b262a89ca41991401de493791dd1c41e5c`",
-        "post-merge `main` Windows Harness run `25594896165` passed",
+        "Current stage: AD5 - v0.1.16-rc.0 Release Candidate Readiness.",
+        "Stage status: A - AD5 is the active release-candidate readiness stage.",
+        "AD4 added the post-v0.1.15 compatibility guardrail sweep",
+        "merged as `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`",
+        "post-merge `main` Windows Harness run `25595513141` passed",
         "Stage AD0 - Post-v0.1.15 Baseline Cursor",
         "Stage AD1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AD2 - Helper And Watcher Preview Diagnostics Review",
         "Stage AD3 - MCP And Memory Contract Review",
         "Stage AD4 - Compatibility Guardrail Sweep",
-        "Stage AD5 - v0.1.16 Release Readiness",
-        "next compatible release target is `v0.1.16`",
+        "Stage AD5 - v0.1.16-rc.0 Release Candidate Readiness",
+        "next prerelease target is `v0.1.16-rc.0`",
         "Phase 6 stays at spec/scorecard level",
         "MCP tool list remains unchanged and read-only",
         "Product CLI still does not expose targeted `--hwnd`, `--pid`",
@@ -1407,6 +1425,13 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "secret redaction guardrail did not cover newer obvious GitHub/Slack token families",
         "product helper/watcher pass-through arguments were not covered",
         "Stage AD4 focused drift-fix validation:",
+        "Stage AD4 completion:",
+        "PR #139 Windows Harness run `25595449096`",
+        "post-AD4 `main` Windows Harness concluded `success`",
+        "Stage AD5 initialization:",
+        "gh release view v0.1.16",
+        "git tag --list \"v0.1.16*\"",
+        "prepares `v0.1.16-rc.0` instead",
         "6 tests passed",
         "gh release view v0.1.15",
         "git rev-parse v0.1.15",
@@ -2341,21 +2366,21 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Stable release baseline | `v0.1.15`",
         "Current maintenance plan | [Post-v0.1.15 maintenance plan]",
         "Latest completed maintenance plan | [Post-v0.1.14 maintenance plan]",
-        "Current release-readiness record | None; `v0.1.15` is published",
+        "Current release-readiness record | [v0.1.16-rc.0 release candidate record]",
         "Published release record | [v0.1.15 maintenance release record]",
         "Latest published release record | [v0.1.15 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
-        "Last freshness decision | For the post-v0.1.14 compatible maintenance path that published `v0.1.15`",
-        "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
-        "accepted by AC5 because AC0-AC5 did not change helper behavior",
+        "Last freshness decision | For the current `v0.1.16-rc.0` release-candidate path",
+        "AD5 refreshed manual UIA smoke",
+        "Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning",
         "explicitly accepted by S4 for the compatible `v0.1.6` path",
         "explicitly accepted by T4 for the compatible `v0.1.7` path",
         "explicitly accepted by U4 for the compatible `v0.1.8` path",
         "explicitly accepted by W4 for the compatible `v0.1.9` path",
         "accepted by X1 as inherited/stale evidence for the post-v0.1.9 path",
         "historically accepted for `v0.1.5` as diagnostic context",
-        "Next freshness decision | The next maintenance plan after `v0.1.15` publication must decide",
-        "whether inherited manual evidence remains acceptable",
+        "Next freshness decision | A future direct `v0.1.16` final or follow-up release candidate must decide",
+        "whether this `v0.1.16-rc.0` manual smoke remains current",
         "manual smoke is explicitly accepted by the T4 release-readiness\n  record",
         "For the completed post-v0.1.7 compatible maintenance path toward `v0.1.8`",
         "then is explicitly accepted by the U4",

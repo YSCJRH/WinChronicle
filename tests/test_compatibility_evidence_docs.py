@@ -22,6 +22,7 @@ V0112_RELEASE = ROOT / "docs" / "release-v0.1.12.md"
 V0113_RELEASE = ROOT / "docs" / "release-v0.1.13.md"
 V0114_RELEASE = ROOT / "docs" / "release-v0.1.14.md"
 V0115_RELEASE = ROOT / "docs" / "release-v0.1.15.md"
+V0116_RC0_RELEASE = ROOT / "docs" / "release-candidate-v0.1.16-rc.0.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -36,6 +37,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "product targeted capture flags are exposed",
         "v0.1.14 maintenance release record",
         "v0.1.15 maintenance release record",
+        "v0.1.16-rc.0 release candidate record",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -60,6 +62,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "OCR engine integration",
         "v0.1.14 maintenance release record",
         "v0.1.15 maintenance release record",
+        "v0.1.16-rc.0 release candidate record",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -613,6 +616,43 @@ def test_v0115_release_record_is_published_and_compatible():
         "GitHub release publication passed.",
         "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15.",
         "Final tag target: `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`.",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
+def test_v0116_rc0_release_candidate_record_is_ready_and_scoped():
+    text = V0116_RC0_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Publication status: release-candidate readiness; not yet published.",
+        "Release candidate | `v0.1.16-rc.0`",
+        "Stage | AD5 release-candidate readiness",
+        "Base `main` SHA before AD5 readiness | `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`",
+        "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15",
+        "`v0.1.15` tag target | `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`",
+        "AD4 PR Windows Harness | Passed, run `25595449096`",
+        "AD4 post-merge `main` Windows Harness | Passed, run `25595513141`",
+        "AD2-AD4 included compatible runtime drift fixes",
+        "not direct `v0.1.16` final",
+        "must report `0.1.16`",
+        "exact read-only MCP tool list remains unchanged",
+        "Phase 6 remains specification-only",
+        "no new capture surfaces",
+        "no CLI/MCP JSON shape changes",
+        "no screenshot capture code",
+        "no OCR engine integration",
+        "`python -m pytest -q` | Pass | `149 passed`",
+        "`python -c \"import winchronicle; print(winchronicle.__version__)\"` | Pass | printed `0.1.16`",
+        "fresh manual UIA smoke passed for Notepad and Edge",
+        "VS Code strict marker remains a diagnostic non-blocking failure",
+        "watcher preview live smoke passed",
+        "follow-up release candidate if any product or contract regression",
+        "Release URL: pending.",
+        "Final tag target: pending.",
     ):
         assert phrase in normalized
 
