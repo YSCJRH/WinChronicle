@@ -79,6 +79,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Next blueprint lane selection after v0.1.17](next-blueprint-lane-selection-post-v0.1.17.md)"
         in quickstart
     )
+    assert (
+        "[Privacy-policy contract parity audit after v0.1.17](privacy-policy-contract-parity-audit-post-v0.1.17.md)"
+        in quickstart
+    )
     assert "[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)"
@@ -201,6 +205,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[Next blueprint lane selection after v0.1.17](docs/next-blueprint-lane-selection-post-v0.1.17.md)"
+        in readme
+    )
+    assert (
+        "[Privacy-policy contract parity audit after v0.1.17](docs/privacy-policy-contract-parity-audit-post-v0.1.17.md)"
         in readme
     )
     assert (
@@ -372,6 +380,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Phase 6 privacy contract deferred fixture closure after v0.1.17" in readme_operator_docs
     assert "Phase 6 contract closure release-readiness decision after v0.1.17" in readme_operator_docs
     assert "Next blueprint lane selection after v0.1.17" in readme_operator_docs
+    assert "Privacy-policy contract parity audit after v0.1.17" in readme_operator_docs
     assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.16" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
@@ -489,6 +498,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )
     assert readme_operator_docs.index(
         "Next blueprint lane selection after v0.1.17"
+    ) < readme_operator_docs.index(
+        "Privacy-policy contract parity audit after v0.1.17"
+    )
+    assert readme_operator_docs.index(
+        "Privacy-policy contract parity audit after v0.1.17"
     ) < readme_operator_docs.index(
         "Post-v0.1.16 maintenance plan"
     )
@@ -866,8 +880,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Phase 6 contract closure release-readiness decision PR #183" in evidence
     assert "post-PR\n  #183 `main` Windows Harness run `25610538811`" in checklist
     assert "post-PR\n  #183 `main` Windows Harness run `25610538811`" in evidence
-    assert "current Fixture and\n  privacy baseline contract parity audit" in checklist
-    assert "current Fixture and\n  privacy baseline contract parity audit" in evidence
+    assert "next blueprint lane selection\n  PR #184" in checklist
+    assert "next blueprint lane selection\n  PR #184" in evidence
+    assert "post-PR #184 `main` Windows Harness run `25610880531`" in checklist
+    assert "post-PR #184 `main` Windows Harness run `25610880531`" in evidence
+    assert "current privacy-check release-readiness decision follow-up" in checklist
+    assert "current privacy-check release-readiness decision follow-up" in evidence
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist

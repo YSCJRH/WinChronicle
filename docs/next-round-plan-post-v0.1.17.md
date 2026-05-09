@@ -27,34 +27,26 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Fixture And Privacy Baseline Contract Parity Audit.
-- Stage status: Next blueprint lane is selected as Fixture and privacy
-  baseline; the first task is a privacy-policy contract parity audit before
-  any behavior change.
-- Last completed evidence: Phase 6 contract closure release-readiness decision
-  PR #183 merged as `784a01385c5e77785bdcc3f2298df988f94e5c66`, PR Windows
-  Harness run `25610492799` passed, and post-merge `main` Windows Harness run
-  `25610538811` passed on that SHA.
-- Last validation: `gh run view 25610538811 --json
+- Current stage: Privacy-Check Release-Readiness Decision.
+- Stage status: Privacy-policy contract parity audit identified and fixed a
+  narrow privacy-check validation gap for already-normalized captures; the next
+  step is an explicit release/no-release decision for that runtime privacy
+  hardening.
+- Last completed evidence: Next blueprint lane selection PR #184 merged as
+  `998403d739570dd81677d4f8b3b8244b8a769caf`, PR Windows Harness run
+  `25610819243` passed, and post-merge `main` Windows Harness run
+  `25610880531` passed on that SHA.
+- Last validation: `gh run view 25610880531 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-PR #183 `main` Windows Harness concluded
-  `success`;
-  `git diff
-  --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
+  verified the post-PR #184 `main` Windows Harness concluded `success`;
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` printed no files through the next blueprint lane selection,
-  so
-  AG1-AG6, the preflight, fixture expansion, remaining fixtures, coverage
-  audit, gap fixtures, residual schema audit, residual policy fixtures, and
-  their reconciliations contain no runtime, helper/watcher, CLI/MCP output,
-  privacy-runtime, capture-surface, or version-metadata change. The Phase 6
-  contract closure release-readiness decision likewise contains no such
-  runtime or package change, and the next blueprint lane selection remains
-  docs/tests-only.
-- Next atomic task: start the privacy-policy contract parity audit by mapping
-  `harness/specs/privacy-policy.md`, deterministic privacy fixtures, redaction
-  and denylist tests, CLI status privacy fields, MCP `privacy_status`, and
-  `harness/scorecards/privacy-gates.md`.
+  pyproject.toml` printed no files through the lane-selection baseline. The
+  privacy-policy contract parity audit adds a narrow privacy-check runtime fix
+  and targeted regression tests, without helper/watcher, CLI/MCP output,
+  schema, capture-surface, or version-metadata changes.
+- Next atomic task: record whether the privacy-check runtime hardening warrants
+  a `v0.1.18` release-readiness and publication path before selecting the next
+  Fixture and privacy baseline follow-up.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -172,6 +164,23 @@ service install, no polling capture loop, and no default background capture.
   behavior, capture surfaces, version metadata, or privacy runtime behavior in
   the lane-selection step.
 - Keep real UIA smoke manual and outside default CI.
+
+### Fixture And Privacy Baseline - Privacy Policy Contract Parity Audit
+
+- Record `docs/privacy-policy-contract-parity-audit-post-v0.1.17.md`.
+- Bind `harness/specs/privacy-policy.md` and `harness/scorecards/privacy-gates.md`
+  to implementation constants, deterministic fixtures, and regression tests.
+- Add explicit coverage for plain WinChronicle token canaries, existing
+  normalized denylisted captures, and existing normalized password-field
+  semantics.
+- Harden `privacy-check` so denylisted fixture dry-runs still pass as skipped,
+  while existing normalized denylisted captures fail as already-written
+  violations.
+- Treat watcher-preview parity as out of scope for this audit; do not change
+  watcher, helper, capture, storage, schema, CLI/MCP output, or version
+  behavior.
+- Next step after merge: decide whether the narrow privacy-check runtime fix
+  warrants a `v0.1.18` release-readiness and publication path.
 
 ## Public Interfaces And Non-goals
 
@@ -387,6 +396,13 @@ Every implementation stage should run:
   and privacy baseline lane.
 - Selected the first task in that lane as a privacy-policy contract parity
   audit before any behavior change.
+- Completed the privacy-policy contract parity audit and closed two concrete
+  privacy-check coverage gaps: existing normalized denylisted captures and
+  existing normalized password-field semantics.
+- Added independent plain WinChronicle token-canary redaction and privacy-check
+  coverage.
+- Selected the next step as a release-readiness decision for the narrow
+  privacy-check runtime hardening.
 
 ## Validation Log
 
@@ -676,3 +692,13 @@ Every implementation stage should run:
   - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
   - `python -m pytest -q` - passed, 191 tests.
   - `python harness/scripts/run_harness.py` - passed, including 191 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Privacy-policy contract parity audit local validation:
+  - `python -m pytest tests/test_privacy_policy_contract.py tests/test_privacy_check.py tests/test_redaction.py tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 110 tests.
+  - `python -m pytest -q` - passed, 201 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- src\winchronicle resources pyproject.toml` -
+    passed with exactly `src/winchronicle/capture.py`.
+  - `python harness/scripts/run_harness.py` - passed, including 201 pytest
+    tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke,
+    MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory,
+    deterministic watcher fixture, and watcher fake-helper smoke.
