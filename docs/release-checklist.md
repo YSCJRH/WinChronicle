@@ -14,6 +14,8 @@ current post-v0.1.18 public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md). The
 current post-v0.1.18 helper/watcher diagnostics review is
 [Helper and watcher diagnostics sweep after v0.1.18](helper-watcher-diagnostics-sweep-post-v0.1.18.md). The
+current post-v0.1.18 MCP/memory contract review is
+[MCP and memory contract sweep after v0.1.18](mcp-memory-contract-sweep-post-v0.1.18.md). The
 completed post-v0.1.17 execution cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -131,6 +133,11 @@ inherited historical evidence:
   policy, raw watcher JSONL non-persistence, product targeted-capture
   pass-through rejection, current `v0.1.18` manual-smoke matrix rows, and no new
   product-code drift;
+- the current post-v0.1.18 MCP/memory contract review records the exact
+  read-only MCP tool list, local-only `privacy_status`, `search_captures` and
+  `search_memory` CLI/MCP parity, durable memory Markdown and manifest trust
+  metadata, FTS/idempotence/secret-exclusion gates, fixture-only demo scope, and
+  no new product-code drift;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0
