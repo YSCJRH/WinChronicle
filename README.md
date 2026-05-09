@@ -16,10 +16,11 @@ For current maintenance operation, start with
 [`docs/operator-quickstart.md`](docs/operator-quickstart.md). It links the
 release checklist, manual smoke evidence template, Windows UIA smoke gates,
 watcher preview, read-only MCP examples, known limitations, the active
-post-v0.1.17 maintenance plan, the completed post-v0.1.17 public metadata
-audit, the completed post-v0.1.17 helper/watcher diagnostics sweep, the completed
-post-v0.1.17 MCP/memory contract sweep, the completed post-v0.1.17 compatibility
-guardrail sweep, the completed post-v0.1.17 release-readiness decision, the
+post-v0.1.18 maintenance plan, the completed post-v0.1.17 maintenance plan, the
+completed post-v0.1.17 public metadata audit, the completed post-v0.1.17
+helper/watcher diagnostics sweep, the completed post-v0.1.17 MCP/memory
+contract sweep, the completed post-v0.1.17 compatibility guardrail sweep, the
+completed post-v0.1.17 release-readiness decision, the
 completed Phase 6 privacy contract preflight, the completed Phase 6 privacy
 contract fixture expansion, the completed Phase 6 remaining negative contract
 fixture expansion, the completed Phase 6 contract coverage audit, the completed
@@ -141,6 +142,7 @@ available through `search-captures`.
 ## Operator Docs
 
 - [Operator quickstart](docs/operator-quickstart.md)
+- [Post-v0.1.18 maintenance plan](docs/next-round-plan-post-v0.1.18.md)
 - [Post-v0.1.17 maintenance plan](docs/next-round-plan-post-v0.1.17.md)
 - [Public metadata audit after v0.1.17](docs/public-metadata-audit-post-v0.1.17.md)
 - [Helper and watcher diagnostics sweep after v0.1.17](docs/helper-watcher-diagnostics-sweep-post-v0.1.17.md)
