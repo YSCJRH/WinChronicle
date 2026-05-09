@@ -44,6 +44,8 @@ completed privacy-policy contract parity audit is
 [Privacy-policy contract parity audit after v0.1.17](privacy-policy-contract-parity-audit-post-v0.1.17.md). The
 completed privacy-check release-readiness decision is
 [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md). The
+current `v0.1.18` release-readiness record is
+[v0.1.18 release-readiness record](release-v0.1.18.md). The
 completed post-v0.1.16 execution cursor lives in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
 completed post-v0.1.16 public metadata/evidence freshness audit is
@@ -141,8 +143,11 @@ inherited historical evidence:
   #183 `main` Windows Harness run `25610538811`, next blueprint lane selection
   PR #184 with post-PR #184 `main` Windows Harness run `25610880531`, and
   privacy-policy contract parity audit PR #185 with post-PR #185 `main`
-  Windows Harness run `25611363701`; the current next release-readiness target
-  is `v0.1.18`;
+  Windows Harness run `25611363701`, and privacy-check release-readiness
+  decision PR #186 with post-PR #186 `main` Windows Harness run
+  `25611836358`; the current `v0.1.18` release-readiness record bumps version
+  identity to `0.1.18` and keeps publication pending review, PR Windows
+  Harness, post-merge `main` Windows Harness, and explicit publication;
 - the completed post-v0.1.17 public metadata/evidence freshness audit records
   repository metadata, `v0.1.17` release metadata, previous stable `v0.1.16`
   release metadata, post-AG0 `main` Windows Harness evidence, manual repository

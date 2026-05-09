@@ -28,25 +28,28 @@ service install, no polling capture loop, and no default background capture.
 ## Execution Cursor
 
 - Current stage: v0.1.18 Release-Readiness Record.
-- Stage status: Privacy-check release-readiness decision selected a narrow
-  `v0.1.18` release-readiness path for the post-`v0.1.17` privacy-check
-  validation hardening; immediate publication is not yet warranted.
-- Last completed evidence: Privacy-policy contract parity audit PR #185 merged
-  as `ea5283e7ae9f2029fa97c1e9a65fff87eedb813e`, PR Windows Harness run
-  `25611312314` passed, and post-merge `main` Windows Harness run
-  `25611363701` passed on that SHA.
-- Last validation: `gh run view 25611363701 --json
+- Stage status: `v0.1.18` release-readiness is being prepared for the
+  post-`v0.1.17` privacy-check validation hardening; publication remains
+  pending review, PR Windows Harness, post-merge `main` Windows Harness, GitHub
+  release publication, and publication reconciliation.
+- Last completed evidence: Privacy-check release-readiness decision PR #186
+  merged as `db9b388298facd0a8b387f86bc0dcfa1fa546bc5`, PR Windows Harness run
+  `25611769944` passed, and post-merge `main` Windows Harness run
+  `25611836358` passed on that SHA.
+- Last validation: `gh run view 25611836358 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-PR #185 `main` Windows Harness concluded `success`;
+  verified the post-PR #186 `main` Windows Harness concluded `success`;
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` is limited to `src/winchronicle/capture.py`. The
-  privacy-check release-readiness decision records that this privacy-positive
-  validation change warrants a `v0.1.18` release-readiness path, without
-  helper/watcher, CLI/MCP output, schema, capture-surface, or version-metadata
-  changes.
-- Next atomic task: create the narrow `v0.1.18` release-readiness record with
-  a version bump decision, manual UIA smoke freshness decision, deterministic
-  evidence requirements, and publication path.
+  pyproject.toml` was limited to `src/winchronicle/capture.py` before the
+  `v0.1.18` release-readiness branch. The `v0.1.18` release-readiness record
+  bumps version identity to `0.1.18`, reruns fresh manual UIA smoke, and keeps
+  publication pending review and remote gates. Local release-readiness
+  validation passed: focused docs/privacy/version tests reported 108 tests,
+  full pytest reported 204 tests, `git diff --check` passed, the current
+  `src\winchronicle`/`resources`/`pyproject.toml` diff is version metadata
+  only, and `python harness/scripts/run_harness.py` passed.
+- Next atomic task: open the reviewed `v0.1.18` release-readiness PR and
+  require PR Windows Harness before merge.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -195,6 +198,18 @@ service install, no polling capture loop, and no default background capture.
   release-readiness branch explicitly decides and implements a version bump.
 - The future `v0.1.18` release-readiness record must decide manual UIA smoke
   freshness before publication.
+
+### v0.1.18 Release Readiness
+
+- Record `docs/release-v0.1.18.md`.
+- Bump package/runtime/MCP version identity to `0.1.18` only on the
+  release-readiness branch.
+- Rerun fresh hard-gate manual UIA smoke because privacy-check validation
+  behavior changed after `v0.1.17`.
+- Keep direct maintenance publication pending reviewed PR, PR Windows Harness,
+  post-merge `main` Windows Harness, GitHub release publication, metadata
+  verification, remote tag verification, and publication reconciliation.
+- Do not retag `v0.1.17`; it remains published and immutable.
 
 ## Public Interfaces And Non-goals
 
@@ -424,6 +439,15 @@ Every implementation stage should run:
   `v0.1.18` release-readiness path, do not retag `v0.1.17`, do not publish
   immediately, and leave manual UIA smoke freshness to the `v0.1.18`
   release-readiness record.
+- Started the `v0.1.18` release-readiness record after PR #186 merged as
+  `db9b388298facd0a8b387f86bc0dcfa1fa546bc5` and post-merge `main` Windows
+  Harness run `25611836358` passed. The release-readiness branch bumps version
+  identity to `0.1.18`, records fresh manual UIA smoke, and keeps publication
+  pending review and remote gates.
+- Completed local validation for the `v0.1.18` release-readiness branch:
+  focused docs/privacy/version tests passed with 108 tests, full pytest passed
+  with 204 tests, `git diff --check` passed, version-metadata-only current
+  diff was confirmed, and the full harness passed.
 
 ## Validation Log
 
@@ -733,3 +757,13 @@ Every implementation stage should run:
     tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke,
     MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory,
     deterministic watcher fixture, and watcher fake-helper smoke.
+- Privacy-check release-readiness decision completion:
+  - `gh pr view 186 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #186 merged at `2026-05-09T21:07:18Z` as `db9b388298facd0a8b387f86bc0dcfa1fa546bc5`.
+  - `gh run view 25611769944 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #186 Windows Harness concluded `success` on `c5e124fd9ca3ff46b6abba1a4fd899a444fe6286`.
+  - `gh run view 25611836358 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-PR #186 `main` Windows Harness concluded `success` on `db9b388298facd0a8b387f86bc0dcfa1fa546bc5`.
+- v0.1.18 release-readiness local validation:
+  - `python -m pytest tests/test_cli.py tests/test_privacy_check.py tests/test_redaction.py tests/test_privacy_policy_contract.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py tests/test_version_identity.py -q` - passed, 108 tests.
+  - `python -m pytest -q` - passed, 204 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed `pyproject.toml` and `src/winchronicle/_version.py`, confirming the current release-readiness branch only changes version metadata under those paths.
+  - `python harness/scripts/run_harness.py` - passed, including 204 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
