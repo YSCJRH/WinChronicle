@@ -20,13 +20,31 @@ PHASE6_CONTRACT_FIXTURE = (
 PHASE6_CONTRACT_COVERAGE_AUDIT = (
     ROOT / "docs" / "phase6-privacy-contract-coverage-audit-post-v0.1.17.md"
 )
+PHASE6_CONTRACT_GAP_FIXTURES = (
+    ROOT / "docs" / "phase6-privacy-contract-gap-fixtures-post-v0.1.17.md"
+)
 PHASE6_FIXTURE_DIR = ROOT / "harness" / "fixtures" / "phase6"
 PHASE6_INVALID_FIXTURES = (
     ROOT
     / "harness"
     / "fixtures"
     / "phase6"
+    / "privacy_enrichment_contract_invalid_global_allowlist_default_enabled.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_global_default_allowlist_allowed.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
     / "privacy_enrichment_contract_invalid_global_allowlist.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_implicit_all_apps_allowed.json",
     ROOT
     / "harness"
     / "fixtures"
@@ -41,7 +59,17 @@ PHASE6_INVALID_FIXTURES = (
     / "harness"
     / "fixtures"
     / "phase6"
+    / "privacy_enrichment_contract_invalid_mcp_write_tools_allowed.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
     / "privacy_enrichment_contract_invalid_ocr_default_enabled.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_raw_cache_enabled_by_default.json",
     ROOT
     / "harness"
     / "fixtures"
@@ -52,6 +80,11 @@ PHASE6_INVALID_FIXTURES = (
     / "fixtures"
     / "phase6"
     / "privacy_enrichment_contract_invalid_raw_mcp_exposure.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_raw_screenshot_cache_default_enabled.json",
     ROOT
     / "harness"
     / "fixtures"
@@ -156,6 +189,10 @@ def test_phase6_privacy_scorecard_records_threat_model_and_preflight_artifacts()
         "runtime allowlist configuration",
         "runtime capture allowed in v0.1",
         "missing required non-goal coverage",
+        "raw screenshot cache defaults",
+        "global allowlist defaults",
+        "implicit all-app allowlists",
+        "MCP write-tool exposure",
         "sample shape examples only, not approved apps",
         "do not authorize screenshot capture, OCR, raw screenshot caches",
     )
@@ -325,6 +362,29 @@ def test_phase6_privacy_contract_coverage_audit_records_gaps_and_non_goals():
         "Next Task",
         "Add targeted durable Phase 6 negative fixtures",
         "MCP write tools allowed",
+    )
+    for phrase in required_phrases:
+        assert phrase in normalized
+
+
+def test_phase6_privacy_contract_gap_fixtures_record_targeted_expansion():
+    text = PHASE6_CONTRACT_GAP_FIXTURES.read_text(encoding="utf-8")
+    normalized = _normalize_markdown(text)
+
+    required_phrases = (
+        "targeted Phase 6 privacy-enrichment contract gap fixture expansion",
+        "does not implement or authorize screenshot capture, OCR",
+        "privacy_enrichment_contract_invalid_raw_screenshot_cache_default_enabled.json",
+        "privacy_enrichment_contract_invalid_global_allowlist_default_enabled.json",
+        "privacy_enrichment_contract_invalid_global_default_allowlist_allowed.json",
+        "privacy_enrichment_contract_invalid_implicit_all_apps_allowed.json",
+        "privacy_enrichment_contract_invalid_raw_cache_enabled_by_default.json",
+        "privacy_enrichment_contract_invalid_mcp_write_tools_allowed.json",
+        "These fixtures are not runtime configuration",
+        "Product code must not read them in v0.1",
+        "focused Phase 6/docs validation reported 89 tests",
+        "full pytest reported 186 tests",
+        "Land this targeted gap fixture expansion through PR and post-merge Windows Harness validation",
     )
     for phrase in required_phrases:
         assert phrase in normalized

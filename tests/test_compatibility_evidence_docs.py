@@ -898,10 +898,10 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "post-merge `main` Windows Harness run `25602018700` passed",
         "Current stage: Phase 6 Contract Gap Fixture Expansion.",
         "Stage status: contract coverage audit complete",
-        "Last completed evidence: Phase 6 contract coverage audit PR #174 merged as `117cb0f42fe8e7825b15279a6f102e3b18cc0081`",
-        "PR Windows Harness run `25607674390` passed",
-        "post-coverage-audit `main` Windows Harness run `25607748205`",
-        "verified the post-coverage-audit `main` Windows Harness concluded `success`",
+        "Last completed evidence: Phase 6 coverage audit reconciliation PR #175 merged as `05040ad068f99e341fca97c5ab59da7395d99f00`",
+        "PR Windows Harness run `25608015061` passed",
+        "post-reconciliation `main` Windows Harness run `25608072563`",
+        "verified the post-reconciliation `main` Windows Harness concluded `success`",
         "no runtime, helper/watcher, CLI/MCP output, privacy-runtime",
         "Next atomic task: add targeted durable Phase 6 negative fixtures",
         "schema-enforced but do not yet have their own committed invalid fixture",
@@ -1051,6 +1051,13 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "post-coverage-audit `main` Windows Harness concluded `success`",
         "Selected the next Phase 6 step as a targeted contract gap fixture expansion",
         "Phase 6 privacy-enrichment coverage audit reconciliation local validation:",
+        "Phase 6 privacy-enrichment coverage audit reconciliation completion:",
+        "PR #175 merged at `2026-05-09T18:03:25Z`",
+        "PR #175 Windows Harness concluded `success`",
+        "Started the Phase 6 targeted contract gap fixture expansion",
+        "Phase 6 privacy-enrichment contract gap fixture local validation:",
+        "passed, 89 tests",
+        "passed, 186 tests",
     ):
         assert phrase in normalized
 
