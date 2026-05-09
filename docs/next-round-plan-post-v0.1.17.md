@@ -27,29 +27,30 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Phase 6 Residual Schema Coverage Audit.
-- Stage status: targeted contract gap fixture expansion complete; the next
-  Phase 6 step is a docs/tests-only audit of remaining schema-enforced
-  branches without targeted invalid fixtures.
-- Last completed evidence: Phase 6 contract gap fixture expansion PR #176
-  merged as `05811145444af93178b957bd1a3fc11b47f64cfd`, PR Windows Harness run
-  `25608336721` passed, and post-gap-fixtures `main` Windows Harness run
-  `25608403951` passed on that SHA.
-- Last validation: `gh run view 25608403951 --json
+- Current stage: Phase 6 Residual Policy Fixture Expansion.
+- Stage status: residual schema coverage audit complete; the next Phase 6
+  step is a docs/tests/fixtures-only expansion for remaining high-signal
+  policy branches.
+- Last completed evidence: Phase 6 gap fixture reconciliation PR #177 merged
+  as `4d974be7135f26209f4836f4ff7fc850f722d720`, PR Windows Harness run
+  `25608596200` passed, and post-reconciliation `main` Windows Harness run
+  `25608660366` passed on that SHA.
+- Last validation: `gh run view 25608660366 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-gap-fixtures `main` Windows Harness concluded
+  verified the post-reconciliation `main` Windows Harness concluded
   `success`;
   `git diff
   --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` printed no files through the gap fixture expansion, so
+  pyproject.toml` printed no files through the residual schema coverage audit, so
   AG1-AG6, the preflight, fixture expansion, remaining fixtures, coverage
-  audit, gap fixtures, and their reconciliations contain no runtime,
-  helper/watcher, CLI/MCP output, privacy-runtime, capture-surface, or
-  version-metadata change.
-- Next atomic task: audit residual Phase 6 schema coverage so the remaining
-  schema-enforced branches are either promoted to targeted fixtures or
-  documented as adequately covered by existing schema/positive fixture tests.
+  audit, gap fixtures, residual schema audit, and their reconciliations contain
+  no runtime, helper/watcher, CLI/MCP output, privacy-runtime, capture-surface,
+  or version-metadata change.
+- Next atomic task: add targeted durable Phase 6 negative fixtures for the
+  residual high-signal policy branches identified by the audit: future opt-in
+  requirement booleans, raw cache local-state/artifact/encryption controls,
+  derived text pipeline controls, and MCP untrusted-content trust requirements.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -309,6 +310,16 @@ Every implementation stage should run:
   Windows Harness run `25608403951` passed.
 - Selected the next Phase 6 step as a residual schema coverage audit across
   the remaining const and pipeline branches before adding another fixture set.
+- Completed the Phase 6 gap fixture reconciliation after PR #177 merged as
+  `4d974be7135f26209f4836f4ff7fc850f722d720` and post-merge `main` Windows
+  Harness run `25608660366` passed.
+- Completed the Phase 6 residual schema coverage audit as a docs/tests-only
+  review. The audit records that the PR #176 high-signal gaps now have
+  targeted fixtures and identifies the remaining high-signal policy branches
+  for a fixture-only expansion.
+- Selected the next Phase 6 step as a residual policy fixture expansion for
+  opt-in requirement booleans, raw cache local-state/artifact/encryption
+  controls, derived text pipeline controls, and MCP trust-boundary requirements.
 
 ## Validation Log
 
@@ -536,3 +547,14 @@ Every implementation stage should run:
   - `gh pr view 176 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #176 merged at `2026-05-09T18:18:56Z` as `05811145444af93178b957bd1a3fc11b47f64cfd`.
   - `gh run view 25608336721 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #176 Windows Harness concluded `success` on `d9fc229304ce7f613db7b06c3f89c29190ae0981`.
   - `gh run view 25608403951 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-gap-fixtures `main` Windows Harness concluded `success` on `05811145444af93178b957bd1a3fc11b47f64cfd`.
+- Phase 6 privacy-enrichment gap fixture reconciliation completion:
+  - `gh pr view 177 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #177 merged at `2026-05-09T18:31:02Z` as `4d974be7135f26209f4836f4ff7fc850f722d720`.
+  - `gh run view 25608596200 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #177 Windows Harness concluded `success` on `1d9633bc9788d0b05be6429514197e16b9615df4`.
+  - `gh run view 25608660366 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-reconciliation `main` Windows Harness concluded `success` on `4d974be7135f26209f4836f4ff7fc850f722d720`.
+- Phase 6 privacy-enrichment residual schema coverage audit local validation:
+  - `python -m pytest tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 90 tests.
+  - `git diff --check` - passed.
+  - Product-source contract-artifact reference scan for `phase6-privacy-enrichment-contract`, `privacy_enrichment_contract`, `harness/fixtures/phase6`, and `harness\\fixtures\\phase6` across `src` and `resources` - passed with no matches.
+  - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
+  - `python -m pytest -q` - passed, 187 tests.
+  - `python harness/scripts/run_harness.py` - passed, including 187 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

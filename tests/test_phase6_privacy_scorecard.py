@@ -23,6 +23,11 @@ PHASE6_CONTRACT_COVERAGE_AUDIT = (
 PHASE6_CONTRACT_GAP_FIXTURES = (
     ROOT / "docs" / "phase6-privacy-contract-gap-fixtures-post-v0.1.17.md"
 )
+PHASE6_CONTRACT_RESIDUAL_SCHEMA_AUDIT = (
+    ROOT
+    / "docs"
+    / "phase6-privacy-contract-residual-schema-coverage-audit-post-v0.1.17.md"
+)
 PHASE6_FIXTURE_DIR = ROOT / "harness" / "fixtures" / "phase6"
 PHASE6_INVALID_FIXTURES = (
     ROOT
@@ -388,6 +393,41 @@ def test_phase6_privacy_contract_gap_fixtures_record_targeted_expansion():
         "Post-gap-fixtures `main` Windows Harness run `25608403951` concluded `success`",
         "Audit the remaining Phase 6 schema-enforced branches",
         "raw cache local-state/encryption/artifact controls",
+    )
+    for phrase in required_phrases:
+        assert phrase in normalized
+
+
+def test_phase6_privacy_contract_residual_schema_audit_records_next_gaps():
+    text = PHASE6_CONTRACT_RESIDUAL_SCHEMA_AUDIT.read_text(encoding="utf-8")
+    normalized = _normalize_markdown(text)
+
+    required_phrases = (
+        "docs/tests-only audit",
+        "does not implement or authorize screenshot capture, OCR",
+        "The high-signal gaps identified by the prior coverage audit now have targeted committed invalid fixtures",
+        "privacy_enrichment_contract_invalid_raw_screenshot_cache_default_enabled.json",
+        "privacy_enrichment_contract_invalid_global_allowlist_default_enabled.json",
+        "privacy_enrichment_contract_invalid_global_default_allowlist_allowed.json",
+        "privacy_enrichment_contract_invalid_implicit_all_apps_allowed.json",
+        "privacy_enrichment_contract_invalid_raw_cache_enabled_by_default.json",
+        "privacy_enrichment_contract_invalid_mcp_write_tools_allowed.json",
+        "remaining high-signal policy branches are schema-enforced",
+        "future_opt_in_requirements.requires_explicit_screenshots_enabled_true",
+        "requires_per_app_screenshot_allowlist",
+        "raw_cache_policy.local_state_directory_only",
+        "raw_artifacts_commit_forbidden",
+        "encryption_at_rest_required_or_exception_documented",
+        "derived_text_pipeline.redaction_before_storage",
+        "prompt_injection_marked_untrusted",
+        "mcp_policy.requires_untrusted_observed_content_trust",
+        "allowlist_policy.sample_allowlist_entries_only",
+        "contract coverage findings, not product behavior gaps",
+        "focused Phase 6/docs validation reported 90 tests",
+        "full pytest reported 187 tests",
+        "Add targeted durable Phase 6 negative fixtures for the residual high-signal policy branches",
+        "derived text pipeline controls",
+        "MCP untrusted-content trust requirements",
     )
     for phrase in required_phrases:
         assert phrase in normalized
