@@ -26,6 +26,7 @@ V0116_RC0_RELEASE = ROOT / "docs" / "release-candidate-v0.1.16-rc.0.md"
 V0116_FINAL_PLAN = ROOT / "docs" / "next-round-plan-v0.1.16-final-release.md"
 V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 POST_V0116_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.16.md"
+PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -43,6 +44,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
         "Post-v0.1.16 maintenance plan",
+        "Public metadata audit after v0.1.16",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -70,6 +72,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
         "Post-v0.1.16 maintenance plan",
+        "Public metadata audit after v0.1.16",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -798,13 +801,14 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "`v0.1.16` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16",
         "tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
         "published at `2026-05-09T09:31:17Z`",
-        "Current stage: AF0 - Post-v0.1.16 Published Baseline Cursor.",
-        "Stage status: AF0 complete",
-        "AE4 publication reconciliation PR #148 merged as",
-        "`b36581c25a609f801a48cefda7354781d6dfb888`",
-        "PR Windows Harness run `25598038285` passed",
-        "post-merge `main` Windows Harness run `25598080136` passed",
-        "Next atomic task: start AF1",
+        "Current stage: AF1 - Public Metadata And Evidence Freshness Follow-up.",
+        "Stage status: AF1 in progress",
+        "`docs/public-metadata-audit-post-v0.1.16.md` is prepared for review",
+        "AF0 baseline cursor PR #149 merged as",
+        "`85172956c978fbb6b3355d7e3e75e2ba25fc909a`",
+        "PR Windows Harness run `25598203781` passed",
+        "post-merge `main` Windows Harness run `25598257646` passed",
+        "Next atomic task: merge the AF1 public metadata audit",
         "Stage AF0 - Post-v0.1.16 Baseline Cursor",
         "Stage AF1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AF2 - Helper And Watcher Preview Diagnostics Review",
@@ -817,11 +821,56 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "git rev-parse v0.1.16",
         "git ls-remote --tags origin v0.1.16",
         "Stage AF0 baseline landing:",
+        "Stage AF1 initialization:",
+        "gh repo view YSCJRH/WinChronicle",
+        "repository is public on `main`, with empty description, homepage, and topics",
+        "post-AF0 `main` Windows Harness concluded `success`",
+        "Stage AF1 local validation:",
+        "57 tests passed",
+        "155 tests passed",
+        "python harness/scripts/run_harness.py",
     ):
         assert phrase in normalized
 
     for tool_name in TOOL_NAMES:
         assert f"`{tool_name}`" in text
+
+
+def test_public_metadata_audit_post_v016_records_manual_gaps_without_scope_expansion():
+    text = PUBLIC_METADATA_V0116.read_text(encoding="utf-8")
+
+    for phrase in (
+        "Public Metadata Audit After v0.1.16",
+        "does not change product behavior, schemas,\nCLI/MCP JSON shape",
+        "gh repo view YSCJRH/WinChronicle",
+        "Visibility | `PUBLIC`",
+        "Default branch | `main`",
+        "Description | Empty",
+        "Homepage URL | Empty",
+        "Repository topics | Empty / not configured",
+        "gh release view v0.1.16",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16",
+        "Target | `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
+        "Draft | `false`",
+        "Prerelease | `false`",
+        "Published at | `2026-05-09T09:31:17Z`",
+        "Run | `25598257646`",
+        "Head SHA | `85172956c978fbb6b3355d7e3e75e2ba25fc909a`",
+        "README.md` starts with \"UIA-first local memory for Windows agents.\"",
+        "docs/operator-quickstart.md` links release checklist",
+        "active post-v0.1.16 plan",
+        "GitHub repository description",
+        "GitHub homepage URL",
+        "GitHub topics",
+        "Social preview image",
+        "manual maintainer checklist item",
+        "AE2 manual UIA smoke remains fresh for the published `v0.1.16` final release",
+        "no required product-code change",
+        "The next smallest implementation task is AF2",
+    ):
+        assert phrase in text
+
+    assert "This audit does not authorize screenshots" in text
 
 
 def _normalized(text: str) -> str:

@@ -23,18 +23,18 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AF0 - Post-v0.1.16 Published Baseline Cursor.
-- Stage status: AF0 complete; AE4 publication reconciliation landed on
-  `main`, and AF1 is ready to start.
-- Last completed evidence: AE4 publication reconciliation PR #148 merged as
-  `b36581c25a609f801a48cefda7354781d6dfb888`, PR Windows Harness run
-  `25598038285` passed, and post-merge `main` Windows Harness run
-  `25598080136` passed on that SHA.
-- Last validation: `v0.1.16` release metadata, final tag target, remote tag,
-  `v0.1.16-rc.0` prerelease metadata, and the AE4 publication-reconciliation
-  landing on `main` were verified.
-- Next atomic task: start AF1 by re-checking public metadata and evidence
-  freshness after the published `v0.1.16` baseline.
+- Current stage: AF1 - Public Metadata And Evidence Freshness Follow-up.
+- Stage status: AF1 in progress; public metadata and release metadata are
+  checked, and `docs/public-metadata-audit-post-v0.1.16.md` is prepared for
+  review.
+- Last completed evidence: AF0 baseline cursor PR #149 merged as
+  `85172956c978fbb6b3355d7e3e75e2ba25fc909a`, PR Windows Harness run
+  `25598203781` passed, and post-merge `main` Windows Harness run
+  `25598257646` passed on that SHA.
+- Last validation: `gh repo view`, `gh release view v0.1.16`, and
+  `gh run view 25598257646` passed for the AF1 public metadata audit.
+- Next atomic task: merge the AF1 public metadata audit after review and PR
+  Windows Harness, then wait for post-merge `main` Windows Harness.
 - Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
@@ -126,6 +126,8 @@ Every implementation stage should run:
   from the completed final-release plan.
 - Completed AF0 after AE4 publication reconciliation landed on `main` and its
   post-merge Windows Harness passed.
+- Chose AF1 as a docs-only audit because repository metadata gaps remain manual
+  maintainer settings and do not require product-code changes.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -140,3 +142,12 @@ Every implementation stage should run:
   - PR #148 Windows Harness run `25598038285` - passed.
   - PR #148 merged as `b36581c25a609f801a48cefda7354781d6dfb888`.
   - `gh run view 25598080136 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AE4 `main` Windows Harness concluded `success` on `b36581c25a609f801a48cefda7354781d6dfb888`.
+- Stage AF1 initialization:
+  - `gh repo view YSCJRH/WinChronicle --json nameWithOwner,visibility,defaultBranchRef,description,homepageUrl,repositoryTopics,url` - passed; repository is public on `main`, with empty description, homepage, and topics.
+  - `gh release view v0.1.16 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name` - passed; `v0.1.16` is published, not a draft or prerelease, published at `2026-05-09T09:31:17Z`, and targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
+  - `gh run view 25598257646 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF0 `main` Windows Harness concluded `success` on `85172956c978fbb6b3355d7e3e75e2ba25fc909a`.
+- Stage AF1 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed; 57 tests passed.
+  - `python -m pytest -q` - passed; 155 tests passed.
+  - `python harness/scripts/run_harness.py` - passed; includes 155 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
+  - `git diff --check` - passed.
