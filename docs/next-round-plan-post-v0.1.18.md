@@ -29,19 +29,19 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH2 - Helper And Watcher Preview Diagnostics Review.
-- Stage status: AH2 in progress. This branch records helper and watcher preview
-  diagnostics evidence after the post-v0.1.18 public metadata audit and keeps
-  the product boundary unchanged.
-- Last completed evidence: AH1 public metadata audit PR #190 merged as
-  `579ee935d9384a1c7640f30e3822a0d441706d75`, PR Windows Harness run
-  `25613512871` passed, and post-merge `main` Windows Harness run
-  `25613555936` passed on that SHA.
-- Last validation: `gh run view 25613555936 --json
+- Current stage: AH3 - MCP And Memory Contract Review.
+- Stage status: AH3 in progress. This branch records MCP and durable memory
+  contract evidence after the post-v0.1.18 helper/watcher diagnostics review and
+  keeps the product boundary unchanged.
+- Last completed evidence: AH2 helper/watcher diagnostics review PR #191 merged
+  as `d6d41eb184caeb2d32cd12f696d432ccb64cbb0e`, PR Windows Harness run
+  `25613817162` passed, and post-merge `main` Windows Harness run
+  `25613866954` passed on that SHA.
+- Last validation: `gh run view 25613866954 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AH1 `main` Windows Harness concluded `success`.
-- Next atomic task: land this AH2 helper/watcher diagnostics review PR, then
-  review MCP and memory contract evidence in AH3.
+  verified the post-AH2 `main` Windows Harness concluded `success`.
+- Next atomic task: land this AH3 MCP/memory contract review PR, then continue
+  compatibility guardrail review in AH4.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -170,6 +170,12 @@ Every implementation stage should run:
 - Started AH2 as a docs/tests-only helper/watcher diagnostics review because
   existing deterministic tests and scorecards already cover the v0.1 preview
   diagnostic boundary.
+- Completed AH2 after PR #191 merged as
+  `d6d41eb184caeb2d32cd12f696d432ccb64cbb0e` and post-merge Windows Harness
+  run `25613866954` passed.
+- Started AH3 as a docs/tests-only MCP/memory contract review because existing
+  deterministic tests and scorecards already cover the read-only MCP tool list,
+  durable memory contract, and observed-content trust boundary.
 
 ## Validation Log
 
@@ -214,3 +220,17 @@ Every implementation stage should run:
   - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed no files, confirming AH2 is docs/tests only with no product/runtime/version diff.
   - current-entry stale AH1/current post-v0.1.17 helper/watcher wording scan across `README.md`, current docs, and current doc tests - passed with no matches in current entry documents.
   - `python harness/scripts/run_harness.py` - passed, including 207 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH2 completion:
+  - `gh pr view 191 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #191 merged at `2026-05-09T22:52:52Z` as `d6d41eb184caeb2d32cd12f696d432ccb64cbb0e`.
+  - `gh run view 25613817162 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #191 Windows Harness concluded `success` on `a3811e8be25e3c554da9cd9fb39e61d92b6546ad`.
+  - `gh run view 25613866954 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH2 `main` Windows Harness concluded `success` on `d6d41eb184caeb2d32cd12f696d432ccb64cbb0e`.
+- Stage AH3 initialization:
+  - Reviewed `docs/mcp-readonly-examples.md`, `docs/deterministic-demo.md`, `harness/scorecards/mcp-quality.md`, `harness/scorecards/memory-quality.md`, `tests/test_mcp_tools.py`, `tests/test_memory_pipeline.py`, `harness/scripts/run_mcp_smoke.py`, `src/winchronicle/mcp/server.py`, and `src/winchronicle/memory.py`.
+  - Found no new MCP/memory contract drift requiring product code, schema, CLI/MCP JSON shape, memory reducer, SQLite schema, privacy runtime, helper, watcher, or capture-surface changes.
+- Stage AH3 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_mcp_tools.py tests/test_memory_pipeline.py tests/test_state_compatibility.py tests/test_version_identity.py -q` - passed, 108 tests.
+  - `python -m pytest -q` - passed, 209 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed no files, confirming AH3 is docs/tests only with no product/runtime/version diff.
+  - current-entry stale AH2/current post-v0.1.17 MCP/memory wording scan across `README.md`, current docs, and current doc tests - passed with no matches in current entry documents.
+  - `python harness/scripts/run_harness.py` - passed, including 209 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
