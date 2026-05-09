@@ -31,6 +31,7 @@ POST_V0118_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.18.md"
 PUBLIC_METADATA_V0118 = ROOT / "docs" / "public-metadata-audit-post-v0.1.18.md"
 HELPER_WATCHER_V0118 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.18.md"
 MCP_MEMORY_V0118 = ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.18.md"
+COMPATIBILITY_V0118 = ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.18.md"
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
@@ -85,6 +86,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Public metadata audit after v0.1.18",
         "Helper and watcher diagnostics sweep after v0.1.18",
         "MCP and memory contract sweep after v0.1.18",
+        "Compatibility guardrail sweep after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -133,6 +135,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Public metadata audit after v0.1.18",
         "Helper and watcher diagnostics sweep after v0.1.18",
         "MCP and memory contract sweep after v0.1.18",
+        "Compatibility guardrail sweep after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -1009,13 +1012,13 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "publication reconciliation landed on `main` as `f40e165ce35464e5eb8df65f10ef153f8145177b`",
         "PR #188 Windows Harness run `25612920731` passed",
         "post-merge `main` Windows Harness run `25612977738`",
-        "Current stage: AH3 - MCP And Memory Contract Review.",
-        "Stage status: AH3 in progress.",
-        "Last completed evidence: AH2 helper/watcher diagnostics review PR #191 merged",
-        "PR Windows Harness run `25613817162` passed",
-        "post-merge `main` Windows Harness run `25613866954` passed",
-        "Next atomic task: land this AH3 MCP/memory contract review PR",
-        "then continue compatibility guardrail review in AH4",
+        "Current stage: AH4 - Compatibility Guardrail Sweep.",
+        "Stage status: AH4 in progress.",
+        "Last completed evidence: AH3 MCP/memory contract review PR #192 merged as",
+        "PR Windows Harness run `25614178190` passed",
+        "post-merge `main` Windows Harness run `25614220171` passed",
+        "Next atomic task: land this AH4 compatibility guardrail review PR",
+        "post-v0.1.18 release-readiness stage is warranted in AH5",
         "Stage AH0 - Post-v0.1.18 Baseline Cursor",
         "Stage AH1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AH2 - Helper And Watcher Preview Diagnostics Review",
@@ -1085,6 +1088,20 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "passed, 209 tests",
         "current-entry stale AH2/current post-v0.1.17 MCP/memory wording scan",
         "printed no files, confirming AH3 is docs/tests only",
+        "Stage AH3 completion:",
+        "gh pr view 192",
+        "PR #192 merged at `2026-05-09T23:12:54Z`",
+        "gh run view 25614178190",
+        "post-AH3 `main` Windows Harness concluded `success`",
+        "Stage AH4 initialization:",
+        "Reviewed `docs/compatibility-guardrail-sweep-post-v0.1.17.md`",
+        "Found no new compatibility drift",
+        "Stage AH4 local validation:",
+        "passed, 161 tests",
+        "passed, 211 tests",
+        "printed no files, confirming AH4 is docs/tests only",
+        "current-entry stale AH3/current post-v0.1.17 compatibility wording scan",
+        "python harness/scripts/run_harness.py",
     ):
         assert phrase in normalized
 
@@ -1908,6 +1925,66 @@ def test_compatibility_guardrail_sweep_post_v017_records_current_review():
         "No new runtime dependency or implementation path was found",
         "AG4 found no required schema",
         "The next smallest implementation task is to land this AG4 review",
+    ):
+        assert phrase in normalized
+
+    for boundary in (
+        "MCP write tools",
+        "arbitrary file read tools",
+        "screenshot capture",
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network upload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service install",
+        "polling capture loops",
+        "default background capture",
+        "live UIA smoke in default CI",
+    ):
+        assert boundary in normalized
+
+
+def test_compatibility_guardrail_sweep_post_v018_records_current_review():
+    text = COMPATIBILITY_V0118.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Compatibility Guardrail Sweep After v0.1.18",
+        "AH4 compatibility check",
+        "found no required schema",
+        "Version identity",
+        "Exact read-only MCP tool list",
+        "Disabled privacy surfaces",
+        "Observed-content trust boundary",
+        "Watcher preview limits",
+        "Durable memory contract",
+        "Phase 6 spec-only status",
+        "Product targeted capture absence",
+        "current_context",
+        "search_captures",
+        "search_memory",
+        "read_recent_capture",
+        "recent_activity",
+        "privacy_status",
+        'trust = "untrusted_observed_content"',
+        "tests/test_privacy_check.py",
+        "tests/test_privacy_policy_contract.py",
+        "Result: `161 passed`",
+        "Result: `211 passed`",
+        "Result: passed",
+        "Result: no matches",
+        "WinChronicle harness passed",
+        "watcher fake-helper smoke",
+        "Boundary scan",
+        "Background install/polling scan",
+        "Control/capture dependency scan",
+        "Stale cursor scan",
+        "AH4 found no required schema",
+        "The next smallest implementation task is to land this AH4 review",
     ):
         assert phrase in normalized
 

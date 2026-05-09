@@ -63,6 +63,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[MCP and memory contract sweep after v0.1.18](mcp-memory-contract-sweep-post-v0.1.18.md)"
         in quickstart
     )
+    assert (
+        "[Compatibility guardrail sweep after v0.1.18](compatibility-guardrail-sweep-post-v0.1.18.md)"
+        in quickstart
+    )
     assert "[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md)"
@@ -207,6 +211,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[MCP and memory contract sweep after v0.1.18](docs/mcp-memory-contract-sweep-post-v0.1.18.md)"
+        in readme
+    )
+    assert (
+        "[Compatibility guardrail sweep after v0.1.18](docs/compatibility-guardrail-sweep-post-v0.1.18.md)"
         in readme
     )
     assert (
@@ -378,6 +386,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.18 public metadata audit" in readme_intro_normalized
     assert "current post-v0.1.18 helper/watcher diagnostics sweep" in readme_intro_normalized
     assert "current post-v0.1.18 MCP/memory contract sweep" in readme_intro_normalized
+    assert "current post-v0.1.18 compatibility guardrail sweep" in readme_intro_normalized
     assert "completed post-v0.1.17 maintenance plan" in readme_intro_normalized
     assert "completed post-v0.1.16 maintenance plan and publication reconciliation" in readme_intro_normalized
     assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
@@ -414,6 +423,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Public metadata audit after v0.1.18" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.18" in readme_operator_docs
     assert "MCP and memory contract sweep after v0.1.18" in readme_operator_docs
+    assert "Compatibility guardrail sweep after v0.1.18" in readme_operator_docs
     assert "Post-v0.1.17 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.17" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.17" in readme_operator_docs
@@ -497,6 +507,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "MCP and memory contract sweep after v0.1.18"
     )
     assert readme_operator_docs.index("MCP and memory contract sweep after v0.1.18") < readme_operator_docs.index(
+        "Compatibility guardrail sweep after v0.1.18"
+    )
+    assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.18") < readme_operator_docs.index(
         "Post-v0.1.17 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.17 maintenance plan") < readme_operator_docs.index(
@@ -708,6 +721,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "public-metadata-audit-post-v0.1.18.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.18.md" in current_section
     assert "mcp-memory-contract-sweep-post-v0.1.18.md" in current_section
+    assert "compatibility-guardrail-sweep-post-v0.1.18.md" in current_section
     assert "next-round-plan-post-v0.1.17.md" in current_section
     assert "public-metadata-audit-post-v0.1.17.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in current_section
@@ -835,6 +849,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "helper-watcher-diagnostics-sweep-post-v0.1.18.md" in evidence
     assert "mcp-memory-contract-sweep-post-v0.1.18.md" in checklist
     assert "mcp-memory-contract-sweep-post-v0.1.18.md" in evidence
+    assert "compatibility-guardrail-sweep-post-v0.1.18.md" in checklist
+    assert "compatibility-guardrail-sweep-post-v0.1.18.md" in evidence
     assert "release-candidate-v0.1.16-rc.0.md" in checklist
     assert "release-candidate-v0.1.16-rc.0.md" in evidence
     assert "next-round-plan-post-v0.1.17.md" in checklist
@@ -905,6 +921,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.18 helper/watcher diagnostics review" in evidence
     assert "current post-v0.1.18 MCP/memory contract review" in checklist
     assert "current post-v0.1.18 MCP/memory contract review" in evidence
+    assert "current post-v0.1.18 compatibility guardrail review" in checklist
+    assert "current post-v0.1.18 compatibility guardrail review" in evidence
     assert "completed post-v0.1.17 execution cursor records" in checklist
     assert "completed post-v0.1.17 execution cursor records" in evidence
     assert "PR #188" in checklist
@@ -3556,6 +3574,68 @@ def test_post_v017_compatibility_guardrail_sweep_records_current_review():
         assert boundary in normalized
 
 
+def test_post_v018_compatibility_guardrail_sweep_records_current_review():
+    sweep = (
+        ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.18.md"
+    ).read_text(encoding="utf-8")
+    normalized = " ".join(sweep.split())
+
+    for expected in (
+        "Compatibility Guardrail Sweep After v0.1.18",
+        "AH4 compatibility check",
+        "found no required schema",
+        "Version identity",
+        "Exact read-only MCP tool list",
+        "Disabled privacy surfaces",
+        "Observed-content trust boundary",
+        "Watcher preview limits",
+        "Durable memory contract",
+        "Phase 6 spec-only status",
+        "Product targeted capture absence",
+        "current_context",
+        "search_captures",
+        "search_memory",
+        "read_recent_capture",
+        "recent_activity",
+        "privacy_status",
+        'trust = "untrusted_observed_content"',
+        "tests/test_privacy_check.py",
+        "tests/test_privacy_policy_contract.py",
+        "Result: `161 passed`",
+        "Result: `211 passed`",
+        "Result: passed",
+        "Result: no matches",
+        "WinChronicle harness passed",
+        "watcher fake-helper smoke",
+        "Boundary scan",
+        "Background install/polling scan",
+        "Control/capture dependency scan",
+        "Stale cursor scan",
+        "AH4 found no required schema",
+        "The next smallest implementation task is to land this AH4 review",
+    ):
+        assert expected in normalized
+
+    for boundary in (
+        "MCP write tools",
+        "arbitrary file read tools",
+        "screenshot capture",
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network upload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service install",
+        "polling capture loops",
+        "default background capture",
+        "live UIA smoke in default CI",
+    ):
+        assert boundary in normalized
+
+
 def test_post_v017_release_readiness_decision_records_no_release_path():
     decision = (
         ROOT / "docs" / "release-readiness-decision-post-v0.1.17.md"
@@ -3817,7 +3897,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Current public metadata audit | [Public metadata audit after v0.1.18]",
         "Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.18]",
         "Current MCP/memory contract sweep | [MCP and memory contract sweep after v0.1.18]",
-        "Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.17]",
+        "Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.18]",
         "Latest release-readiness decision | [v0.1.18 maintenance release record]",
         "Previous release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.17 maintenance plan]",

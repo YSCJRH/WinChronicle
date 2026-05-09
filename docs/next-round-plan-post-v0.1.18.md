@@ -29,19 +29,19 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH3 - MCP And Memory Contract Review.
-- Stage status: AH3 in progress. This branch records MCP and durable memory
-  contract evidence after the post-v0.1.18 helper/watcher diagnostics review and
-  keeps the product boundary unchanged.
-- Last completed evidence: AH2 helper/watcher diagnostics review PR #191 merged
-  as `d6d41eb184caeb2d32cd12f696d432ccb64cbb0e`, PR Windows Harness run
-  `25613817162` passed, and post-merge `main` Windows Harness run
-  `25613866954` passed on that SHA.
-- Last validation: `gh run view 25613866954 --json
+- Current stage: AH4 - Compatibility Guardrail Sweep.
+- Stage status: AH4 in progress. This branch records compatibility guardrail
+  evidence after the post-v0.1.18 MCP/memory contract review and keeps the
+  product boundary unchanged.
+- Last completed evidence: AH3 MCP/memory contract review PR #192 merged as
+  `9df2c5731e10e7553800645c20ab2f71e58f695d`, PR Windows Harness run
+  `25614178190` passed, and post-merge `main` Windows Harness run
+  `25614220171` passed on that SHA.
+- Last validation: `gh run view 25614220171 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AH2 `main` Windows Harness concluded `success`.
-- Next atomic task: land this AH3 MCP/memory contract review PR, then continue
-  compatibility guardrail review in AH4.
+  verified the post-AH3 `main` Windows Harness concluded `success`.
+- Next atomic task: land this AH4 compatibility guardrail review PR, then decide
+  whether a post-v0.1.18 release-readiness stage is warranted in AH5.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -176,6 +176,14 @@ Every implementation stage should run:
 - Started AH3 as a docs/tests-only MCP/memory contract review because existing
   deterministic tests and scorecards already cover the read-only MCP tool list,
   durable memory contract, and observed-content trust boundary.
+- Completed AH3 after PR #192 merged as
+  `9df2c5731e10e7553800645c20ab2f71e58f695d` and post-merge Windows Harness
+  run `25614220171` passed.
+- Started AH4 as a docs/tests-only compatibility guardrail sweep because
+  existing deterministic tests and scorecards already cover version identity,
+  exact read-only MCP tools, disabled privacy surfaces, watcher preview limits,
+  durable memory contracts, product targeted-capture absence, and Phase 6
+  spec-only status.
 
 ## Validation Log
 
@@ -234,3 +242,18 @@ Every implementation stage should run:
   - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed no files, confirming AH3 is docs/tests only with no product/runtime/version diff.
   - current-entry stale AH2/current post-v0.1.17 MCP/memory wording scan across `README.md`, current docs, and current doc tests - passed with no matches in current entry documents.
   - `python harness/scripts/run_harness.py` - passed, including 209 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH3 completion:
+  - `gh pr view 192 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #192 merged at `2026-05-09T23:12:54Z` as `9df2c5731e10e7553800645c20ab2f71e58f695d`.
+  - `gh run view 25614178190 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #192 Windows Harness concluded `success` on `cfc1daf25a0812ac30b64af242d44b5d0ee30d96`.
+  - `gh run view 25614220171 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH3 `main` Windows Harness concluded `success` on `9df2c5731e10e7553800645c20ab2f71e58f695d`.
+- Stage AH4 initialization:
+  - Reviewed `docs/compatibility-guardrail-sweep-post-v0.1.17.md`, `tests/test_compatibility_contracts.py`, `tests/test_mcp_tools.py`, `tests/test_phase6_privacy_scorecard.py`, `tests/test_watcher_events.py`, `tests/test_state_compatibility.py`, `tests/test_memory_pipeline.py`, `tests/test_privacy_check.py`, `tests/test_version_identity.py`, and current release/operator evidence indexes.
+  - Found no new compatibility drift requiring schema, MCP tool-schema, helper/watcher output contract, capture storage shape, privacy runtime, capture-surface, dependency, or version-metadata changes.
+- Stage AH4 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py tests/test_privacy_check.py tests/test_privacy_policy_contract.py tests/test_version_identity.py -q` - passed, 161 tests.
+  - `python -m pytest -q` - passed, 211 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed no files, confirming AH4 is docs/tests only with no product/runtime/version diff.
+  - boundary, background install/polling, and control/capture dependency scans found only existing disabled-surface contracts, docs, scorecards, deterministic fixtures/tests, issue templates, historical command text, canaries, and local smoke variable names; no new product CLI/MCP targeted capture, write/control tool, screenshot/OCR, audio, keyboard, clipboard, network upload, cloud upload, LLM, desktop control, daemon/service install, polling capture loop, startup task, default background capture, runtime dependency, or implementation path was found.
+  - current-entry stale AH3/current post-v0.1.17 compatibility wording scan across `README.md`, current docs, and current doc tests - passed with no matches.
+  - `python harness/scripts/run_harness.py` - passed, including 211 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
