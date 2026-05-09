@@ -29,6 +29,7 @@ V0117_RELEASE = ROOT / "docs" / "release-v0.1.17.md"
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
+MCP_MEMORY_V0117 = ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.17.md"
 POST_V0116_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.16.md"
 PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
 HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
@@ -55,6 +56,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Post-v0.1.17 maintenance plan",
         "Public metadata audit after v0.1.17",
         "Helper and watcher diagnostics sweep after v0.1.17",
+        "MCP and memory contract sweep after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -91,6 +93,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Post-v0.1.17 maintenance plan",
         "Public metadata audit after v0.1.17",
         "Helper and watcher diagnostics sweep after v0.1.17",
+        "MCP and memory contract sweep after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -887,15 +890,15 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "AF7 publication reconciliation landed on `main` as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
         "PR #160 Windows Harness run `25601966464` passed",
         "post-merge `main` Windows Harness run `25602018700` passed",
-        "Current stage: AG2 - Helper And Watcher Preview Diagnostics Review.",
-        "Stage status: AG2 review in progress; AG1 landed through PR #162",
-        "Last completed evidence: AG1 public metadata audit PR #162 merged as `0a5d72ea12ac030161ed387286dc15dc63c80b01`",
-        "PR Windows Harness run `25602763122` passed",
-        "post-AG1 `main` Windows Harness run `25602836902`",
-        "current helper/watcher docs and tests still cover timeout, malformed output",
-        "raw watcher JSONL policy",
-        "Next atomic task: land this AG2 helper/watcher diagnostics review",
-        "then start AG3 MCP and memory contract review",
+        "Current stage: AG3 - MCP And Memory Contract Review.",
+        "Stage status: AG3 review in progress; AG2 landed through PR #163",
+        "Last completed evidence: AG2 helper/watcher diagnostics review PR #163 merged as `461eb8b14f6733f5abfe87524da2358730da3b59`",
+        "PR Windows Harness run `25603218933` passed",
+        "post-AG2 `main` Windows Harness run `25603274783`",
+        "current MCP/memory docs and tests still cover exact read-only MCP tools",
+        "rejected write/control/file/network/targeted-capture tool names",
+        "Next atomic task: land this AG3 MCP/memory contract review",
+        "then start AG4 compatibility guardrail sweep",
         "Live UIA smoke remains manual and outside default CI",
         "Stage AG0 - Post-v0.1.17 Baseline Cursor",
         "Stage AG1 - Public Metadata And Evidence Freshness Follow-up",
@@ -939,6 +942,18 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "passed, 94 tests",
         "passed, 172 tests",
         "stale AG0/AG1 cursor and v0.1.16 helper/watcher typo scan",
+        "Stage AG2 completion:",
+        "PR #163 merged at `2026-05-09T14:16:40Z`",
+        "PR #163 Windows Harness concluded `success`",
+        "post-AG2 `main` Windows Harness concluded `success`",
+        "Stage AG3 initialization:",
+        "Reviewed `docs/mcp-readonly-examples.md`, `docs/deterministic-demo.md`",
+        "Found no new MCP/memory contract drift",
+        "Stage AG3 local validation:",
+        "passed, 93 tests",
+        "passed, 175 tests",
+        "stale AG2 cursor scan",
+        "python harness/scripts/run_harness.py",
     ):
         assert phrase in normalized
 
@@ -1287,6 +1302,50 @@ def test_mcp_memory_contract_sweep_post_v016_records_trust_boundary_fix():
         "No fresh manual UIA smoke is required to land this AF3 review",
         "future release-readiness record should make a fresh manual-smoke freshness decision",
         "The next smallest implementation task is to land this AF3 review",
+        "does not authorize MCP write tools",
+        "arbitrary file reads",
+        "product targeted capture",
+        "live UIA smoke in default CI",
+    ):
+        assert phrase in normalized
+
+
+def test_mcp_memory_contract_sweep_post_v017_records_current_review():
+    text = MCP_MEMORY_V0117.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "MCP And Memory Contract Sweep After v0.1.17",
+        "published `v0.1.17` maintenance release",
+        "AG2 helper/watcher diagnostics review",
+        "found no new drift requiring product code",
+        "schema, MCP tool-list, MCP tool-schema",
+        "MCP examples",
+        "MCP scorecard",
+        "Memory scorecard",
+        "Deterministic demo",
+        "Operator quickstart",
+        "Deterministic tests",
+        "Exact MCP tool list",
+        "Read-only MCP boundary",
+        "Observed-content trust boundary",
+        "MCP `search_memory` parity",
+        "MCP `search_captures` parity",
+        "Durable memory Markdown",
+        "Memory manifest JSON",
+        "Memory FTS",
+        "Idempotent memory generation",
+        "Secret exclusion",
+        "Fixture-only demo",
+        "`trust`, `untrusted_observed_content`, and `instruction`",
+        "`desktop_control`, `control_desktop`, `press_key`, `capture_hwnd`",
+        "No fresh manual UIA smoke is required to land this AG3 review",
+        "The next smallest implementation task is to land this AG3 review",
+        "Validation Log",
+        "passed, 93 tests",
+        "passed, 175 tests",
+        "stale AG2 cursor scan",
+        "python harness/scripts/run_harness.py",
         "does not authorize MCP write tools",
         "arbitrary file reads",
         "product targeted capture",
