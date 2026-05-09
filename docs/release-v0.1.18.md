@@ -1,39 +1,44 @@
-# v0.1.18 Release-Readiness Record
+# v0.1.18 Maintenance Release Record
 
-This record prepares a narrow `v0.1.18` compatible maintenance release from
+This record captures the published narrow `v0.1.18` compatible maintenance release from
 the published `v0.1.17` stable baseline. It records commands, results, commit
 identifiers, CI URLs, environment notes, and local artifact paths only. It does
 not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.18` is ready for PR review as a compatible maintenance release
-candidate. The release is warranted by the post-`v0.1.17` privacy-check
+`v0.1.18` is published as a compatible maintenance release. The release is
+warranted by the post-`v0.1.17` privacy-check
 validation hardening in `src/winchronicle/capture.py`: already-normalized
 denylisted captures and raw password-field artifacts now fail
 `privacy-check` instead of being under-validated.
 
-This record does not publish by itself. Publication still requires PR review,
-PR Windows Harness, post-merge `main` Windows Harness, GitHub release
-publication targeting the post-merge SHA, release metadata verification, remote
-tag verification, and a publication reconciliation update. Do not retag
-`v0.1.17`; it is published and immutable.
+Publication completed after the release-readiness PR, PR Windows Harness,
+post-merge `main` Windows Harness, GitHub release publication, release metadata
+verification, and remote tag verification. This publication reconciliation
+records those post-publication facts for mainline evidence after the tag was
+created.
+Do not retag `v0.1.18` or `v0.1.17`; both are published and immutable.
+`v0.1.18` is now the latest published stable release, and `v0.1.17` remains the
+previous stable release.
 
-Publication status: ready for reviewed `v0.1.18` maintenance publication.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.18` |
-| Stage | `v0.1.18` release-readiness record |
+| Stage | `v0.1.18` published maintenance release |
 | Evidence date | 2026-05-10, Asia/Shanghai |
 | Base `main` SHA before this record | `db9b388298facd0a8b387f86bc0dcfa1fa546bc5` |
 | Candidate branch | `codex/v0.1.18-release-readiness-record` |
-| Publication status | Ready for reviewed maintenance publication |
-| Release URL | Pending: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18 |
-| Published at | Pending |
-| Final tag target | Pending post-merge `main` SHA |
+| Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/187 |
+| Publication reconciliation branch | `codex/v0.1.18-publication-reconciliation` |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18 |
+| Published at | `2026-05-09T21:38:33Z` |
+| Final tag target | `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec` |
 | Previous stable release | `v0.1.17` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17 |
 | `v0.1.17` tag target | `5b260edc3bddc48986e52179b2ffd261856a89ac` |
@@ -44,6 +49,8 @@ Publication status: ready for reviewed `v0.1.18` maintenance publication.
 | Privacy-check release decision PR | https://github.com/YSCJRH/WinChronicle/pull/186 |
 | PR #186 Windows Harness | Passed, run `25611769944`, https://github.com/YSCJRH/WinChronicle/actions/runs/25611769944 |
 | PR #186 post-merge `main` Windows Harness | Passed, run `25611836358`, https://github.com/YSCJRH/WinChronicle/actions/runs/25611836358 |
+| Candidate PR Windows Harness | Passed, run `25612336939`, https://github.com/YSCJRH/WinChronicle/actions/runs/25612336939 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25612391276`, https://github.com/YSCJRH/WinChronicle/actions/runs/25612391276 |
 
 Environment:
 
@@ -57,15 +64,18 @@ Environment:
 - Controlled Notepad watcher temporary state:
   `C:\Users\34793\AppData\Local\Temp\winchronicle-v018-smoke-486b0dd9a2cd4c8d867a6ea2fe048a86\watch-state-notepad`.
 
-## Pre-Publication Checks
+## Publication Checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| `gh release view v0.1.18 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` | Pass | release not found, confirming no existing `v0.1.18` release to retag |
-| `git tag --list "v0.1.18*"` | Pass | no local tags returned |
-| `git ls-remote --tags origin v0.1.18 v0.1.18-rc.0` | Pass | no remote tags returned |
+| `gh release view v0.1.18 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` before publication | Pass | release not found, confirming no existing `v0.1.18` release to retag before creating the tag |
+| `git tag --list "v0.1.18*"` before publication | Pass | no local tags returned before creating the tag |
+| `git ls-remote --tags origin v0.1.18 v0.1.18-rc.0` before publication | Pass | no remote tags returned before creating the tag |
 | `gh release view v0.1.17 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` | Pass | `v0.1.17` is published, not a draft, not a prerelease, published at `2026-05-09T12:56:45Z`, and targets `5b260edc3bddc48986e52179b2ffd261856a89ac` |
 | `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` before this branch | Pass | runtime/resource/version diff was limited to `src/winchronicle/capture.py` before the `0.1.18` version bump |
+| `gh release create v0.1.18 --target 2e22ec9805edb0efd48e5ef4aacbcff13f0490ec` | Pass | release created at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18 |
+| `gh release view v0.1.18 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` | Pass | `v0.1.18` is published, not a draft, not a prerelease, published at `2026-05-09T21:38:33Z`, and targets `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec` |
+| `git ls-remote --tags origin v0.1.18` | Pass | `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec` |
 
 ## Deterministic Gates
 
@@ -77,8 +87,10 @@ Environment:
 | `git diff --name-only -- src\winchronicle resources pyproject.toml` | Pass | printed `pyproject.toml` and `src/winchronicle/_version.py`; current branch release-readiness diff is version metadata only |
 | `python harness/scripts/run_harness.py` | Pass | full harness passed, including `204` pytest tests, helper/watcher .NET builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke |
 
-PR Windows Harness and post-merge `main` Windows Harness are required before
-publication.
+The candidate PR Windows Harness and post-merge `main` Windows Harness passed
+before publication. This publication reconciliation updates the mainline
+evidence record after the tag was created; the `v0.1.18` tag remains immutable
+at `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.
 
 ## Manual UIA Smoke Gates
 
@@ -198,43 +210,36 @@ This maintenance release does not expand the capture surface beyond `v0.1.17`.
 
 ## Rollback Notes
 
-- Keep `v0.1.17` as the latest stable release until `v0.1.18` publication is
-  verified.
-- Keep `v0.1.16` as the previous stable release until `v0.1.18` publication is
-  verified.
-- Do not retag or modify `v0.1.17` or `v0.1.16`.
-- If a regression is found before publication and requires product code,
-  schema, CLI/MCP JSON shape, privacy behavior, helper/watcher behavior, or
-  capture-surface changes, stop the direct maintenance path and prepare a
-  `v0.1.18-rc.0` release candidate instead.
+- Keep `v0.1.18` as the latest stable release after publication verification.
+- Keep `v0.1.17` as the previous stable release after publication verification.
+- Do not retag or modify `v0.1.18`, `v0.1.17`, or `v0.1.16`.
 - If a regression is found after publication and requires product code,
   schema, CLI/MCP JSON shape, privacy behavior, helper/watcher behavior, or
   capture-surface changes, publish a follow-up release instead of retagging
   `v0.1.18`.
 - If a regression is limited to release documentation, tests, GitHub metadata,
   CI/runtime metadata, or version metadata, fix it on a small PR and rerun
-  Windows Harness before publishing.
+  Windows Harness.
 
 ## Release Decision Summary
 
-- Release path: direct `v0.1.18` compatible maintenance publication after PR
-  review, PR Windows Harness, post-merge `main` Windows Harness, and explicit
-  publication verification.
-- Fallback path: `v0.1.18-rc.0` if any product or contract change is required
-  before publication.
-- Deterministic gates: local validation passed; PR Windows Harness and
-  post-merge `main` Windows Harness remain required.
+- Release path: direct `v0.1.18` compatible maintenance publication completed
+  after PR review, PR Windows Harness, post-merge `main` Windows Harness, and
+  explicit publication verification.
+- Fallback path: a later maintenance release if any product or contract change
+  is required after publication.
+- Deterministic gates: local validation, PR Windows Harness, and post-merge
+  `main` Windows Harness passed.
 - Manual hard gates: Notepad passed; Edge passed.
 - Conditional hard gate: VS Code metadata passed because `code.cmd` is
   available.
 - Diagnostic non-blocking gate: VS Code strict Monaco marker failed as a known
   limitation, with local artifact path recorded.
 - Watcher preview: live preview returned heartbeat-only liveness evidence in
-  this desktop state; deterministic watcher gates passed locally and remain
-  required in PR/post-merge Windows Harness before publication.
+  this desktop state; deterministic watcher gates passed before publication.
 - Privacy/scope confirmation: unchanged and recorded above.
 - Publication approval: standing user goal authorizes publishing after review
   and validation.
-- GitHub release publication: pending.
-- Release URL: pending, https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18.
-- Final tag target: pending post-merge `main` SHA.
+- GitHub release publication: passed.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18.
+- Final tag target: `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.

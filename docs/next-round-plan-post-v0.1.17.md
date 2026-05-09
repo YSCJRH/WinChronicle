@@ -8,6 +8,14 @@ release tag targets `5b260edc3bddc48986e52179b2ffd261856a89ac`, and the
 release is not a draft or prerelease. The release was published at
 `2026-05-09T12:56:45Z`.
 
+`v0.1.18` is published at
+https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18. The maintenance
+release tag targets `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`, and the
+release is not a draft or prerelease. The release was published at
+`2026-05-09T21:38:33Z` after PR #187 Windows Harness run `25612336939`,
+post-merge `main` Windows Harness run `25612391276`, release metadata
+verification, and remote tag verification passed.
+
 The AF7 publication reconciliation landed on `main` as
 `110ace3f27d8bb9f1eff2c45449998fd0373a998`. PR #160 Windows Harness run
 `25601966464` passed, and post-merge `main` Windows Harness run `25602018700`
@@ -27,29 +35,33 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: v0.1.18 Release-Readiness Record.
-- Stage status: `v0.1.18` release-readiness is being prepared for the
-  post-`v0.1.17` privacy-check validation hardening; publication remains
-  pending review, PR Windows Harness, post-merge `main` Windows Harness, GitHub
-  release publication, and publication reconciliation.
-- Last completed evidence: Privacy-check release-readiness decision PR #186
-  merged as `db9b388298facd0a8b387f86bc0dcfa1fa546bc5`, PR Windows Harness run
-  `25611769944` passed, and post-merge `main` Windows Harness run
-  `25611836358` passed on that SHA.
+- Current stage: v0.1.18 Publication Reconciliation.
+- Stage status: `v0.1.18` is published; this branch reconciles mainline
+  release evidence after publication and keeps the product boundary unchanged.
+- Last completed evidence: v0.1.18 release-readiness PR #187 merged as
+  `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`, PR Windows Harness run
+  `25612336939` passed, post-merge `main` Windows Harness run `25612391276`
+  passed, and release metadata/tag verification passed for `v0.1.18`.
 - Last validation: `gh run view 25611836358 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
   verified the post-PR #186 `main` Windows Harness concluded `success`;
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
   pyproject.toml` was limited to `src/winchronicle/capture.py` before the
   `v0.1.18` release-readiness branch. The `v0.1.18` release-readiness record
-  bumps version identity to `0.1.18`, reruns fresh manual UIA smoke, and keeps
-  publication pending review and remote gates. Local release-readiness
-  validation passed: focused docs/privacy/version tests reported 108 tests,
-  full pytest reported 204 tests, `git diff --check` passed, the current
+  bumped version identity to `0.1.18`, reran fresh manual UIA smoke, and kept
+  publication pending until PR review, PR Windows Harness, post-merge `main`
+  Windows Harness, GitHub release publication, metadata verification, and
+  remote tag verification all completed. Local release-readiness validation
+  passed: focused docs/privacy/version tests reported 108 tests, full pytest
+  reported 204 tests, `git diff --check` passed, the current
   `src\winchronicle`/`resources`/`pyproject.toml` diff is version metadata
-  only, and `python harness/scripts/run_harness.py` passed.
-- Next atomic task: open the reviewed `v0.1.18` release-readiness PR and
-  require PR Windows Harness before merge.
+  only, and `python harness/scripts/run_harness.py` passed. Post-publication
+  verification confirmed `v0.1.18` is published, not a draft, not a prerelease,
+  published at `2026-05-09T21:38:33Z`, and targets
+  `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`; remote tag verification matched
+  that SHA.
+- Next atomic task: land the `v0.1.18` publication reconciliation PR, then
+  start the post-v0.1.18 maintenance cursor.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -206,10 +218,22 @@ service install, no polling capture loop, and no default background capture.
   release-readiness branch.
 - Rerun fresh hard-gate manual UIA smoke because privacy-check validation
   behavior changed after `v0.1.17`.
-- Keep direct maintenance publication pending reviewed PR, PR Windows Harness,
-  post-merge `main` Windows Harness, GitHub release publication, metadata
-  verification, remote tag verification, and publication reconciliation.
+- Kept direct maintenance publication pending until reviewed PR, PR Windows
+  Harness, post-merge `main` Windows Harness, GitHub release publication,
+  metadata verification, remote tag verification, and publication
+  reconciliation completed.
 - Do not retag `v0.1.17`; it remains published and immutable.
+
+### v0.1.18 Publication Reconciliation
+
+- Reconcile `docs/release-v0.1.18.md`, freshness docs, and this cursor with
+  the published release URL, published timestamp, final tag target, PR Windows
+  Harness run, post-merge `main` Windows Harness run, and remote tag
+  verification.
+- Keep the `v0.1.18` tag immutable at
+  `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.
+- Do not retag `v0.1.18` or `v0.1.17`.
+- After this reconciliation lands, start a post-v0.1.18 maintenance cursor.
 
 ## Public Interfaces And Non-goals
 
@@ -243,11 +267,11 @@ Every implementation stage should run:
 
 ## Assumptions
 
-- `v0.1.17` is the latest published stable release and must not be retagged.
-- `v0.1.16` remains the previous stable release and must not be retagged.
-- Manual UIA smoke for `v0.1.17` was freshly rerun in AF6 and remains the
-  latest full manual UIA smoke source until a later plan makes a new freshness
-  decision.
+- `v0.1.18` is the latest published stable release and must not be retagged.
+- `v0.1.17` remains the previous stable release and must not be retagged.
+- Manual UIA smoke for `v0.1.18` was freshly rerun in the release-readiness
+  branch and remains the latest full manual UIA smoke source until a later plan
+  makes a new freshness decision.
 - Phase 6 stays at spec/scorecard level for this round.
 
 ## Decision Log
@@ -441,13 +465,20 @@ Every implementation stage should run:
   release-readiness record.
 - Started the `v0.1.18` release-readiness record after PR #186 merged as
   `db9b388298facd0a8b387f86bc0dcfa1fa546bc5` and post-merge `main` Windows
-  Harness run `25611836358` passed. The release-readiness branch bumps version
-  identity to `0.1.18`, records fresh manual UIA smoke, and keeps publication
-  pending review and remote gates.
+  Harness run `25611836358` passed. The release-readiness branch bumped version
+  identity to `0.1.18`, recorded fresh manual UIA smoke, and kept publication
+  pending until review and remote gates completed.
 - Completed local validation for the `v0.1.18` release-readiness branch:
   focused docs/privacy/version tests passed with 108 tests, full pytest passed
   with 204 tests, `git diff --check` passed, version-metadata-only current
   diff was confirmed, and the full harness passed.
+- Completed `v0.1.18` release-readiness and publication after PR #187 merged
+  and both candidate and post-merge `main` Windows Harness passed.
+- Published `v0.1.18` from
+  `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec` after PR #187 and post-merge
+  `main` Windows Harness passed.
+- Started the `v0.1.18` publication reconciliation to update mainline docs
+  after the release was created.
 
 ## Validation Log
 
@@ -767,3 +798,10 @@ Every implementation stage should run:
   - `git diff --check` - passed.
   - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed `pyproject.toml` and `src/winchronicle/_version.py`, confirming the current release-readiness branch only changes version metadata under those paths.
   - `python harness/scripts/run_harness.py` - passed, including 204 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- v0.1.18 release-readiness completion:
+  - `gh pr view 187 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,isDraft` - passed; PR #187 merged at `2026-05-09T21:35:35Z` as `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.
+  - `gh run view 25612336939 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #187 Windows Harness concluded `success` on `63e524c18fc877cb503a129eb2374389e062b734`.
+  - `gh run view 25612391276 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-PR #187 `main` Windows Harness concluded `success` on `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.
+- v0.1.18 publication verification:
+  - `gh release view v0.1.18 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.18` is published, not a draft, not a prerelease, published at `2026-05-09T21:38:33Z`, and targets `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.
+  - `git ls-remote --tags origin v0.1.18` - passed and printed `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.

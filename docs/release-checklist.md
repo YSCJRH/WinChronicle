@@ -6,8 +6,8 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.17 maintenance release record](release-v0.1.17.md). The previous stable
-release record is [v0.1.16 final release record](release-v0.1.16.md). The
+[v0.1.18 maintenance release record](release-v0.1.18.md). The previous stable
+release record is [v0.1.17 maintenance release record](release-v0.1.17.md). The
 active post-v0.1.17 execution cursor lives in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md), and the
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -44,8 +44,8 @@ completed privacy-policy contract parity audit is
 [Privacy-policy contract parity audit after v0.1.17](privacy-policy-contract-parity-audit-post-v0.1.17.md). The
 completed privacy-check release-readiness decision is
 [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md). The
-current `v0.1.18` release-readiness record is
-[v0.1.18 release-readiness record](release-v0.1.18.md). The
+published `v0.1.18` maintenance release record is
+[v0.1.18 maintenance release record](release-v0.1.18.md). The
 completed post-v0.1.16 execution cursor lives in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
 completed post-v0.1.16 public metadata/evidence freshness audit is
@@ -58,8 +58,10 @@ completed post-v0.1.16 compatibility guardrail review is
 [Compatibility guardrail sweep after v0.1.16](compatibility-guardrail-sweep-post-v0.1.16.md). The
 completed post-v0.1.16 release-readiness decision is
 [Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md). The
-current `v0.1.17` maintenance release record is
+previous stable `v0.1.17` maintenance release record is
 [v0.1.17 maintenance release record](release-v0.1.17.md). The
+historical stable release record is
+[v0.1.16 final release record](release-v0.1.16.md). The
 completed `v0.1.16` final-release cursor is recorded in
 [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md), and
 the historical prerelease record is
@@ -93,12 +95,15 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.17` until a later plan explicitly prepares
+- the stable baseline is `v0.1.18` until a later plan explicitly prepares
   another version;
-- `v0.1.17` is the latest published release; its release URL, tag target,
+- `v0.1.18` is the latest published release; its release URL, tag target,
   published timestamp, and Windows Harness evidence are recorded in the release
   record;
-- `v0.1.16` is the previous stable release; its release URL, tag target, and
+- `v0.1.17` is the previous stable release; its release URL, tag target,
+  published timestamp, and Windows Harness evidence are recorded in the release
+  record;
+- `v0.1.16` is historical stable release evidence; its release URL, tag target, and
   published timestamp remain recorded in the final release record;
 - `v0.1.16-rc.0` is historical prerelease evidence, not the latest published
   final release;
@@ -145,9 +150,12 @@ inherited historical evidence:
   privacy-policy contract parity audit PR #185 with post-PR #185 `main`
   Windows Harness run `25611363701`, and privacy-check release-readiness
   decision PR #186 with post-PR #186 `main` Windows Harness run
-  `25611836358`; the current `v0.1.18` release-readiness record bumps version
-  identity to `0.1.18` and keeps publication pending review, PR Windows
-  Harness, post-merge `main` Windows Harness, and explicit publication;
+  `25611836358`, and `v0.1.18` release-readiness PR #187 with PR Windows
+  Harness run `25612336939` and post-PR #187 `main` Windows Harness run
+  `25612391276`; the published `v0.1.18` maintenance release record targets
+  `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`, was published at
+  `2026-05-09T21:38:33Z`, and is verified by release metadata and remote tag
+  checks;
 - the completed post-v0.1.17 public metadata/evidence freshness audit records
   repository metadata, `v0.1.17` release metadata, previous stable `v0.1.16`
   release metadata, post-AG0 `main` Windows Harness evidence, manual repository
@@ -211,7 +219,7 @@ inherited historical evidence:
 - release-readiness decisions record whether current maintenance changes
   warrant a release-readiness path, distinguish release plans from immediate
   publication, and forbid retagging an already published stable release;
-- the current `v0.1.17` maintenance release record records the fresh
+- the previous stable `v0.1.17` maintenance release record records the fresh
   version decision, additive CLI JSON trust-boundary shape, fresh hard-gate
   manual UIA smoke, heartbeat-only watcher diagnostic, passed PR/post-merge
   publication gates, release URL, published timestamp, and immutable final tag

@@ -28,10 +28,10 @@ coverage audit, the completed Phase 6 residual policy fixture expansion, the
 completed Phase 6 deferred fixture closure, the completed Phase 6 contract
 closure release-readiness decision, the completed next blueprint lane
 selection, the completed privacy-policy contract parity audit, the
-completed privacy-check release-readiness decision, the current `v0.1.18`
-release-readiness record, the
+completed privacy-check release-readiness decision, the published `v0.1.18`
+maintenance release record, the
 completed post-v0.1.16 maintenance plan and publication reconciliation, the
-latest published `v0.1.17` release record, the previous published `v0.1.16`
+previous published `v0.1.17` release record, the previous published `v0.1.16`
 release record, the completed `v0.1.16` final-release plan, the historical
 `v0.1.16-rc.0` release-candidate record, the previous published `v0.1.15`
 release record, and older completed maintenance plans.
@@ -159,7 +159,7 @@ available through `search-captures`.
 - [Next blueprint lane selection after v0.1.17](docs/next-blueprint-lane-selection-post-v0.1.17.md)
 - [Privacy-policy contract parity audit after v0.1.17](docs/privacy-policy-contract-parity-audit-post-v0.1.17.md)
 - [Privacy-check release-readiness decision after v0.1.17](docs/privacy-check-release-readiness-decision-post-v0.1.17.md)
-- [v0.1.18 release-readiness record](docs/release-v0.1.18.md)
+- [v0.1.18 maintenance release record](docs/release-v0.1.18.md)
 - [Post-v0.1.16 maintenance plan](docs/next-round-plan-post-v0.1.16.md)
 - [Public metadata audit after v0.1.16](docs/public-metadata-audit-post-v0.1.16.md)
 - [Helper and watcher diagnostics sweep after v0.1.16](docs/helper-watcher-diagnostics-sweep-post-v0.1.16.md)
