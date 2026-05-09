@@ -22,9 +22,9 @@ post-v0.1.17 MCP/memory contract sweep, the completed post-v0.1.17 compatibility
 guardrail sweep, the completed post-v0.1.17 release-readiness decision, the
 completed Phase 6 privacy contract preflight, the completed Phase 6 privacy
 contract fixture expansion, the completed Phase 6 remaining negative contract
-fixture expansion, the completed Phase 6 contract coverage audit, the current
-Phase 6 contract gap fixture expansion, the current Phase 6 residual schema
-coverage audit, the
+fixture expansion, the completed Phase 6 contract coverage audit, the completed
+Phase 6 contract gap fixture expansion, the completed Phase 6 residual schema
+coverage audit, the current Phase 6 residual policy fixture expansion, the
 completed post-v0.1.16 maintenance plan and publication reconciliation, the
 latest published `v0.1.17` release record, the previous published `v0.1.16`
 release record, the completed `v0.1.16` final-release plan, the historical
@@ -147,6 +147,7 @@ available through `search-captures`.
 - [Phase 6 privacy contract remaining fixtures after v0.1.17](docs/phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md)
 - [Phase 6 privacy contract coverage audit after v0.1.17](docs/phase6-privacy-contract-coverage-audit-post-v0.1.17.md)
 - [Phase 6 privacy contract gap fixtures after v0.1.17](docs/phase6-privacy-contract-gap-fixtures-post-v0.1.17.md)
+- [Phase 6 privacy contract residual schema coverage audit after v0.1.17](docs/phase6-privacy-contract-residual-schema-coverage-audit-post-v0.1.17.md)
 - [Post-v0.1.16 maintenance plan](docs/next-round-plan-post-v0.1.16.md)
 - [Public metadata audit after v0.1.16](docs/public-metadata-audit-post-v0.1.16.md)
 - [Helper and watcher diagnostics sweep after v0.1.16](docs/helper-watcher-diagnostics-sweep-post-v0.1.16.md)
