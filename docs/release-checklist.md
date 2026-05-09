@@ -6,20 +6,19 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.15 maintenance release record](release-v0.1.15.md). The active
-`v0.1.16` final-release cursor lives in
+[v0.1.16 final release record](release-v0.1.16.md). The active
+post-v0.1.16 execution cursor lives in
+[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md). The
+completed `v0.1.16` final-release cursor is recorded in
 [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md), and
-the prepared final release record is
-[v0.1.16 final release record](release-v0.1.16.md). The completed
+the historical prerelease record is
+[v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md).
+The previous published release record is
+[v0.1.15 maintenance release record](release-v0.1.15.md), and the completed
 post-v0.1.15 prerelease path is recorded in
-[Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md). The current
-published prerelease candidate remains
-[v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md)
-because AD2-AD4 include compatible privacy/runtime drift fixes. For release
+[Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
-previous published release record is
-[v0.1.14 maintenance release record](release-v0.1.14.md), the completed
-post-v0.1.14 execution cursor is recorded in
+completed post-v0.1.14 execution cursor is recorded in
 [Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md), the completed
 post-v0.1.13 execution cursor is recorded in
 [Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md), the completed
@@ -43,22 +42,16 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.15` until a later plan explicitly prepares
+- the stable baseline is `v0.1.16` until a later plan explicitly prepares
   another version;
-- `v0.1.15` is the latest published release; its release URL, tag target, and
-  Windows Harness evidence are recorded in the release record;
-- `v0.1.16-rc.0` is the current published prerelease candidate, not the latest
-  published final release, because AD2-AD4 tighten privacy/runtime behavior
-  and therefore require a prerelease path before direct final;
-- the active `v0.1.16` final-release cursor records `v0.1.16-rc.0`
-  publication, the current `main` SHA
-  `b260ebaa8808bddcce20da166038511de23bf3b5`, post-prerelease-reconciliation
-  Windows Harness run `25596579705`, and docs/tests-only drift from the
-  prerelease tag;
-- the prepared `v0.1.16` final release record is ready for publication review
-  but must not be treated as the latest published release until the GitHub
-  release exists and post-publication reconciliation records its URL, tag
-  target, and timestamp;
+- `v0.1.16` is the latest published release; its release URL, tag target,
+  published timestamp, and Windows Harness evidence are recorded in the release
+  record;
+- `v0.1.16-rc.0` is historical prerelease evidence, not the latest published
+  final release;
+- the active post-v0.1.16 execution cursor records `v0.1.16` publication,
+  final tag target `255f2a01cddde330d756a87359c4d3a8be4b11a2`, published
+  timestamp `2026-05-09T09:31:17Z`, and the post-v0.1.16 baseline;
 - the completed post-v0.1.15 execution cursor records AD4 PR #139, PR Windows
   Harness run `25595449096`, post-merge Windows Harness run `25595513141`,
   AD5 prerelease publication, and publication reconciliation evidence;
@@ -102,8 +95,9 @@ inherited historical evidence:
 - for the post-v0.1.15 release-candidate path toward `v0.1.16-rc.0`, AD5
   records fresh manual UIA smoke because AD2-AD4 changed privacy/runtime
   behavior;
-- for the active `v0.1.16` final-release path, AE2 records fresh final manual
-  UIA smoke; AE3 must cite that evidence or rerun smoke if product behavior,
+- for the published `v0.1.16` final release, AE2 recorded fresh final manual
+  UIA smoke; future post-v0.1.16 maintenance or release-readiness work must
+  decide whether AE2 smoke remains current or rerun smoke if product behavior,
   helper/watcher behavior, manual smoke scripts, capture behavior, privacy
   behavior, CLI/MCP shape, capture surfaces, or release approval requirements
   change;

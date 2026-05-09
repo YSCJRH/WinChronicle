@@ -23,12 +23,13 @@ The current `main` baseline after prerelease publication reconciliation is
 No product code, schemas, CLI/MCP JSON shape, helper/watcher behavior, privacy
 runtime behavior, or capture surfaces changed after the prerelease tag.
 
-This plan is the active final-release cursor after `v0.1.16-rc.0`. It does not
-publish `v0.1.16` by itself. Direct final release can proceed only after fresh
-final gates, explicit final manual smoke evidence, a final release record,
-review, PR and post-merge Windows Harness validation, and explicit publication
-approval. If final-readiness work requires any product or contract change, stop
-the direct final path and prepare `v0.1.16-rc.1` instead.
+This plan was the active final-release cursor after `v0.1.16-rc.0` and is now
+completed historical final-release evidence. It did not publish `v0.1.16` by
+itself. Direct final release proceeded only after fresh final gates, explicit
+final manual smoke evidence, a final release record, review, PR and post-merge
+Windows Harness validation, and explicit publication approval. If future
+release-readiness work requires any product or contract change, stop the direct
+final path and prepare a new release-candidate path instead.
 
 Keep the v0.1 product boundary unchanged: local-first, UIA-first,
 harness-first, read-only MCP first, no screenshot/OCR implementation, no audio
@@ -38,22 +39,18 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AE3 - v0.1.16 Final Release Record And Publication.
-- Stage status: AE3 in progress; `docs/release-v0.1.16.md` is prepared for
-  review, but `v0.1.16` is not published until this release-record PR and its
-  post-merge `main` Windows Harness pass.
-- Last completed evidence: AE2 manual smoke evidence was recorded in PR #146,
-  merged as `1ea902a8630b9d0b18397af69cfcd84a9ce4d24a`, and post-merge
-  Windows Harness run `25597463319` passed on that SHA.
-- Last validation: the `v0.1.16` final release record cites AE1 deterministic
-  gates, AE2 fresh manual smoke, the published `v0.1.16-rc.0` prerelease, and
-  unchanged privacy/scope boundaries.
-- Next atomic task: merge the AE3 release-record PR after review and PR
-  Windows Harness, wait for post-merge `main` Windows Harness, then publish
-  `v0.1.16` final against the passing post-merge SHA.
-- Known blockers: final publication is blocked until AE3, review, PR Windows
-  Harness, post-merge Windows Harness, and explicit publication approval
-  complete.
+- Current stage: AE4 - v0.1.16 Final Publication Reconciliation.
+- Stage status: AE4 complete; `v0.1.16` is published as the latest stable
+  release and this final-release plan is complete.
+- Last completed evidence: AE3 release-record PR #147 merged as
+  `255f2a01cddde330d756a87359c4d3a8be4b11a2`, post-merge Windows Harness run
+  `25597678444` passed, and GitHub release publication passed for
+  `v0.1.16`.
+- Last validation: `v0.1.16` release metadata, final tag target, remote tag,
+  and `v0.1.16-rc.0` prerelease metadata were verified after publication.
+- Next atomic task: start the post-`v0.1.16` maintenance cursor in
+  [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md).
+- Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
 
@@ -153,9 +150,9 @@ Every implementation stage should run:
 
 Stage-specific gates:
 
-- AE0: docs tests confirm this final-release plan is the active cursor, the
-  post-v0.1.15 plan is the completed prerelease path, `v0.1.16-rc.0` is the
-  current published prerelease, and `v0.1.16` is not published.
+- AE0: docs tests confirmed this final-release plan was the active cursor, the
+  post-v0.1.15 plan was the completed prerelease path, and `v0.1.16-rc.0` was
+  the published prerelease before final publication.
 - AE1: deterministic gates pass on the current final target without requiring
   product or contract changes.
 - AE2: fresh final manual UIA smoke is recorded with local artifact paths only.
@@ -167,8 +164,8 @@ Stage-specific gates:
 
 ## Assumptions
 
-- `v0.1.16-rc.0` is the current published prerelease and must not be retagged.
-- `v0.1.16` is not published yet.
+- `v0.1.16` is the published final release and must not be retagged.
+- `v0.1.16-rc.0` is historical prerelease evidence and must not be retagged.
 - Version identity is already aligned to `0.1.16`.
 - Tag-to-main drift after `v0.1.16-rc.0` is docs/tests-only at AE0.
 - No required soak window after `v0.1.16-rc.0` has been recorded. If a release
@@ -197,6 +194,9 @@ Stage-specific gates:
   VS Code strict Monaco diagnostic as non-blocking.
 - Prepared `docs/release-v0.1.16.md` for AE3 so final publication has an
   auditable release decision record before the tag is created.
+- Published `v0.1.16` final after PR #147 and post-merge Windows Harness
+  passed on the final tag target.
+- Opened the post-`v0.1.16` maintenance cursor for follow-up work.
 
 ## Validation Log
 
@@ -240,5 +240,15 @@ Stage-specific gates:
     smoke evidence, watcher preview evidence, release notes, compatibility
     evidence, privacy/scope confirmation, rollback notes, and publication
     decision summary.
-  - Publication remains pending until this AE3 PR and post-merge `main`
-    Windows Harness pass.
+  - Publication was pending until this AE3 PR and post-merge `main` Windows
+    Harness passed.
+- Stage AE3 completion:
+  - PR #147 Windows Harness run `25597623991` - passed.
+  - PR #147 merged as `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
+  - `gh run view 25597678444 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AE3 `main` Windows Harness concluded `success` on `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
+- Stage AE3 final publication:
+  - `gh release create v0.1.16 --target 255f2a01cddde330d756a87359c4d3a8be4b11a2 --title "v0.1.16" --notes ...` - passed.
+  - `gh release view v0.1.16 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; the release is published, not a draft, not a prerelease, published at `2026-05-09T09:31:17Z`, and targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
+  - `git rev-parse v0.1.16` - passed and printed `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
+  - `git ls-remote --tags origin v0.1.16` - passed and printed `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
+  - `gh release view v0.1.16-rc.0 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name` - passed; the prerelease remains published and targets `70caf364f68d8c159eb74bbbc23e7469db22a244`.
