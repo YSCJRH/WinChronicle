@@ -29,18 +29,19 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH0 - Post-v0.1.18 Baseline Cursor.
-- Stage status: AH0 in progress. This branch establishes the post-v0.1.18
-  maintenance cursor and keeps the product boundary unchanged.
-- Last completed evidence: v0.1.18 publication reconciliation PR #188 merged as
-  `f40e165ce35464e5eb8df65f10ef153f8145177b`, PR Windows Harness run
-  `25612920731` passed, and post-merge `main` Windows Harness run
-  `25612977738` passed on that SHA.
-- Last validation: `gh run view 25612977738 --json
+- Current stage: AH1 - Public Metadata And Evidence Freshness Follow-up.
+- Stage status: AH1 in progress. This branch records public metadata and
+  evidence freshness after the post-v0.1.18 baseline cursor and keeps the
+  product boundary unchanged.
+- Last completed evidence: AH0 baseline cursor PR #189 merged as
+  `f4d24adf5bb60cd5ad6abfc21ada04fbbeae288c`, PR Windows Harness run
+  `25613203047` passed, and post-merge `main` Windows Harness run
+  `25613244560` passed on that SHA.
+- Last validation: `gh run view 25613244560 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-PR #188 `main` Windows Harness concluded `success`.
-- Next atomic task: land this AH0 baseline cursor PR, then start the
-  post-v0.1.18 public metadata and evidence-freshness follow-up.
+  verified the post-AH0 `main` Windows Harness concluded `success`.
+- Next atomic task: land this AH1 public metadata/evidence freshness audit PR,
+  then review helper and watcher preview diagnostics evidence in AH2.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -157,6 +158,12 @@ Every implementation stage should run:
   run `25612977738` passed.
 - Kept AH0 docs-only because `v0.1.18` publication is already verified and the
   next safe task is to establish the post-v0.1.18 maintenance cursor.
+- Completed AH0 after PR #189 merged as
+  `f4d24adf5bb60cd5ad6abfc21ada04fbbeae288c` and post-merge Windows Harness
+  run `25613244560` passed.
+- Started AH1 as a docs/tests-only public metadata audit because repository
+  metadata gaps are manual maintainer follow-up items and not product-code
+  blockers.
 
 ## Validation Log
 
@@ -171,3 +178,19 @@ Every implementation stage should run:
   - `git diff --check` - passed.
   - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed no files, confirming AH0 is docs/tests only with no product/runtime/version diff.
   - `python harness/scripts/run_harness.py` - passed, including 205 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH0 completion:
+  - `gh pr view 189 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #189 merged as `f4d24adf5bb60cd5ad6abfc21ada04fbbeae288c`.
+  - `gh run view 25613203047 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #189 Windows Harness concluded `success` on `ff39e03ce62940a54c8423dba65014c5e39cf45d`.
+  - `gh run view 25613244560 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH0 `main` Windows Harness concluded `success` on `f4d24adf5bb60cd5ad6abfc21ada04fbbeae288c`.
+- Stage AH1 initialization:
+  - `gh repo view YSCJRH/WinChronicle --json nameWithOwner,visibility,defaultBranchRef,description,homepageUrl,repositoryTopics,url,isArchived,isPrivate,isFork,latestRelease,usesCustomOpenGraphImage` - passed; repository is public on `main`, is not archived, forked, or private, has empty description, homepage, and topics, reports latest release `v0.1.18`, and has no custom OpenGraph image.
+  - `gh release view v0.1.18 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.18` is published, not a draft, not a prerelease, published at `2026-05-09T21:38:33Z`, and targets `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.
+  - `gh release view v0.1.17 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.17` remains published as the previous stable release, not a draft, not a prerelease, published at `2026-05-09T12:56:45Z`, and targets `5b260edc3bddc48986e52179b2ffd261856a89ac`.
+  - `gh run view 25613244560 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH0 `main` Windows Harness concluded `success` on `f4d24adf5bb60cd5ad6abfc21ada04fbbeae288c`.
+- Stage AH1 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 84 tests.
+  - `python -m pytest -q` - passed, 206 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed no files, confirming AH1 is docs/tests only with no product/runtime/version diff.
+  - current-entry stale AH0/current-v0.1.17 wording scan across `README.md`, current docs, and current doc tests - passed with no matches in current entry documents.
+  - `python harness/scripts/run_harness.py` - passed, including 206 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

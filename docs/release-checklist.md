@@ -10,6 +10,8 @@ The latest published release record is
 release record is [v0.1.17 maintenance release record](release-v0.1.17.md). The
 active post-v0.1.18 execution cursor lives in
 [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md), and the
+current post-v0.1.18 public metadata/evidence freshness audit is
+[Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md). The
 completed post-v0.1.17 execution cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -113,7 +115,14 @@ inherited historical evidence:
   `v0.1.18` publication reconciliation, PR #187, PR #188, PR Windows Harness
   runs `25612336939` and `25612920731`, post-merge Windows Harness runs
   `25612391276` and `25612977738`, the immutable final tag target
-  `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`, and the post-v0.1.18 baseline;
+  `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`, the post-v0.1.18 baseline,
+  AH0 baseline PR #189, PR Windows Harness run `25613203047`, and post-AH0
+  `main` Windows Harness run `25613244560`;
+- the current post-v0.1.18 public metadata/evidence freshness audit records
+  repository metadata, `v0.1.18` release metadata, previous stable `v0.1.17`
+  release metadata, post-AH0 `main` Windows Harness evidence, manual repository
+  metadata gaps, and does not treat empty GitHub metadata as a product-code
+  blocker;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0

@@ -28,6 +28,7 @@ V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 V0117_RELEASE = ROOT / "docs" / "release-v0.1.17.md"
 V0118_RELEASE = ROOT / "docs" / "release-v0.1.18.md"
 POST_V0118_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.18.md"
+PUBLIC_METADATA_V0118 = ROOT / "docs" / "public-metadata-audit-post-v0.1.18.md"
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
@@ -79,6 +80,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Privacy-check release-readiness decision after v0.1.17",
         "v0.1.18 maintenance release record",
         "Post-v0.1.18 maintenance plan",
+        "Public metadata audit after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -124,6 +126,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Privacy-check release-readiness decision after v0.1.17",
         "v0.1.18 maintenance release record",
         "Post-v0.1.18 maintenance plan",
+        "Public metadata audit after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -1000,11 +1003,13 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "publication reconciliation landed on `main` as `f40e165ce35464e5eb8df65f10ef153f8145177b`",
         "PR #188 Windows Harness run `25612920731` passed",
         "post-merge `main` Windows Harness run `25612977738`",
-        "Current stage: AH0 - Post-v0.1.18 Baseline Cursor.",
-        "Stage status: AH0 in progress.",
-        "Last completed evidence: v0.1.18 publication reconciliation PR #188 merged as",
-        "Next atomic task: land this AH0 baseline cursor PR",
-        "post-v0.1.18 public metadata and evidence-freshness follow-up",
+        "Current stage: AH1 - Public Metadata And Evidence Freshness Follow-up.",
+        "Stage status: AH1 in progress.",
+        "Last completed evidence: AH0 baseline cursor PR #189 merged as",
+        "PR Windows Harness run `25613203047` passed",
+        "post-merge `main` Windows Harness run `25613244560` passed",
+        "Next atomic task: land this AH1 public metadata/evidence freshness audit PR",
+        "then review helper and watcher preview diagnostics evidence in AH2",
         "Stage AH0 - Post-v0.1.18 Baseline Cursor",
         "Stage AH1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AH2 - Helper And Watcher Preview Diagnostics Review",
@@ -1032,6 +1037,22 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "printed no files, confirming AH0 is docs/tests only",
         "python harness/scripts/run_harness.py",
         "watcher fake-helper smoke",
+        "Stage AH0 completion:",
+        "gh pr view 189",
+        "PR #189 merged as `f4d24adf5bb60cd5ad6abfc21ada04fbbeae288c`",
+        "gh run view 25613203047",
+        "post-AH0 `main` Windows Harness concluded `success`",
+        "Stage AH1 initialization:",
+        "gh repo view YSCJRH/WinChronicle",
+        "repository is public on `main`, is not archived, forked, or private",
+        "reports latest release `v0.1.18`",
+        "has no custom OpenGraph image",
+        "gh release view v0.1.17",
+        "Stage AH1 local validation:",
+        "passed, 84 tests",
+        "passed, 206 tests",
+        "current-entry stale AH0/current-v0.1.17 wording scan",
+        "printed no files, confirming AH1 is docs/tests only",
     ):
         assert phrase in normalized
 
