@@ -56,6 +56,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Helper and watcher diagnostics sweep after v0.1.14](helper-watcher-diagnostics-sweep-post-v0.1.14.md)"
         in quickstart
     )
+    assert (
+        "[MCP and memory contract sweep after v0.1.14](mcp-memory-contract-sweep-post-v0.1.14.md)"
+        in quickstart
+    )
     assert "[Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.13](public-metadata-audit-post-v0.1.13.md)"
@@ -97,6 +101,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[Helper and watcher diagnostics sweep after v0.1.14](docs/helper-watcher-diagnostics-sweep-post-v0.1.14.md)"
+        in readme
+    )
+    assert (
+        "[MCP and memory contract sweep after v0.1.14](docs/mcp-memory-contract-sweep-post-v0.1.14.md)"
         in readme
     )
     assert "[Post-v0.1.13 maintenance plan](docs/next-round-plan-post-v0.1.13.md)" in readme
@@ -152,6 +160,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Post-v0.1.14 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.14" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.14" in readme_operator_docs
+    assert "MCP and memory contract sweep after v0.1.14" in readme_operator_docs
     assert "Post-v0.1.13 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.13" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.13" in readme_operator_docs
@@ -196,6 +205,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Helper and watcher diagnostics sweep after v0.1.14"
     )
     assert readme_operator_docs.index("Helper and watcher diagnostics sweep after v0.1.14") < readme_operator_docs.index(
+        "MCP and memory contract sweep after v0.1.14"
+    )
+    assert readme_operator_docs.index("MCP and memory contract sweep after v0.1.14") < readme_operator_docs.index(
         "Public metadata audit after v0.1.13"
     )
     assert readme_operator_docs.index("Public metadata audit after v0.1.13") < readme_operator_docs.index(
@@ -249,6 +261,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.14.md" in current_section
     assert "public-metadata-audit-post-v0.1.14.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.14.md" in current_section
+    assert "mcp-memory-contract-sweep-post-v0.1.14.md" in current_section
     assert "public-metadata-audit-post-v0.1.13.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.13.md" in current_section
     assert "mcp-memory-contract-sweep-post-v0.1.13.md" in current_section
@@ -1131,10 +1144,10 @@ def test_post_v014_plan_is_active_without_expanding_scope():
         "post-publication reconciliation on `main` is `2627e17dd215d3b7233d237ca5f094eacaff2983`",
         "Windows Harness run `25585707220` passed",
         "reports `0.1.14`",
-        "Current stage: AC2 - Helper And Watcher Preview Diagnostics Review.",
-        "Stage status: B - AC2 helper/watcher diagnostics docs/tests are implemented and local validation passed",
+        "Current stage: AC3 - MCP And Memory Contract Review.",
+        "Stage status: B - AC3 MCP/memory contract docs/tests are implemented and local validation passed",
         "publication reconciliation PR #126 merged as `2627e17dd215d3b7233d237ca5f094eacaff2983`",
-        "AC1 PR #128 merged as `157b9e195c5de85588c0df24130bbf99f10c4111`",
+        "AC2 PR #129 merged as `7d65cbbb4778f5cf253191c2d3da1e21c54b7b58`",
         "Stage AC0 - Post-v0.1.14 Baseline Cursor",
         "Stage AC1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AC2 - Helper And Watcher Preview Diagnostics Review",
@@ -1193,8 +1206,23 @@ def test_post_v014_plan_is_active_without_expanding_scope():
         "python harness/scripts/run_install_cli_smoke.py` - passed.",
         "python harness/scripts/run_harness.py` - passed.",
         "git diff --check` - passed.",
-        "Pending AC2 PR Windows Harness.",
-        "Pending AC2 post-merge `main` Windows Harness.",
+        "Stage AC2 remote validation:",
+        "PR #129 Windows Harness run `25587197634` - passed.",
+        "PR #129 merged as `7d65cbbb4778f5cf253191c2d3da1e21c54b7b58`.",
+        "Post-merge `main` Windows Harness run `25587281619` - passed.",
+        "Stage AC3 initialization:",
+        "Reviewed `docs/mcp-readonly-examples.md`, `harness/scorecards/mcp-quality.md`",
+        "deterministic MCP/memory trust-boundary and exact-tool coverage is present",
+        "Stage AC3 local validation:",
+        "python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 44 tests.",
+        "python -m pytest -q` - passed, 135 tests.",
+        "dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed.",
+        "dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed.",
+        "python harness/scripts/run_install_cli_smoke.py` - passed.",
+        "python harness/scripts/run_harness.py` - passed.",
+        "git diff --check` - passed.",
+        "Pending AC3 PR Windows Harness.",
+        "Pending AC3 post-merge `main` Windows Harness.",
     ):
         assert expected in normalized
 
@@ -1423,6 +1451,74 @@ def test_mcp_memory_contract_sweep_records_no_drift_decision():
         "durable memory\ngoldens",
         "No fresh manual UIA smoke is required",
         "AB4: re-run compatibility guardrails",
+    ):
+        assert expected in sweep
+
+    for boundary in (
+        "does not authorize MCP write tools",
+        "arbitrary file reads",
+        "screenshot\ncapture",
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network\nupload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service\ninstall",
+        "polling capture loops",
+        "default background capture",
+        "live UIA smoke\nin default CI",
+    ):
+        assert boundary in sweep
+
+
+def test_post_v014_mcp_memory_contract_sweep_records_no_drift_decision():
+    sweep = (ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.14.md").read_text(
+        encoding="utf-8"
+    )
+
+    for expected in (
+        "MCP And Memory Contract Sweep After v0.1.14",
+        "does not change product behavior, schemas, CLI/MCP JSON\nshape",
+        "MCP tool schemas",
+        "MCP examples",
+        "MCP scorecard",
+        "Memory scorecard",
+        "Deterministic demo",
+        "Operator quickstart",
+        "Deterministic tests",
+        "docs/mcp-readonly-examples.md",
+        "harness/scorecards/mcp-quality.md",
+        "harness/scorecards/memory-quality.md",
+        "docs/deterministic-demo.md",
+        "tests/test_mcp_tools.py",
+        "tests/test_memory_pipeline.py",
+        "tests/test_compatibility_contracts.py",
+        "tests/test_state_compatibility.py",
+        "current_context",
+        "search_captures",
+        "search_memory",
+        "read_recent_capture",
+        "recent_activity",
+        "privacy_status",
+        "trust = \"untrusted_observed_content\"",
+        "Exact MCP tool list",
+        "Read-only MCP boundary",
+        "Observed-content trust boundary",
+        "MCP `search_memory` parity",
+        "Durable memory Markdown",
+        "Memory FTS",
+        "Idempotent memory generation",
+        "Secret exclusion",
+        "Fixture-only demo",
+        "AC3 found no required MCP or memory product-code change",
+        "exact read-only MCP\ntools",
+        "CLI/MCP memory-search parity",
+        "durable memory\ngoldens",
+        "No fresh manual UIA smoke is required",
+        "The next smallest implementation task is AC4",
     ):
         assert expected in sweep
 

@@ -136,6 +136,7 @@ available through `search-captures`.
 - [Operator diagnostics](docs/operator-diagnostics.md)
 - [Public metadata audit after v0.1.14](docs/public-metadata-audit-post-v0.1.14.md)
 - [Helper and watcher diagnostics sweep after v0.1.14](docs/helper-watcher-diagnostics-sweep-post-v0.1.14.md)
+- [MCP and memory contract sweep after v0.1.14](docs/mcp-memory-contract-sweep-post-v0.1.14.md)
 - [Public metadata audit after v0.1.13](docs/public-metadata-audit-post-v0.1.13.md)
 - [Helper and watcher diagnostics sweep after v0.1.13](docs/helper-watcher-diagnostics-sweep-post-v0.1.13.md)
 - [MCP and memory contract sweep after v0.1.13](docs/mcp-memory-contract-sweep-post-v0.1.13.md)
