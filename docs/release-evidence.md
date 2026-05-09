@@ -6,7 +6,9 @@ smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
 [v0.1.16 final release record](release-v0.1.16.md). The active post-v0.1.16
 maintenance cursor is recorded in
-[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md). The
+[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
+current public metadata/evidence freshness audit is
+[Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md). The
 completed `v0.1.16` final-release cursor is recorded in
 [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md), and
 the historical prerelease record is

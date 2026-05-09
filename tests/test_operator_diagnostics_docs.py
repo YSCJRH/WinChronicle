@@ -49,6 +49,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Contributing](../CONTRIBUTING.md)" in quickstart
     assert "[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)" in quickstart
     assert (
+        "[Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)"
+        in quickstart
+    )
+    assert (
         "[v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md)"
         in quickstart
     )
@@ -131,6 +135,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Contributing](CONTRIBUTING.md)" in readme
     assert (
         "[Post-v0.1.16 maintenance plan](docs/next-round-plan-post-v0.1.16.md)"
+        in readme
+    )
+    assert (
+        "[Public metadata audit after v0.1.16](docs/public-metadata-audit-post-v0.1.16.md)"
         in readme
     )
     assert (
@@ -222,6 +230,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     readme_intro_normalized = " ".join(readme_intro.split())
 
     assert "active post-v0.1.16 maintenance plan" in readme_intro_normalized
+    assert "current post-v0.1.16 public metadata audit" in readme_intro_normalized
     assert "latest published `v0.1.16` release record" in readme_intro_normalized
     assert "completed `v0.1.16` final-release plan" in readme_intro_normalized
     assert "historical `v0.1.16-rc.0` release-candidate record" in readme_intro_normalized
@@ -234,6 +243,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.14 maintenance release record" in readme_operator_docs
     assert "v0.1.15 maintenance release record" in readme_operator_docs
     assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
+    assert "Public metadata audit after v0.1.16" in readme_operator_docs
     assert "v0.1.16 final-release plan" in readme_operator_docs
     assert "v0.1.16 final release record" in readme_operator_docs
     assert "v0.1.16-rc.0 release candidate record" in readme_operator_docs
@@ -282,6 +292,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Blueprint gap audit after v0.1.12"
     )
     assert readme_operator_docs.index("Post-v0.1.16 maintenance plan") < readme_operator_docs.index(
+        "Public metadata audit after v0.1.16"
+    )
+    assert readme_operator_docs.index("Public metadata audit after v0.1.16") < readme_operator_docs.index(
         "v0.1.16 final release record"
     )
     assert readme_operator_docs.index("v0.1.16 final release record") < readme_operator_docs.index(
@@ -378,6 +391,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "v0.1.6 maintenance release record"
     )
     assert "next-round-plan-post-v0.1.16.md" in current_section
+    assert "public-metadata-audit-post-v0.1.16.md" in current_section
     assert "release-v0.1.16.md" in current_section
     assert "next-round-plan-v0.1.16-final-release.md" in current_section
     assert "next-round-plan-post-v0.1.15.md" in current_section
@@ -471,6 +485,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-candidate-v0.1.16-rc.0.md" in evidence
     assert "next-round-plan-post-v0.1.16.md" in checklist
     assert "next-round-plan-post-v0.1.16.md" in evidence
+    assert "public-metadata-audit-post-v0.1.16.md" in checklist
+    assert "public-metadata-audit-post-v0.1.16.md" in evidence
     assert "next-round-plan-v0.1.16-final-release.md" in checklist
     assert "next-round-plan-v0.1.16-final-release.md" in evidence
     assert "next-round-plan-post-v0.1.15.md" in checklist
@@ -485,6 +501,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.16-rc.0` is historical prerelease evidence" in evidence
     assert "active post-v0.1.16 execution cursor records" in checklist
     assert "active post-v0.1.16 execution cursor records" in evidence
+    assert "Public metadata audit after v0.1.16" in checklist
+    assert "Public metadata audit after v0.1.16" in evidence
     assert "public metadata and evidence-freshness checks" in checklist
     assert "public metadata evidence should record" in evidence
     assert "next-round-plan-post-v0.1.12.md" in checklist
@@ -1634,6 +1652,47 @@ def test_public_metadata_audit_post_v015_records_manual_gaps_without_scope_expan
         "manual maintainer checklist item",
         "no required product-code change",
         "The next smallest implementation task is AD2",
+    ):
+        assert expected in audit
+
+    assert "This audit does not authorize screenshots" in audit
+
+
+def test_public_metadata_audit_post_v016_records_manual_gaps_without_scope_expansion():
+    audit = (ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md").read_text(
+        encoding="utf-8"
+    )
+
+    for expected in (
+        "Public Metadata Audit After v0.1.16",
+        "does not change product behavior, schemas,\nCLI/MCP JSON shape",
+        "gh repo view YSCJRH/WinChronicle",
+        "Visibility | `PUBLIC`",
+        "Default branch | `main`",
+        "Description | Empty",
+        "Homepage URL | Empty",
+        "Repository topics | Empty / not configured",
+        "gh release view v0.1.16",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16",
+        "Target | `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
+        "Draft | `false`",
+        "Prerelease | `false`",
+        "Published at | `2026-05-09T09:31:17Z`",
+        "Run | `25598257646`",
+        "Head SHA | `85172956c978fbb6b3355d7e3e75e2ba25fc909a`",
+        "README.md` starts with \"UIA-first local memory for Windows agents.\"",
+        "docs/operator-quickstart.md` links release checklist",
+        "active post-v0.1.16 plan",
+        "published `v0.1.16` final release",
+        "historical `v0.1.16-rc.0` prerelease evidence",
+        "GitHub repository description",
+        "GitHub homepage URL",
+        "GitHub topics",
+        "Social preview image",
+        "manual maintainer checklist item",
+        "AE2 manual UIA smoke remains fresh for the published `v0.1.16` final release",
+        "no required product-code change",
+        "The next smallest implementation task is AF2",
     ):
         assert expected in audit
 

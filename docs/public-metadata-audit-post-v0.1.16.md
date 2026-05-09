@@ -1,0 +1,97 @@
+# Public Metadata Audit After v0.1.16
+
+This audit records the AF1 public metadata and evidence freshness review after
+the published `v0.1.16` baseline. It records current evidence and maintainer
+follow-up candidates only. It does not change product behavior, schemas,
+CLI/MCP JSON shape, helper/watcher behavior, privacy behavior, or capture
+surfaces.
+
+## Remote Metadata Evidence
+
+Command:
+
+```powershell
+gh repo view YSCJRH/WinChronicle --json nameWithOwner,visibility,defaultBranchRef,description,homepageUrl,repositoryTopics,url
+```
+
+Observed result, summarized without secrets:
+
+| Field | Value |
+| --- | --- |
+| Repository | `YSCJRH/WinChronicle` |
+| URL | https://github.com/YSCJRH/WinChronicle |
+| Visibility | `PUBLIC` |
+| Default branch | `main` |
+| Description | Empty |
+| Homepage URL | Empty |
+| Repository topics | Empty / not configured |
+
+Release metadata check:
+
+```powershell
+gh release view v0.1.16 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name
+```
+
+| Field | Value |
+| --- | --- |
+| Release | `v0.1.16` |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16 |
+| Target | `255f2a01cddde330d756a87359c4d3a8be4b11a2` |
+| Draft | `false` |
+| Prerelease | `false` |
+| Published at | `2026-05-09T09:31:17Z` |
+
+Post-AF0 main gate check:
+
+```powershell
+gh run view 25598257646 --json databaseId,status,conclusion,headSha,url,displayTitle
+```
+
+| Field | Value |
+| --- | --- |
+| Run | `25598257646` |
+| Display title | `Record post-v0.1.16 baseline cursor` |
+| Head SHA | `85172956c978fbb6b3355d7e3e75e2ba25fc909a` |
+| Conclusion | `success` |
+| URL | https://github.com/YSCJRH/WinChronicle/actions/runs/25598257646 |
+
+## Local Public Surface Evidence
+
+| Surface | Evidence | Assessment |
+| --- | --- | --- |
+| Project positioning | `README.md` starts with "UIA-first local memory for Windows agents." | Local README matches the blueprint tagline. |
+| Operator entry | `docs/operator-quickstart.md` links release checklist, evidence, smoke gates, roadmap, known limitations, and the active post-v0.1.16 plan. | Operator entry is current. |
+| Release evidence freshness | `docs/release-checklist.md`, `docs/release-evidence.md`, and `docs/manual-smoke-evidence-ledger.md` distinguish the published `v0.1.16` final release, historical `v0.1.16-rc.0` prerelease evidence, active post-v0.1.16 cursor, and AE2 fresh manual UIA smoke. | Evidence freshness is explicit. |
+| Roadmap | `docs/roadmap.md` maps fixture/privacy, helper, watcher, MCP, memory, docs/demo, and Phase 6 privacy lanes. | Contributor direction is present without authorizing new capture surfaces. |
+| Issue templates | `.github/ISSUE_TEMPLATE/harness_first_task.yml` and `.github/ISSUE_TEMPLATE/privacy_boundary_review.yml` exist. | Harness-first and privacy-boundary issue entry points are present. |
+
+## Gaps And Follow-up Candidates
+
+| Area | Evidence | Gap | Recommended action |
+| --- | --- | --- | --- |
+| GitHub repository description | `gh repo view` returned an empty `description`. | The public GitHub metadata does not show the tagline. | Maintainer may set the repository description to `UIA-first local memory for Windows agents.` |
+| GitHub homepage URL | `gh repo view` returned an empty `homepageUrl`. | No durable public homepage is configured. | Keep blank until a stable homepage exists; do not invent one in repo docs. |
+| GitHub topics | `gh repo view` returned no configured topics. | Discovery metadata is missing. | Maintainer may add topics such as `windows`, `uia`, `local-first`, `mcp`, and `agent-memory`. |
+| Social preview image | The GitHub CLI metadata query does not expose social preview state. | Social preview cannot be fully verified from local files or this CLI query. | Keep as a manual maintainer checklist item; do not commit generated social-card assets unless a future plan explicitly requests them. |
+
+## Non-gaps
+
+- Empty GitHub metadata does not block deterministic harness gates or product
+  correctness.
+- The repository already has local README positioning, roadmap, issue
+  templates, release evidence, and operator docs.
+- AE2 manual UIA smoke remains fresh for the published `v0.1.16` final release
+  record only. Future releases must make a new freshness decision, but AF1 does
+  not require new manual smoke because it changes no product behavior.
+- This audit does not authorize screenshots, OCR, audio recording, keyboard
+  capture, clipboard capture, network upload, LLM calls, desktop control,
+  product targeted capture, daemon/service install, polling capture loops, or
+  default background capture.
+
+## Decision
+
+AF1 finds no required product-code change. The only public metadata gaps are
+manual repository settings: description, topics, optional homepage, and social
+preview verification. The next smallest implementation task is AF2: review
+helper and watcher preview diagnostics evidence without expanding the product
+capture surface.

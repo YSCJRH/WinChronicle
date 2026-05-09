@@ -143,6 +143,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 ## Current Maintenance Docs
 
 - [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)
+- [Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)
 - [v0.1.16 final release record](release-v0.1.16.md)
 - [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md)
 - [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md)
