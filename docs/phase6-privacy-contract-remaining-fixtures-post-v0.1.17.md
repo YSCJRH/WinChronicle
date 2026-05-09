@@ -1,10 +1,10 @@
 # Phase 6 Privacy Contract Remaining Fixtures After v0.1.17
 
-This record continues the Phase 6 privacy-enrichment contract lane after the
-first committed negative fixture expansion. It is contract-only. It does not
-implement or authorize screenshot capture, OCR, raw screenshot caches, runtime
-allowlist parsing, CLI/MCP output changes, helper/watcher behavior changes,
-product targeted capture, desktop control, network upload, LLM calls,
+This record completed the Phase 6 remaining negative fixture expansion after
+the first committed negative fixture expansion. It is contract-only. It does
+not implement or authorize screenshot capture, OCR, raw screenshot caches,
+runtime allowlist parsing, CLI/MCP output changes, helper/watcher behavior
+changes, product targeted capture, desktop control, network upload, LLM calls,
 daemon/service install, polling capture loops, or default background capture.
 
 ## Scope
@@ -65,9 +65,18 @@ errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture
 capture/search/memory, deterministic watcher fixture, and watcher fake-helper
 smoke.
 
+PR and post-merge validation:
+
+- PR #172 merged at `2026-05-09T17:16:13Z` as
+  `a17da99e267edadced464c19fdc4c69719bd626e`.
+- PR #172 Windows Harness run `25606933793` concluded `success` on
+  `0691e00ddf16fd0ded7471b51579e1e97a0635e3`.
+- Post-remaining-fixtures `main` Windows Harness run `25606999596` concluded
+  `success` on `a17da99e267edadced464c19fdc4c69719bd626e`.
+
 ## Next Task
 
-Land this remaining fixture expansion through PR and post-merge Windows Harness
-validation. Screenshot/OCR implementation remains out of scope for v0.1
-maintenance unless a future plan explicitly authorizes tests-first runtime
-work.
+Audit Phase 6 contract coverage against the scorecard and committed fixtures
+so no schema rejection case remains only in an in-memory test variant.
+Screenshot/OCR implementation remains out of scope for v0.1 maintenance unless
+a future plan explicitly authorizes tests-first runtime work.

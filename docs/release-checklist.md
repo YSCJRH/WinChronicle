@@ -24,7 +24,7 @@ completed Phase 6 privacy contract preflight is
 [Phase 6 privacy contract preflight after v0.1.17](phase6-privacy-contract-preflight-post-v0.1.17.md). The
 completed Phase 6 privacy contract fixture expansion is
 [Phase 6 privacy contract fixture expansion after v0.1.17](phase6-privacy-contract-fixture-expansion-post-v0.1.17.md). The
-current remaining Phase 6 negative contract fixture expansion is
+completed Phase 6 remaining negative contract fixture expansion is
 [Phase 6 privacy contract remaining fixtures after v0.1.17](phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md). The
 completed post-v0.1.16 execution cursor lives in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
@@ -100,8 +100,9 @@ inherited historical evidence:
   `25605945162`, Phase 6 committed negative contract fixture expansion PR
   #170 with post-fixture-expansion `main` Windows Harness run `25606329451`,
   Phase 6 fixture expansion reconciliation PR #171 with post-reconciliation
-  `main` Windows Harness run `25606591806`, and the current remaining Phase 6
-  negative contract fixture expansion;
+  `main` Windows Harness run `25606591806`, Phase 6 remaining negative fixture
+  expansion PR #172 with post-remaining-fixtures `main` Windows Harness run
+  `25606999596`, and the current Phase 6 contract coverage audit;
 - the completed post-v0.1.17 public metadata/evidence freshness audit records
   repository metadata, `v0.1.17` release metadata, previous stable `v0.1.16`
   release metadata, post-AG0 `main` Windows Harness evidence, manual repository
