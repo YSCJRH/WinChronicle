@@ -67,6 +67,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Compatibility guardrail sweep after v0.1.17](compatibility-guardrail-sweep-post-v0.1.17.md)"
         in quickstart
     )
+    assert (
+        "[Release-readiness decision after v0.1.17](release-readiness-decision-post-v0.1.17.md)"
+        in quickstart
+    )
     assert "[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)"
@@ -177,6 +181,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[Compatibility guardrail sweep after v0.1.17](docs/compatibility-guardrail-sweep-post-v0.1.17.md)"
+        in readme
+    )
+    assert (
+        "[Release-readiness decision after v0.1.17](docs/release-readiness-decision-post-v0.1.17.md)"
         in readme
     )
     assert (
@@ -315,6 +323,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.17 helper/watcher diagnostics sweep" in readme_intro_normalized
     assert "current post-v0.1.17 MCP/memory contract sweep" in readme_intro_normalized
     assert "current post-v0.1.17 compatibility guardrail sweep" in readme_intro_normalized
+    assert "current post-v0.1.17 release-readiness decision" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
@@ -326,6 +335,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Helper and watcher diagnostics sweep after v0.1.17" in readme_operator_docs
     assert "MCP and memory contract sweep after v0.1.17" in readme_operator_docs
     assert "Compatibility guardrail sweep after v0.1.17" in readme_operator_docs
+    assert "Release-readiness decision after v0.1.17" in readme_operator_docs
     assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.16" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
@@ -393,6 +403,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Compatibility guardrail sweep after v0.1.17"
     )
     assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.17") < readme_operator_docs.index(
+        "Release-readiness decision after v0.1.17"
+    )
+    assert readme_operator_docs.index("Release-readiness decision after v0.1.17") < readme_operator_docs.index(
         "Post-v0.1.16 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.16 maintenance plan") < readme_operator_docs.index(
@@ -524,6 +537,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in current_section
     assert "mcp-memory-contract-sweep-post-v0.1.17.md" in current_section
     assert "compatibility-guardrail-sweep-post-v0.1.17.md" in current_section
+    assert "release-readiness-decision-post-v0.1.17.md" in current_section
     assert "next-round-plan-post-v0.1.16.md" in current_section
     assert "public-metadata-audit-post-v0.1.16.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in current_section
@@ -630,6 +644,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "public-metadata-audit-post-v0.1.17.md" in evidence
     assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in checklist
     assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in evidence
+    assert "mcp-memory-contract-sweep-post-v0.1.17.md" in checklist
+    assert "mcp-memory-contract-sweep-post-v0.1.17.md" in evidence
+    assert "compatibility-guardrail-sweep-post-v0.1.17.md" in checklist
+    assert "compatibility-guardrail-sweep-post-v0.1.17.md" in evidence
+    assert "release-readiness-decision-post-v0.1.17.md" in checklist
+    assert "release-readiness-decision-post-v0.1.17.md" in evidence
     assert "next-round-plan-post-v0.1.16.md" in checklist
     assert "next-round-plan-post-v0.1.16.md" in evidence
     assert "public-metadata-audit-post-v0.1.16.md" in checklist
@@ -682,6 +702,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.17 compatibility guardrail review" in evidence
     assert "no\n  new compatibility drift" in checklist
     assert "no\n  new compatibility drift" in evidence
+    assert "current post-v0.1.17 release-readiness decision" in checklist
+    assert "current post-v0.1.17 release-readiness decision" in evidence
+    assert "does not warrant a new release-readiness or\n  publication path" in checklist
+    assert "does not warrant a new release-readiness or\n  publication path" in evidence
+    assert "no runtime, helper/watcher, CLI/MCP\n  output" in checklist
+    assert "no runtime, helper/watcher, CLI/MCP\n  output" in evidence
     assert "completed post-v0.1.16 execution cursor records" in checklist
     assert "completed post-v0.1.16 execution cursor records" in evidence
     assert "Public metadata audit after v0.1.16" in checklist
@@ -3016,6 +3042,66 @@ def test_post_v017_compatibility_guardrail_sweep_records_current_review():
         assert boundary in normalized
 
 
+def test_post_v017_release_readiness_decision_records_no_release_path():
+    decision = (
+        ROOT / "docs" / "release-readiness-decision-post-v0.1.17.md"
+    ).read_text(encoding="utf-8")
+    normalized = " ".join(decision.split())
+
+    for expected in (
+        "Release-Readiness Decision After v0.1.17",
+        "AG5 record",
+        "do not start a new release-readiness or publication path",
+        "Do not retag `v0.1.17`",
+        "documentation, evidence, deterministic-test, and compatibility guardrail maintenance only",
+        "do not change runtime code",
+        "Is a release-readiness path warranted? | No.",
+        "Is immediate publication warranted? | No.",
+        "Should `v0.1.17` be retagged? | No.",
+        "Should the next release-readiness target be chosen here? | No.",
+        "Is fresh manual UIA smoke decided here? | No.",
+        "Start the next blueprint implementation lane",
+        "`docs/` | Added AG1 public metadata audit",
+        "`tests/` | Hardened documentation and compatibility assertions",
+        "`src/winchronicle`, `resources`, `pyproject.toml` | No diff",
+        "Latest published release remains",
+        "https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17",
+        "`v0.1.17` is not a draft or prerelease",
+        "AG4 completion merged as `ac01afc206852a8b2b52126d61aa91d633e4675b`",
+        "AG4 PR Windows Harness run `25604208696` concluded `success`",
+        "post-merge `main` Windows Harness run `25604269757`",
+        "git fetch origin tag v0.1.17",
+        "git diff --name-status v0.1.17..HEAD",
+        "runtime/resource/version diff commands printed no files",
+        "focused docs/version validation reported 77 tests",
+        "full pytest reported 179 tests",
+        "stale AG4 cursor scan returned no matches",
+        "full deterministic harness passed",
+        "AG5 does not authorize implementation of screenshot capture",
+        "privacy-neutral guardrails and evidence maintenance",
+        "Land this AG5 release-readiness decision through PR and post-merge Windows Harness validation",
+        "start the next smallest blueprint implementation lane",
+    ):
+        assert expected in normalized
+
+    for boundary in (
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network/cloud upload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service install",
+        "polling capture loops",
+        "default background capture",
+        "MCP write tools",
+        "arbitrary file read tools",
+    ):
+        assert boundary in normalized
+
+
 def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
     checklist = (ROOT / "docs" / "release-checklist.md").read_text(encoding="utf-8")
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
@@ -3207,9 +3293,10 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.17]",
         "Current MCP/memory contract sweep | [MCP and memory contract sweep after v0.1.17]",
         "Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.17]",
+        "Latest release-readiness decision | [Release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.16 maintenance plan]",
         "Previous public metadata audit | [Public metadata audit after v0.1.16]",
-        "Latest release-readiness decision | [Release-readiness decision after v0.1.16]",
+        "Previous release-readiness decision | [Release-readiness decision after v0.1.16]",
         "Current release record | [v0.1.17 maintenance release record]",
         "Completed final-release plan | [v0.1.16 final-release plan]",
         "Previous prerelease record | [v0.1.16-rc.0 release candidate record]",
