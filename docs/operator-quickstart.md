@@ -146,6 +146,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md)
 - [Helper and watcher diagnostics sweep after v0.1.17](helper-watcher-diagnostics-sweep-post-v0.1.17.md)
 - [MCP and memory contract sweep after v0.1.17](mcp-memory-contract-sweep-post-v0.1.17.md)
+- [Compatibility guardrail sweep after v0.1.17](compatibility-guardrail-sweep-post-v0.1.17.md)
 - [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)
 - [Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)
 - [Helper and watcher diagnostics sweep after v0.1.16](helper-watcher-diagnostics-sweep-post-v0.1.16.md)

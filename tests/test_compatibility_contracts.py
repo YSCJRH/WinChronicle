@@ -136,17 +136,38 @@ def test_product_cli_surface_contract_has_no_targeted_or_capture_expansion_flags
     for forbidden in FORBIDDEN_CLI_OPTIONS:
         assert forbidden not in help_text
 
-    for argv in (
-        ["capture-frontmost", "--helper", "helper.exe", "--hwnd", "0x1"],
-        ["capture-frontmost", "--helper", "helper.exe", "--pid", "1234"],
-        ["capture-frontmost", "--helper", "helper.exe", "--window-title", "Notes"],
-        ["capture-frontmost", "--helper", "helper.exe", "--helper-arg=--hwnd"],
-        ["capture-frontmost", "--helper", "helper.exe", "--helper-arg=--window-title"],
-        ["watch", "--watcher", "watcher.exe", "--watcher-arg=--pid"],
-        ["watch", "--watcher", "watcher.exe", "--helper", "helper.exe", "--helper-arg=--ocr"],
+    rejection_argvs = [
         ["mcp-stdio", "--write"],
         ["mcp-stdio", "--screenshot"],
-    ):
+    ]
+
+    for forbidden in FORBIDDEN_CLI_OPTIONS[:5]:
+        rejection_argvs.append(
+            ["capture-frontmost", "--helper", "helper.exe", forbidden, "value"]
+        )
+
+    for forbidden in FORBIDDEN_CLI_OPTIONS:
+        rejection_argvs.extend(
+            [
+                [
+                    "capture-frontmost",
+                    "--helper",
+                    "helper.exe",
+                    f"--helper-arg={forbidden}",
+                ],
+                ["watch", "--watcher", "watcher.exe", f"--watcher-arg={forbidden}"],
+                [
+                    "watch",
+                    "--watcher",
+                    "watcher.exe",
+                    "--helper",
+                    "helper.exe",
+                    f"--helper-arg={forbidden}",
+                ],
+            ]
+        )
+
+    for argv in rejection_argvs:
         try:
             parser.parse_args(argv)
         except SystemExit:

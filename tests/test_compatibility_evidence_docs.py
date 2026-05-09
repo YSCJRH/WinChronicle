@@ -30,6 +30,7 @@ POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
 MCP_MEMORY_V0117 = ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.17.md"
+COMPATIBILITY_V0117 = ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.17.md"
 POST_V0116_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.16.md"
 PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
 HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
@@ -57,6 +58,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Public metadata audit after v0.1.17",
         "Helper and watcher diagnostics sweep after v0.1.17",
         "MCP and memory contract sweep after v0.1.17",
+        "Compatibility guardrail sweep after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -94,6 +96,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Public metadata audit after v0.1.17",
         "Helper and watcher diagnostics sweep after v0.1.17",
         "MCP and memory contract sweep after v0.1.17",
+        "Compatibility guardrail sweep after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -890,15 +893,15 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "AF7 publication reconciliation landed on `main` as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
         "PR #160 Windows Harness run `25601966464` passed",
         "post-merge `main` Windows Harness run `25602018700` passed",
-        "Current stage: AG3 - MCP And Memory Contract Review.",
-        "Stage status: AG3 review in progress; AG2 landed through PR #163",
-        "Last completed evidence: AG2 helper/watcher diagnostics review PR #163 merged as `461eb8b14f6733f5abfe87524da2358730da3b59`",
-        "PR Windows Harness run `25603218933` passed",
-        "post-AG2 `main` Windows Harness run `25603274783`",
-        "current MCP/memory docs and tests still cover exact read-only MCP tools",
-        "rejected write/control/file/network/targeted-capture tool names",
-        "Next atomic task: land this AG3 MCP/memory contract review",
-        "then start AG4 compatibility guardrail sweep",
+        "Current stage: AG4 - Compatibility Guardrail Sweep.",
+        "Stage status: AG4 review in progress; AG3 landed through PR #164",
+        "Last completed evidence: AG3 MCP/memory contract review PR #164 merged as `bf38d3d580fafd50ce9ea4752bca31735869083f`",
+        "PR Windows Harness run `25603703247` passed",
+        "post-AG3 `main` Windows Harness run `25603752386`",
+        "current compatibility docs and tests still cover version identity",
+        "disabled privacy surfaces, observed-content trust boundaries",
+        "Next atomic task: land this AG4 compatibility guardrail review",
+        "then decide whether a post-v0.1.17 release-readiness stage is warranted",
         "Live UIA smoke remains manual and outside default CI",
         "Stage AG0 - Post-v0.1.17 Baseline Cursor",
         "Stage AG1 - Public Metadata And Evidence Freshness Follow-up",
@@ -953,6 +956,21 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "passed, 93 tests",
         "passed, 175 tests",
         "stale AG2 cursor scan",
+        "Stage AG3 completion:",
+        "PR #164 merged at `2026-05-09T14:40:08Z`",
+        "PR #164 Windows Harness concluded `success`",
+        "post-AG3 `main` Windows Harness concluded `success`",
+        "Stage AG4 initialization:",
+        "Reviewed `tests/test_compatibility_contracts.py`, `tests/test_mcp_tools.py`",
+        "Found no new product compatibility drift",
+        "Tightened docs/tests evidence for full disabled pass-through flag rejection",
+        "Stage AG4 local validation:",
+        "passed, 55 tests",
+        "passed, 177 tests",
+        "Boundary scan for targeted capture",
+        "Background install/polling scan",
+        "Control/capture dependency scan",
+        "stale AG3 cursor scan",
         "python harness/scripts/run_harness.py",
     ):
         assert phrase in normalized
@@ -1389,6 +1407,65 @@ def test_compatibility_guardrail_sweep_post_v016_records_precision_fixes():
         "The next smallest implementation task is to land this AF4 review",
     ):
         assert phrase in normalized
+
+
+def test_compatibility_guardrail_sweep_post_v017_records_current_review():
+    text = COMPATIBILITY_V0117.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Compatibility Guardrail Sweep After v0.1.17",
+        "AG4 compatibility check",
+        "found no required schema",
+        "Version identity",
+        "Exact read-only MCP tool list",
+        "Disabled privacy surfaces",
+        "Observed-content trust boundary",
+        "Watcher preview limits",
+        "Durable memory contract",
+        "Phase 6 spec-only status",
+        "Product targeted capture absence",
+        "current_context",
+        "search_captures",
+        "search_memory",
+        "read_recent_capture",
+        "recent_activity",
+        "privacy_status",
+        'trust = "untrusted_observed_content"',
+        "tests/test_privacy_check.py",
+        "55 passed",
+        "177 passed",
+        "Stale cursor scan",
+        "WinChronicle harness passed",
+        "pass-through rejection tests now cover every disabled helper/watcher surface flag",
+        "operator diagnostics now names the full disabled product targeted-capture flag set",
+        "No new product CLI/MCP targeted capture",
+        "Background install/polling scan",
+        "No product daemon/service install",
+        "No new runtime dependency or implementation path was found",
+        "AG4 found no required schema",
+        "The next smallest implementation task is to land this AG4 review",
+    ):
+        assert phrase in normalized
+
+    for boundary in (
+        "MCP write tools",
+        "arbitrary file read tools",
+        "screenshot capture",
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network upload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service install",
+        "polling capture loops",
+        "default background capture",
+        "live UIA smoke in default CI",
+    ):
+        assert boundary in normalized
 
 
 def test_release_readiness_decision_post_v016_starts_v017_readiness():

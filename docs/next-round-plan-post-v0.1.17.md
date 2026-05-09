@@ -27,23 +27,23 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AG3 - MCP And Memory Contract Review.
-- Stage status: AG3 review in progress; AG2 landed through PR #163 and
+- Current stage: AG4 - Compatibility Guardrail Sweep.
+- Stage status: AG4 review in progress; AG3 landed through PR #164 and
   post-merge Windows Harness.
-- Last completed evidence: AG2 helper/watcher diagnostics review PR #163
-  merged as `461eb8b14f6733f5abfe87524da2358730da3b59`, PR Windows Harness run
-  `25603218933` passed, and post-AG2 `main` Windows Harness run `25603274783`
+- Last completed evidence: AG3 MCP/memory contract review PR #164 merged as
+  `bf38d3d580fafd50ce9ea4752bca31735869083f`, PR Windows Harness run
+  `25603703247` passed, and post-AG3 `main` Windows Harness run `25603752386`
   passed on that SHA.
-- Last validation: `gh run view 25603274783 --json
+- Last validation: `gh run view 25603752386 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AG2 `main` Windows Harness concluded `success`; current
-  MCP/memory docs and tests still cover exact read-only MCP tools, rejected
-  write/control/file/network/targeted-capture tool names, observed-content
-  trust metadata, CLI/MCP capture and memory search parity, durable memory
-  goldens, idempotence, FTS indexing, and secret exclusion.
-- Next atomic task: land this AG3 MCP/memory contract review through PR and
-  post-merge Windows Harness validation, then start AG4 compatibility guardrail
-  sweep.
+  verified the post-AG3 `main` Windows Harness concluded `success`; current
+  compatibility docs and tests still cover version identity, exact read-only
+  MCP tools, disabled privacy surfaces, observed-content trust boundaries,
+  watcher preview limits, durable memory contract, product targeted-capture
+  absence, and Phase 6 spec-only status.
+- Next atomic task: land this AG4 compatibility guardrail review through PR and
+  post-merge Windows Harness validation, then decide whether a post-v0.1.17
+  release-readiness stage is warranted.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -98,6 +98,8 @@ service install, no polling capture loop, and no default background capture.
   boundary.
 - Add `docs/mcp-memory-contract-sweep-post-v0.1.17.md`.
 - Keep real UIA smoke manual and outside default CI.
+- Completed in PR #164 with PR Windows Harness run `25603703247` and
+  post-merge `main` Windows Harness run `25603752386`.
 
 ### Stage AG4 - Compatibility Guardrail Sweep
 
@@ -107,6 +109,8 @@ service install, no polling capture loop, and no default background capture.
   content trust boundaries, watcher preview limits, durable memory contract,
   product targeted capture absence, and Phase 6 spec-only status.
 - Strengthen tests only for discovered drift.
+- Add `docs/compatibility-guardrail-sweep-post-v0.1.17.md`.
+- Keep real UIA smoke manual and outside default CI.
 
 ### Stage AG5 - Release-Readiness Decision
 
@@ -186,6 +190,21 @@ Every implementation stage should run:
 - Started AG3 as a docs/tests-only MCP/memory contract review because exact
   read-only MCP tool list, trust metadata, durable memory, and forbidden tool
   boundary behavior are already covered by deterministic tests and scorecards.
+- Completed AG3 after PR #164 merged as
+  `bf38d3d580fafd50ce9ea4752bca31735869083f` and post-merge `main` Windows
+  Harness run `25603752386` passed.
+- Started AG4 as a docs/tests-only compatibility guardrail sweep because
+  version identity, exact read-only MCP tools, disabled privacy surfaces,
+  observed-content trust boundaries, watcher preview limits, durable memory,
+  product targeted-capture absence, and Phase 6 spec-only status are already
+  covered by deterministic tests and scorecards.
+- AG4 found no required product behavior, schema, MCP tool-schema,
+  helper/watcher output contract, capture storage shape, privacy runtime,
+  capture-surface, dependency, or version-metadata change. It tightened
+  docs/tests evidence so pass-through rejection covers every disabled
+  helper/watcher surface flag, operator diagnostics names every disabled
+  product targeted-capture flag, and daemon/service/polling/background terms
+  are checked by an explicit scan.
 
 ## Validation Log
 
@@ -246,6 +265,46 @@ Every implementation stage should run:
   - stale AG2 cursor scan across `README.md`, `docs`, and `tests` - passed
     with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 175 pytest
+    tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke,
+    MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory,
+    deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AG3 completion:
+  - `gh pr view 164 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #164 merged at `2026-05-09T14:40:08Z` as `bf38d3d580fafd50ce9ea4752bca31735869083f`.
+  - `gh run view 25603703247 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #164 Windows Harness concluded `success` on `e459de9587c75c6c4cd9ca23f43679907263fc8c`.
+  - `gh run view 25603752386 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AG3 `main` Windows Harness concluded `success` on `bf38d3d580fafd50ce9ea4752bca31735869083f`.
+- Stage AG4 initialization:
+  - Reviewed `tests/test_compatibility_contracts.py`, `tests/test_mcp_tools.py`,
+    `tests/test_phase6_privacy_scorecard.py`, `tests/test_watcher_events.py`,
+    `tests/test_state_compatibility.py`, `tests/test_memory_pipeline.py`,
+    `tests/test_privacy_check.py`, `tests/test_version_identity.py`,
+    `harness/scorecards`, `docs/mcp-readonly-examples.md`,
+    `docs/watcher-preview.md`, `docs/deterministic-demo.md`,
+    `docs/roadmap.md`, `CONTRIBUTING.md`, `.github`, `src/winchronicle`, and
+    `resources`.
+  - Found no new product compatibility drift requiring schema, MCP tool-schema,
+    helper/watcher output contract, capture storage shape, privacy runtime,
+    capture-surface, dependency, or version-metadata changes.
+  - Tightened docs/tests evidence for full disabled pass-through flag
+    rejection, operator diagnostics targeted-capture flag wording, and explicit
+    daemon/service/polling/background scanning.
+- Stage AG4 local validation:
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py tests/test_privacy_check.py tests/test_version_identity.py -q` - passed, 55 tests.
+  - Boundary scan for targeted capture, screenshot/OCR, audio, keyboard,
+    clipboard, upload, LLM, control, and write/read tool terms - reviewed with
+    no new product surface found.
+  - Background install/polling scan for daemon, service, polling, and
+    background terms - reviewed with no new product daemon/service install,
+    polling capture loop, startup task, or default background capture
+    implementation path found.
+  - Control/capture dependency scan for foreground/control APIs, clipboard,
+    screenshot capture APIs, OCR engines, LLM/network clients, Selenium, and
+    Playwright - reviewed with no new runtime dependency or implementation path
+    found.
+  - `python -m pytest -q` - passed, 177 tests.
+  - `git diff --check` - passed.
+  - stale AG3 cursor scan across `README.md`, `docs`, and `tests` - passed
+    with no matches.
+  - `python harness/scripts/run_harness.py` - passed, including 177 pytest
     tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke,
     MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory,
     deterministic watcher fixture, and watcher fake-helper smoke.
