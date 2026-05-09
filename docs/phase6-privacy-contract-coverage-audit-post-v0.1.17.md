@@ -103,8 +103,21 @@ warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy
 check, fixture capture/search/memory, deterministic watcher fixture, and
 watcher fake-helper smoke.
 
+PR and post-merge validation:
+
+- PR #174 merged at `2026-05-09T17:49:10Z` as
+  `117cb0f42fe8e7825b15279a6f102e3b18cc0081`.
+- PR #174 Windows Harness run `25607674390` concluded `success` on
+  `0e3789f30d84db313b778469e5fae8e6bdc3864d`.
+- Post-coverage-audit `main` Windows Harness run `25607748205` concluded
+  `success` on `117cb0f42fe8e7825b15279a6f102e3b18cc0081`.
+
 ## Next Task
 
-Land this coverage audit through PR and post-merge Windows Harness validation.
-Screenshot/OCR implementation remains out of scope for v0.1 maintenance unless
-a future plan explicitly authorizes tests-first runtime work.
+Add targeted durable Phase 6 negative fixtures for the highest-signal
+schema-enforced branches identified by this audit: raw screenshot cache enabled
+by default, global allowlist enabled by default, global default allowlist
+allowed, implicit all-app allowlist allowed, raw cache enabled by default, and
+MCP write tools allowed. Screenshot/OCR implementation remains out of scope
+for v0.1 maintenance unless a future plan explicitly authorizes tests-first
+runtime work.

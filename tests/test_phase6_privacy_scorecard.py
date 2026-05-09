@@ -320,8 +320,11 @@ def test_phase6_privacy_contract_coverage_audit_records_gaps_and_non_goals():
         "allowlist_policy.implicit_all_apps_allowed",
         "raw_cache_policy.enabled_by_default",
         "mcp_policy.mcp_write_tools_allowed",
+        "PR #174 Windows Harness run `25607674390` concluded `success`",
+        "Post-coverage-audit `main` Windows Harness run `25607748205` concluded `success`",
         "Next Task",
-        "Land this coverage audit through PR and post-merge Windows Harness validation",
+        "Add targeted durable Phase 6 negative fixtures",
+        "MCP write tools allowed",
     )
     for phrase in required_phrases:
         assert phrase in normalized

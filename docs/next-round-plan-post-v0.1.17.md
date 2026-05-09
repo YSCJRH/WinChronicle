@@ -27,26 +27,27 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Phase 6 Contract Coverage Audit.
-- Stage status: remaining negative fixture expansion complete; the next Phase
-  6 step is a docs/tests-only audit of schema, fixture, and scorecard coverage.
-- Last completed evidence: Phase 6 remaining negative fixture expansion PR
-  #172 merged as `a17da99e267edadced464c19fdc4c69719bd626e`, PR Windows
-  Harness run `25606933793` passed, and post-remaining-fixtures `main` Windows
-  Harness run `25606999596` passed on that SHA.
-- Last validation: `gh run view 25606999596 --json
+- Current stage: Phase 6 Contract Gap Fixture Expansion.
+- Stage status: contract coverage audit complete; the next Phase 6 step is a
+  docs/tests/fixtures-only expansion for high-signal schema-enforced branches.
+- Last completed evidence: Phase 6 contract coverage audit PR #174 merged as
+  `117cb0f42fe8e7825b15279a6f102e3b18cc0081`, PR Windows Harness run
+  `25607674390` passed, and post-coverage-audit `main` Windows Harness run
+  `25607748205` passed on that SHA.
+- Last validation: `gh run view 25607748205 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-remaining-fixtures `main` Windows Harness concluded
+  verified the post-coverage-audit `main` Windows Harness concluded
   `success`;
   `git diff
   --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` printed no files through the remaining negative fixture
-  expansion, so AG1-AG6, the preflight, fixture expansion, remaining fixtures,
-  and their reconciliations contain no runtime, helper/watcher, CLI/MCP output,
+  pyproject.toml` printed no files through the coverage audit, so AG1-AG6, the
+  preflight, fixture expansion, remaining fixtures, coverage audit, and their
+  reconciliations contain no runtime, helper/watcher, CLI/MCP output,
   privacy-runtime, capture-surface, or version-metadata change.
-- Next atomic task: audit Phase 6 contract coverage against the scorecard and
-  committed fixtures so no schema rejection case remains only in memory.
+- Next atomic task: add targeted durable Phase 6 negative fixtures for the
+  audited high-signal schema branches that are schema-enforced but do not yet
+  have their own committed invalid fixture.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -288,6 +289,12 @@ Every implementation stage should run:
   audit records that all historical unsafe in-memory variants now map
   one-to-one to committed invalid fixtures and identifies high-signal
   schema-enforced branches for a later targeted gap-fixture expansion.
+- Completed the Phase 6 contract coverage audit after PR #174 merged as
+  `117cb0f42fe8e7825b15279a6f102e3b18cc0081` and post-merge `main` Windows
+  Harness run `25607748205` passed.
+- Selected the next Phase 6 step as a targeted contract gap fixture expansion
+  for high-signal schema branches that are already rejected by the schema but
+  do not yet have their own committed invalid fixture.
 
 ## Validation Log
 
@@ -488,5 +495,15 @@ Every implementation stage should run:
   - `python -m pytest tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 88 tests.
   - `git diff --check` - passed.
   - Product-source contract-artifact reference scan for `phase6-privacy-enrichment-contract`, `privacy_enrichment_contract`, `harness/fixtures/phase6`, and `harness\\fixtures\\phase6` across `src` and `resources` - passed with no matches.
+  - `python -m pytest -q` - passed, 185 tests.
+  - `python harness/scripts/run_harness.py` - passed, including 185 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Phase 6 privacy-enrichment contract coverage audit completion:
+  - `gh pr view 174 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #174 merged at `2026-05-09T17:49:10Z` as `117cb0f42fe8e7825b15279a6f102e3b18cc0081`.
+  - `gh run view 25607674390 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #174 Windows Harness concluded `success` on `0e3789f30d84db313b778469e5fae8e6bdc3864d`.
+  - `gh run view 25607748205 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-coverage-audit `main` Windows Harness concluded `success` on `117cb0f42fe8e7825b15279a6f102e3b18cc0081`.
+- Phase 6 privacy-enrichment coverage audit reconciliation local validation:
+  - `python -m pytest tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 88 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
   - `python -m pytest -q` - passed, 185 tests.
   - `python harness/scripts/run_harness.py` - passed, including 185 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

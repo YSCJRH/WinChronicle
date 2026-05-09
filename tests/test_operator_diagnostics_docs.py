@@ -327,7 +327,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "completed Phase 6 privacy contract preflight" in readme_intro_normalized
     assert "completed Phase 6 privacy contract fixture expansion" in readme_intro_normalized
     assert "completed Phase 6 remaining negative contract fixture expansion" in readme_intro_normalized
-    assert "current Phase 6 contract coverage audit" in readme_intro_normalized
+    assert "completed Phase 6 contract coverage audit" in readme_intro_normalized
+    assert "current Phase 6 contract gap fixture expansion" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
@@ -750,8 +751,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Phase 6 remaining negative fixture\n  expansion PR #172" in evidence
     assert "post-remaining-fixtures `main` Windows Harness run\n  `25606999596`" in checklist
     assert "post-remaining-fixtures `main` Windows Harness run\n  `25606999596`" in evidence
-    assert "current Phase 6 contract coverage audit" in checklist
-    assert "current Phase 6 contract coverage audit" in evidence
+    assert "Phase 6\n  contract coverage audit PR #174" in checklist
+    assert "Phase 6\n  contract coverage audit PR #174" in evidence
+    assert "post-coverage-audit `main` Windows\n  Harness run `25607748205`" in checklist
+    assert "post-coverage-audit `main` Windows\n  Harness run `25607748205`" in evidence
+    assert "current Phase 6 contract gap fixture\n  expansion" in checklist
+    assert "current Phase 6 contract gap fixture\n  expansion" in evidence
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist
