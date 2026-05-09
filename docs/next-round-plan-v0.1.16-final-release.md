@@ -38,18 +38,19 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AE0 - Post-v0.1.16-rc.0 Final Baseline Decision.
-- Stage status: AE0 in progress; direct `v0.1.16` final planning is open, but
-  `v0.1.16` is not published and final publication is not authorized by this
-  plan.
-- Last completed evidence: AD5 published `v0.1.16-rc.0` as a prerelease and
-  publication reconciliation passed. The latest verified `main` evidence is
-  Windows Harness run `25596579705`, which passed on
-  `b260ebaa8808bddcce20da166038511de23bf3b5`.
-- Next atomic task: run AE1 deterministic final gates on the current final
-  target and confirm the direct final path still has no product or contract
-  changes after `v0.1.16-rc.0`.
-- Known blockers: final publication is blocked until AE1, AE2, AE3, review,
+- Current stage: AE1 - Deterministic Final Gate Refresh.
+- Stage status: AE1 complete; direct `v0.1.16` final planning remains open,
+  but `v0.1.16` is not published and final publication is not authorized by
+  this plan.
+- Last completed evidence: AE0 created this final-release plan in PR #144,
+  merged as `c61c52ca67e40f689223d8307738f9b49f09deee`, and post-merge
+  Windows Harness run `25597001825` passed on that SHA.
+- Last validation: AE1 deterministic final gates passed locally on
+  `c61c52ca67e40f689223d8307738f9b49f09deee` without requiring product or
+  contract changes.
+- Next atomic task: run AE2 fresh manual final UIA smoke and record local
+  artifact paths only.
+- Known blockers: final publication is blocked until AE2, AE3, review,
   PR Windows Harness, post-merge Windows Harness, and explicit publication
   approval complete.
 
@@ -187,6 +188,10 @@ Stage-specific gates:
   final evidence.
 - Chose `v0.1.16-rc.1` as the fallback if final-readiness review requires any
   product or contract change.
+- Completed AE0 through PR #144 and post-merge Windows Harness before moving
+  to deterministic final gates.
+- Kept the direct final path open after AE1 because all deterministic final
+  gates passed and no product or contract change was required.
 
 ## Validation Log
 
@@ -198,3 +203,15 @@ Stage-specific gates:
   - `git rev-parse HEAD` - passed and printed `b260ebaa8808bddcce20da166038511de23bf3b5`.
   - `gh run view 25596579705 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-prerelease-reconciliation `main` Windows Harness concluded `success` on `b260ebaa8808bddcce20da166038511de23bf3b5`.
   - `git diff --name-status v0.1.16-rc.0..HEAD` - passed; the diff listed only documentation and documentation-test evidence files.
+- Stage AE0 completion:
+  - PR #144 Windows Harness run `25596958129` - passed.
+  - PR #144 merged as `c61c52ca67e40f689223d8307738f9b49f09deee`.
+  - `gh run view 25597001825 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AE0 `main` Windows Harness concluded `success` on `c61c52ca67e40f689223d8307738f9b49f09deee`.
+- Stage AE1 deterministic final gate refresh:
+  - `git rev-parse HEAD` - passed and printed `c61c52ca67e40f689223d8307738f9b49f09deee`.
+  - `python -m pytest -q` - passed; 151 tests passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed; includes 151 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, fixture watcher, and preview watcher smoke.
+  - `git diff --check` - passed.
