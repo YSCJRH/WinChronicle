@@ -49,6 +49,10 @@ positive fixture are sample shape examples only, not approved apps. These
 artifacts are not runtime configuration. Product code must not read them in
 v0.1, and they do not authorize screenshot capture, OCR, raw screenshot
 caches, runtime allowlist parsing, or any new capture surface.
+Targeted gap fixtures also cover raw screenshot cache defaults, global
+allowlist defaults, global default allowlist approval, implicit all-app
+allowlists, raw cache enabled-by-default behavior, and MCP write-tool
+exposure.
 
 ## Required Future Opt-In Contract
 

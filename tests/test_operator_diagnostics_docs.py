@@ -345,6 +345,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Phase 6 privacy contract fixture expansion after v0.1.17" in readme_operator_docs
     assert "Phase 6 privacy contract remaining fixtures after v0.1.17" in readme_operator_docs
     assert "Phase 6 privacy contract coverage audit after v0.1.17" in readme_operator_docs
+    assert "Phase 6 privacy contract gap fixtures after v0.1.17" in readme_operator_docs
     assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.16" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
@@ -432,6 +433,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )
     assert readme_operator_docs.index(
         "Phase 6 privacy contract coverage audit after v0.1.17"
+    ) < readme_operator_docs.index(
+        "Phase 6 privacy contract gap fixtures after v0.1.17"
+    )
+    assert readme_operator_docs.index(
+        "Phase 6 privacy contract gap fixtures after v0.1.17"
     ) < readme_operator_docs.index(
         "Post-v0.1.16 maintenance plan"
     )
@@ -569,6 +575,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "phase6-privacy-contract-fixture-expansion-post-v0.1.17.md" in current_section
     assert "phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md" in current_section
     assert "phase6-privacy-contract-coverage-audit-post-v0.1.17.md" in current_section
+    assert "phase6-privacy-contract-gap-fixtures-post-v0.1.17.md" in current_section
     assert "next-round-plan-post-v0.1.16.md" in current_section
     assert "public-metadata-audit-post-v0.1.16.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in current_section
@@ -689,6 +696,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md" in evidence
     assert "phase6-privacy-contract-coverage-audit-post-v0.1.17.md" in checklist
     assert "phase6-privacy-contract-coverage-audit-post-v0.1.17.md" in evidence
+    assert "phase6-privacy-contract-gap-fixtures-post-v0.1.17.md" in checklist
+    assert "phase6-privacy-contract-gap-fixtures-post-v0.1.17.md" in evidence
     assert "next-round-plan-post-v0.1.16.md" in checklist
     assert "next-round-plan-post-v0.1.16.md" in evidence
     assert "public-metadata-audit-post-v0.1.16.md" in checklist
@@ -755,8 +764,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Phase 6\n  contract coverage audit PR #174" in evidence
     assert "post-coverage-audit `main` Windows\n  Harness run `25607748205`" in checklist
     assert "post-coverage-audit `main` Windows\n  Harness run `25607748205`" in evidence
-    assert "current Phase 6 contract gap fixture\n  expansion" in checklist
-    assert "current Phase 6 contract gap fixture\n  expansion" in evidence
+    assert "Phase 6 coverage audit reconciliation PR #175" in checklist
+    assert "Phase 6 coverage audit reconciliation PR #175" in evidence
+    assert "post-reconciliation `main` Windows Harness run `25608072563`" in checklist
+    assert "post-reconciliation `main` Windows Harness run `25608072563`" in evidence
+    assert "current Phase 6 contract gap fixture expansion" in checklist
+    assert "current Phase 6 contract gap fixture expansion" in evidence
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist
