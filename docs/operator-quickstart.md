@@ -17,9 +17,9 @@ The product CLI capture path remains foreground-only:
 python -m winchronicle capture-frontmost --helper path\to\win-uia-helper.exe --depth 80
 ```
 
-Do not add targeted `--hwnd`, `--pid`, or `--window-title` capture to the
-product CLI or MCP. Targeted UIA capture exists only in harness-only helper
-smoke scripts.
+Do not add targeted `--hwnd`, `--pid`, `--window-title`,
+`--window-title-regex`, or `--process-name` capture to the product CLI or MCP.
+Targeted UIA capture exists only in harness-only helper smoke scripts.
 
 ## Local State
 
@@ -146,6 +146,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)
 - [Helper and watcher diagnostics sweep after v0.1.16](helper-watcher-diagnostics-sweep-post-v0.1.16.md)
 - [MCP and memory contract sweep after v0.1.16](mcp-memory-contract-sweep-post-v0.1.16.md)
+- [Compatibility guardrail sweep after v0.1.16](compatibility-guardrail-sweep-post-v0.1.16.md)
 - [v0.1.16 final release record](release-v0.1.16.md)
 - [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md)
 - [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md)

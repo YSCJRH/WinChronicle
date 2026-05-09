@@ -105,8 +105,8 @@ def main() -> int:
             print("FAIL: MCP stdio did not return the expected response count")
             return 1
 
-        tool_names = {tool["name"] for tool in responses[1]["result"]["tools"]}
-        if tool_names != set(EXPECTED_TOOL_NAMES):
+        tool_names = [tool["name"] for tool in responses[1]["result"]["tools"]]
+        if tool_names != list(EXPECTED_TOOL_NAMES):
             print("FAIL: MCP tools/list returned the wrong tools")
             return 1
         if any(term in name for name in tool_names for term in FORBIDDEN_TOOL_TERMS):

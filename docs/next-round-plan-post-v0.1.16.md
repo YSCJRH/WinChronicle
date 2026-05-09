@@ -24,18 +24,19 @@ service install, no polling capture loop, and no default background capture.
 ## Execution Cursor
 
 - Current stage: AF4 - Compatibility Guardrail Sweep.
-- Stage status: AF3 complete; AF4 is ready to start.
-- Last completed evidence: AF3 MCP/memory review PR #154 merged as
+- Stage status: AF4 review in progress; AF3 is complete.
+- Last completed evidence: `docs/mcp-memory-contract-sweep-post-v0.1.16.md`
+  and AF3 MCP/memory review PR #154 merged as
   `f55638cf213b40c07d01f1872a7ff828b3a85d6f`, PR Windows Harness run
   `25599715499` passed, and post-merge `main` Windows Harness run
   `25599772190` passed on that SHA.
-- Last validation: `docs/mcp-memory-contract-sweep-post-v0.1.16.md` records
-  the AF3 `generate-memory` manifest trust-boundary fix, literal standalone
-  MCP smoke tool-list guardrail, expanded forbidden MCP stdio call evidence,
-  exact read-only MCP tool list, durable memory contract, and deterministic
+- Last validation: `docs/compatibility-guardrail-sweep-post-v0.1.16.md`
+  records the AF4 ordered MCP smoke guardrail, complete targeted-flag docs,
+  `generate-memory` manifest compatibility shape, focused guardrail tests,
+  boundary scan and control/capture dependency scan, and deterministic
   no-capture-surface expansion decision.
-- Next atomic task: start AF4 by re-running compatibility guardrails and
-  confirming the v0.1 boundary still holds.
+- Next atomic task: land this AF4 review through PR and post-merge Windows
+  Harness validation, then record AF4 completion.
 - Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
@@ -86,8 +87,10 @@ service install, no polling capture loop, and no default background capture.
 
 ## Public Interfaces And Non-goals
 
-- CLI remains unchanged:
+- CLI command set remains unchanged:
   `init/status/capture-once/capture-frontmost/watch/privacy-check/search-captures/generate-memory/search-memory/mcp-stdio`.
+- `generate-memory` manifest JSON includes the compatible AF3 trust-boundary
+  fields `trust`, `untrusted_observed_content`, and `instruction`.
 - MCP tool list remains unchanged and read-only: `current_context`,
   `search_captures`, `search_memory`, `read_recent_capture`,
   `recent_activity`, and `privacy_status`.
@@ -143,6 +146,10 @@ Every implementation stage should run:
   that standalone MCP smoke should freeze a literal tool list plus the full
   forbidden write/file/network/control term set.
 - Completed AF3 after PR #154 and post-merge `main` Windows Harness passed.
+- Started AF4 as a compatibility guardrail sweep; read-only reviews found only
+  documentation and guardrail precision drifts around public MCP ordering,
+  complete targeted-flag wording, ordered MCP smoke comparison, and the AF3
+  `generate-memory` manifest JSON compatibility shape.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
