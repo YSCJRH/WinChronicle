@@ -41,7 +41,8 @@ Expected operator signals:
 | Unexpected wrapper failure | `ERROR: helper output could not be captured safely` | The wrapper suppressed raw output because it may contain observed content. | Command and reproduction notes only. |
 
 Never work around a no-capture or timeout by adding product `--hwnd`, `--pid`,
-or `--window-title` flags. Targeted capture remains helper-only harness smoke.
+`--window-title`, `--window-title-regex`, or `--process-name` flags.
+Targeted capture remains helper-only harness smoke.
 
 ## Watcher Preview Diagnostics
 
