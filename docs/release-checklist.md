@@ -18,6 +18,8 @@ current post-v0.1.17 MCP/memory contract review is
 [MCP and memory contract sweep after v0.1.17](mcp-memory-contract-sweep-post-v0.1.17.md). The
 current post-v0.1.17 compatibility guardrail review is
 [Compatibility guardrail sweep after v0.1.17](compatibility-guardrail-sweep-post-v0.1.17.md). The
+current post-v0.1.17 release-readiness decision is
+[Release-readiness decision after v0.1.17](release-readiness-decision-post-v0.1.17.md). The
 completed post-v0.1.16 execution cursor lives in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
 completed post-v0.1.16 public metadata/evidence freshness audit is
@@ -103,6 +105,11 @@ inherited historical evidence:
   observed-content trust boundaries, watcher preview limits, durable memory
   contract, product targeted-capture absence, Phase 6 spec-only status, and no
   new compatibility drift;
+- the current post-v0.1.17 release-readiness decision records that AG1-AG4
+  docs/tests/evidence maintenance does not warrant a new release-readiness or
+  publication path because there are no runtime, helper/watcher, CLI/MCP
+  output, capture-surface, privacy-runtime, or version-metadata changes after
+  the published `v0.1.17` tag;
 - the completed post-v0.1.16 execution cursor records the `v0.1.16` baseline
   publication and the `v0.1.17` maintenance publication, final tag target
   `5b260edc3bddc48986e52179b2ffd261856a89ac`, published timestamp

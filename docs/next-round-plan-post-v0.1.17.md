@@ -27,23 +27,24 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AG4 - Compatibility Guardrail Sweep.
-- Stage status: AG4 review in progress; AG3 landed through PR #164 and
+- Current stage: AG5 - Release-Readiness Decision.
+- Stage status: AG5 review in progress; AG4 landed through PR #165 and
   post-merge Windows Harness.
-- Last completed evidence: AG3 MCP/memory contract review PR #164 merged as
-  `bf38d3d580fafd50ce9ea4752bca31735869083f`, PR Windows Harness run
-  `25603703247` passed, and post-AG3 `main` Windows Harness run `25603752386`
+- Last completed evidence: AG4 compatibility guardrail review PR #165 merged
+  as `ac01afc206852a8b2b52126d61aa91d633e4675b`, PR Windows Harness run
+  `25604208696` passed, and post-AG4 `main` Windows Harness run `25604269757`
   passed on that SHA.
-- Last validation: `gh run view 25603752386 --json
+- Last validation: `gh run view 25604269757 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AG3 `main` Windows Harness concluded `success`; current
-  compatibility docs and tests still cover version identity, exact read-only
-  MCP tools, disabled privacy surfaces, observed-content trust boundaries,
-  watcher preview limits, durable memory contract, product targeted-capture
-  absence, and Phase 6 spec-only status.
-- Next atomic task: land this AG4 compatibility guardrail review through PR and
-  post-merge Windows Harness validation, then decide whether a post-v0.1.17
-  release-readiness stage is warranted.
+  verified the post-AG4 `main` Windows Harness concluded `success`; `git diff
+  --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
+  `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
+  pyproject.toml` printed no files, so AG1-AG4 contain no runtime,
+  helper/watcher, CLI/MCP output, privacy-runtime, capture-surface, or
+  version-metadata change.
+- Next atomic task: land this AG5 release-readiness decision through PR and
+  post-merge Windows Harness validation, then start the next smallest blueprint
+  implementation lane with contracts, fixtures, tests, and scorecards first.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -111,6 +112,8 @@ service install, no polling capture loop, and no default background capture.
 - Strengthen tests only for discovered drift.
 - Add `docs/compatibility-guardrail-sweep-post-v0.1.17.md`.
 - Keep real UIA smoke manual and outside default CI.
+- Completed in PR #165 with PR Windows Harness run `25604208696` and
+  post-merge `main` Windows Harness run `25604269757`.
 
 ### Stage AG5 - Release-Readiness Decision
 
@@ -123,6 +126,9 @@ service install, no polling capture loop, and no default background capture.
   lane with contracts, fixtures, tests, and scorecards first.
 - Do not retag `v0.1.17`; use a future compatible version only through an
   explicit release-readiness record.
+- Add `docs/release-readiness-decision-post-v0.1.17.md`.
+- Record that no release-readiness or publication path is warranted from
+  docs/tests/evidence maintenance alone.
 
 ## Public Interfaces And Non-goals
 
@@ -205,6 +211,17 @@ Every implementation stage should run:
   helper/watcher surface flag, operator diagnostics names every disabled
   product targeted-capture flag, and daemon/service/polling/background terms
   are checked by an explicit scan.
+- Completed AG4 after PR #165 merged as
+  `ac01afc206852a8b2b52126d61aa91d633e4675b` and post-merge `main` Windows
+  Harness run `25604269757` passed.
+- Started AG5 as a release-readiness decision because AG1-AG4 completed the
+  post-v0.1.17 evidence-maintenance loop and the plan requires an explicit
+  decision before either preparing another release path or returning to
+  blueprint implementation.
+- AG5 decided no new release-readiness or publication path is warranted from
+  AG1-AG4 alone because they are docs/tests/evidence changes with no diff under
+  `src/winchronicle`, `resources`, or `pyproject.toml` from the published
+  `v0.1.17` tag.
 
 ## Validation Log
 
@@ -305,6 +322,29 @@ Every implementation stage should run:
   - stale AG3 cursor scan across `README.md`, `docs`, and `tests` - passed
     with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 177 pytest
+    tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke,
+    MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory,
+    deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AG4 completion:
+  - `gh pr view 165 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #165 merged at `2026-05-09T15:05:18Z` as `ac01afc206852a8b2b52126d61aa91d633e4675b`.
+  - `gh run view 25604208696 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #165 Windows Harness concluded `success` on `58038a73967eeb1278f29d84884e45ad03830682`.
+  - `gh run view 25604269757 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AG4 `main` Windows Harness concluded `success` on `ac01afc206852a8b2b52126d61aa91d633e4675b`.
+- Stage AG5 initialization:
+  - `gh release view v0.1.17 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.17` remains published, not a draft, not a prerelease, published at `2026-05-09T12:56:45Z`, and targets `5b260edc3bddc48986e52179b2ffd261856a89ac`.
+  - `git fetch origin tag v0.1.17` - passed; local tag reference was fetched for reproducible diff checks.
+  - `git rev-parse v0.1.17` - passed and printed `5b260edc3bddc48986e52179b2ffd261856a89ac`.
+  - `git diff --name-status v0.1.17..HEAD` - passed; changes since the published `v0.1.17` tag are docs/tests only.
+  - `git diff --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files, confirming no runtime, helper/watcher, or version-metadata diff from the published tag.
+- Stage AG5 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 77 tests.
+  - `python -m pytest -q` - passed, 179 tests.
+  - `git diff --check` - passed.
+  - stale AG4 cursor scan across `README.md`, `docs`, and `tests` - passed
+    with no matches.
+  - `git diff --name-status v0.1.17..HEAD` - passed and still showed
+    docs/tests changes only.
+  - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
+  - `python harness/scripts/run_harness.py` - passed, including 179 pytest
     tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke,
     MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory,
     deterministic watcher fixture, and watcher fake-helper smoke.

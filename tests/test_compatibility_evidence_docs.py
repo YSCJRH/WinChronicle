@@ -36,6 +36,7 @@ PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
 HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
 MCP_MEMORY_V0116 = ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.16.md"
 COMPATIBILITY_V0116 = ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.16.md"
+RELEASE_DECISION_V0117 = ROOT / "docs" / "release-readiness-decision-post-v0.1.17.md"
 RELEASE_DECISION_V0116 = ROOT / "docs" / "release-readiness-decision-post-v0.1.16.md"
 
 
@@ -59,6 +60,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Helper and watcher diagnostics sweep after v0.1.17",
         "MCP and memory contract sweep after v0.1.17",
         "Compatibility guardrail sweep after v0.1.17",
+        "Release-readiness decision after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -97,6 +99,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Helper and watcher diagnostics sweep after v0.1.17",
         "MCP and memory contract sweep after v0.1.17",
         "Compatibility guardrail sweep after v0.1.17",
+        "Release-readiness decision after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -893,15 +896,15 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "AF7 publication reconciliation landed on `main` as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
         "PR #160 Windows Harness run `25601966464` passed",
         "post-merge `main` Windows Harness run `25602018700` passed",
-        "Current stage: AG4 - Compatibility Guardrail Sweep.",
-        "Stage status: AG4 review in progress; AG3 landed through PR #164",
-        "Last completed evidence: AG3 MCP/memory contract review PR #164 merged as `bf38d3d580fafd50ce9ea4752bca31735869083f`",
-        "PR Windows Harness run `25603703247` passed",
-        "post-AG3 `main` Windows Harness run `25603752386`",
-        "current compatibility docs and tests still cover version identity",
-        "disabled privacy surfaces, observed-content trust boundaries",
-        "Next atomic task: land this AG4 compatibility guardrail review",
-        "then decide whether a post-v0.1.17 release-readiness stage is warranted",
+        "Current stage: AG5 - Release-Readiness Decision.",
+        "Stage status: AG5 review in progress; AG4 landed through PR #165",
+        "Last completed evidence: AG4 compatibility guardrail review PR #165 merged as `ac01afc206852a8b2b52126d61aa91d633e4675b`",
+        "PR Windows Harness run `25604208696` passed",
+        "post-AG4 `main` Windows Harness run `25604269757`",
+        "verified the post-AG4 `main` Windows Harness concluded `success`",
+        "no runtime, helper/watcher, CLI/MCP output, privacy-runtime",
+        "Next atomic task: land this AG5 release-readiness decision",
+        "then start the next smallest blueprint implementation lane",
         "Live UIA smoke remains manual and outside default CI",
         "Stage AG0 - Post-v0.1.17 Baseline Cursor",
         "Stage AG1 - Public Metadata And Evidence Freshness Follow-up",
@@ -971,6 +974,19 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "Background install/polling scan",
         "Control/capture dependency scan",
         "stale AG3 cursor scan",
+        "Stage AG4 completion:",
+        "PR #165 merged at `2026-05-09T15:05:18Z`",
+        "PR #165 Windows Harness concluded `success`",
+        "post-AG4 `main` Windows Harness concluded `success`",
+        "Stage AG5 initialization:",
+        "`v0.1.17` remains published, not a draft, not a prerelease",
+        "git fetch origin tag v0.1.17",
+        "changes since the published `v0.1.17` tag are docs/tests only",
+        "confirming no runtime, helper/watcher, or version-metadata diff",
+        "Stage AG5 local validation:",
+        "passed, 77 tests",
+        "passed, 179 tests",
+        "stale AG4 cursor scan",
         "python harness/scripts/run_harness.py",
     ):
         assert phrase in normalized
@@ -1509,6 +1525,64 @@ def test_release_readiness_decision_post_v016_starts_v017_readiness():
         "create the narrow `v0.1.17` release-readiness record",
     ):
         assert phrase in normalized
+
+
+def test_release_readiness_decision_post_v017_declines_release_path():
+    text = RELEASE_DECISION_V0117.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Release-Readiness Decision After v0.1.17",
+        "AG5 record",
+        "do not start a new release-readiness or publication path",
+        "Do not retag `v0.1.17`",
+        "documentation, evidence, deterministic-test, and compatibility guardrail maintenance only",
+        "do not change runtime code",
+        "Is a release-readiness path warranted? | No.",
+        "Is immediate publication warranted? | No.",
+        "Should `v0.1.17` be retagged? | No.",
+        "Should the next release-readiness target be chosen here? | No.",
+        "Is fresh manual UIA smoke decided here? | No.",
+        "Start the next blueprint implementation lane",
+        "`docs/` | Added AG1 public metadata audit",
+        "`tests/` | Hardened documentation and compatibility assertions",
+        "`src/winchronicle`, `resources`, `pyproject.toml` | No diff",
+        "Latest published release remains",
+        "https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17",
+        "`v0.1.17` is not a draft or prerelease",
+        "AG4 completion merged as `ac01afc206852a8b2b52126d61aa91d633e4675b`",
+        "AG4 PR Windows Harness run `25604208696` concluded `success`",
+        "post-merge `main` Windows Harness run `25604269757`",
+        "git fetch origin tag v0.1.17",
+        "git diff --name-status v0.1.17..HEAD",
+        "runtime/resource/version diff commands printed no files",
+        "focused docs/version validation reported 77 tests",
+        "full pytest reported 179 tests",
+        "stale AG4 cursor scan returned no matches",
+        "full deterministic harness passed",
+        "AG5 does not authorize implementation of screenshot capture",
+        "privacy-neutral guardrails and evidence maintenance",
+        "Land this AG5 release-readiness decision through PR and post-merge Windows Harness validation",
+        "start the next smallest blueprint implementation lane",
+    ):
+        assert phrase in normalized
+
+    for boundary in (
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network/cloud upload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service install",
+        "polling capture loops",
+        "default background capture",
+        "MCP write tools",
+        "arbitrary file read tools",
+    ):
+        assert boundary in normalized
 
 
 def _normalized(text: str) -> str:
