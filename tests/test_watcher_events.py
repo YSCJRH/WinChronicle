@@ -328,6 +328,25 @@ def test_run_watcher_command_reports_timeout_without_stdout_leak(tmp_path):
         raise AssertionError("watcher timeout did not raise")
 
 
+def test_watch_cli_reports_timeout_without_stdout_leak(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    def fake_timeout(*_args, **_kwargs):
+        raise RuntimeError("watcher timed out")
+
+    monkeypatch.setattr("winchronicle.cli.run_watcher_command", fake_timeout)
+
+    assert main(["watch", "--watcher", sys.executable]) == 1
+    output = capsys.readouterr().out
+
+    assert output.strip() == "ERROR: watcher timed out"
+    assert "observed content" not in output
+    assert _raw_watcher_jsonl_files(home) == []
+
+
 def test_watcher_smoke_script_reports_missing_build_without_observed_content(tmp_path):
     missing_dll = tmp_path / "missing-watcher.dll"
 

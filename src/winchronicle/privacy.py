@@ -72,6 +72,6 @@ def denylist_reason(record: dict[str, Any]) -> str | None:
 
     for pattern in TITLE_DENYLIST_REGEX:
         if pattern.search(title):
-            return f"denylisted title: {title}"
+            return "denylisted title pattern"
 
     return None

@@ -50,6 +50,10 @@ skipped:
 - `recovery phrase`
 - `seed phrase`
 
+Denylist diagnostics must not echo the matched window title or visible
+observed content. Title-denylist skips should use a stable content-free reason
+such as `denylisted title pattern`.
+
 ## Redaction Rules
 
 Redaction runs before schema validation, file writes, and SQLite indexing.

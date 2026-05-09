@@ -30,17 +30,18 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AD1 - Public Metadata And Evidence Freshness Follow-up.
-- Stage status: A - AD1 is the active docs-only public metadata and evidence
-  freshness stage.
-- Last completed evidence: AD0 added this active post-v0.1.15 cursor in PR
-  #135, merged as `90fff5cc25b770634c92669e70c4067b58a8a6ea`, and
-  post-merge `main` Windows Harness run `25593607384` passed.
-- Last validation: AD0 validated focused docs/version tests, full
-  deterministic harness, PR Windows Harness run `25593554670`, and
-  post-merge `main` Windows Harness run `25593607384`.
-- Next atomic task: complete AD1 by adding post-v0.1.15 public metadata audit
-  evidence and updating operator entry points without changing product code.
+- Current stage: AD2 - Helper And Watcher Preview Diagnostics Review.
+- Stage status: A - AD2 is the active helper/watcher diagnostics evidence and
+  narrow privacy diagnostic drift-fix stage.
+- Last completed evidence: AD1 added the post-v0.1.15 public metadata audit
+  in PR #136, merged as `f2a7fbd3ef66275f0688015955d32e58ed330b1f`, and
+  post-merge `main` Windows Harness run `25593871698` passed.
+- Last validation: AD1 validated focused docs/version tests, full
+  deterministic harness, PR Windows Harness run `25593788484`, and
+  post-merge `main` Windows Harness run `25593871698`.
+- Next atomic task: complete AD2 by recording helper/watcher diagnostics
+  evidence and fixing any narrow privacy diagnostic drift without changing
+  schemas, CLI/MCP JSON shape, capture behavior, or capture surfaces.
 - Known blockers: none.
 
 ## Phased Work
@@ -72,9 +73,10 @@ service install, no polling capture loop, and no default background capture.
 
 - Review helper and watcher preview diagnostics docs, scorecards, and tests
   against the roadmap lanes for UIA helper hardening and watcher preview.
-- Strengthen documentation or deterministic tests only for discovered drift in
-  timeout, malformed output, no observed-content echo, duplicate skip,
-  denylist skip, heartbeat-only diagnostics, or diagnostic artifact policy.
+- Strengthen documentation, deterministic tests, or narrow diagnostic code only
+  for discovered drift in timeout, malformed output, no observed-content echo,
+  duplicate skip, denylist skip, heartbeat-only diagnostics, or diagnostic
+  artifact policy.
 - Keep real UIA smoke manual and outside default CI.
 - Do not add helper product targeting, daemon/service install, polling capture
   loops, default background capture, screenshots, OCR, audio, keyboard,
@@ -178,6 +180,10 @@ Stage-specific gates:
   from a completed post-v0.1.14 plan.
 - Chose AD1 as a docs-only public metadata audit because the repository
   metadata gaps are maintainer settings, not product-code blockers.
+- Chose AD2 as a helper/watcher diagnostics sweep because the roadmap asks for
+  preview diagnostics evidence without expanding live capture paths.
+- Promoted a narrow AD2 privacy diagnostic fix after review found that
+  title-denylist skip reasons could echo matched window titles.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -199,4 +205,22 @@ Stage-specific gates:
 - Stage AD1 local validation:
   - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed; 48 tests passed.
   - `python harness/scripts/run_harness.py` - passed; includes 139 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, and preview watcher smoke.
+  - `git diff --check` - passed.
+- Stage AD1 completion:
+  - PR #136 Windows Harness run `25593788484` - passed.
+  - PR #136 merged as `f2a7fbd3ef66275f0688015955d32e58ed330b1f`.
+  - `gh run view 25593871698 --json databaseId,status,conclusion,headSha,url,displayTitle` - passed; post-AD1 `main` Windows Harness concluded `success` on `f2a7fbd3ef66275f0688015955d32e58ed330b1f`.
+- Stage AD2 initialization:
+  - Reviewed `docs/uia-helper-quality-matrix.md`, `docs/watcher-preview.md`, `docs/operator-diagnostics.md`, and `harness/scorecards/capture-quality.md`.
+  - `rg "helper timed out|invalid JSON|empty stdout|watcher timed out|malformed JSONL|duplicates_skipped|denylisted_skipped|raw watcher JSONL|capture-on-start|helper failed" tests src harness docs -n` - reviewed; deterministic helper/watcher diagnostics coverage is present in tests, scorecards, and docs.
+  - Review found title-denylist skip reasons could echo matched window titles; AD2 added deterministic no-echo tests and changed Python/helper title-denylist diagnostics to `denylisted title pattern`.
+- Stage AD2 focused validation:
+  - `python -m pytest tests/test_privacy_check.py tests/test_cli.py tests/test_uia_helper_contract.py tests/test_operator_diagnostics_docs.py -q` - passed; 57 tests passed.
+  - `python -m pytest tests/test_watcher_events.py tests/test_operator_diagnostics_docs.py -q` - passed; 48 tests passed.
+- Stage AD2 local validation:
+  - `python -m pytest -q` - passed; 144 tests passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed; includes 144 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, and preview watcher smoke.
   - `git diff --check` - passed.

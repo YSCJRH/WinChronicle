@@ -62,6 +62,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         in quickstart
     )
     assert (
+        "[Helper and watcher diagnostics sweep after v0.1.15](helper-watcher-diagnostics-sweep-post-v0.1.15.md)"
+        in quickstart
+    )
+    assert (
         "[Helper and watcher diagnostics sweep after v0.1.14](helper-watcher-diagnostics-sweep-post-v0.1.14.md)"
         in quickstart
     )
@@ -119,6 +123,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[Public metadata audit after v0.1.15](docs/public-metadata-audit-post-v0.1.15.md)"
+        in readme
+    )
+    assert (
+        "[Helper and watcher diagnostics sweep after v0.1.15](docs/helper-watcher-diagnostics-sweep-post-v0.1.15.md)"
         in readme
     )
     assert (
@@ -188,6 +196,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Post-v0.1.15 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.14 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.15" in readme_operator_docs
+    assert "Helper and watcher diagnostics sweep after v0.1.15" in readme_operator_docs
     assert "Public metadata audit after v0.1.14" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.14" in readme_operator_docs
     assert "MCP and memory contract sweep after v0.1.14" in readme_operator_docs
@@ -239,6 +248,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Public metadata audit after v0.1.15"
     )
     assert readme_operator_docs.index("Public metadata audit after v0.1.15") < readme_operator_docs.index(
+        "Helper and watcher diagnostics sweep after v0.1.15"
+    )
+    assert readme_operator_docs.index("Helper and watcher diagnostics sweep after v0.1.15") < readme_operator_docs.index(
         "Public metadata audit after v0.1.14"
     )
     assert readme_operator_docs.index("Public metadata audit after v0.1.14") < readme_operator_docs.index(
@@ -304,6 +316,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.15.md" in current_section
     assert "next-round-plan-post-v0.1.14.md" in current_section
     assert "public-metadata-audit-post-v0.1.15.md" in current_section
+    assert "helper-watcher-diagnostics-sweep-post-v0.1.15.md" in current_section
     assert "public-metadata-audit-post-v0.1.14.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.14.md" in current_section
     assert "mcp-memory-contract-sweep-post-v0.1.14.md" in current_section
@@ -1323,11 +1336,11 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "post-publication reconciliation on `main` is `54208c51819a45140e355272d8cb3f0e3fbff900`",
         "Windows Harness run `25589775129` passed",
         "reports `0.1.15`",
-        "Current stage: AD1 - Public Metadata And Evidence Freshness Follow-up.",
-        "Stage status: A - AD1 is the active docs-only public metadata and evidence freshness stage.",
-        "AD0 added this active post-v0.1.15 cursor in PR #135",
-        "merged as `90fff5cc25b770634c92669e70c4067b58a8a6ea`",
-        "post-merge `main` Windows Harness run `25593607384` passed",
+        "Current stage: AD2 - Helper And Watcher Preview Diagnostics Review.",
+        "Stage status: A - AD2 is the active helper/watcher diagnostics evidence and narrow privacy diagnostic drift-fix stage.",
+        "AD1 added the post-v0.1.15 public metadata audit in PR #136",
+        "merged as `f2a7fbd3ef66275f0688015955d32e58ed330b1f`",
+        "post-merge `main` Windows Harness run `25593871698` passed",
         "Stage AD0 - Post-v0.1.15 Baseline Cursor",
         "Stage AD1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AD2 - Helper And Watcher Preview Diagnostics Review",
@@ -1346,10 +1359,18 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "PR #135 Windows Harness run `25593554670`",
         "Stage AD1 initialization:",
         "empty description, homepage, and topics",
+        "Stage AD1 completion:",
+        "PR #136 Windows Harness run `25593788484`",
+        "Stage AD2 initialization:",
+        "docs/uia-helper-quality-matrix.md",
+        "deterministic helper/watcher diagnostics coverage is present",
+        "title-denylist skip reasons could echo matched window titles",
+        "denylisted title pattern",
         "gh release view v0.1.15",
         "git rev-parse v0.1.15",
         "gh run view 25589775129",
         "gh run view 25593607384",
+        "gh run view 25593871698",
         "printed `0.1.15`",
     ):
         assert expected in normalized
@@ -1392,6 +1413,56 @@ def test_public_metadata_audit_post_v015_records_manual_gaps_without_scope_expan
         assert expected in audit
 
     assert "This audit does not authorize screenshots" in audit
+
+
+def test_helper_watcher_diagnostics_sweep_post_v015_records_drift_fix():
+    sweep = (
+        ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.15.md"
+    ).read_text(encoding="utf-8")
+
+    for expected in (
+        "Helper And Watcher Diagnostics Sweep After v0.1.15",
+        "one compatible privacy diagnostic drift fix",
+        "does not change\nschemas, CLI/MCP JSON shape",
+        "Helper quality matrix",
+        "Watcher preview docs",
+        "Operator diagnostics",
+        "Capture quality scorecard",
+        "Deterministic tests",
+        "Helper timeout",
+        "Helper invalid JSON",
+        "Helper empty stdout",
+        "Helper nonzero exit",
+        "Watcher nonzero exit",
+        "Helper failure surfaced by watcher",
+        "Malformed watcher JSONL",
+        "Watcher timeout",
+        "Heartbeat-only run",
+        "Duplicate skip",
+        "Denylist or lock-screen skip",
+        "Raw watcher JSONL persistence",
+        "AD2 found and fixed a narrow privacy diagnostic drift",
+        "denylisted title pattern",
+        "Fresh manual UIA smoke remains outside default\nCI",
+        "does not change successful capture behavior",
+        "The next smallest implementation task is AD3",
+    ):
+        assert expected in sweep
+
+    for boundary in (
+        "screenshot capture",
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network upload",
+        "LLM calls",
+        "desktop\ncontrol",
+        "MCP write tools",
+        "product targeted capture",
+        "live UIA smoke in\ndefault CI",
+    ):
+        assert boundary in sweep
 
 
 def test_public_metadata_audit_post_v014_records_manual_gaps_without_scope_expansion():
