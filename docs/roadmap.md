@@ -8,7 +8,9 @@ product behavior change.
 
 WinChronicle remains local-first, UIA-first, harness-first, and read-only MCP
 first. The near-term work is compatible maintenance: make deterministic demos,
-privacy evidence, release evidence, and contribution paths easier to audit.
+privacy evidence, release evidence, and contribution paths easier to audit. The
+current selected lane is Fixture and privacy baseline, starting with a
+privacy-policy contract parity audit.
 
 ## Work Lanes
 
@@ -20,7 +22,7 @@ privacy evidence, release evidence, and contribution paths easier to audit.
 | Read-only MCP | MCP exposes only `current_context`, `search_captures`, `search_memory`, `read_recent_capture`, `recent_activity`, and `privacy_status`. | Keep exact tool-list tests, response-shape examples, and trust-boundary documentation current. | Do not add write tools, arbitrary file reads, desktop control, screenshot/OCR/audio/keyboard/clipboard/network tools. |
 | Durable memory | Deterministic Markdown memory and `entries`/`entries_fts` search are implemented with goldens. | Strengthen idempotence evidence, source path references, trust metadata, and secret-canary tests. | Do not add LLM reducer/classifier calls or network upload. |
 | Docs and deterministic demo | Operator quickstart, deterministic demo, release checklist, and release evidence are linked from README. | Keep the single fixture-only demo path current and record validation in maintenance plans. | Do not require committed observed-content artifacts. |
-| Phase 6 privacy enrichment | Phase 6 exists only as a privacy scorecard/spec contract. | Refine threat model, opt-in requirements, per-app allowlist expectations, TTL/cache cleanup requirements, and tests-first task lists. | Do not implement screenshot capture or OCR in v0.1 maintenance. |
+| Phase 6 privacy enrichment | Phase 6 contract closure is complete for the v0.1 maintenance boundary. | Revisit only through a future tests-first plan if new opt-in enrichment work is explicitly authorized. | Do not implement screenshot capture or OCR in v0.1 maintenance. |
 
 ## Issue Routing
 
