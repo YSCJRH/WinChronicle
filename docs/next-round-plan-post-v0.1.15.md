@@ -30,20 +30,20 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AD3 - MCP And Memory Contract Review.
-- Stage status: A - AD3 is the active MCP/memory contract evidence and
-  compatible read-only search parity drift-fix stage.
-- Last completed evidence: AD2 added the post-v0.1.15 helper/watcher
-  diagnostics sweep and fixed title-denylist diagnostic no-echo behavior in PR
-  #137, merged as `37335cd2cefabab4fa9e500b58ede2e96d1cb2de`, and
-  post-merge `main` Windows Harness run `25594302410` passed.
-- Last validation: AD2 validated focused diagnostics tests, full deterministic
-  harness, PR Windows Harness run `25594230290`, and post-merge `main`
-  Windows Harness run `25594302410`.
-- Next atomic task: complete AD3 by recording MCP/memory contract evidence and
-  fixing narrow MCP example or read-only search parity drift without changing
-  schemas, CLI/MCP JSON shape, MCP tool schemas, memory reducer behavior,
-  privacy behavior, or capture surfaces.
+- Current stage: AD4 - Compatibility Guardrail Sweep.
+- Stage status: A - AD4 is the active compatibility guardrail evidence and
+  narrow drift-fix stage.
+- Last completed evidence: AD3 added the post-v0.1.15 MCP/memory contract
+  sweep, aligned read-only MCP examples, and fixed filtered MCP search parity
+  in PR #138, merged as `1f1f55b262a89ca41991401de493791dd1c41e5c`, and
+  post-merge `main` Windows Harness run `25594896165` passed.
+- Last validation: AD3 validated focused MCP/memory tests, full deterministic
+  harness, PR Windows Harness run `25594817396`, and post-merge `main`
+  Windows Harness run `25594896165`.
+- Next atomic task: complete AD4 by recording compatibility guardrail evidence
+  and strengthening tests only for discovered drift without changing schemas,
+  CLI/MCP JSON shape, MCP tool schemas, memory reducer behavior, privacy
+  behavior, helper/watcher behavior, or capture surfaces.
 - Known blockers: none.
 
 ## Phased Work
@@ -193,6 +193,14 @@ Stage-specific gates:
   `privacy_status` MCP example omitted existing local-state fields.
 - Promoted a narrow AD3 read-only search parity fix after review found MCP
   filtered search could drop valid matches beyond the first 50 raw results.
+- Chose AD4 as a compatibility guardrail sweep because AD1-AD3 included
+  compatible drift fixes and the direct `v0.1.16` path requires current
+  evidence for the exact read-only MCP tools, disabled privacy surfaces,
+  watcher preview limits, durable memory contract, product targeted capture
+  absence, and Phase 6 spec-only status.
+- Promoted narrow AD4 guardrail fixes after review found broader obvious-token
+  canaries and helper/watcher pass-through target/control/privacy flag
+  rejection were not covered by deterministic tests.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -250,4 +258,26 @@ Stage-specific gates:
   - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed; includes 147 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, and preview watcher smoke.
+  - `git diff --check` - passed.
+- Stage AD3 completion:
+  - PR #138 Windows Harness run `25594817396` - passed.
+  - PR #138 merged as `1f1f55b262a89ca41991401de493791dd1c41e5c`.
+  - `gh run view 25594896165 --json databaseId,status,conclusion,headSha,url,displayTitle` - passed; post-AD3 `main` Windows Harness concluded `success` on `1f1f55b262a89ca41991401de493791dd1c41e5c`.
+- Stage AD4 initialization:
+  - Reviewed `docs/compatibility-guardrail-sweep-post-v0.1.14.md`, `tests/test_compatibility_contracts.py`, `tests/test_mcp_tools.py`, `tests/test_phase6_privacy_scorecard.py`, `tests/test_watcher_events.py`, `tests/test_state_compatibility.py`, `tests/test_memory_pipeline.py`, `tests/test_version_identity.py`, `harness/scorecards`, `docs/mcp-readonly-examples.md`, `docs/watcher-preview.md`, `docs/deterministic-demo.md`, `docs/roadmap.md`, `CONTRIBUTING.md`, `.github`, `README.md`, and `docs/operator-quickstart.md`.
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py tests/test_version_identity.py -q` - passed; 48 tests passed.
+  - `rg -n -e "--hwnd|--pid|--window-title|--window-title-regex|--process-name|screenshot|ocr|audio|keyboard|clipboard|network_upload|cloud_upload|llm_calls|desktop_control|write_memory|read_file|click|type" src/winchronicle tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py harness/scorecards docs/mcp-readonly-examples.md docs/watcher-preview.md docs/deterministic-demo.md docs/roadmap.md CONTRIBUTING.md .github` - reviewed; matches are existing disabled-surface contracts, sentinels, documentation, scorecards, deterministic fixtures/tests, schema field names, and allowed helper-only harness wording.
+  - `rg -n -g "*.py" -g "*.cs" -g "*.md" -g "*.json" -g "*.yml" -e "SetForegroundWindow|AttachThreadInput|SendInput|mouse_event|keybd_event|GetAsyncKeyState|OpenClipboard|GetClipboardData|BitBlt|CopyFromScreen|PrintWindow|Tesseract|OpenAI|Anthropic|requests|httpx|aiohttp|selenium|playwright" src resources tests harness .github docs CONTRIBUTING.md README.md` - reviewed; matches are prior compatibility sweep command text, historical plan evidence, privacy-policy canary text, deterministic fixture/golden content, explicit forbidden-term tests, and the local MCP smoke request variable name. No new runtime dependency or implementation path was found.
+  - Review found the secret redaction guardrail did not cover newer obvious GitHub/Slack token families or long labeled API-key values; AD4 added deterministic canaries and broadened redaction patterns.
+  - Review found product helper/watcher pass-through arguments were not covered by targeted-capture absence tests; AD4 now rejects disabled target/control/privacy-surface flags in `--helper-arg` and `--watcher-arg`.
+- Stage AD4 focused drift-fix validation:
+  - `python -m pytest tests/test_redaction.py tests/test_compatibility_contracts.py -q` - passed; 6 tests passed.
+- Stage AD4 related docs/privacy validation:
+  - `python -m pytest tests/test_redaction.py tests/test_privacy_check.py tests/test_golden.py tests/test_operator_diagnostics_docs.py -q` - passed; 41 tests passed.
+- Stage AD4 local validation:
+  - `python -m pytest -q` - passed; 148 tests passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed; includes 148 pytest tests, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search/memory, and preview watcher smoke.
   - `git diff --check` - passed.

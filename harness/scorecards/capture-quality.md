@@ -16,6 +16,9 @@
 - Helper targeted capture is harness-only: it must require both `--harness`
   and `WINCHRONICLE_HARNESS=1`, write only stdout/artifacts, and must not
   activate, click, type, move, resize, or control windows.
+- Product helper/watcher argument pass-throughs must reject target flags plus
+  disabled screenshot/OCR/audio/keyboard/clipboard/control flags so
+  harness-only or disabled surfaces are not smuggled through wrapper commands.
 - Phase 2 targeted smoke release gates:
   - Notepad targeted smoke is a hard gate and must capture its text marker.
   - Edge targeted smoke is a hard gate and must capture its local HTML body

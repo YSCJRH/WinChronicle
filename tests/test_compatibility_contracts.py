@@ -107,7 +107,11 @@ def test_mcp_result_schema_tool_enum_matches_exact_read_only_contract():
     assert schema["properties"]["trust"] == {"const": TRUST}
 
 
-def test_product_cli_surface_contract_has_no_targeted_or_capture_expansion_flags():
+def test_product_cli_surface_contract_has_no_targeted_or_capture_expansion_flags(
+    tmp_path, monkeypatch
+):
+    state_home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(state_home))
     parser = build_parser()
     subcommands = _subcommands(parser)
     help_text = _all_help_text(parser, subcommands)
@@ -120,11 +124,22 @@ def test_product_cli_surface_contract_has_no_targeted_or_capture_expansion_flags
         ["capture-frontmost", "--helper", "helper.exe", "--hwnd", "0x1"],
         ["capture-frontmost", "--helper", "helper.exe", "--pid", "1234"],
         ["capture-frontmost", "--helper", "helper.exe", "--window-title", "Notes"],
+        ["capture-frontmost", "--helper", "helper.exe", "--helper-arg=--hwnd"],
+        ["capture-frontmost", "--helper", "helper.exe", "--helper-arg=--window-title"],
+        ["watch", "--watcher", "watcher.exe", "--watcher-arg=--pid"],
+        ["watch", "--watcher", "watcher.exe", "--helper", "helper.exe", "--helper-arg=--ocr"],
         ["mcp-stdio", "--write"],
         ["mcp-stdio", "--screenshot"],
     ):
-        with pytest.raises(SystemExit):
+        try:
             parser.parse_args(argv)
+        except SystemExit:
+            continue
+
+        with pytest.raises(SystemExit):
+            main(argv)
+
+    assert not state_home.exists()
 
 
 def test_cli_search_shapes_preserve_observed_content_trust_boundaries(
