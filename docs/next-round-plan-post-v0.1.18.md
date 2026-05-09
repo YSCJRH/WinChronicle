@@ -29,19 +29,19 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH1 - Public Metadata And Evidence Freshness Follow-up.
-- Stage status: AH1 in progress. This branch records public metadata and
-  evidence freshness after the post-v0.1.18 baseline cursor and keeps the
-  product boundary unchanged.
-- Last completed evidence: AH0 baseline cursor PR #189 merged as
-  `f4d24adf5bb60cd5ad6abfc21ada04fbbeae288c`, PR Windows Harness run
-  `25613203047` passed, and post-merge `main` Windows Harness run
-  `25613244560` passed on that SHA.
-- Last validation: `gh run view 25613244560 --json
+- Current stage: AH2 - Helper And Watcher Preview Diagnostics Review.
+- Stage status: AH2 in progress. This branch records helper and watcher preview
+  diagnostics evidence after the post-v0.1.18 public metadata audit and keeps
+  the product boundary unchanged.
+- Last completed evidence: AH1 public metadata audit PR #190 merged as
+  `579ee935d9384a1c7640f30e3822a0d441706d75`, PR Windows Harness run
+  `25613512871` passed, and post-merge `main` Windows Harness run
+  `25613555936` passed on that SHA.
+- Last validation: `gh run view 25613555936 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AH0 `main` Windows Harness concluded `success`.
-- Next atomic task: land this AH1 public metadata/evidence freshness audit PR,
-  then review helper and watcher preview diagnostics evidence in AH2.
+  verified the post-AH1 `main` Windows Harness concluded `success`.
+- Next atomic task: land this AH2 helper/watcher diagnostics review PR, then
+  review MCP and memory contract evidence in AH3.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -164,6 +164,12 @@ Every implementation stage should run:
 - Started AH1 as a docs/tests-only public metadata audit because repository
   metadata gaps are manual maintainer follow-up items and not product-code
   blockers.
+- Completed AH1 after PR #190 merged as
+  `579ee935d9384a1c7640f30e3822a0d441706d75` and post-merge Windows Harness
+  run `25613555936` passed.
+- Started AH2 as a docs/tests-only helper/watcher diagnostics review because
+  existing deterministic tests and scorecards already cover the v0.1 preview
+  diagnostic boundary.
 
 ## Validation Log
 
@@ -194,3 +200,17 @@ Every implementation stage should run:
   - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed no files, confirming AH1 is docs/tests only with no product/runtime/version diff.
   - current-entry stale AH0/current-v0.1.17 wording scan across `README.md`, current docs, and current doc tests - passed with no matches in current entry documents.
   - `python harness/scripts/run_harness.py` - passed, including 206 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH1 completion:
+  - `gh pr view 190 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #190 merged at `2026-05-09T22:36:06Z` as `579ee935d9384a1c7640f30e3822a0d441706d75`.
+  - `gh run view 25613512871 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #190 Windows Harness concluded `success` on `f5c78f679afa4ac9da4d7a81d74e872e5f5090af`.
+  - `gh run view 25613555936 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH1 `main` Windows Harness concluded `success` on `579ee935d9384a1c7640f30e3822a0d441706d75`.
+- Stage AH2 initialization:
+  - Reviewed `docs/uia-helper-quality-matrix.md`, `docs/watcher-preview.md`, `docs/operator-diagnostics.md`, `harness/scorecards/capture-quality.md`, `tests/test_cli.py`, `tests/test_uia_helper_contract.py`, `tests/test_watcher_events.py`, `tests/test_operator_diagnostics_docs.py`, `tests/test_compatibility_contracts.py`, and `tests/test_uia_helper_quality_matrix.py`.
+  - Found no new helper/watcher diagnostics drift requiring product code, schema, CLI/MCP JSON, helper/watcher capture behavior, privacy storage behavior, or capture-surface changes.
+- Stage AH2 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_watcher_events.py tests/test_uia_helper_quality_matrix.py tests/test_version_identity.py -q` - passed, 108 tests.
+  - `python -m pytest -q` - passed, 207 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed no files, confirming AH2 is docs/tests only with no product/runtime/version diff.
+  - current-entry stale AH1/current post-v0.1.17 helper/watcher wording scan across `README.md`, current docs, and current doc tests - passed with no matches in current entry documents.
+  - `python harness/scripts/run_harness.py` - passed, including 207 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

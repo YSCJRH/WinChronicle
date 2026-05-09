@@ -16,7 +16,7 @@ or token canaries.
 | Stable release baseline | `v0.1.18` |
 | Current maintenance plan | [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md) |
 | Current public metadata audit | [Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md) |
-| Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.17](helper-watcher-diagnostics-sweep-post-v0.1.17.md) |
+| Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.18](helper-watcher-diagnostics-sweep-post-v0.1.18.md) |
 | Current MCP/memory contract sweep | [MCP and memory contract sweep after v0.1.17](mcp-memory-contract-sweep-post-v0.1.17.md) |
 | Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.17](compatibility-guardrail-sweep-post-v0.1.17.md) |
 | Latest release-readiness decision | [v0.1.18 maintenance release record](release-v0.1.18.md) |
