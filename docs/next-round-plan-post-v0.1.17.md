@@ -27,30 +27,29 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Phase 6 Deferred Fixture Coverage Decision.
-- Stage status: residual policy fixture expansion complete; the next Phase 6
-  step is to decide whether the remaining lower-priority schema branches need
-  targeted fixtures or should stay documented as deferred coverage.
-- Last completed evidence: Phase 6 residual policy fixture expansion PR #179
-  merged as `013ea612eb6cfe885130d0646ce816038fab2da4`, PR Windows Harness
-  run `25609287443` passed, and post-residual-policy-fixtures `main` Windows
-  Harness run `25609341275` passed on that SHA.
-- Last validation: `gh run view 25609341275 --json
+- Current stage: Phase 6 Deferred Fixture Closure.
+- Stage status: lower-priority deferred schema branches are promoted to a
+  final fixture-only closure batch; no product behavior or runtime surface is
+  changed.
+- Last completed evidence: Phase 6 residual policy evidence reconciliation PR
+  #180 merged as `06a830fd8f8a7bcd4d44ab58f8a7aeb03a8dad2b`, PR Windows
+  Harness run `25609491795` passed, and post-reconciliation `main` Windows
+  Harness run `25609534616` passed on that SHA.
+- Last validation: `gh run view 25609534616 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-residual-policy-fixtures `main` Windows Harness concluded
+  verified the post-reconciliation `main` Windows Harness concluded
   `success`;
   `git diff
   --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` printed no files through the residual policy fixture expansion, so
+  pyproject.toml` printed no files through the residual policy evidence reconciliation, so
   AG1-AG6, the preflight, fixture expansion, remaining fixtures, coverage
   audit, gap fixtures, residual schema audit, residual policy fixtures, and
   their reconciliations contain no runtime, helper/watcher, CLI/MCP output,
   privacy-runtime, capture-surface, or version-metadata change.
-- Next atomic task: decide whether to add lower-priority deferred fixtures for
-  the sample-only allowlist marker, empty allowlist arrays, alternate
-  `app_name` selector shape variants, and deeper `non_goals` variants, or close
-  Phase 6 fixture coverage as adequate for the v0.1 maintenance boundary.
+- Next atomic task: complete PR review and merge for the deferred fixture
+  closure, verify post-merge `main` Windows Harness, and reconcile the closure
+  evidence before selecting the next blueprint lane.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -334,6 +333,14 @@ Every implementation stage should run:
   lower-priority schema branches: the sample-only allowlist marker, empty
   allowlist arrays, alternate `app_name` selector shape variants, and deeper
   `non_goals` variants.
+- Completed the Phase 6 residual policy evidence reconciliation after PR #180
+  merged as `06a830fd8f8a7bcd4d44ab58f8a7aeb03a8dad2b` and post-merge `main`
+  Windows Harness run `25609534616` passed.
+- Started the Phase 6 deferred fixture closure. This promotes lower-priority
+  deferred branches to a final committed negative fixture batch for the
+  sample-only allowlist marker, empty allowlists, `app_name` wildcard/global
+  selector variants, empty selectors, and `non_goals` duplicate/unknown
+  variants, with no product runtime behavior change.
 
 ## Validation Log
 
@@ -587,3 +594,14 @@ Every implementation stage should run:
   - `gh pr view 179 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #179 merged at `2026-05-09T19:03:47Z` as `013ea612eb6cfe885130d0646ce816038fab2da4`.
   - `gh run view 25609287443 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #179 Windows Harness concluded `success` on `d0576d133792dba88b8d1cb746ea5312314d15f5`.
   - `gh run view 25609341275 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-residual-policy-fixtures `main` Windows Harness concluded `success` on `013ea612eb6cfe885130d0646ce816038fab2da4`.
+- Phase 6 privacy-enrichment residual policy evidence reconciliation completion:
+  - `gh pr view 180 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #180 merged at `2026-05-09T19:13:41Z` as `06a830fd8f8a7bcd4d44ab58f8a7aeb03a8dad2b`.
+  - `gh run view 25609491795 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #180 Windows Harness concluded `success` on `72cc9b6c1d3035994be3e7462151d7db06095440`.
+  - `gh run view 25609534616 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-reconciliation `main` Windows Harness concluded `success` on `06a830fd8f8a7bcd4d44ab58f8a7aeb03a8dad2b`.
+- Phase 6 privacy-enrichment deferred fixture closure local validation:
+  - `python -m pytest tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 92 tests.
+  - `git diff --check` - passed.
+  - Product-source contract-artifact reference scan for `phase6-privacy-enrichment-contract`, `privacy_enrichment_contract`, `harness/fixtures/phase6`, and `harness\\fixtures\\phase6` across `src` and `resources` - passed with no matches.
+  - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
+  - `python -m pytest -q` - passed, 189 tests.
+  - `python harness/scripts/run_harness.py` - passed, including 189 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

@@ -25,7 +25,7 @@ contract fixture expansion, the completed Phase 6 remaining negative contract
 fixture expansion, the completed Phase 6 contract coverage audit, the completed
 Phase 6 contract gap fixture expansion, the completed Phase 6 residual schema
 coverage audit, the completed Phase 6 residual policy fixture expansion, the
-current Phase 6 deferred fixture coverage decision, the
+completed Phase 6 deferred fixture closure, the
 completed post-v0.1.16 maintenance plan and publication reconciliation, the
 latest published `v0.1.17` release record, the previous published `v0.1.16`
 release record, the completed `v0.1.16` final-release plan, the historical
@@ -150,6 +150,7 @@ available through `search-captures`.
 - [Phase 6 privacy contract gap fixtures after v0.1.17](docs/phase6-privacy-contract-gap-fixtures-post-v0.1.17.md)
 - [Phase 6 privacy contract residual schema coverage audit after v0.1.17](docs/phase6-privacy-contract-residual-schema-coverage-audit-post-v0.1.17.md)
 - [Phase 6 privacy contract residual policy fixtures after v0.1.17](docs/phase6-privacy-contract-residual-policy-fixtures-post-v0.1.17.md)
+- [Phase 6 privacy contract deferred fixture closure after v0.1.17](docs/phase6-privacy-contract-deferred-fixture-closure-post-v0.1.17.md)
 - [Post-v0.1.16 maintenance plan](docs/next-round-plan-post-v0.1.16.md)
 - [Public metadata audit after v0.1.16](docs/public-metadata-audit-post-v0.1.16.md)
 - [Helper and watcher diagnostics sweep after v0.1.16](docs/helper-watcher-diagnostics-sweep-post-v0.1.16.md)
