@@ -27,6 +27,7 @@ V0116_FINAL_PLAN = ROOT / "docs" / "next-round-plan-v0.1.16-final-release.md"
 V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 POST_V0116_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.16.md"
 PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
+HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -45,6 +46,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "v0.1.16 final-release plan",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
+        "Helper and watcher diagnostics sweep after v0.1.16",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -73,6 +75,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "v0.1.16 final-release plan",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
+        "Helper and watcher diagnostics sweep after v0.1.16",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -801,13 +804,15 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "`v0.1.16` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16",
         "tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
         "published at `2026-05-09T09:31:17Z`",
-        "Current stage: AF1 - Public Metadata And Evidence Freshness Follow-up.",
-        "Stage status: AF1 complete",
-        "AF1 public metadata audit PR #150 merged as",
-        "`b7f65186bd009d625eb29756c642a1c34fc0cccb`",
-        "PR Windows Harness run `25598506221` passed",
-        "post-merge `main` Windows Harness run `25598562659` passed",
-        "Next atomic task: start AF2",
+        "Current stage: AF2 - Helper And Watcher Preview Diagnostics Review.",
+        "Stage status: AF2 review is in progress",
+        "AF1 completion reconciliation PR #151 merged as",
+        "`da5136c80fae1c4a7199279b05fa7e8dee449782`",
+        "PR Windows Harness run `25598644752` passed",
+        "post-merge `main` Windows Harness run `25598686029` passed",
+        "invalid embedded helper payloads",
+        "`watch --events` validation diagnostic leak",
+        "Next atomic task: land AF2",
         "Stage AF0 - Post-v0.1.16 Baseline Cursor",
         "Stage AF1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AF2 - Helper And Watcher Preview Diagnostics Review",
@@ -831,6 +836,9 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "Stage AF1 completion:",
         "PR #150 Windows Harness run `25598506221`",
         "post-AF1 `main` Windows Harness concluded `success`",
+        "Stage AF1 completion reconciliation:",
+        "PR #151 Windows Harness run `25598644752`",
+        "post-AF1-completion `main` Windows Harness concluded `success`",
     ):
         assert phrase in normalized
 
@@ -873,6 +881,48 @@ def test_public_metadata_audit_post_v016_records_manual_gaps_without_scope_expan
         assert phrase in text
 
     assert "This audit does not authorize screenshots" in text
+
+
+def test_helper_watcher_diagnostics_sweep_post_v016_is_docs_only_and_scoped():
+    text = HELPER_WATCHER_V0116.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Helper And Watcher Diagnostics Sweep After v0.1.16",
+        "published `v0.1.16` final release",
+        "AF1 completion reconciliation",
+        "adds a narrow content-free CLI diagnostic fix",
+        "does not change schemas, successful CLI/MCP JSON shape",
+        "Helper quality matrix",
+        "Watcher preview docs",
+        "Operator diagnostics",
+        "Capture quality scorecard",
+        "Deterministic tests",
+        "Helper timeout",
+        "Helper malformed JSON",
+        "Helper empty stdout",
+        "Helper nonzero exit",
+        "Watcher nonzero exit",
+        "Helper failure surfaced by watcher",
+        "Malformed watcher JSONL",
+        "Invalid embedded helper payload",
+        "Watcher timeout",
+        "Heartbeat-only run",
+        "Duplicate skip",
+        "Denylist or lock-screen skip",
+        "Raw watcher JSONL persistence",
+        "AF2 found one helper/watcher diagnostics drift",
+        "stable content-free diagnostic",
+        "added focused deterministic evidence",
+        "no capture behavior change is warranted",
+        "Harness smoke may use a temporary fake-helper event file outside state",
+        "Fresh manual UIA smoke remains outside default CI",
+        "The next smallest implementation task is to land this AF2 review",
+        "does not authorize screenshot capture",
+        "product targeted capture",
+        "live UIA smoke in default CI",
+    ):
+        assert phrase in normalized
 
 
 def _normalized(text: str) -> str:

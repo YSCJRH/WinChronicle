@@ -23,18 +23,20 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AF1 - Public Metadata And Evidence Freshness Follow-up.
-- Stage status: AF1 complete; public metadata and evidence freshness were
-  checked after `v0.1.16`, and AF2 is ready to start.
-- Last completed evidence: AF1 public metadata audit PR #150 merged as
-  `b7f65186bd009d625eb29756c642a1c34fc0cccb`, PR Windows Harness run
-  `25598506221` passed, and post-merge `main` Windows Harness run
-  `25598562659` passed on that SHA.
-- Last validation: `docs/public-metadata-audit-post-v0.1.16.md` records empty
-  GitHub description, homepage, and topics as manual maintainer follow-up
-  items, not product-code blockers.
-- Next atomic task: start AF2 by reviewing helper and watcher preview
-  diagnostics evidence without expanding the product capture surface.
+- Current stage: AF2 - Helper And Watcher Preview Diagnostics Review.
+- Stage status: AF2 review is in progress; helper and watcher diagnostics
+  evidence is being recorded without expanding the product capture surface.
+- Last completed evidence: AF1 completion reconciliation PR #151 merged as
+  `da5136c80fae1c4a7199279b05fa7e8dee449782`, PR Windows Harness run
+  `25598644752` passed, and post-merge `main` Windows Harness run
+  `25598686029` passed on that SHA.
+- Last validation: `docs/helper-watcher-diagnostics-sweep-post-v0.1.16.md`
+  records that helper/watcher timeout, malformed output, invalid embedded
+  helper payloads, no observed-content echo, duplicate skip, denylist skip,
+  heartbeat-only liveness, and diagnostic artifact policy remain covered by
+  deterministic docs/tests.
+- Next atomic task: land AF2 by validating the diagnostics sweep through PR and
+  post-merge Windows Harness, then record AF2 completion before starting AF3.
 - Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
@@ -129,6 +131,10 @@ Every implementation stage should run:
 - Chose AF1 as a docs-only audit because repository metadata gaps remain manual
   maintainer settings and do not require product-code changes.
 - Completed AF1 after PR #150 and post-merge `main` Windows Harness passed.
+- Started AF2 as a diagnostics sweep; a read-only review found a narrow
+  `watch --events` validation diagnostic leak, so AF2 includes a content-free
+  CLI wrapper fix plus deterministic evidence without expanding capture
+  surfaces.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -156,3 +162,7 @@ Every implementation stage should run:
   - PR #150 Windows Harness run `25598506221` - passed.
   - PR #150 merged as `b7f65186bd009d625eb29756c642a1c34fc0cccb`.
   - `gh run view 25598562659 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF1 `main` Windows Harness concluded `success` on `b7f65186bd009d625eb29756c642a1c34fc0cccb`.
+- Stage AF1 completion reconciliation:
+  - PR #151 Windows Harness run `25598644752` - passed.
+  - PR #151 merged as `da5136c80fae1c4a7199279b05fa7e8dee449782`.
+  - `gh run view 25598686029 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF1-completion `main` Windows Harness concluded `success` on `da5136c80fae1c4a7199279b05fa7e8dee449782`.

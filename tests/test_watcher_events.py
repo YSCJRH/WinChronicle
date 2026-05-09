@@ -130,6 +130,8 @@ def test_watcher_dispatch_skips_denylisted_lock_app(tmp_path, monkeypatch):
         "heartbeats": 0,
     }
     assert search_captures("Lock screen", home) == []
+    assert list((home / "capture-buffer").glob("*.json")) == []
+    assert _raw_watcher_jsonl_files(home) == []
 
 
 def test_watch_cli_dispatches_fixture_events(tmp_path, monkeypatch, capsys):
@@ -150,6 +152,46 @@ def test_watch_cli_dispatches_fixture_events(tmp_path, monkeypatch, capsys):
         "denylisted_skipped": 0,
         "heartbeats": 1,
     }
+
+
+def test_watch_events_cli_suppresses_invalid_helper_payload_observed_content(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    canary = "OBSERVED_SECRET_SHOULD_NOT_ECHO"
+    helper_output = json.loads(
+        (ROOT / "harness" / "fixtures" / "uia-helper" / "notepad_frontmost.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    helper_output["source"] = "unexpected-helper"
+    helper_output["visible_text"] = canary
+    event_path = tmp_path / "invalid_helper_event.jsonl"
+    event_path.write_text(
+        json.dumps(
+            {
+                "event_schema_version": 1,
+                "source": "win-uia-watcher",
+                "event_id": "invalid-helper-payload",
+                "event_type": "foreground_changed",
+                "timestamp": "2026-04-25T13:20:00+08:00",
+                "capture": helper_output,
+            },
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    assert main(["watch", "--events", str(event_path)]) == 1
+    output = capsys.readouterr().out
+
+    assert output.strip() == "ERROR: watcher output could not be captured safely"
+    assert canary not in output
+    assert list((home / "capture-buffer").glob("*.json")) == []
+    assert _raw_watcher_jsonl_files(home) == []
+    assert search_captures(canary, home) == []
 
 
 def test_watch_cli_runs_fake_watcher_without_raw_event_file(tmp_path, monkeypatch, capsys):
@@ -403,11 +445,13 @@ def test_watcher_preview_docs_cover_reliability_modes_and_boundaries():
         "Watcher exits nonzero",
         "Helper failure surfaced by watcher",
         "Malformed watcher JSONL",
+        "Invalid embedded helper payload",
         "Watcher timeout",
         "Heartbeat-only run",
         "Denylisted app or lock screen",
         "Duplicate content fingerprint",
         "Raw watcher JSONL persistence",
+        "Harness smoke may stage fake-helper watcher JSONL",
     ):
         assert reliability_mode in docs
 

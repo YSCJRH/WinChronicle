@@ -46,8 +46,8 @@
   watcher JSONL.
 - Watcher reliability modes must be deterministic and must not echo observed
   content: watcher nonzero exit, helper failure surfaced by watcher, malformed
-  JSONL, timeout, heartbeat-only runs, duplicate skip, and denylist skip are
-  covered by tests or watcher fixtures.
+  JSONL, invalid embedded helper payloads, timeout, heartbeat-only runs,
+  duplicate skip, and denylist skip are covered by tests or watcher fixtures.
 - Heartbeat-only `watch --watcher` runs are diagnostic liveness evidence, not
   capture success; CLI tests must assert they write no capture files and no raw
   watcher JSONL under temporary `WINCHRONICLE_HOME`.
@@ -55,5 +55,8 @@
   and temporary state, so no live observed UI content is read.
 - `watch --watcher` must consume watcher JSONL in memory and must not save raw
   event streams by default.
+- A deterministic watcher smoke script may stage fake-helper watcher JSONL in a
+  temporary file outside `WINCHRONICLE_HOME` only to exercise `watch --events`;
+  it must not commit that file or use it for live observed UI content.
 - No screenshot, OCR, audio, keyboard, clipboard, network upload, LLM call, or
   desktop control surface belongs in deterministic capture/search gates.
