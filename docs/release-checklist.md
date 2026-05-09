@@ -7,11 +7,13 @@ For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
 [v0.1.15 maintenance release record](release-v0.1.15.md). The active
-post-v0.1.14 execution cursor lives in
-[Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md). For release
+post-v0.1.15 execution cursor lives in
+[Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md). For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
 previous stable release record is
 [v0.1.14 maintenance release record](release-v0.1.14.md), the completed
+post-v0.1.14 execution cursor is recorded in
+[Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md), the completed
 post-v0.1.13 execution cursor is recorded in
 [Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md), the completed
 post-v0.1.12 execution cursor lives in
@@ -39,12 +41,14 @@ inherited historical evidence:
 - `v0.1.15` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
 - the completed post-v0.1.14 execution cursor records `v0.1.15` publication,
-  PR #132, PR #133, post-merge Windows Harness run `25589165182`, and release
+  PR #132, PR #133, publication reconciliation PR #134, post-merge Windows
+  Harness run `25589775129`, and release
   URL https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15;
 - the completed post-v0.1.13 execution cursor records `v0.1.14` publication,
   PR #125, and post-merge Windows Harness run `25585147402`;
-- the post-v0.1.14 execution cursor is active and records post-publication
-  reconciliation PR #126 plus post-merge Windows Harness run `25585707220`;
+- the completed post-v0.1.13 execution cursor also records the `v0.1.14`
+  post-publication reconciliation PR #126 plus post-merge Windows Harness run
+  `25585707220`;
 - the post-v0.1.13 execution cursor also records the initial `v0.1.13`
   post-publication reconciliation PR #119 plus post-merge Windows Harness run
   `25581662790`;

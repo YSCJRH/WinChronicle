@@ -47,6 +47,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Deterministic demo](deterministic-demo.md)" in quickstart
     assert "[Roadmap](roadmap.md)" in quickstart
     assert "[Contributing](../CONTRIBUTING.md)" in quickstart
+    assert "[Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md)" in quickstart
     assert "[Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md)" in quickstart
     assert (
         "[v0.1.15 maintenance release record](release-v0.1.15.md)"
@@ -102,6 +103,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Deterministic demo](docs/deterministic-demo.md)" in readme
     assert "[Roadmap](docs/roadmap.md)" in readme
     assert "[Contributing](CONTRIBUTING.md)" in readme
+    assert "[Post-v0.1.15 maintenance plan](docs/next-round-plan-post-v0.1.15.md)" in readme
     assert "[Post-v0.1.14 maintenance plan](docs/next-round-plan-post-v0.1.14.md)" in readme
     assert (
         "[v0.1.15 maintenance release record](docs/release-v0.1.15.md)"
@@ -164,17 +166,18 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
     readme_intro_normalized = " ".join(readme_intro.split())
 
-    assert "active post-v0.1.14 maintenance plan" in readme_intro_normalized
+    assert "active post-v0.1.15 maintenance plan" in readme_intro_normalized
     assert "latest published `v0.1.15` release record" in readme_intro_normalized
     assert "previous published `v0.1.14` release record" in readme_intro_normalized
-    assert "completed post-v0.1.13 maintenance plan" in readme_intro_normalized
-    assert "completed post-v0.1.12 maintenance plan" in readme_intro_normalized
+    assert "completed post-v0.1.14 maintenance plan" in readme_intro_normalized
+    assert "older completed maintenance plans" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
     assert "v0.1.13 maintenance release record" in readme_operator_docs
     assert "v0.1.14 maintenance release record" in readme_operator_docs
     assert "v0.1.15 maintenance release record" in readme_operator_docs
+    assert "Post-v0.1.15 maintenance plan" in readme_operator_docs
     assert "Post-v0.1.14 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.14" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.14" in readme_operator_docs
@@ -213,6 +216,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )
     assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.13") < readme_operator_docs.index(
         "Blueprint gap audit after v0.1.12"
+    )
+    assert readme_operator_docs.index("Post-v0.1.15 maintenance plan") < readme_operator_docs.index(
+        "Post-v0.1.14 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.14 maintenance plan") < readme_operator_docs.index(
         "v0.1.15 maintenance release record"
@@ -283,6 +289,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert readme_operator_docs.index("Post-v0.1.6 maintenance plan") < readme_operator_docs.index(
         "v0.1.6 maintenance release record"
     )
+    assert "next-round-plan-post-v0.1.15.md" in current_section
     assert "next-round-plan-post-v0.1.14.md" in current_section
     assert "public-metadata-audit-post-v0.1.14.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.14.md" in current_section
@@ -364,6 +371,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-v0.1.14.md" in evidence
     assert "release-v0.1.15.md" in checklist
     assert "release-v0.1.15.md" in evidence
+    assert "next-round-plan-post-v0.1.15.md" in checklist
+    assert "next-round-plan-post-v0.1.15.md" in evidence
     assert "next-round-plan-post-v0.1.14.md" in checklist
     assert "next-round-plan-post-v0.1.14.md" in evidence
     assert "next-round-plan-post-v0.1.13.md" in checklist
@@ -1289,6 +1298,43 @@ def test_post_v014_plan_is_active_without_expanding_scope():
         assert expected in normalized
 
 
+def test_post_v015_plan_is_active_without_expanding_scope():
+    plan = (ROOT / "docs" / "next-round-plan-post-v0.1.15.md").read_text(
+        encoding="utf-8"
+    )
+    normalized = " ".join(plan.split())
+
+    for expected in (
+        "`v0.1.15` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15",
+        "targets `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`",
+        "post-publication reconciliation on `main` is `54208c51819a45140e355272d8cb3f0e3fbff900`",
+        "Windows Harness run `25589775129` passed",
+        "reports `0.1.15`",
+        "Current stage: AD0 - Post-v0.1.15 Baseline Cursor.",
+        "Stage status: A - AD0 is the active docs-only baseline cursor stage.",
+        "publication reconciliation PR #134 merged as `54208c51819a45140e355272d8cb3f0e3fbff900`",
+        "Stage AD0 - Post-v0.1.15 Baseline Cursor",
+        "Stage AD1 - Public Metadata And Evidence Freshness Follow-up",
+        "Stage AD2 - Helper And Watcher Preview Diagnostics Review",
+        "Stage AD3 - MCP And Memory Contract Review",
+        "Stage AD4 - Compatibility Guardrail Sweep",
+        "Stage AD5 - v0.1.16 Release Readiness",
+        "next compatible release target is `v0.1.16`",
+        "Phase 6 stays at spec/scorecard level",
+        "MCP tool list remains unchanged and read-only",
+        "Product CLI still does not expose targeted `--hwnd`, `--pid`",
+        "Do not implement screenshot capture, OCR, audio recording",
+        "Keep real UIA smoke manual and outside default CI",
+        "trust = \"untrusted_observed_content\"",
+        "Stage AD0 initialization:",
+        "gh release view v0.1.15",
+        "git rev-parse v0.1.15",
+        "gh run view 25589775129",
+        "printed `0.1.15`",
+    ):
+        assert expected in normalized
+
+
 def test_public_metadata_audit_post_v014_records_manual_gaps_without_scope_expansion():
     audit = (ROOT / "docs" / "public-metadata-audit-post-v0.1.14.md").read_text(
         encoding="utf-8"
@@ -1869,11 +1915,13 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "stable baseline is `v0.1.15`",
         "`v0.1.15` is the latest published release",
         "completed post-v0.1.14 execution cursor records `v0.1.15` publication",
-        "PR #132, PR #133, post-merge Windows Harness run `25589165182`",
+        "PR #132, PR #133, publication reconciliation PR #134, post-merge Windows",
+        "Harness run `25589775129`",
         "completed post-v0.1.13 execution cursor records `v0.1.14` publication",
         "PR #125, and post-merge Windows Harness run `25585147402`",
-        "post-v0.1.14 execution cursor is active and records post-publication",
-        "reconciliation PR #126 plus post-merge Windows Harness run `25585707220`",
+        "completed post-v0.1.13 execution cursor also records the `v0.1.14`",
+        "post-publication reconciliation PR #126 plus post-merge Windows Harness run",
+        "`25585707220`",
         "post-v0.1.13 execution cursor also records the initial `v0.1.13`",
         "PR #119 plus post-merge Windows Harness run\n  `25581662790`",
         "post-v0.1.12 execution cursor is completed historical context",
@@ -1931,11 +1979,13 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
         "`v0.1.15` is the stable baseline",
         "`v0.1.15` is the latest published release",
         "completed post-v0.1.14 execution cursor records `v0.1.15` publication",
-        "PR #132, PR #133, post-merge Windows Harness run `25589165182`",
+        "PR #132, PR #133, publication reconciliation PR #134, post-merge Windows",
+        "Harness run `25589775129`",
         "completed post-v0.1.13 execution cursor records `v0.1.14` publication",
         "PR #125, and post-merge Windows Harness run `25585147402`",
-        "post-v0.1.14 execution cursor is active and records post-publication",
-        "reconciliation PR #126 plus post-merge Windows Harness run `25585707220`",
+        "completed post-v0.1.13 execution cursor also records the `v0.1.14`",
+        "post-publication reconciliation PR #126 plus post-merge Windows Harness run",
+        "`25585707220`",
         "post-v0.1.13 execution cursor also records the initial `v0.1.13`",
         "PR #119 plus post-merge Windows Harness run\n  `25581662790`",
         "post-v0.1.12 execution cursor is completed historical context",
@@ -2015,8 +2065,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
 
     for expected in (
         "Stable release baseline | `v0.1.15`",
-        "Current maintenance plan | [Post-v0.1.14 maintenance plan]",
-        "Latest completed maintenance plan | [Post-v0.1.13 maintenance plan]",
+        "Current maintenance plan | [Post-v0.1.15 maintenance plan]",
+        "Latest completed maintenance plan | [Post-v0.1.14 maintenance plan]",
         "Current release-readiness record | None; `v0.1.15` is published",
         "Published release record | [v0.1.15 maintenance release record]",
         "Latest published release record | [v0.1.15 maintenance release record]",
