@@ -51,6 +51,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Roadmap](roadmap.md)" in quickstart
     assert "[Contributing](../CONTRIBUTING.md)" in quickstart
     assert "[Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md)" in quickstart
+    assert (
+        "[Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md)"
+        in quickstart
+    )
     assert "[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md)"
@@ -238,6 +242,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         in readme
     )
     assert (
+        "[Public metadata audit after v0.1.18](docs/public-metadata-audit-post-v0.1.18.md)"
+        in readme
+    )
+    assert (
         "[Post-v0.1.16 maintenance plan](docs/next-round-plan-post-v0.1.16.md)"
         in readme
     )
@@ -351,6 +359,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     readme_intro_normalized = " ".join(readme_intro.split())
 
     assert "active post-v0.1.18 maintenance plan" in readme_intro_normalized
+    assert "current post-v0.1.18 public metadata audit" in readme_intro_normalized
     assert "completed post-v0.1.17 maintenance plan" in readme_intro_normalized
     assert "completed post-v0.1.16 maintenance plan and publication reconciliation" in readme_intro_normalized
     assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
@@ -384,6 +393,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.14 maintenance release record" in readme_operator_docs
     assert "v0.1.15 maintenance release record" in readme_operator_docs
     assert "Post-v0.1.18 maintenance plan" in readme_operator_docs
+    assert "Public metadata audit after v0.1.18" in readme_operator_docs
     assert "Post-v0.1.17 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.17" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.17" in readme_operator_docs
@@ -458,6 +468,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Blueprint gap audit after v0.1.12"
     )
     assert readme_operator_docs.index("Post-v0.1.18 maintenance plan") < readme_operator_docs.index(
+        "Public metadata audit after v0.1.18"
+    )
+    assert readme_operator_docs.index("Public metadata audit after v0.1.18") < readme_operator_docs.index(
         "Post-v0.1.17 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.17 maintenance plan") < readme_operator_docs.index(
@@ -666,6 +679,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "v0.1.6 maintenance release record"
     )
     assert "next-round-plan-post-v0.1.18.md" in current_section
+    assert "public-metadata-audit-post-v0.1.18.md" in current_section
     assert "next-round-plan-post-v0.1.17.md" in current_section
     assert "public-metadata-audit-post-v0.1.17.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in current_section
@@ -787,6 +801,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-v0.1.18.md" in evidence
     assert "next-round-plan-post-v0.1.18.md" in checklist
     assert "next-round-plan-post-v0.1.18.md" in evidence
+    assert "public-metadata-audit-post-v0.1.18.md" in checklist
+    assert "public-metadata-audit-post-v0.1.18.md" in evidence
     assert "release-candidate-v0.1.16-rc.0.md" in checklist
     assert "release-candidate-v0.1.16-rc.0.md" in evidence
     assert "next-round-plan-post-v0.1.17.md" in checklist
@@ -851,10 +867,18 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.16-rc.0` is historical prerelease evidence" in evidence
     assert "active post-v0.1.18 execution cursor records" in checklist
     assert "active post-v0.1.18 execution cursor records" in evidence
+    assert "current post-v0.1.18 public metadata/evidence freshness audit" in checklist
+    assert "current post-v0.1.18 public metadata/evidence freshness audit" in evidence
     assert "completed post-v0.1.17 execution cursor records" in checklist
     assert "completed post-v0.1.17 execution cursor records" in evidence
     assert "PR #188" in checklist
     assert "PR #188" in evidence
+    assert "AH0 baseline PR #189" in checklist
+    assert "AH0 baseline PR #189" in evidence
+    assert "PR Windows Harness run `25613203047`" in checklist
+    assert "PR Windows Harness run `25613203047`" in evidence
+    assert "post-AH0\n  `main` Windows Harness run `25613244560`" in checklist
+    assert "post-AH0\n  `main` Windows Harness run `25613244560`" in evidence
     assert "post-merge Windows Harness runs\n  `25612391276` and `25612977738`" in checklist
     assert "post-merge Windows Harness runs\n  `25612391276` and `25612977738`" in evidence
     assert "AG2 helper/watcher diagnostics review PR #163" in checklist
@@ -2190,6 +2214,57 @@ def test_public_metadata_audit_post_v017_records_manual_gaps_without_scope_expan
         "AF6 manual UIA smoke remains fresh for the published `v0.1.17` maintenance\n  release record only",
         "no required product-code change",
         "The next smallest implementation task is AG2",
+    ):
+        assert expected in audit
+
+    assert "This audit does not authorize screenshots" in audit
+
+
+def test_public_metadata_audit_post_v018_records_manual_gaps_without_scope_expansion():
+    audit = (ROOT / "docs" / "public-metadata-audit-post-v0.1.18.md").read_text(
+        encoding="utf-8"
+    )
+
+    for expected in (
+        "Public Metadata Audit After v0.1.18",
+        "does not change product behavior, schemas,\nCLI/MCP JSON shape",
+        "gh repo view YSCJRH/WinChronicle",
+        "Visibility | `PUBLIC`",
+        "Default branch | `main`",
+        "Archived | `false`",
+        "Fork | `false`",
+        "Private | `false`",
+        "Description | Empty",
+        "Homepage URL | Empty",
+        "Repository topics | Empty / not configured",
+        "Latest release | `v0.1.18`",
+        "Custom OpenGraph image | `false`",
+        "gh release view v0.1.18",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18",
+        "Target | `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`",
+        "Draft | `false`",
+        "Prerelease | `false`",
+        "Published at | `2026-05-09T21:38:33Z`",
+        "gh release view v0.1.17",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.17",
+        "Target | `5b260edc3bddc48986e52179b2ffd261856a89ac`",
+        "Run | `25613244560`",
+        "Head SHA | `f4d24adf5bb60cd5ad6abfc21ada04fbbeae288c`",
+        "README.md` starts with \"UIA-first local memory for Windows agents.\"",
+        "docs/operator-quickstart.md` links release checklist",
+        "active post-v0.1.18 plan",
+        "current post-v0.1.18 audit",
+        "published `v0.1.18` maintenance release",
+        "previous stable `v0.1.17` maintenance release",
+        "AH0 remote validation",
+        "GitHub repository description",
+        "GitHub homepage URL",
+        "GitHub topics",
+        "Social preview image",
+        "manual maintainer checklist item",
+        "`v0.1.18` manual UIA smoke remains fresh for the published `v0.1.18`\n  maintenance release record only",
+        "no required product-code change",
+        "The next smallest implementation task is AH2",
     ):
         assert expected in audit
 
@@ -3565,7 +3640,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
     for expected in (
         "Stable release baseline | `v0.1.18`",
         "Current maintenance plan | [Post-v0.1.18 maintenance plan]",
-        "Current public metadata audit | [Public metadata audit after v0.1.17]",
+        "Current public metadata audit | [Public metadata audit after v0.1.18]",
         "Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.17]",
         "Current MCP/memory contract sweep | [MCP and memory contract sweep after v0.1.17]",
         "Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.17]",
@@ -3573,7 +3648,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Previous release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.17 maintenance plan]",
         "Previous pre-v0.1.17 maintenance plan | [Post-v0.1.16 maintenance plan]",
-        "Previous public metadata audit | [Public metadata audit after v0.1.16]",
+        "Previous public metadata audit | [Public metadata audit after v0.1.17]",
         "Previous post-v0.1.16 release-readiness decision | [Release-readiness decision after v0.1.16]",
         "Current release record | [v0.1.18 maintenance release record]",
         "Completed final-release plan | [v0.1.16 final-release plan]",
