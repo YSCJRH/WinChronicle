@@ -53,6 +53,9 @@ Targeted gap fixtures also cover raw screenshot cache defaults, global
 allowlist defaults, global default allowlist approval, implicit all-app
 allowlists, raw cache enabled-by-default behavior, and MCP write-tool
 exposure.
+Residual policy fixtures also cover future opt-in requirement booleans, raw
+cache local-state, artifact-commit, and encryption/exception controls, derived
+text pipeline controls, and MCP untrusted-content trust requirements.
 
 ## Required Future Opt-In Contract
 

@@ -1,0 +1,74 @@
+{
+  "contract_schema_version": 1,
+  "status": "spec_only",
+  "defaults": {
+    "screenshots_enabled": false,
+    "ocr_enabled": false,
+    "raw_screenshot_cache_enabled": false,
+    "global_allowlist_enabled": false
+  },
+  "future_opt_in_requirements": {
+    "requires_explicit_screenshots_enabled_true": true,
+    "requires_explicit_ocr_enabled_true": true,
+    "requires_per_app_screenshot_allowlist": true,
+    "requires_per_app_ocr_allowlist": true,
+    "forbids_global_default_allowlist": true,
+    "forbids_implicit_all_apps": true,
+    "requires_uia_first_fallback_only": true,
+    "allows_runtime_capture_in_v0_1": false
+  },
+  "allowlist_policy": {
+    "screenshots": [
+      {
+        "process_name": "example-allowed-app.exe",
+        "app_name": "Example Allowed App"
+      }
+    ],
+    "ocr": [
+      {
+        "process_name": "example-allowed-app.exe"
+      }
+    ],
+    "sample_allowlist_entries_only": true,
+    "runtime_allowlist_config_allowed": false,
+    "global_default_allowlist_allowed": false,
+    "implicit_all_apps_allowed": false
+  },
+  "raw_cache_policy": {
+    "enabled_by_default": false,
+    "ttl_seconds_max": 3600,
+    "cleanup_required": true,
+    "local_state_directory_only": true,
+    "raw_artifacts_commit_forbidden": true,
+    "encryption_at_rest_required_or_exception_documented": true
+  },
+  "derived_text_pipeline": {
+    "redaction_before_storage": false,
+    "denylist_and_lock_screen_skip_before_storage": true,
+    "schema_validation_before_storage": true,
+    "sqlite_index_after_redaction": true,
+    "memory_from_redacted_text_only": true,
+    "prompt_injection_marked_untrusted": true
+  },
+  "mcp_policy": {
+    "raw_screenshot_exposure_default": false,
+    "requires_untrusted_observed_content_trust": true,
+    "mcp_write_tools_allowed": false
+  },
+  "non_goals": [
+    "audio recording",
+    "keyboard capture",
+    "clipboard capture",
+    "network upload",
+    "cloud upload",
+    "LLM calls",
+    "desktop control",
+    "MCP write tools",
+    "arbitrary file reads",
+    "product targeted capture",
+    "daemon/service install",
+    "polling capture loops",
+    "startup tasks",
+    "default background capture"
+  ]
+}

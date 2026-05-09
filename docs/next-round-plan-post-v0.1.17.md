@@ -28,29 +28,26 @@ service install, no polling capture loop, and no default background capture.
 ## Execution Cursor
 
 - Current stage: Phase 6 Residual Policy Fixture Expansion.
-- Stage status: residual schema coverage audit complete; the next Phase 6
-  step is a docs/tests/fixtures-only expansion for remaining high-signal
-  policy branches.
-- Last completed evidence: Phase 6 gap fixture reconciliation PR #177 merged
-  as `4d974be7135f26209f4836f4ff7fc850f722d720`, PR Windows Harness run
-  `25608596200` passed, and post-reconciliation `main` Windows Harness run
-  `25608660366` passed on that SHA.
-- Last validation: `gh run view 25608660366 --json
+- Stage status: residual policy fixture expansion complete locally; awaiting
+  PR and post-merge Windows Harness validation.
+- Last completed evidence: Phase 6 residual schema coverage audit PR #178
+  merged as `0d85e8ce41bb5779e8be23126c811be6489fc00f`, PR Windows Harness
+  run `25608946219` passed, and post-residual-audit `main` Windows Harness
+  run `25609004391` passed on that SHA.
+- Last validation: `gh run view 25609004391 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-reconciliation `main` Windows Harness concluded
+  verified the post-residual-audit `main` Windows Harness concluded
   `success`;
   `git diff
   --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` printed no files through the residual schema coverage audit, so
+  pyproject.toml` printed no files through the residual policy fixture expansion, so
   AG1-AG6, the preflight, fixture expansion, remaining fixtures, coverage
-  audit, gap fixtures, residual schema audit, and their reconciliations contain
-  no runtime, helper/watcher, CLI/MCP output, privacy-runtime, capture-surface,
-  or version-metadata change.
-- Next atomic task: add targeted durable Phase 6 negative fixtures for the
-  residual high-signal policy branches identified by the audit: future opt-in
-  requirement booleans, raw cache local-state/artifact/encryption controls,
-  derived text pipeline controls, and MCP untrusted-content trust requirements.
+  audit, gap fixtures, residual schema audit, residual policy fixtures, and
+  their reconciliations contain no runtime, helper/watcher, CLI/MCP output,
+  privacy-runtime, capture-surface, or version-metadata change.
+- Next atomic task: land the residual policy fixture expansion through PR and
+  post-merge Windows Harness validation.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -320,6 +317,13 @@ Every implementation stage should run:
 - Selected the next Phase 6 step as a residual policy fixture expansion for
   opt-in requirement booleans, raw cache local-state/artifact/encryption
   controls, derived text pipeline controls, and MCP trust-boundary requirements.
+- Completed the Phase 6 residual schema coverage audit after PR #178 merged as
+  `0d85e8ce41bb5779e8be23126c811be6489fc00f` and post-merge `main` Windows
+  Harness run `25609004391` passed.
+- Started the Phase 6 residual policy fixture expansion. This adds durable
+  invalid fixtures for future opt-in, raw-cache artifact, derived-text
+  pipeline, and MCP trust-boundary policy branches, with no product runtime
+  behavior change.
 
 ## Validation Log
 
@@ -558,3 +562,14 @@ Every implementation stage should run:
   - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
   - `python -m pytest -q` - passed, 187 tests.
   - `python harness/scripts/run_harness.py` - passed, including 187 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Phase 6 privacy-enrichment residual schema coverage audit completion:
+  - `gh pr view 178 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #178 merged at `2026-05-09T18:47:17Z` as `0d85e8ce41bb5779e8be23126c811be6489fc00f`.
+  - `gh run view 25608946219 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #178 Windows Harness concluded `success` on `e4f78e827244a9032209923233cedbde97143199`.
+  - `gh run view 25609004391 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-residual-audit `main` Windows Harness concluded `success` on `0d85e8ce41bb5779e8be23126c811be6489fc00f`.
+- Phase 6 privacy-enrichment residual policy fixture local validation:
+  - `python -m pytest tests/test_phase6_privacy_scorecard.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed, 91 tests.
+  - `git diff --check` - passed.
+  - Product-source contract-artifact reference scan for `phase6-privacy-enrichment-contract`, `privacy_enrichment_contract`, `harness/fixtures/phase6`, and `harness\\fixtures\\phase6` across `src` and `resources` - passed with no matches.
+  - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
+  - `python -m pytest -q` - passed, 188 tests.
+  - `python harness/scripts/run_harness.py` - passed, including 188 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

@@ -28,8 +28,78 @@ PHASE6_CONTRACT_RESIDUAL_SCHEMA_AUDIT = (
     / "docs"
     / "phase6-privacy-contract-residual-schema-coverage-audit-post-v0.1.17.md"
 )
+PHASE6_CONTRACT_RESIDUAL_POLICY_FIXTURES = (
+    ROOT
+    / "docs"
+    / "phase6-privacy-contract-residual-policy-fixtures-post-v0.1.17.md"
+)
 PHASE6_FIXTURE_DIR = ROOT / "harness" / "fixtures" / "phase6"
 PHASE6_INVALID_FIXTURES = (
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_derived_text_denylist_skip_after_storage_allowed.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_derived_text_memory_from_raw_allowed.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_derived_text_prompt_injection_trusted.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_derived_text_redaction_after_storage_allowed.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_derived_text_schema_validation_after_storage_allowed.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_derived_text_sqlite_index_before_redaction_allowed.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_future_global_default_allowlist_not_forbidden.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_future_implicit_all_apps_not_forbidden.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_future_ocr_allowlist_not_required.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_future_ocr_opt_in_not_required.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_future_screenshot_allowlist_not_required.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_future_screenshots_opt_in_not_required.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_future_uia_first_fallback_not_required.json",
     ROOT
     / "harness"
     / "fixtures"
@@ -64,6 +134,11 @@ PHASE6_INVALID_FIXTURES = (
     / "harness"
     / "fixtures"
     / "phase6"
+    / "privacy_enrichment_contract_invalid_mcp_trust_boundary_not_required.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
     / "privacy_enrichment_contract_invalid_mcp_write_tools_allowed.json",
     ROOT
     / "harness"
@@ -74,7 +149,22 @@ PHASE6_INVALID_FIXTURES = (
     / "harness"
     / "fixtures"
     / "phase6"
+    / "privacy_enrichment_contract_invalid_raw_cache_artifact_commit_allowed.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
     / "privacy_enrichment_contract_invalid_raw_cache_enabled_by_default.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_raw_cache_encryption_exception_missing.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_raw_cache_nonlocal_state_allowed.json",
     ROOT
     / "harness"
     / "fixtures"
@@ -198,6 +288,9 @@ def test_phase6_privacy_scorecard_records_threat_model_and_preflight_artifacts()
         "global allowlist defaults",
         "implicit all-app allowlists",
         "MCP write-tool exposure",
+        "Residual policy fixtures also cover future opt-in requirement booleans",
+        "derived text pipeline controls",
+        "MCP untrusted-content trust requirements",
         "sample shape examples only, not approved apps",
         "do not authorize screenshot capture, OCR, raw screenshot caches",
     )
@@ -428,6 +521,42 @@ def test_phase6_privacy_contract_residual_schema_audit_records_next_gaps():
         "Add targeted durable Phase 6 negative fixtures for the residual high-signal policy branches",
         "derived text pipeline controls",
         "MCP untrusted-content trust requirements",
+    )
+    for phrase in required_phrases:
+        assert phrase in normalized
+
+
+def test_phase6_privacy_contract_residual_policy_fixtures_record_expansion():
+    text = PHASE6_CONTRACT_RESIDUAL_POLICY_FIXTURES.read_text(encoding="utf-8")
+    normalized = _normalize_markdown(text)
+
+    required_phrases = (
+        "targeted Phase 6 privacy-enrichment residual policy fixture expansion",
+        "does not implement or authorize screenshot capture, OCR",
+        "privacy_enrichment_contract_invalid_future_screenshots_opt_in_not_required.json",
+        "privacy_enrichment_contract_invalid_future_ocr_opt_in_not_required.json",
+        "privacy_enrichment_contract_invalid_future_screenshot_allowlist_not_required.json",
+        "privacy_enrichment_contract_invalid_future_ocr_allowlist_not_required.json",
+        "privacy_enrichment_contract_invalid_future_global_default_allowlist_not_forbidden.json",
+        "privacy_enrichment_contract_invalid_future_implicit_all_apps_not_forbidden.json",
+        "privacy_enrichment_contract_invalid_future_uia_first_fallback_not_required.json",
+        "privacy_enrichment_contract_invalid_raw_cache_nonlocal_state_allowed.json",
+        "privacy_enrichment_contract_invalid_raw_cache_artifact_commit_allowed.json",
+        "privacy_enrichment_contract_invalid_raw_cache_encryption_exception_missing.json",
+        "privacy_enrichment_contract_invalid_derived_text_redaction_after_storage_allowed.json",
+        "privacy_enrichment_contract_invalid_derived_text_denylist_skip_after_storage_allowed.json",
+        "privacy_enrichment_contract_invalid_derived_text_schema_validation_after_storage_allowed.json",
+        "privacy_enrichment_contract_invalid_derived_text_sqlite_index_before_redaction_allowed.json",
+        "privacy_enrichment_contract_invalid_derived_text_memory_from_raw_allowed.json",
+        "privacy_enrichment_contract_invalid_derived_text_prompt_injection_trusted.json",
+        "privacy_enrichment_contract_invalid_mcp_trust_boundary_not_required.json",
+        "These fixtures are not runtime configuration",
+        "Deferred Residual Branches",
+        "allowlist_policy.sample_allowlist_entries_only",
+        "individual `non_goals.contains`",
+        "focused Phase 6/docs validation reported 91 tests",
+        "full pytest reported 188 tests",
+        "Land this residual policy fixture expansion through PR",
     )
     for phrase in required_phrases:
         assert phrase in normalized
