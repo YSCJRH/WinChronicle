@@ -640,6 +640,9 @@ def test_v0116_rc0_release_candidate_record_is_ready_and_scoped():
         "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16-rc.0",
         "Published at | 2026-05-09T08:18:01Z",
         "Final tag target | `70caf364f68d8c159eb74bbbc23e7469db22a244`",
+        "Publication reconciliation PR | https://github.com/YSCJRH/WinChronicle/pull/142",
+        "Publication reconciliation PR Windows Harness | Passed, run `25596387380`",
+        "Publication reconciliation post-merge `main` Windows Harness | Passed, run `25596453899`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15",
         "`v0.1.15` tag target | `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`",
         "AD4 PR Windows Harness | Passed, run `25595449096`",
@@ -660,6 +663,7 @@ def test_v0116_rc0_release_candidate_record_is_ready_and_scoped():
         "watcher preview live smoke passed",
         "follow-up release candidate if any product or contract regression",
         "GitHub prerelease publication passed",
+        "publication reconciliation post-merge `main` Windows Harness passed",
         "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16-rc.0.",
         "Final tag target: `70caf364f68d8c159eb74bbbc23e7469db22a244`.",
     ):

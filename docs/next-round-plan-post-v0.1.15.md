@@ -31,20 +31,19 @@ service install, no polling capture loop, and no default background capture.
 ## Execution Cursor
 
 - Current stage: AD5 - v0.1.16-rc.0 Published Prerelease Reconciliation.
-- Stage status: A - `v0.1.16-rc.0` is published as a prerelease; publication
-  reconciliation is in progress.
+- Stage status: AD5 complete; `v0.1.16-rc.0` is published as a prerelease and
+  publication reconciliation has passed.
 - Last completed evidence: AD4 added the post-v0.1.15 compatibility guardrail
   sweep and two narrow privacy/compatibility drift fixes in PR #139, merged as
   `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`, and post-merge `main` Windows
   Harness run `25595513141` passed.
-- Last validation: final pre-publication `main` Windows Harness run
-  `25596273094` passed on `70caf364f68d8c159eb74bbbc23e7469db22a244`, and
-  GitHub published `v0.1.16-rc.0` as a prerelease at that tag target.
-- Next atomic task: complete the `v0.1.16-rc.0` publication reconciliation PR
-  by recording the release URL, tag target, and final post-publication
-  Windows Harness evidence.
-- Known blockers: post-publication reconciliation PR and post-merge Windows
-  Harness evidence are pending.
+- Last validation: publication reconciliation PR #142 Windows Harness run
+  `25596387380` and post-merge `main` Windows Harness run `25596453899`
+  passed after `v0.1.16-rc.0` publication.
+- Next atomic task: start the post-`v0.1.16-rc.0` final-readiness decision for
+  direct `v0.1.16` or a follow-up release candidate, using the prerelease
+  evidence without retagging `v0.1.16-rc.0`.
+- Known blockers: none for the `v0.1.16-rc.0` prerelease publication stage.
 
 ## Phased Work
 
@@ -323,3 +322,7 @@ Stage-specific gates:
   - `gh release view v0.1.16-rc.0 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name` - passed; the release is published, not a draft, marked prerelease, published at `2026-05-09T08:18:01Z`, and targets `70caf364f68d8c159eb74bbbc23e7469db22a244`.
   - `git fetch --tags --force` - passed and fetched `v0.1.16-rc.0`.
   - `git ls-remote --tags origin v0.1.16-rc.0` - passed and printed `70caf364f68d8c159eb74bbbc23e7469db22a244`.
+- Stage AD5 publication reconciliation:
+  - PR #142 Windows Harness run `25596387380` - passed.
+  - PR #142 merged as `50a3f3fe977ff5d22b1dfa111c3ae42815fd12e2`.
+  - `gh run view 25596453899 --json databaseId,status,conclusion,headSha,url,displayTitle` - passed; post-publication reconciliation `main` Windows Harness concluded `success` on `50a3f3fe977ff5d22b1dfa111c3ae42815fd12e2`.
