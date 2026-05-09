@@ -27,27 +27,29 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Phase 6 Contract Gap Fixture Expansion.
-- Stage status: contract coverage audit complete; the next Phase 6 step is a
-  docs/tests/fixtures-only expansion for high-signal schema-enforced branches.
-- Last completed evidence: Phase 6 coverage audit reconciliation PR #175
-  merged as `05040ad068f99e341fca97c5ab59da7395d99f00`, PR Windows Harness
-  run `25608015061` passed, and post-reconciliation `main` Windows Harness run
-  `25608072563` passed on that SHA.
-- Last validation: `gh run view 25608072563 --json
+- Current stage: Phase 6 Residual Schema Coverage Audit.
+- Stage status: targeted contract gap fixture expansion complete; the next
+  Phase 6 step is a docs/tests-only audit of remaining schema-enforced
+  branches without targeted invalid fixtures.
+- Last completed evidence: Phase 6 contract gap fixture expansion PR #176
+  merged as `05811145444af93178b957bd1a3fc11b47f64cfd`, PR Windows Harness run
+  `25608336721` passed, and post-gap-fixtures `main` Windows Harness run
+  `25608403951` passed on that SHA.
+- Last validation: `gh run view 25608403951 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-reconciliation `main` Windows Harness concluded
+  verified the post-gap-fixtures `main` Windows Harness concluded
   `success`;
   `git diff
   --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` printed no files through the coverage audit reconciliation,
-  so AG1-AG6, the preflight, fixture expansion, remaining fixtures, coverage
-  audit, and their reconciliations contain no runtime, helper/watcher, CLI/MCP output,
-  privacy-runtime, capture-surface, or version-metadata change.
-- Next atomic task: add targeted durable Phase 6 negative fixtures for the
-  audited high-signal schema branches that are schema-enforced but do not yet
-  have their own committed invalid fixture.
+  pyproject.toml` printed no files through the gap fixture expansion, so
+  AG1-AG6, the preflight, fixture expansion, remaining fixtures, coverage
+  audit, gap fixtures, and their reconciliations contain no runtime,
+  helper/watcher, CLI/MCP output, privacy-runtime, capture-surface, or
+  version-metadata change.
+- Next atomic task: audit residual Phase 6 schema coverage so the remaining
+  schema-enforced branches are either promoted to targeted fixtures or
+  documented as adequately covered by existing schema/positive fixture tests.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -302,6 +304,11 @@ Every implementation stage should run:
   durable invalid fixtures for high-signal raw-cache, global allowlist,
   implicit all-app, and MCP write-tool schema branches, with no product runtime
   behavior change.
+- Completed the Phase 6 targeted contract gap fixture expansion after PR #176
+  merged as `05811145444af93178b957bd1a3fc11b47f64cfd` and post-merge `main`
+  Windows Harness run `25608403951` passed.
+- Selected the next Phase 6 step as a residual schema coverage audit across
+  the remaining const and pipeline branches before adding another fixture set.
 
 ## Validation Log
 
@@ -525,3 +532,7 @@ Every implementation stage should run:
   - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
   - `python -m pytest -q` - passed, 186 tests.
   - `python harness/scripts/run_harness.py` - passed, including 186 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Phase 6 privacy-enrichment contract gap fixture completion:
+  - `gh pr view 176 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #176 merged at `2026-05-09T18:18:56Z` as `05811145444af93178b957bd1a3fc11b47f64cfd`.
+  - `gh run view 25608336721 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #176 Windows Harness concluded `success` on `d9fc229304ce7f613db7b06c3f89c29190ae0981`.
+  - `gh run view 25608403951 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-gap-fixtures `main` Windows Harness concluded `success` on `05811145444af93178b957bd1a3fc11b47f64cfd`.
