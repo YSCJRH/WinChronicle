@@ -13,27 +13,27 @@ or token canaries.
 
 | Field | Value |
 | --- | --- |
-| Stable release baseline | `v0.1.15` |
-| Current final-release plan | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) |
-| Completed prerelease plan | [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md) |
-| Latest completed maintenance plan | [Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md) |
-| Current prerelease record | [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md) |
-| Published release record | [v0.1.15 maintenance release record](release-v0.1.15.md) |
-| Latest published release record | [v0.1.15 maintenance release record](release-v0.1.15.md) |
-| Latest full manual UIA smoke source | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) |
+| Stable release baseline | `v0.1.16` |
+| Current maintenance plan | [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md) |
+| Completed final-release plan | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) |
+| Previous prerelease record | [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md) |
+| Previous maintenance plan | [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md) |
+| Published release record | [v0.1.16 final release record](release-v0.1.16.md) |
+| Latest published release record | [v0.1.16 final release record](release-v0.1.16.md) |
+| Latest full manual UIA smoke source | [v0.1.16 final release record](release-v0.1.16.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
-| Last freshness decision | For the active `v0.1.16` final-release path, AE2 refreshed manual UIA smoke. Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning, VS Code strict remains a diagnostic non-blocking failure, and watcher preview live smoke passed. Artifact paths are local only. |
-| Next freshness decision | The AE3 `v0.1.16` final release record must cite the AE2 smoke result, or rerun smoke if product behavior, helper/watcher behavior, manual smoke scripts, capture behavior, privacy behavior, CLI/MCP shape, capture surfaces, or release approval requirements change. |
+| Last freshness decision | For the published `v0.1.16` final release, AE2 refreshed manual UIA smoke. Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning, VS Code strict remains a diagnostic non-blocking failure, and watcher preview live smoke passed. Artifact paths are local only. |
+| Next freshness decision | Future post-v0.1.16 maintenance or release-readiness work must decide whether AE2 smoke remains current or rerun smoke if product behavior, helper/watcher behavior, manual smoke scripts, capture behavior, privacy behavior, CLI/MCP shape, capture surfaces, or release approval requirements change. |
 
 ## Latest Known Manual Evidence
 
 | Gate | Release meaning | Latest known result | Freshness | Evidence source | Refresh requirement | Artifact policy |
 | --- | --- | --- | --- | --- | --- | --- |
-| Notepad targeted UIA smoke | Hard manual release gate | Pass | Fresh for active `v0.1.16` final-release path in AE2 | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change | Local JSON artifact path only; do not commit capture JSON |
-| Edge targeted UIA smoke | Hard manual release gate | Pass | Fresh for active `v0.1.16` final-release path in AE2 | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change | Local JSON artifact path only; do not commit local HTML or capture JSON |
-| VS Code metadata smoke | Conditional hard manual release gate when `code.cmd` is available | Pass with diagnostic warning | Fresh for active `v0.1.16` final-release path in AE2 | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change | Local JSON artifact only; do not commit editor contents |
-| VS Code strict Monaco marker | Diagnostic, non-blocking for v0.1 | Diagnostic failure, known Monaco/UIA limitation | Fresh diagnostic for active `v0.1.16` final-release path in AE2 | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) | Refresh only if investigating Monaco/UIA exposure, changing smoke scripts, or release approval requires a new diagnostic | Local diagnostic artifact path only |
-| Watcher preview live smoke | Preview diagnostic/manual confidence gate | Pass; `captures_written: 3`, `heartbeats: 6`, `duplicates_skipped: 1`, `denylisted_skipped: 0` | Fresh for active `v0.1.16` final-release path in AE2 | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) and `python harness/scripts/run_harness.py` | Refresh only if watcher preview behavior, live smoke scripts, deterministic watcher gates, or release approval requirements change | Do not save or commit raw watcher JSONL |
+| Notepad targeted UIA smoke | Hard manual release gate | Pass | Fresh for published `v0.1.16` final release in AE2 | [v0.1.16 final release record](release-v0.1.16.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change | Local JSON artifact path only; do not commit capture JSON |
+| Edge targeted UIA smoke | Hard manual release gate | Pass | Fresh for published `v0.1.16` final release in AE2 | [v0.1.16 final release record](release-v0.1.16.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change | Local JSON artifact path only; do not commit local HTML or capture JSON |
+| VS Code metadata smoke | Conditional hard manual release gate when `code.cmd` is available | Pass with diagnostic warning | Fresh for published `v0.1.16` final release in AE2 | [v0.1.16 final release record](release-v0.1.16.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change | Local JSON artifact only; do not commit editor contents |
+| VS Code strict Monaco marker | Diagnostic, non-blocking for v0.1 | Diagnostic failure, known Monaco/UIA limitation | Fresh diagnostic for published `v0.1.16` final release in AE2 | [v0.1.16 final release record](release-v0.1.16.md) | Refresh only if investigating Monaco/UIA exposure, changing smoke scripts, or release approval requires a new diagnostic | Local diagnostic artifact path only |
+| Watcher preview live smoke | Preview diagnostic/manual confidence gate | Pass; `captures_written: 3`, `heartbeats: 6`, `duplicates_skipped: 1`, `denylisted_skipped: 0` | Fresh for published `v0.1.16` final release in AE2 | [v0.1.16 final release record](release-v0.1.16.md) and `python harness/scripts/run_harness.py` | Refresh only if watcher preview behavior, live smoke scripts, deterministic watcher gates, or release approval requirements change | Do not save or commit raw watcher JSONL |
 
 ## Command Patterns
 

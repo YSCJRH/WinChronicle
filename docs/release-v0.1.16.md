@@ -7,9 +7,9 @@ not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.16` final is ready for publication after this release-record PR and its
-post-merge `main` Windows Harness pass. Publication must target the post-merge
-`main` SHA that contains this record and has passed Windows Harness.
+`v0.1.16` final is published. The release-record PR, post-merge `main` Windows
+Harness, GitHub release publication, release metadata verification, and remote
+tag verification passed.
 
 The direct final path is allowed because `v0.1.16-rc.0` is published, AE0-AE2
 recorded final-readiness evidence, deterministic gates passed, fresh manual
@@ -23,7 +23,7 @@ publication, do not publish final. Prepare `v0.1.16-rc.1` instead. If such a
 regression is found after publication, publish a follow-up release candidate
 instead of retagging `v0.1.16`.
 
-Publication status: ready for final publication; not yet published.
+Publication status: published final release.
 
 ## Candidate Metadata
 
@@ -33,9 +33,10 @@ Publication status: ready for final publication; not yet published.
 | Stage | AE3 final release record and publication readiness |
 | Evidence date | 2026-05-09, Asia/Shanghai |
 | Current candidate `main` SHA before this record | `1ea902a8630b9d0b18397af69cfcd84a9ce4d24a` |
-| Publication status | Ready for final publication; not yet published |
-| Release URL | Pending until GitHub release publication |
-| Final tag target | Pending until this record PR merges and post-merge Windows Harness passes |
+| Publication status | Published final release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16 |
+| Published at | 2026-05-09T09:31:17Z |
+| Final tag target | `255f2a01cddde330d756a87359c4d3a8be4b11a2` |
 | Previous prerelease baseline | `v0.1.16-rc.0` |
 | Previous prerelease URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16-rc.0 |
 | `v0.1.16-rc.0` tag target | `70caf364f68d8c159eb74bbbc23e7469db22a244` |
@@ -51,6 +52,9 @@ Publication status: ready for final publication; not yet published.
 | AE2 PR | https://github.com/YSCJRH/WinChronicle/pull/146 |
 | AE2 PR Windows Harness | Passed, run `25597418104`, https://github.com/YSCJRH/WinChronicle/actions/runs/25597418104 |
 | AE2 post-merge `main` Windows Harness | Passed, run `25597463319`, https://github.com/YSCJRH/WinChronicle/actions/runs/25597463319 |
+| AE3 PR | https://github.com/YSCJRH/WinChronicle/pull/147 |
+| AE3 PR Windows Harness | Passed, run `25597623991`, https://github.com/YSCJRH/WinChronicle/actions/runs/25597623991 |
+| AE3 post-merge `main` Windows Harness | Passed, run `25597678444`, https://github.com/YSCJRH/WinChronicle/actions/runs/25597678444 |
 | AD5 release-candidate PR | https://github.com/YSCJRH/WinChronicle/pull/140 |
 | AD5 release-candidate PR Windows Harness | Passed, run `25596082939`, https://github.com/YSCJRH/WinChronicle/actions/runs/25596082939 |
 | AD5 final pre-publication `main` Windows Harness | Passed, run `25596273094`, https://github.com/YSCJRH/WinChronicle/actions/runs/25596273094 |
@@ -80,8 +84,9 @@ Environment:
 | `git diff --check` | Pass | no whitespace errors |
 
 The AE1 local deterministic gates, AE1 PR Windows Harness, AE1 post-merge
-`main` Windows Harness, AE2 PR Windows Harness, and AE2 post-merge `main`
-Windows Harness passed.
+`main` Windows Harness, AE2 PR Windows Harness, AE2 post-merge `main` Windows
+Harness, AE3 PR Windows Harness, AE3 post-merge `main` Windows Harness, and
+GitHub release publication passed.
 
 ## Manual UIA Smoke Gates
 
@@ -187,10 +192,9 @@ This final release does not expand the capture surface beyond `v0.1.16-rc.0`.
 
 ## Rollback Notes
 
-- Keep `v0.1.16-rc.0` as the latest published prerelease baseline until
-  `v0.1.16` final publication is verified.
-- Keep `v0.1.15` as the latest stable release until `v0.1.16` final
-  publication is verified.
+- Keep `v0.1.16` as the latest stable release after publication verification.
+- Keep `v0.1.16-rc.0` as historical prerelease evidence.
+- Keep `v0.1.15` as the previous stable release.
 - Do not retag or modify `v0.1.16-rc.0`; publish `v0.1.16-rc.1` if a
   replacement candidate is needed.
 - If a regression is found before final publication and requires product code,
@@ -206,8 +210,8 @@ This final release does not expand the capture surface beyond `v0.1.16-rc.0`.
 
 ## Release Decision Summary
 
-- Release path: direct `v0.1.16` final after explicit approval, this
-  release-record PR, and post-merge `main` Windows Harness pass.
+- Release path: direct `v0.1.16` final published after explicit approval, the
+  release-record PR, and post-merge `main` Windows Harness passed.
 - Fallback path: `v0.1.16-rc.1` if any product or contract change is required.
 - Deterministic gates: passed locally and in GitHub Actions.
 - Manual hard gates: Notepad passed; Edge passed.
@@ -221,6 +225,6 @@ This final release does not expand the capture surface beyond `v0.1.16-rc.0`.
 - Privacy/scope confirmation: unchanged and recorded above.
 - Publication approval: standing user goal authorizes publishing after review
   and validation.
-- Release URL: pending until GitHub release publication.
-- Final tag target: pending until this release-record PR merges and post-merge
-  Windows Harness passes.
+- GitHub release publication: passed.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16.
+- Final tag target: `255f2a01cddde330d756a87359c4d3a8be4b11a2`.

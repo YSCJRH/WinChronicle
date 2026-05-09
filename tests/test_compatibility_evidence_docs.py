@@ -25,6 +25,7 @@ V0115_RELEASE = ROOT / "docs" / "release-v0.1.15.md"
 V0116_RC0_RELEASE = ROOT / "docs" / "release-candidate-v0.1.16-rc.0.md"
 V0116_FINAL_PLAN = ROOT / "docs" / "next-round-plan-v0.1.16-final-release.md"
 V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
+POST_V0116_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.16.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -37,11 +38,11 @@ def test_release_checklist_requires_compatibility_evidence():
         "exact read-only MCP tool list",
         "Phase 6 screenshot/OCR work remains specification-only",
         "product targeted capture flags are exposed",
-        "v0.1.14 maintenance release record",
         "v0.1.15 maintenance release record",
         "v0.1.16 final release record",
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
+        "Post-v0.1.16 maintenance plan",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -64,11 +65,11 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Phase 6 remains specification-only",
         "no screenshot capture code",
         "OCR engine integration",
-        "v0.1.14 maintenance release record",
         "v0.1.15 maintenance release record",
         "v0.1.16 final release record",
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
+        "Post-v0.1.16 maintenance plan",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -689,13 +690,15 @@ def test_v0116_final_release_plan_keeps_direct_final_gated_and_scoped():
         "Windows Harness run `25596579705` passed",
         "documentation and documentation-test evidence only",
         "No product code, schemas, CLI/MCP JSON shape, helper/watcher behavior, privacy runtime behavior, or capture surfaces changed",
-        "Direct final release can proceed only after fresh final gates",
+        "This plan was the active final-release cursor after `v0.1.16-rc.0`",
+        "completed historical final-release evidence",
+        "Direct final release proceeded only after fresh final gates",
         "explicit final manual smoke evidence",
-        "Stage status: AE3 in progress",
-        "`docs/release-v0.1.16.md` is prepared for review",
-        "Next atomic task: merge the AE3 release-record PR",
-        "If final-readiness work requires any product or contract change",
-        "prepare `v0.1.16-rc.1` instead",
+        "Stage status: AE4 complete",
+        "`v0.1.16` is published as the latest stable release",
+        "Next atomic task: start the post-`v0.1.16` maintenance cursor",
+        "If future release-readiness work requires any product or contract change",
+        "prepare a new release-candidate path instead",
         "Do not publish or retag `v0.1.16` during AE0",
         "Rerun fresh final manual UIA smoke instead of automatically inheriting",
         "Do not commit raw helper JSON, raw watcher JSONL, screenshots, OCR output",
@@ -718,6 +721,11 @@ def test_v0116_final_release_plan_keeps_direct_final_gated_and_scoped():
         "PR #146 Windows Harness run `25597418104`",
         "post-AE2 `main` Windows Harness concluded `success`",
         "Added `docs/release-v0.1.16.md`",
+        "PR #147 Windows Harness run `25597623991`",
+        "post-AE3 `main` Windows Harness concluded `success`",
+        "gh release create v0.1.16",
+        "published at `2026-05-09T09:31:17Z`",
+        "git ls-remote --tags origin v0.1.16",
     ):
         assert phrase in normalized
 
@@ -730,13 +738,14 @@ def test_v0116_final_release_record_is_ready_and_scoped():
     normalized = _normalized(text)
 
     for phrase in (
-        "`v0.1.16` final is ready for publication",
-        "Publication status: ready for final publication; not yet published.",
+        "`v0.1.16` final is published.",
+        "Publication status: published final release.",
         "Release | `v0.1.16`",
         "Stage | AE3 final release record and publication readiness",
         "Current candidate `main` SHA before this record | `1ea902a8630b9d0b18397af69cfcd84a9ce4d24a`",
-        "Release URL | Pending until GitHub release publication",
-        "Final tag target | Pending until this record PR merges",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16",
+        "Published at | 2026-05-09T09:31:17Z",
+        "Final tag target | `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
         "Previous prerelease baseline | `v0.1.16-rc.0`",
         "`v0.1.16-rc.0` tag target | `70caf364f68d8c159eb74bbbc23e7469db22a244`",
         "Previous stable release | `v0.1.15`",
@@ -745,6 +754,8 @@ def test_v0116_final_release_record_is_ready_and_scoped():
         "AE1 PR Windows Harness | Passed, run `25597196866`",
         "AE2 PR Windows Harness | Passed, run `25597418104`",
         "AE2 post-merge `main` Windows Harness | Passed, run `25597463319`",
+        "AE3 PR Windows Harness | Passed, run `25597623991`",
+        "AE3 post-merge `main` Windows Harness | Passed, run `25597678444`",
         "AD5 final pre-publication `main` Windows Harness | Passed, run `25596273094`",
         "`python -m pytest -q` | Pass | `151 passed`",
         "Notepad targeted UIA smoke | Pass",
@@ -763,6 +774,38 @@ def test_v0116_final_release_record_is_ready_and_scoped():
         "Do not retag or modify `v0.1.16-rc.0`",
         "Fallback path: `v0.1.16-rc.1`",
         "Publication approval: standing user goal authorizes publishing after review",
+        "GitHub release publication: passed.",
+        "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16.",
+        "Final tag target: `255f2a01cddde330d756a87359c4d3a8be4b11a2`.",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
+def test_post_v0116_plan_is_active_without_expanding_scope():
+    text = POST_V0116_PLAN.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "`v0.1.16` is published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.16",
+        "tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
+        "published at `2026-05-09T09:31:17Z`",
+        "Current stage: AF0 - Post-v0.1.16 Published Baseline Cursor.",
+        "Stage status: AF0 ready to start",
+        "Next atomic task: start AF0",
+        "Stage AF0 - Post-v0.1.16 Baseline Cursor",
+        "Stage AF1 - Public Metadata And Evidence Freshness Follow-up",
+        "Stage AF2 - Helper And Watcher Preview Diagnostics Review",
+        "Stage AF3 - MCP And Memory Contract Review",
+        "Stage AF4 - Compatibility Guardrail Sweep",
+        "MCP tool list remains unchanged and read-only",
+        "Do not implement screenshot capture, OCR, audio recording",
+        "Phase 6 remains privacy spec/scorecard only",
+        "gh release view v0.1.16",
+        "git rev-parse v0.1.16",
+        "git ls-remote --tags origin v0.1.16",
     ):
         assert phrase in normalized
 

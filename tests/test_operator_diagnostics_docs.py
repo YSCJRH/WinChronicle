@@ -47,6 +47,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Deterministic demo](deterministic-demo.md)" in quickstart
     assert "[Roadmap](roadmap.md)" in quickstart
     assert "[Contributing](../CONTRIBUTING.md)" in quickstart
+    assert "[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)" in quickstart
     assert (
         "[v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md)"
         in quickstart
@@ -128,6 +129,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Deterministic demo](docs/deterministic-demo.md)" in readme
     assert "[Roadmap](docs/roadmap.md)" in readme
     assert "[Contributing](CONTRIBUTING.md)" in readme
+    assert (
+        "[Post-v0.1.16 maintenance plan](docs/next-round-plan-post-v0.1.16.md)"
+        in readme
+    )
     assert (
         "[v0.1.16 final-release plan](docs/next-round-plan-v0.1.16-final-release.md)"
         in readme
@@ -216,13 +221,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     historical_section = quickstart.split("## Historical Release Records", 1)[1]
     readme_intro_normalized = " ".join(readme_intro.split())
 
-    assert "active `v0.1.16` final-release plan" in readme_intro_normalized
-    assert "prepared `v0.1.16` final release record" in readme_intro_normalized
-    assert "completed post-v0.1.15 maintenance plan" in readme_intro_normalized
-    assert "current `v0.1.16-rc.0` release-candidate record" in readme_intro_normalized
-    assert "latest published `v0.1.15` release record" in readme_intro_normalized
-    assert "previous published `v0.1.14` release record" in readme_intro_normalized
-    assert "completed post-v0.1.14 maintenance plan" in readme_intro_normalized
+    assert "active post-v0.1.16 maintenance plan" in readme_intro_normalized
+    assert "latest published `v0.1.16` release record" in readme_intro_normalized
+    assert "completed `v0.1.16` final-release plan" in readme_intro_normalized
+    assert "historical `v0.1.16-rc.0` release-candidate record" in readme_intro_normalized
+    assert "previous published `v0.1.15` release record" in readme_intro_normalized
     assert "older completed maintenance plans" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
@@ -230,6 +233,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.13 maintenance release record" in readme_operator_docs
     assert "v0.1.14 maintenance release record" in readme_operator_docs
     assert "v0.1.15 maintenance release record" in readme_operator_docs
+    assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
     assert "v0.1.16 final-release plan" in readme_operator_docs
     assert "v0.1.16 final release record" in readme_operator_docs
     assert "v0.1.16-rc.0 release candidate record" in readme_operator_docs
@@ -277,10 +281,13 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.13") < readme_operator_docs.index(
         "Blueprint gap audit after v0.1.12"
     )
-    assert readme_operator_docs.index("v0.1.16 final-release plan") < readme_operator_docs.index(
+    assert readme_operator_docs.index("Post-v0.1.16 maintenance plan") < readme_operator_docs.index(
         "v0.1.16 final release record"
     )
     assert readme_operator_docs.index("v0.1.16 final release record") < readme_operator_docs.index(
+        "v0.1.16 final-release plan"
+    )
+    assert readme_operator_docs.index("v0.1.16 final-release plan") < readme_operator_docs.index(
         "Post-v0.1.15 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.15 maintenance plan") < readme_operator_docs.index(
@@ -370,8 +377,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert readme_operator_docs.index("Post-v0.1.6 maintenance plan") < readme_operator_docs.index(
         "v0.1.6 maintenance release record"
     )
-    assert "next-round-plan-v0.1.16-final-release.md" in current_section
+    assert "next-round-plan-post-v0.1.16.md" in current_section
     assert "release-v0.1.16.md" in current_section
+    assert "next-round-plan-v0.1.16-final-release.md" in current_section
     assert "next-round-plan-post-v0.1.15.md" in current_section
     assert "release-candidate-v0.1.16-rc.0.md" in current_section
     assert "next-round-plan-post-v0.1.14.md" in current_section
@@ -455,14 +463,14 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-v0.1.0-final.md" in historical_section
     assert "release-v0.1.13.md" not in checklist
     assert "release-v0.1.13.md" not in evidence
-    assert "release-v0.1.14.md" in checklist
-    assert "release-v0.1.14.md" in evidence
     assert "release-v0.1.15.md" in checklist
     assert "release-v0.1.15.md" in evidence
     assert "release-v0.1.16.md" in checklist
     assert "release-v0.1.16.md" in evidence
     assert "release-candidate-v0.1.16-rc.0.md" in checklist
     assert "release-candidate-v0.1.16-rc.0.md" in evidence
+    assert "next-round-plan-post-v0.1.16.md" in checklist
+    assert "next-round-plan-post-v0.1.16.md" in evidence
     assert "next-round-plan-v0.1.16-final-release.md" in checklist
     assert "next-round-plan-v0.1.16-final-release.md" in evidence
     assert "next-round-plan-post-v0.1.15.md" in checklist
@@ -471,14 +479,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.14.md" in evidence
     assert "next-round-plan-post-v0.1.13.md" in checklist
     assert "next-round-plan-post-v0.1.13.md" in evidence
-    assert "v0.1.15` is the latest published release" in checklist
-    assert "v0.1.15` is the latest published release" in evidence
-    assert "v0.1.16-rc.0` is the current published prerelease candidate" in checklist
-    assert "v0.1.16-rc.0` is the current published prerelease candidate" in evidence
-    assert "active `v0.1.16` final-release cursor records" in checklist
-    assert "active `v0.1.16` final-release cursor records" in evidence
-    assert "prepared `v0.1.16` final release record is ready for publication review" in checklist
-    assert "prepared `v0.1.16` final release record is ready for publication review" in evidence
+    assert "v0.1.16` is the latest published release" in checklist
+    assert "v0.1.16` is the latest published release" in evidence
+    assert "v0.1.16-rc.0` is historical prerelease evidence" in checklist
+    assert "v0.1.16-rc.0` is historical prerelease evidence" in evidence
+    assert "active post-v0.1.16 execution cursor records" in checklist
+    assert "active post-v0.1.16 execution cursor records" in evidence
     assert "public metadata and evidence-freshness checks" in checklist
     assert "public metadata evidence should record" in evidence
     assert "next-round-plan-post-v0.1.12.md" in checklist
@@ -1502,18 +1508,19 @@ def test_v0116_final_release_plan_is_active_without_expanding_scope():
         "Windows Harness run `25596579705` passed on that SHA",
         "diff from `v0.1.16-rc.0` to current `main` is documentation and documentation-test evidence only",
         "No product code, schemas, CLI/MCP JSON shape, helper/watcher behavior, privacy runtime behavior, or capture surfaces changed",
-        "This plan is the active final-release cursor after `v0.1.16-rc.0`",
-        "Direct final release can proceed only after fresh final gates",
-        "If final-readiness work requires any product or contract change, stop the direct final path and prepare `v0.1.16-rc.1`",
-        "Current stage: AE3 - v0.1.16 Final Release Record And Publication.",
-        "Stage status: AE3 in progress",
-        "`v0.1.16` is not published",
-        "`docs/release-v0.1.16.md` is prepared for review",
-        "AE2 manual smoke evidence was recorded in PR #146",
-        "merged as `1ea902a8630b9d0b18397af69cfcd84a9ce4d24a`",
-        "Windows Harness run `25597463319` passed",
-        "the `v0.1.16` final release record cites AE1 deterministic gates",
-        "Next atomic task: merge the AE3 release-record PR",
+        "This plan was the active final-release cursor after `v0.1.16-rc.0`",
+        "completed historical final-release evidence",
+        "Direct final release proceeded only after fresh final gates",
+        "If future release-readiness work requires any product or contract change, stop the direct final path and prepare a new release-candidate path instead",
+        "Current stage: AE4 - v0.1.16 Final Publication Reconciliation.",
+        "Stage status: AE4 complete",
+        "`v0.1.16` is published as the latest stable release",
+        "GitHub release publication passed for `v0.1.16`",
+        "AE3 release-record PR #147 merged as",
+        "`255f2a01cddde330d756a87359c4d3a8be4b11a2`, post-merge Windows Harness run",
+        "`25597678444` passed, and GitHub release publication passed for",
+        "Last validation: `v0.1.16` release metadata",
+        "Next atomic task: start the post-`v0.1.16` maintenance cursor",
         "Stage AE0 - Post-v0.1.16-rc.0 Final Baseline Decision",
         "Stage AE1 - Deterministic Final Gate Refresh",
         "Stage AE2 - Manual Final Smoke Refresh",
@@ -1530,7 +1537,7 @@ def test_v0116_final_release_plan_is_active_without_expanding_scope():
         "Product CLI still does not expose targeted `--hwnd`, `--pid`",
         "Do not implement screenshot capture, OCR, audio recording",
         "Phase 6 remains privacy spec/scorecard only",
-        "AE0: docs tests confirm this final-release plan is the active cursor",
+        "AE0: docs tests confirmed this final-release plan was the active cursor",
         "AE1: deterministic gates pass on the current final target",
         "AE2: fresh final manual UIA smoke is recorded",
         "AE3: final release record includes local, PR, post-merge",
@@ -1579,7 +1586,14 @@ def test_v0116_final_release_plan_is_active_without_expanding_scope():
         "post-AE2 `main` Windows Harness concluded `success`",
         "Stage AE3 final release record preparation:",
         "Added `docs/release-v0.1.16.md`",
-        "Publication remains pending until this AE3 PR",
+        "Publication was pending until this AE3 PR",
+        "Stage AE3 completion:",
+        "PR #147 Windows Harness run `25597623991`",
+        "post-AE3 `main` Windows Harness concluded `success`",
+        "Stage AE3 final publication:",
+        "gh release create v0.1.16",
+        "published at `2026-05-09T09:31:17Z`",
+        "git ls-remote --tags origin v0.1.16",
     ):
         assert expected in normalized
 
@@ -2350,8 +2364,10 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "stable baseline is `v0.1.15`",
-        "`v0.1.15` is the latest published release",
+        "stable baseline is `v0.1.16`",
+        "`v0.1.16` is the latest published release",
+        "`v0.1.16-rc.0` is historical prerelease evidence",
+        "active post-v0.1.16 execution cursor records `v0.1.16` publication",
         "completed post-v0.1.14 execution cursor records `v0.1.15` publication",
         "PR #132, PR #133, publication reconciliation PR #134, post-merge Windows",
         "Harness run `25589775129`",
@@ -2414,8 +2430,10 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "`v0.1.15` is the stable baseline",
-        "`v0.1.15` is the latest published release",
+        "`v0.1.16` is the stable baseline",
+        "`v0.1.16` is the latest published release",
+        "`v0.1.16-rc.0` is historical prerelease evidence",
+        "active post-v0.1.16 execution cursor records `v0.1.16` publication",
         "completed post-v0.1.14 execution cursor records `v0.1.15` publication",
         "PR #132, PR #133, publication reconciliation PR #134, post-merge Windows",
         "Harness run `25589775129`",
@@ -2502,15 +2520,15 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         assert gate in ledger
 
     for expected in (
-        "Stable release baseline | `v0.1.15`",
-        "Current final-release plan | [v0.1.16 final-release plan]",
-        "Completed prerelease plan | [Post-v0.1.15 maintenance plan]",
-        "Latest completed maintenance plan | [Post-v0.1.14 maintenance plan]",
-        "Current prerelease record | [v0.1.16-rc.0 release candidate record]",
-        "Published release record | [v0.1.15 maintenance release record]",
-        "Latest published release record | [v0.1.15 maintenance release record]",
-        "Latest full manual UIA smoke source | [v0.1.16 final-release plan]",
-        "Last freshness decision | For the active `v0.1.16` final-release path",
+        "Stable release baseline | `v0.1.16`",
+        "Current maintenance plan | [Post-v0.1.16 maintenance plan]",
+        "Completed final-release plan | [v0.1.16 final-release plan]",
+        "Previous prerelease record | [v0.1.16-rc.0 release candidate record]",
+        "Previous maintenance plan | [Post-v0.1.15 maintenance plan]",
+        "Published release record | [v0.1.16 final release record]",
+        "Latest published release record | [v0.1.16 final release record]",
+        "Latest full manual UIA smoke source | [v0.1.16 final release record]",
+        "Last freshness decision | For the published `v0.1.16` final release",
         "AE2 refreshed manual UIA smoke",
         "Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning",
         "manual smoke was explicitly accepted by the S4 release record",
@@ -2518,9 +2536,9 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "then is explicitly accepted by the U4",
         "manual smoke is explicitly accepted by the W4",
         "manual smoke is accepted by the X1 freshness decision as",
-        "Next freshness decision | The AE3 `v0.1.16` final release record must cite the AE2 smoke result",
-        "Fresh for active `v0.1.16` final-release path in AE2",
-        "Fresh diagnostic for active `v0.1.16` final-release path in AE2",
+        "Next freshness decision | Future post-v0.1.16 maintenance or release-readiness work must decide whether AE2 smoke remains current",
+        "Fresh for published `v0.1.16` final release in AE2",
+        "Fresh diagnostic for published `v0.1.16` final release in AE2",
         "Pass; `captures_written: 3`, `heartbeats: 6`, `duplicates_skipped: 1`, `denylisted_skipped: 0`",
         "manual smoke is explicitly accepted by the T4 release-readiness\n  record",
         "For the completed post-v0.1.7 compatible maintenance path toward `v0.1.8`",
