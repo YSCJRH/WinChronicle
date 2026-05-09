@@ -67,6 +67,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Compatibility guardrail sweep after v0.1.18](compatibility-guardrail-sweep-post-v0.1.18.md)"
         in quickstart
     )
+    assert (
+        "[Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md)"
+        in quickstart
+    )
     assert "[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md)"
@@ -215,6 +219,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[Compatibility guardrail sweep after v0.1.18](docs/compatibility-guardrail-sweep-post-v0.1.18.md)"
+        in readme
+    )
+    assert (
+        "[Release-readiness decision after v0.1.18](docs/release-readiness-decision-post-v0.1.18.md)"
         in readme
     )
     assert (
@@ -387,6 +395,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.18 helper/watcher diagnostics sweep" in readme_intro_normalized
     assert "current post-v0.1.18 MCP/memory contract sweep" in readme_intro_normalized
     assert "current post-v0.1.18 compatibility guardrail sweep" in readme_intro_normalized
+    assert "current post-v0.1.18 release-readiness decision" in readme_intro_normalized
     assert "completed post-v0.1.17 maintenance plan" in readme_intro_normalized
     assert "completed post-v0.1.16 maintenance plan and publication reconciliation" in readme_intro_normalized
     assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
@@ -424,6 +433,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Helper and watcher diagnostics sweep after v0.1.18" in readme_operator_docs
     assert "MCP and memory contract sweep after v0.1.18" in readme_operator_docs
     assert "Compatibility guardrail sweep after v0.1.18" in readme_operator_docs
+    assert "Release-readiness decision after v0.1.18" in readme_operator_docs
     assert "Post-v0.1.17 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.17" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.17" in readme_operator_docs
@@ -510,6 +520,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Compatibility guardrail sweep after v0.1.18"
     )
     assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.18") < readme_operator_docs.index(
+        "Release-readiness decision after v0.1.18"
+    )
+    assert readme_operator_docs.index("Release-readiness decision after v0.1.18") < readme_operator_docs.index(
         "Post-v0.1.17 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.17 maintenance plan") < readme_operator_docs.index(
@@ -722,6 +735,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "helper-watcher-diagnostics-sweep-post-v0.1.18.md" in current_section
     assert "mcp-memory-contract-sweep-post-v0.1.18.md" in current_section
     assert "compatibility-guardrail-sweep-post-v0.1.18.md" in current_section
+    assert "release-readiness-decision-post-v0.1.18.md" in current_section
     assert "next-round-plan-post-v0.1.17.md" in current_section
     assert "public-metadata-audit-post-v0.1.17.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in current_section
@@ -851,6 +865,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "mcp-memory-contract-sweep-post-v0.1.18.md" in evidence
     assert "compatibility-guardrail-sweep-post-v0.1.18.md" in checklist
     assert "compatibility-guardrail-sweep-post-v0.1.18.md" in evidence
+    assert "release-readiness-decision-post-v0.1.18.md" in checklist
+    assert "release-readiness-decision-post-v0.1.18.md" in evidence
     assert "release-candidate-v0.1.16-rc.0.md" in checklist
     assert "release-candidate-v0.1.16-rc.0.md" in evidence
     assert "next-round-plan-post-v0.1.17.md" in checklist
@@ -923,6 +939,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.18 MCP/memory contract review" in evidence
     assert "current post-v0.1.18 compatibility guardrail review" in checklist
     assert "current post-v0.1.18 compatibility guardrail review" in evidence
+    assert "current post-v0.1.18 release-readiness decision" in checklist
+    assert "current post-v0.1.18 release-readiness decision" in evidence
+    assert "do\n  not warrant a new release-readiness or publication path" in checklist
+    assert "do\n  not warrant a new release-readiness or publication path" in evidence
+    assert "`v0.1.18` must not\n  be retagged" in checklist
+    assert "`v0.1.18` must not\n  be retagged" in evidence
     assert "completed post-v0.1.17 execution cursor records" in checklist
     assert "completed post-v0.1.17 execution cursor records" in evidence
     assert "PR #188" in checklist
@@ -3703,6 +3725,67 @@ def test_post_v017_release_readiness_decision_records_no_release_path():
         assert boundary in normalized
 
 
+def test_post_v018_release_readiness_decision_records_no_release_path():
+    decision = (
+        ROOT / "docs" / "release-readiness-decision-post-v0.1.18.md"
+    ).read_text(encoding="utf-8")
+    normalized = " ".join(decision.split())
+
+    for expected in (
+        "Release-Readiness Decision After v0.1.18",
+        "AH5 record",
+        "do not start a new release-readiness or publication path",
+        "Do not retag `v0.1.18`",
+        "documentation, evidence, deterministic-test, and compatibility guardrail maintenance only",
+        "do not change runtime code",
+        "Is a release-readiness path warranted? | No.",
+        "Is immediate publication warranted? | No.",
+        "Should `v0.1.18` be retagged? | No.",
+        "Should the next release-readiness target be chosen here? | No.",
+        "Is fresh manual UIA smoke decided here? | No.",
+        "Start the next blueprint implementation lane",
+        "`docs/` | Added AH1 public metadata audit",
+        "`tests/` | Hardened documentation and compatibility assertions",
+        "`src/winchronicle`, `resources`, `pyproject.toml` | No diff",
+        "Latest published release remains",
+        "https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18",
+        "`v0.1.18` is not a draft or prerelease",
+        "AH4 completion merged as `a773bcd6535bcac9bdfef87162aa1c5f8fc23369`",
+        "through PR #193 at `2026-05-09T23:33:38Z`",
+        "AH4 PR Windows Harness run `25614535578` concluded `success`",
+        "post-merge `main` Windows Harness run `25614585178`",
+        "git fetch origin tag v0.1.18",
+        "git diff --name-status v0.1.18..HEAD",
+        "runtime/resource/version diff commands printed no files",
+        "focused docs/version validation reported 91 tests",
+        "full pytest reported 213 tests",
+        "stale AH4 cursor scan returned no matches",
+        "full deterministic harness passed",
+        "AH5 does not authorize implementation of screenshot capture",
+        "privacy-neutral guardrails and evidence maintenance",
+        "Start the next blueprint implementation lane with contracts",
+        "Do not implement screenshot capture, OCR, raw screenshot caches",
+    ):
+        assert expected in normalized
+
+    for boundary in (
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network/cloud upload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service install",
+        "polling capture loops",
+        "default background capture",
+        "MCP write tools",
+        "arbitrary file read tools",
+    ):
+        assert boundary in normalized
+
+
 def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
     checklist = (ROOT / "docs" / "release-checklist.md").read_text(encoding="utf-8")
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
@@ -3898,8 +3981,9 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.18]",
         "Current MCP/memory contract sweep | [MCP and memory contract sweep after v0.1.18]",
         "Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.18]",
-        "Latest release-readiness decision | [v0.1.18 maintenance release record]",
-        "Previous release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
+        "Latest release-readiness decision | [Release-readiness decision after v0.1.18]",
+        "Previous release-readiness decision | [v0.1.18 maintenance release record]",
+        "Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.17 maintenance plan]",
         "Previous pre-v0.1.17 maintenance plan | [Post-v0.1.16 maintenance plan]",
         "Previous public metadata audit | [Public metadata audit after v0.1.17]",
@@ -3961,6 +4045,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "does not decide manual smoke freshness",
         "The `v0.1.18` release-readiness record reran fresh hard-gate manual UIA",
         "smoke because privacy-check validation behavior changed after `v0.1.17`",
+        "The post-v0.1.18 release-readiness decision does not open a new publication",
+        "does not make a fresh manual UIA smoke\n  decision",
         "Deterministic harness smoke changes require fresh deterministic gate",
     ):
         assert expected in ledger

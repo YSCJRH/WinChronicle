@@ -32,6 +32,9 @@ PUBLIC_METADATA_V0118 = ROOT / "docs" / "public-metadata-audit-post-v0.1.18.md"
 HELPER_WATCHER_V0118 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.18.md"
 MCP_MEMORY_V0118 = ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.18.md"
 COMPATIBILITY_V0118 = ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.18.md"
+RELEASE_DECISION_V0118 = (
+    ROOT / "docs" / "release-readiness-decision-post-v0.1.18.md"
+)
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
@@ -87,6 +90,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Helper and watcher diagnostics sweep after v0.1.18",
         "MCP and memory contract sweep after v0.1.18",
         "Compatibility guardrail sweep after v0.1.18",
+        "Release-readiness decision after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -136,6 +140,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Helper and watcher diagnostics sweep after v0.1.18",
         "MCP and memory contract sweep after v0.1.18",
         "Compatibility guardrail sweep after v0.1.18",
+        "Release-readiness decision after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -1012,13 +1017,13 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "publication reconciliation landed on `main` as `f40e165ce35464e5eb8df65f10ef153f8145177b`",
         "PR #188 Windows Harness run `25612920731` passed",
         "post-merge `main` Windows Harness run `25612977738`",
-        "Current stage: AH4 - Compatibility Guardrail Sweep.",
-        "Stage status: AH4 in progress.",
-        "Last completed evidence: AH3 MCP/memory contract review PR #192 merged as",
-        "PR Windows Harness run `25614178190` passed",
-        "post-merge `main` Windows Harness run `25614220171` passed",
-        "Next atomic task: land this AH4 compatibility guardrail review PR",
-        "post-v0.1.18 release-readiness stage is warranted in AH5",
+        "Current stage: AH5 - Release-Readiness Decision.",
+        "Stage status: AH5 in progress.",
+        "Last completed evidence: AH4 compatibility guardrail review PR #193 merged as",
+        "PR Windows Harness run `25614535578` passed",
+        "post-merge `main` Windows Harness run `25614585178` passed",
+        "Next atomic task: land this AH5 release-readiness decision PR",
+        "start the next blueprint implementation lane",
         "Stage AH0 - Post-v0.1.18 Baseline Cursor",
         "Stage AH1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AH2 - Helper And Watcher Preview Diagnostics Review",
@@ -1101,6 +1106,22 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "passed, 211 tests",
         "printed no files, confirming AH4 is docs/tests only",
         "current-entry stale AH3/current post-v0.1.17 compatibility wording scan",
+        "python harness/scripts/run_harness.py",
+        "Stage AH4 completion:",
+        "gh pr view 193",
+        "PR #193 merged at `2026-05-09T23:33:38Z`",
+        "gh run view 25614535578",
+        "post-AH4 `main` Windows Harness concluded `success`",
+        "Stage AH5 initialization:",
+        "gh release view v0.1.18",
+        "git fetch origin tag v0.1.18",
+        "git diff --name-status v0.1.18..HEAD",
+        "printed no files, confirming no runtime/resource/version release trigger",
+        "Stage AH5 local validation:",
+        "passed, 91 tests",
+        "passed, 213 tests",
+        "printed no files, confirming AH5 is docs/tests only",
+        "current-entry stale AH4/current post-v0.1.18 release-readiness wording scan",
         "python harness/scripts/run_harness.py",
     ):
         assert phrase in normalized
@@ -2094,6 +2115,66 @@ def test_release_readiness_decision_post_v017_declines_release_path():
         "AG5 does not authorize implementation of screenshot capture",
         "privacy-neutral guardrails and evidence maintenance",
         "Start the Phase 6 privacy-enrichment contract preflight",
+        "Do not implement screenshot capture, OCR, raw screenshot caches",
+    ):
+        assert phrase in normalized
+
+    for boundary in (
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network/cloud upload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service install",
+        "polling capture loops",
+        "default background capture",
+        "MCP write tools",
+        "arbitrary file read tools",
+    ):
+        assert boundary in normalized
+
+
+def test_release_readiness_decision_post_v018_declines_release_path():
+    text = RELEASE_DECISION_V0118.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Release-Readiness Decision After v0.1.18",
+        "AH5 record",
+        "do not start a new release-readiness or publication path",
+        "Do not retag `v0.1.18`",
+        "documentation, evidence, deterministic-test, and compatibility guardrail maintenance only",
+        "do not change runtime code",
+        "Is a release-readiness path warranted? | No.",
+        "Is immediate publication warranted? | No.",
+        "Should `v0.1.18` be retagged? | No.",
+        "Should the next release-readiness target be chosen here? | No.",
+        "Is fresh manual UIA smoke decided here? | No.",
+        "Start the next blueprint implementation lane",
+        "`docs/` | Added AH1 public metadata audit",
+        "`tests/` | Hardened documentation and compatibility assertions",
+        "`src/winchronicle`, `resources`, `pyproject.toml` | No diff",
+        "Latest published release remains",
+        "https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18",
+        "`v0.1.18` is not a draft or prerelease",
+        "remain `0.1.18`",
+        "AH4 completion merged as `a773bcd6535bcac9bdfef87162aa1c5f8fc23369`",
+        "through PR #193 at `2026-05-09T23:33:38Z`",
+        "AH4 PR Windows Harness run `25614535578` concluded `success`",
+        "post-merge `main` Windows Harness run `25614585178`",
+        "git fetch origin tag v0.1.18",
+        "git diff --name-status v0.1.18..HEAD",
+        "runtime/resource/version diff commands printed no files",
+        "focused docs/version validation reported 91 tests",
+        "full pytest reported 213 tests",
+        "stale AH4 cursor scan returned no matches",
+        "full deterministic harness passed",
+        "AH5 does not authorize implementation of screenshot capture",
+        "privacy-neutral guardrails and evidence maintenance",
+        "Start the next blueprint implementation lane with contracts",
         "Do not implement screenshot capture, OCR, raw screenshot caches",
     ):
         assert phrase in normalized

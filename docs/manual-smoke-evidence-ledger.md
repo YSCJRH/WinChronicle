@@ -19,8 +19,9 @@ or token canaries.
 | Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.18](helper-watcher-diagnostics-sweep-post-v0.1.18.md) |
 | Current MCP/memory contract sweep | [MCP and memory contract sweep after v0.1.18](mcp-memory-contract-sweep-post-v0.1.18.md) |
 | Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.18](compatibility-guardrail-sweep-post-v0.1.18.md) |
-| Latest release-readiness decision | [v0.1.18 maintenance release record](release-v0.1.18.md) |
-| Previous release-readiness decision | [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md) |
+| Latest release-readiness decision | [Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md) |
+| Previous release-readiness decision | [v0.1.18 maintenance release record](release-v0.1.18.md) |
+| Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md) |
 | Previous maintenance plan | [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md) |
 | Previous pre-v0.1.17 maintenance plan | [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md) |
 | Previous public metadata audit | [Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md) |
@@ -96,6 +97,9 @@ smoke. These command patterns are evidence shapes only; replace
 - The published `v0.1.18` maintenance release keeps that manual smoke as the
   latest full manual UIA smoke source, with publication verified against the
   final tag target and GitHub release metadata.
+- The post-v0.1.18 release-readiness decision does not open a new publication
+  path, does not retag `v0.1.18`, and does not make a fresh manual UIA smoke
+  decision because AH1-AH4 are docs/tests/evidence guardrails only.
 - Fresh manual smoke must use the
   [Manual smoke evidence template](manual-smoke-evidence-template.md).
 - Inherited evidence can provide context, but it is not current evidence unless

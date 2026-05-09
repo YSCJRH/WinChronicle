@@ -29,19 +29,20 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH4 - Compatibility Guardrail Sweep.
-- Stage status: AH4 in progress. This branch records compatibility guardrail
-  evidence after the post-v0.1.18 MCP/memory contract review and keeps the
-  product boundary unchanged.
-- Last completed evidence: AH3 MCP/memory contract review PR #192 merged as
-  `9df2c5731e10e7553800645c20ab2f71e58f695d`, PR Windows Harness run
-  `25614178190` passed, and post-merge `main` Windows Harness run
-  `25614220171` passed on that SHA.
-- Last validation: `gh run view 25614220171 --json
+- Current stage: AH5 - Release-Readiness Decision.
+- Stage status: AH5 in progress. This branch records that AH1-AH4 post-v0.1.18
+  docs/tests/evidence guardrails do not warrant a new release-readiness or
+  publication path and keeps the product boundary unchanged.
+- Last completed evidence: AH4 compatibility guardrail review PR #193 merged as
+  `a773bcd6535bcac9bdfef87162aa1c5f8fc23369`, PR Windows Harness run
+  `25614535578` passed, and post-merge `main` Windows Harness run
+  `25614585178` passed on that SHA.
+- Last validation: `gh run view 25614585178 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AH3 `main` Windows Harness concluded `success`.
-- Next atomic task: land this AH4 compatibility guardrail review PR, then decide
-  whether a post-v0.1.18 release-readiness stage is warranted in AH5.
+  verified the post-AH4 `main` Windows Harness concluded `success`.
+- Next atomic task: land this AH5 release-readiness decision PR, then start the
+  next blueprint implementation lane with contracts, fixtures, tests, and
+  scorecards first.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -184,6 +185,17 @@ Every implementation stage should run:
   exact read-only MCP tools, disabled privacy surfaces, watcher preview limits,
   durable memory contracts, product targeted-capture absence, and Phase 6
   spec-only status.
+- Completed AH4 after PR #193 merged as
+  `a773bcd6535bcac9bdfef87162aa1c5f8fc23369` and post-merge Windows Harness
+  run `25614585178` passed.
+- Started AH5 as a release-readiness decision because AH1-AH4 completed the
+  post-v0.1.18 docs/tests/evidence maintenance loop with no product/runtime,
+  helper/watcher, CLI/MCP, privacy, capture-surface, dependency, or
+  version-metadata drift.
+- Recorded the AH5 decision: do not start a new release-readiness or
+  publication path, do not retag `v0.1.18`, and start the next blueprint
+  implementation lane with contracts, fixtures, tests, and scorecards first
+  after this decision lands.
 
 ## Validation Log
 
@@ -257,3 +269,19 @@ Every implementation stage should run:
   - boundary, background install/polling, and control/capture dependency scans found only existing disabled-surface contracts, docs, scorecards, deterministic fixtures/tests, issue templates, historical command text, canaries, and local smoke variable names; no new product CLI/MCP targeted capture, write/control tool, screenshot/OCR, audio, keyboard, clipboard, network upload, cloud upload, LLM, desktop control, daemon/service install, polling capture loop, startup task, default background capture, runtime dependency, or implementation path was found.
   - current-entry stale AH3/current post-v0.1.17 compatibility wording scan across `README.md`, current docs, and current doc tests - passed with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 211 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH4 completion:
+  - `gh pr view 193 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #193 merged at `2026-05-09T23:33:38Z` as `a773bcd6535bcac9bdfef87162aa1c5f8fc23369`.
+  - `gh run view 25614535578 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #193 Windows Harness concluded `success` on `245372e32b55e69eb148c4488581dff8247b33b1`.
+  - `gh run view 25614585178 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH4 `main` Windows Harness concluded `success` on `a773bcd6535bcac9bdfef87162aa1c5f8fc23369`.
+- Stage AH5 initialization:
+  - `gh release view v0.1.18 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.18` is published, not a draft, not a prerelease, published at `2026-05-09T21:38:33Z`, and targets `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.
+  - `git fetch origin tag v0.1.18` and `git rev-parse v0.1.18` - passed and printed `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.
+  - `git diff --name-status v0.1.18..HEAD` - passed; output is docs/tests changes only.
+  - `git diff --stat v0.1.18..HEAD -- src\winchronicle resources pyproject.toml` and `git diff --name-only v0.1.18..HEAD -- src\winchronicle resources pyproject.toml` - passed; printed no files, confirming no runtime/resource/version release trigger.
+- Stage AH5 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 91 tests.
+  - `python -m pytest -q` - passed, 213 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed no files, confirming AH5 is docs/tests only with no product/runtime/version diff.
+  - current-entry stale AH4/current post-v0.1.18 release-readiness wording scan across `README.md`, current docs, and current doc tests - passed with no matches.
+  - `python harness/scripts/run_harness.py` - passed, including 213 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
