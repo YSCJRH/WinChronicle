@@ -15,6 +15,8 @@ current MCP/memory contract review is
 [MCP and memory contract sweep after v0.1.16](mcp-memory-contract-sweep-post-v0.1.16.md). The
 current compatibility guardrail review is
 [Compatibility guardrail sweep after v0.1.16](compatibility-guardrail-sweep-post-v0.1.16.md). The
+current release-readiness decision is
+[Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md). The
 completed `v0.1.16` final-release cursor is recorded in
 [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md), and
 the historical prerelease record is
@@ -96,6 +98,10 @@ historical records. After the `v0.1.16` final publication:
   read-only MCP tools, disabled privacy surfaces, durable memory manifest/search
   contracts, watcher preview limits, product targeted-capture absence, and
   Phase 6 spec-only status without committing observed-content artifacts;
+- release-readiness decision evidence should record whether current maintenance
+  changes warrant a release-readiness path, distinguish release plans from
+  immediate publication, and forbid retagging an already published stable
+  release;
 - the post-v0.1.12 execution cursor is completed historical context and records
   PR #118 plus post-merge Windows Harness run `25580877004`;
 - the post-v0.1.11 execution cursor is completed historical context and
