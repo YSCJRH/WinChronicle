@@ -447,8 +447,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.13.md" in evidence
     assert "v0.1.15` is the latest published release" in checklist
     assert "v0.1.15` is the latest published release" in evidence
-    assert "v0.1.16-rc.0` is the current release-candidate readiness record" in checklist
-    assert "v0.1.16-rc.0` is the current release-candidate readiness record" in evidence
+    assert "v0.1.16-rc.0` is the current published prerelease candidate" in checklist
+    assert "v0.1.16-rc.0` is the current published prerelease candidate" in evidence
     assert "public metadata and evidence-freshness checks" in checklist
     assert "public metadata evidence should record" in evidence
     assert "next-round-plan-post-v0.1.12.md" in checklist
@@ -1380,8 +1380,8 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "post-publication reconciliation on `main` is `54208c51819a45140e355272d8cb3f0e3fbff900`",
         "Windows Harness run `25589775129` passed",
         "reports `0.1.15`",
-        "Current stage: AD5 - v0.1.16-rc.0 Release Candidate Readiness.",
-        "Stage status: A - AD5 is the active release-candidate readiness stage.",
+        "Current stage: AD5 - v0.1.16-rc.0 Published Prerelease Reconciliation.",
+        "Stage status: A - `v0.1.16-rc.0` is published as a prerelease",
         "AD4 added the post-v0.1.15 compatibility guardrail sweep",
         "merged as `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39`",
         "post-merge `main` Windows Harness run `25595513141` passed",
@@ -1435,6 +1435,13 @@ def test_post_v015_plan_is_active_without_expanding_scope():
         "Stage AD5 readiness PR completion:",
         "PR #140 Windows Harness run `25596082939`",
         "post-AD5-readiness `main` Windows Harness concluded `success`",
+        "Stage AD5 CI evidence PR completion:",
+        "PR #141 Windows Harness run `25596204971`",
+        "final pre-publication `main` Windows Harness concluded `success`",
+        "Stage AD5 prerelease publication:",
+        "gh release view v0.1.16-rc.0",
+        "published at `2026-05-09T08:18:01Z`",
+        "git ls-remote --tags origin v0.1.16-rc.0",
         "6 tests passed",
         "gh release view v0.1.15",
         "git rev-parse v0.1.15",
@@ -2369,7 +2376,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Stable release baseline | `v0.1.15`",
         "Current maintenance plan | [Post-v0.1.15 maintenance plan]",
         "Latest completed maintenance plan | [Post-v0.1.14 maintenance plan]",
-        "Current release-readiness record | [v0.1.16-rc.0 release candidate record]",
+        "Current prerelease record | [v0.1.16-rc.0 release candidate record]",
         "Published release record | [v0.1.15 maintenance release record]",
         "Latest published release record | [v0.1.15 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",

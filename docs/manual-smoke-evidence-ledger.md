@@ -16,7 +16,7 @@ or token canaries.
 | Stable release baseline | `v0.1.15` |
 | Current maintenance plan | [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md) |
 | Latest completed maintenance plan | [Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md) |
-| Current release-readiness record | [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md) |
+| Current prerelease record | [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md) |
 | Published release record | [v0.1.15 maintenance release record](release-v0.1.15.md) |
 | Latest published release record | [v0.1.15 maintenance release record](release-v0.1.15.md) |
 | Latest full manual UIA smoke source | [v0.1.0 final release readiness record](release-v0.1.0.md) |

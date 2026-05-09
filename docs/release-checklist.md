@@ -9,7 +9,7 @@ The latest published release record is
 [v0.1.15 maintenance release record](release-v0.1.15.md). The active
 post-v0.1.15 execution cursor lives in
 [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md). The current
-release-readiness candidate is
+published prerelease candidate is
 [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md)
 because AD2-AD4 include compatible privacy/runtime drift fixes. For release
 evidence shape, use [Release evidence guide](release-evidence.md). The
@@ -43,9 +43,9 @@ inherited historical evidence:
   another version;
 - `v0.1.15` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- `v0.1.16-rc.0` is the current release-candidate readiness record, not the
-  latest published final release, because AD2-AD4 tighten privacy/runtime
-  behavior and therefore require a prerelease path before direct final;
+- `v0.1.16-rc.0` is the current published prerelease candidate, not the latest
+  published final release, because AD2-AD4 tighten privacy/runtime behavior
+  and therefore require a prerelease path before direct final;
 - the active post-v0.1.15 execution cursor records AD4 PR #139, PR Windows
   Harness run `25595449096`, and post-merge Windows Harness run `25595513141`;
 - the completed post-v0.1.14 execution cursor records `v0.1.15` publication,
