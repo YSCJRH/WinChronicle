@@ -6,8 +6,8 @@ and have different release meanings.
 For the release gate matrix, app-specific expected signals, artifact policy,
 privacy risk, and blocking status, see
 [UIA helper quality matrix](uia-helper-quality-matrix.md).
-For the last recorded final-release smoke evidence, see
-[v0.1.0 final release readiness record](release-v0.1.0.md).
+For the latest full manual UIA smoke source, see
+[v0.1.16 final release record](release-v0.1.16.md).
 For current inherited/stale/manual refresh status, see
 [Manual smoke evidence ledger](manual-smoke-evidence-ledger.md).
 

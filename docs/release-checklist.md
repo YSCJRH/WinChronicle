@@ -11,6 +11,8 @@ post-v0.1.16 execution cursor lives in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
 current public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md). The
+current helper/watcher diagnostics review is
+[Helper and watcher diagnostics sweep after v0.1.16](helper-watcher-diagnostics-sweep-post-v0.1.16.md). The
 completed `v0.1.16` final-release cursor is recorded in
 [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md), and
 the historical prerelease record is
@@ -75,6 +77,9 @@ inherited historical evidence:
   homepage, topics, release metadata, and social preview status or manual
   follow-up items without treating empty repository metadata as a product-code
   blocker;
+- helper/watcher diagnostics sweeps record timeout, malformed output, no
+  observed-content echo, duplicate skip, denylist skip, heartbeat-only liveness,
+  and diagnostic artifact policy without promoting live UIA smoke to default CI;
 - the post-v0.1.12 execution cursor is completed historical context and records
   PR #118 plus post-merge Windows Harness run `25580877004`;
 - the post-v0.1.11 execution cursor is completed historical context and

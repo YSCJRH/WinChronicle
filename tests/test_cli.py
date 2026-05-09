@@ -165,6 +165,25 @@ def test_capture_frontmost_cli_skips_when_helper_returns_no_capture(tmp_path, mo
     assert not (tmp_path / "state" / "capture-buffer").exists()
 
 
+def test_capture_frontmost_cli_reports_timeout_without_capture_artifact(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    def fake_timeout(*_args, **_kwargs):
+        raise RuntimeError("helper timed out")
+
+    monkeypatch.setattr("winchronicle.cli.capture_frontmost_with_helper", fake_timeout)
+
+    assert main(["capture-frontmost", "--helper", sys.executable]) == 1
+    output = capsys.readouterr().out
+
+    assert output.strip() == "ERROR: helper timed out"
+    assert "observed content" not in output
+    assert list((home / "capture-buffer").glob("*.json")) == []
+
+
 def test_capture_once_cli_title_denylist_skip_does_not_echo_title(
     tmp_path, monkeypatch, capsys
 ):

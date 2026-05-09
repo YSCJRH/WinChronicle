@@ -58,6 +58,7 @@ Expected operator signals:
 | Heartbeat-only live run | JSON with `captures_written: 0` and `heartbeats > 0` | The watcher was alive, but no capturable event produced a persisted capture. This is diagnostic liveness evidence, not a hard failure by itself. | JSON counts, command, duration, and environment notes. |
 | Watcher exits nonzero | `ERROR: watcher failed with exit code <code>` | The watcher or surfaced helper path failed. Raw stdout/stderr is suppressed. | Exit code and command. |
 | Watcher emits malformed JSONL | `ERROR: watcher JSONL line <n> is malformed` | The dispatcher rejected an event line without saving raw JSONL. | Line number and command. |
+| Watcher emits an invalid helper payload | `ERROR: watcher output could not be captured safely` | The dispatcher failed closed because validation details may include observed content. | Command and reproduction notes only; do not record schema output or payload text. |
 | Watcher timeout | `ERROR: watcher timed out` | The watcher command exceeded the wrapper timeout. | Command, duration, and environment notes. |
 | Denylist or lock screen skip | JSON with `denylisted_skipped > 0` and unchanged `captures_written` | Privacy gate skipped observed content before storage. Title-denylist diagnostics use a stable content-free reason. | JSON counts only; do not record the matched title. |
 | Duplicate skip | JSON with `duplicates_skipped > 0` | Content fingerprint prevented duplicate persistence. | JSON counts only. |

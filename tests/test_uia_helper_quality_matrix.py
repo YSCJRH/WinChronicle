@@ -3,6 +3,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MATRIX = ROOT / "docs" / "uia-helper-quality-matrix.md"
+WINDOWS_SMOKE = ROOT / "docs" / "windows-uia-smoke.md"
 
 
 def test_uia_helper_quality_matrix_has_required_columns_and_rows():
@@ -66,7 +67,7 @@ def test_uia_helper_quality_matrix_preserves_privacy_boundary():
         assert boundary in text
 
 
-def test_uia_helper_quality_matrix_uses_post_v010_evidence():
+def test_uia_helper_quality_matrix_uses_latest_manual_smoke_evidence():
     text = MATRIX.read_text(encoding="utf-8")
     rows = _matrix_rows()
 
@@ -74,19 +75,37 @@ def test_uia_helper_quality_matrix_uses_post_v010_evidence():
     assert "For compatible maintenance releases after `v0.1.9`" in text
     assert "Historical\nmaintenance records from `v0.1.4` onward" in text
     assert "current\n`v0.1.3` readiness round" not in text
-    assert "Last recorded `v0.1.0` final: pass" in rows["Notepad"]["Current result"]
-    assert "Last recorded `v0.1.0` final: pass" in rows["Microsoft Edge"]["Current result"]
-    assert "Last recorded `v0.1.0` final: pass with diagnostic warning" in rows[
+    assert "Latest full manual `v0.1.16` final: pass" in rows["Notepad"][
+        "Current result"
+    ]
+    assert "Latest full manual `v0.1.16` final: pass" in rows["Microsoft Edge"][
+        "Current result"
+    ]
+    assert "Latest full manual `v0.1.16` final: pass with diagnostic warning" in rows[
         "VS Code metadata"
     ]["Current result"]
-    assert "Last recorded `v0.1.0` final: diagnostic failure" in rows[
+    assert "Latest full manual `v0.1.16` final: diagnostic failure" in rows[
         "VS Code strict Monaco marker"
+    ]["Current result"]
+    assert "docs/release-v0.1.16.md" in text
+    assert "docs/manual-smoke-evidence-ledger.md" in text
+    assert "Frontmost-only diagnostic last recorded `v0.1.0` final" in rows[
+        "Operator-selected foreground app"
     ]["Current result"]
     assert "SKIPPED: helper returned no capture" in rows["Operator-selected foreground app"][
         "Current result"
     ]
     assert "`v0.1.0-rc.0`" not in text
     assert "Do not promote a new application to a hard gate from this matrix alone." in text
+
+
+def test_windows_uia_smoke_points_to_latest_manual_smoke_source():
+    text = WINDOWS_SMOKE.read_text(encoding="utf-8")
+
+    assert "For the latest full manual UIA smoke source" in text
+    assert "[v0.1.16 final release record](release-v0.1.16.md)" in text
+    assert "last recorded final-release smoke evidence" not in text
+    assert "[v0.1.0 final release readiness record]" not in text
 
 
 def _matrix_rows() -> dict[str, dict[str, str]]:

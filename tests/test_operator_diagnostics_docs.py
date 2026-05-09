@@ -14,6 +14,7 @@ def test_operator_diagnostics_covers_stable_failure_modes_without_content_echo()
         "ERROR: helper failed with exit code <code>",
         "ERROR: watcher failed with exit code <code>",
         "ERROR: watcher JSONL line <n> is malformed",
+        "ERROR: watcher output could not be captured safely",
         "ERROR: watcher timed out",
         "captures_written: 0",
         "heartbeats > 0",
@@ -50,6 +51,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)"
+        in quickstart
+    )
+    assert (
+        "[Helper and watcher diagnostics sweep after v0.1.16](helper-watcher-diagnostics-sweep-post-v0.1.16.md)"
         in quickstart
     )
     assert (
@@ -142,6 +147,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         in readme
     )
     assert (
+        "[Helper and watcher diagnostics sweep after v0.1.16](docs/helper-watcher-diagnostics-sweep-post-v0.1.16.md)"
+        in readme
+    )
+    assert (
         "[v0.1.16 final-release plan](docs/next-round-plan-v0.1.16-final-release.md)"
         in readme
     )
@@ -231,6 +240,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
 
     assert "active post-v0.1.16 maintenance plan" in readme_intro_normalized
     assert "current post-v0.1.16 public metadata audit" in readme_intro_normalized
+    assert "current post-v0.1.16 helper/watcher diagnostics sweep" in readme_intro_normalized
     assert "latest published `v0.1.16` release record" in readme_intro_normalized
     assert "completed `v0.1.16` final-release plan" in readme_intro_normalized
     assert "historical `v0.1.16-rc.0` release-candidate record" in readme_intro_normalized
@@ -244,6 +254,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.15 maintenance release record" in readme_operator_docs
     assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.16" in readme_operator_docs
+    assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
     assert "v0.1.16 final-release plan" in readme_operator_docs
     assert "v0.1.16 final release record" in readme_operator_docs
     assert "v0.1.16-rc.0 release candidate record" in readme_operator_docs
@@ -295,6 +306,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Public metadata audit after v0.1.16"
     )
     assert readme_operator_docs.index("Public metadata audit after v0.1.16") < readme_operator_docs.index(
+        "Helper and watcher diagnostics sweep after v0.1.16"
+    )
+    assert readme_operator_docs.index(
+        "Helper and watcher diagnostics sweep after v0.1.16"
+    ) < readme_operator_docs.index(
         "v0.1.16 final release record"
     )
     assert readme_operator_docs.index("v0.1.16 final release record") < readme_operator_docs.index(
@@ -392,6 +408,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )
     assert "next-round-plan-post-v0.1.16.md" in current_section
     assert "public-metadata-audit-post-v0.1.16.md" in current_section
+    assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in current_section
     assert "release-v0.1.16.md" in current_section
     assert "next-round-plan-v0.1.16-final-release.md" in current_section
     assert "next-round-plan-post-v0.1.15.md" in current_section
@@ -487,6 +504,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-round-plan-post-v0.1.16.md" in evidence
     assert "public-metadata-audit-post-v0.1.16.md" in checklist
     assert "public-metadata-audit-post-v0.1.16.md" in evidence
+    assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in checklist
+    assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in evidence
     assert "next-round-plan-v0.1.16-final-release.md" in checklist
     assert "next-round-plan-v0.1.16-final-release.md" in evidence
     assert "next-round-plan-post-v0.1.15.md" in checklist
@@ -505,6 +524,10 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Public metadata audit after v0.1.16" in evidence
     assert "public metadata and evidence-freshness checks" in checklist
     assert "public metadata evidence should record" in evidence
+    assert "Helper and watcher diagnostics sweep after v0.1.16" in checklist
+    assert "Helper and watcher diagnostics sweep after v0.1.16" in evidence
+    assert "helper/watcher diagnostics sweeps record timeout" in checklist
+    assert "helper/watcher diagnostics evidence should record only stable diagnostics" in evidence
     assert "next-round-plan-post-v0.1.12.md" in checklist
     assert "next-round-plan-post-v0.1.12.md" in evidence
     assert "release-v0.1.10.md" not in checklist
@@ -1747,6 +1770,60 @@ def test_helper_watcher_diagnostics_sweep_post_v015_records_drift_fix():
         "live UIA smoke in\ndefault CI",
     ):
         assert boundary in sweep
+
+
+def test_helper_watcher_diagnostics_sweep_post_v016_records_current_review():
+    sweep = (
+        ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
+    ).read_text(encoding="utf-8")
+    normalized = " ".join(sweep.split())
+
+    for expected in (
+        "Helper And Watcher Diagnostics Sweep After v0.1.16",
+        "adds a narrow content-free CLI diagnostic fix",
+        "does not change schemas, successful CLI/MCP JSON shape",
+        "Helper quality matrix",
+        "Watcher preview docs",
+        "Operator diagnostics",
+        "Capture quality scorecard",
+        "Deterministic tests",
+        "Helper timeout",
+        "Helper malformed JSON",
+        "Helper empty stdout",
+        "Helper nonzero exit",
+        "Watcher nonzero exit",
+        "Helper failure surfaced by watcher",
+        "Malformed watcher JSONL",
+        "Invalid embedded helper payload",
+        "Watcher timeout",
+        "Heartbeat-only run",
+        "Duplicate skip",
+        "Denylist or lock-screen skip",
+        "Raw watcher JSONL persistence",
+        "AF2 found one helper/watcher diagnostics drift",
+        "stable content-free diagnostic",
+        "added focused deterministic evidence",
+        "Harness smoke may use a temporary fake-helper event file",
+        "Fresh manual UIA smoke remains outside default CI",
+        "The next smallest implementation task is to land this AF2 review",
+    ):
+        assert expected in normalized
+
+    for boundary in (
+        "screenshot capture",
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network upload",
+        "LLM calls",
+        "desktop control",
+        "MCP write tools",
+        "arbitrary file read tools",
+        "product targeted capture",
+        "live UIA smoke in default CI",
+    ):
+        assert boundary in normalized
 
 
 def test_mcp_memory_contract_sweep_post_v015_records_drift_fixes():

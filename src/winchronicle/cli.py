@@ -174,7 +174,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "watch":
         if args.events:
             paths = ensure_state()
-            result = dispatch_watcher_events(args.events, paths["home"])
+            try:
+                result = dispatch_watcher_events(args.events, paths["home"])
+            except ValueError as exc:
+                print(f"ERROR: {exc}")
+                return 1
+            except Exception:
+                print("ERROR: watcher output could not be captured safely")
+                return 1
         else:
             _reject_forbidden_passthrough(parser, args.watcher_arg, "--watcher-arg")
             _reject_forbidden_passthrough(parser, args.helper_arg, "--helper-arg")
