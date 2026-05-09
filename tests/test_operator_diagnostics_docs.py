@@ -62,6 +62,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         in quickstart
     )
     assert (
+        "[Compatibility guardrail sweep after v0.1.16](compatibility-guardrail-sweep-post-v0.1.16.md)"
+        in quickstart
+    )
+    assert (
         "[v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md)"
         in quickstart
     )
@@ -159,6 +163,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         in readme
     )
     assert (
+        "[Compatibility guardrail sweep after v0.1.16](docs/compatibility-guardrail-sweep-post-v0.1.16.md)"
+        in readme
+    )
+    assert (
         "[v0.1.16 final-release plan](docs/next-round-plan-v0.1.16-final-release.md)"
         in readme
     )
@@ -250,6 +258,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.16 public metadata audit" in readme_intro_normalized
     assert "current post-v0.1.16 helper/watcher diagnostics sweep" in readme_intro_normalized
     assert "current post-v0.1.16 MCP/memory contract sweep" in readme_intro_normalized
+    assert "current post-v0.1.16 compatibility guardrail sweep" in readme_intro_normalized
     assert "latest published `v0.1.16` release record" in readme_intro_normalized
     assert "completed `v0.1.16` final-release plan" in readme_intro_normalized
     assert "historical `v0.1.16-rc.0` release-candidate record" in readme_intro_normalized
@@ -265,6 +274,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Public metadata audit after v0.1.16" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
     assert "MCP and memory contract sweep after v0.1.16" in readme_operator_docs
+    assert "Compatibility guardrail sweep after v0.1.16" in readme_operator_docs
     assert "v0.1.16 final-release plan" in readme_operator_docs
     assert "v0.1.16 final release record" in readme_operator_docs
     assert "v0.1.16-rc.0 release candidate record" in readme_operator_docs
@@ -325,6 +335,11 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     )
     assert readme_operator_docs.index(
         "MCP and memory contract sweep after v0.1.16"
+    ) < readme_operator_docs.index(
+        "Compatibility guardrail sweep after v0.1.16"
+    )
+    assert readme_operator_docs.index(
+        "Compatibility guardrail sweep after v0.1.16"
     ) < readme_operator_docs.index(
         "v0.1.16 final release record"
     )
@@ -425,6 +440,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "public-metadata-audit-post-v0.1.16.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in current_section
     assert "mcp-memory-contract-sweep-post-v0.1.16.md" in current_section
+    assert "compatibility-guardrail-sweep-post-v0.1.16.md" in current_section
     assert "release-v0.1.16.md" in current_section
     assert "next-round-plan-v0.1.16-final-release.md" in current_section
     assert "next-round-plan-post-v0.1.15.md" in current_section
@@ -524,6 +540,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in evidence
     assert "mcp-memory-contract-sweep-post-v0.1.16.md" in checklist
     assert "mcp-memory-contract-sweep-post-v0.1.16.md" in evidence
+    assert "compatibility-guardrail-sweep-post-v0.1.16.md" in checklist
+    assert "compatibility-guardrail-sweep-post-v0.1.16.md" in evidence
     assert "next-round-plan-v0.1.16-final-release.md" in checklist
     assert "next-round-plan-v0.1.16-final-release.md" in evidence
     assert "next-round-plan-post-v0.1.15.md" in checklist
@@ -550,6 +568,10 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "MCP and memory contract sweep after v0.1.16" in evidence
     assert "MCP/memory contract sweeps record the exact read-only MCP tool list" in checklist
     assert "MCP/memory contract evidence should record exact read-only tools" in evidence
+    assert "Compatibility guardrail sweep after v0.1.16" in checklist
+    assert "Compatibility guardrail sweep after v0.1.16" in evidence
+    assert "compatibility guardrail sweeps record version identity" in checklist
+    assert "compatibility guardrail evidence should record version identity" in evidence
     assert "next-round-plan-post-v0.1.12.md" in checklist
     assert "next-round-plan-post-v0.1.12.md" in evidence
     assert "release-v0.1.10.md" not in checklist
@@ -2578,6 +2600,45 @@ def test_post_v015_compatibility_guardrail_sweep_records_drift_fixes():
         "explicit release approval",
     ):
         assert expected in sweep
+
+
+def test_post_v016_compatibility_guardrail_sweep_records_precision_fixes():
+    sweep = (
+        ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.16.md"
+    ).read_text(encoding="utf-8")
+    normalized = " ".join(sweep.split())
+
+    for expected in (
+        "Compatibility Guardrail Sweep After v0.1.16",
+        "AF4 compatibility check",
+        "documentation and guardrail precision fixes",
+        "`generate-memory` manifest JSON now has a frozen trust-boundary shape",
+        "does not change schemas, MCP tool schemas",
+        "Version identity",
+        "Exact read-only MCP tool list",
+        "Disabled privacy surfaces",
+        "Observed-content trust boundary",
+        "Watcher preview limits",
+        "Durable memory contract",
+        "Phase 6 spec-only status",
+        "Product targeted capture absence",
+        "current_context",
+        "search_captures",
+        "search_memory",
+        "read_recent_capture",
+        "recent_activity",
+        "privacy_status",
+        'trust = "untrusted_observed_content"',
+        "AF4 fixed README ordering and made MCP smoke compare ordered tool names",
+        "AF4 fixed quickstart wording to name every disabled targeted flag",
+        "50 passed",
+        "No new product CLI/MCP targeted capture",
+        "No new runtime dependency or implementation path was found",
+        "found and fixed four narrow compatibility evidence drifts",
+        "preserving the stable CLI command set",
+        "The next smallest implementation task is to land this AF4 review",
+    ):
+        assert expected in normalized
 
 
 def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():

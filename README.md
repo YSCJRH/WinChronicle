@@ -18,10 +18,11 @@ release checklist, manual smoke evidence template, Windows UIA smoke gates,
 watcher preview, read-only MCP examples, known limitations, the active
 post-v0.1.16 maintenance plan, the current post-v0.1.16 public metadata audit,
 the current post-v0.1.16 helper/watcher diagnostics sweep, the current
-post-v0.1.16 MCP/memory contract sweep, the latest published `v0.1.16` release
-record, the completed `v0.1.16` final-release plan, the historical
-`v0.1.16-rc.0` release-candidate record, the previous published `v0.1.15`
-release record, and older completed maintenance plans.
+post-v0.1.16 MCP/memory contract sweep, the current post-v0.1.16 compatibility
+guardrail sweep, the latest published `v0.1.16` release record, the completed
+`v0.1.16` final-release plan, the historical `v0.1.16-rc.0`
+release-candidate record, the previous published `v0.1.15` release record, and
+older completed maintenance plans.
 
 ## Why WinChronicle
 
@@ -113,8 +114,8 @@ See `docs/watcher-preview.md` for the v0.1 preview boundary and manual smoke
 expectations.
 
 `mcp-stdio` exposes a minimal read-only MCP stdio surface for
-`current_context`, `search_captures`, `read_recent_capture`,
-`search_memory`, `recent_activity`, and `privacy_status`. Every
+`current_context`, `search_captures`, `search_memory`,
+`read_recent_capture`, `recent_activity`, and `privacy_status`. Every
 observed-content response is marked with
 `trust = "untrusted_observed_content"` and no desktop control, screenshot,
 OCR, audio, keyboard, clipboard, or network tool is exposed.
@@ -132,6 +133,7 @@ available through `search-captures`.
 - [Public metadata audit after v0.1.16](docs/public-metadata-audit-post-v0.1.16.md)
 - [Helper and watcher diagnostics sweep after v0.1.16](docs/helper-watcher-diagnostics-sweep-post-v0.1.16.md)
 - [MCP and memory contract sweep after v0.1.16](docs/mcp-memory-contract-sweep-post-v0.1.16.md)
+- [Compatibility guardrail sweep after v0.1.16](docs/compatibility-guardrail-sweep-post-v0.1.16.md)
 - [v0.1.16 final release record](docs/release-v0.1.16.md)
 - [v0.1.16 final-release plan](docs/next-round-plan-v0.1.16-final-release.md)
 - [Post-v0.1.15 maintenance plan](docs/next-round-plan-post-v0.1.15.md)

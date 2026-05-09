@@ -8,7 +8,12 @@ from winchronicle.capture import capture_once_from_fixture
 from winchronicle.cli import build_parser, main
 from winchronicle.memory import generate_memory_entries
 from winchronicle.mcp.server import TOOL_NAMES, privacy_status
-from winchronicle.privacy import DISABLED_SURFACE_STATUS, TRUST, privacy_contract_payload
+from winchronicle.privacy import (
+    DISABLED_SURFACE_STATUS,
+    TRUST,
+    TRUST_BOUNDARY_INSTRUCTION,
+    privacy_contract_payload,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -55,6 +60,17 @@ EXPECTED_MEMORY_SEARCH_KEYS = {
     "snippet",
     "path",
     "trust",
+}
+EXPECTED_MEMORY_MANIFEST_KEYS = {
+    "capture_count",
+    "end_timestamp",
+    "entry_type",
+    "instruction",
+    "path",
+    "start_timestamp",
+    "title",
+    "trust",
+    "untrusted_observed_content",
 }
 FORBIDDEN_CLI_OPTIONS = (
     "--hwnd",
@@ -162,6 +178,31 @@ def test_cli_search_shapes_preserve_observed_content_trust_boundaries(
     assert memory_matches
     assert all(set(match) == EXPECTED_MEMORY_SEARCH_KEYS for match in memory_matches)
     assert all(match["trust"] == TRUST for match in memory_matches)
+
+
+def test_generate_memory_manifest_shape_preserves_observed_content_trust_boundary(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    for fixture_name in ("terminal_error.json", "vscode_editor.json", "edge_browser.json"):
+        assert main(
+            [
+                "capture-once",
+                "--fixture",
+                str(ROOT / "harness" / "fixtures" / "uia" / fixture_name),
+            ]
+        ) == 0
+        capsys.readouterr()
+
+    assert main(["generate-memory", "--date", "2026-04-25"]) == 0
+    generated = json.loads(capsys.readouterr().out)
+
+    assert generated
+    assert all(set(entry) == EXPECTED_MEMORY_MANIFEST_KEYS for entry in generated)
+    assert all(entry["trust"] == TRUST for entry in generated)
+    assert all(entry["untrusted_observed_content"] is True for entry in generated)
+    assert all(entry["instruction"] == TRUST_BOUNDARY_INSTRUCTION for entry in generated)
 
 
 def _subcommands(parser: argparse.ArgumentParser) -> dict[str, argparse.ArgumentParser]:

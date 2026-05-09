@@ -29,6 +29,7 @@ POST_V0116_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.16.md"
 PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
 HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
 MCP_MEMORY_V0116 = ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.16.md"
+COMPATIBILITY_V0116 = ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.16.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -49,6 +50,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
         "MCP and memory contract sweep after v0.1.16",
+        "Compatibility guardrail sweep after v0.1.16",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -79,6 +81,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
         "MCP and memory contract sweep after v0.1.16",
+        "Compatibility guardrail sweep after v0.1.16",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -808,23 +811,30 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
         "published at `2026-05-09T09:31:17Z`",
         "Current stage: AF4 - Compatibility Guardrail Sweep.",
-        "Stage status: AF3 complete; AF4 is ready to start.",
+        "Stage status: AF4 review in progress; AF3 is complete.",
         "AF3 MCP/memory review PR #154 merged as",
         "`f55638cf213b40c07d01f1872a7ff828b3a85d6f`",
         "PR Windows Harness run `25599715499` passed",
         "post-merge `main` Windows Harness run `25599772190` passed",
         "docs/mcp-memory-contract-sweep-post-v0.1.16.md",
-        "`generate-memory` manifest trust-boundary fix",
-        "literal standalone MCP smoke tool-list guardrail",
-        "expanded forbidden MCP stdio call evidence",
+        "docs/compatibility-guardrail-sweep-post-v0.1.16.md",
+        "AF4 ordered MCP smoke guardrail",
+        "complete targeted-flag docs",
+        "`generate-memory` manifest compatibility shape",
+        "boundary scan and control/capture dependency scan",
+        "`generate-memory` manifest JSON omitted observed-content trust metadata",
+        "standalone MCP smoke should freeze a literal tool list",
+        "full forbidden write/file/network/control term set",
         "invalid embedded helper payloads",
         "`watch --events` validation diagnostic leak",
-        "Next atomic task: start AF4",
+        "Next atomic task: land this AF4 review",
         "Stage AF0 - Post-v0.1.16 Baseline Cursor",
         "Stage AF1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AF2 - Helper And Watcher Preview Diagnostics Review",
         "Stage AF3 - MCP And Memory Contract Review",
         "Stage AF4 - Compatibility Guardrail Sweep",
+        "CLI command set remains unchanged",
+        "`generate-memory` manifest JSON includes the compatible AF3 trust-boundary fields",
         "MCP tool list remains unchanged and read-only",
         "Do not implement screenshot capture, OCR, audio recording",
         "Phase 6 remains privacy spec/scorecard only",
@@ -980,6 +990,43 @@ def test_mcp_memory_contract_sweep_post_v016_records_trust_boundary_fix():
         "arbitrary file reads",
         "product targeted capture",
         "live UIA smoke in default CI",
+    ):
+        assert phrase in normalized
+
+
+def test_compatibility_guardrail_sweep_post_v016_records_precision_fixes():
+    text = COMPATIBILITY_V0116.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Compatibility Guardrail Sweep After v0.1.16",
+        "AF4 compatibility check",
+        "documentation and guardrail precision fixes",
+        "`generate-memory` manifest JSON now has a frozen trust-boundary shape",
+        "does not change schemas, MCP tool schemas",
+        "Version identity",
+        "Exact read-only MCP tool list",
+        "Disabled privacy surfaces",
+        "Observed-content trust boundary",
+        "Watcher preview limits",
+        "Durable memory contract",
+        "Phase 6 spec-only status",
+        "Product targeted capture absence",
+        "current_context",
+        "search_captures",
+        "search_memory",
+        "read_recent_capture",
+        "recent_activity",
+        "privacy_status",
+        'trust = "untrusted_observed_content"',
+        "AF4 fixed README ordering and made MCP smoke compare ordered tool names",
+        "AF4 fixed quickstart wording to name every disabled targeted flag",
+        "50 passed",
+        "No new product CLI/MCP targeted capture",
+        "No new runtime dependency or implementation path was found",
+        "found and fixed four narrow compatibility evidence drifts",
+        "preserving the stable CLI command set",
+        "The next smallest implementation task is to land this AF4 review",
     ):
         assert phrase in normalized
 
