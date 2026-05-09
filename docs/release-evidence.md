@@ -10,6 +10,8 @@ active post-v0.1.17 maintenance cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md), and the
 current post-v0.1.17 public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md). The
+current post-v0.1.17 helper/watcher diagnostics review is
+[Helper and watcher diagnostics sweep after v0.1.17](helper-watcher-diagnostics-sweep-post-v0.1.17.md). The
 completed post-v0.1.16 maintenance cursor is recorded in
 [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md), and the
 completed post-v0.1.16 public metadata/evidence freshness audit is
@@ -82,6 +84,11 @@ historical records. After the `v0.1.17` maintenance publication:
   release metadata, post-AG0 `main` Windows Harness evidence, manual repository
   metadata gaps, and does not treat empty GitHub metadata as a product-code
   blocker;
+- the current post-v0.1.17 helper/watcher diagnostics review records timeout,
+  malformed output, invalid embedded helper payload, no observed-content echo,
+  duplicate skip, denylist skip, heartbeat-only liveness, diagnostic artifact
+  policy, raw watcher JSONL non-persistence, product targeted-capture
+  pass-through rejection, and no new product-code drift;
 - the completed post-v0.1.16 execution cursor records the `v0.1.16` baseline
   publication and the `v0.1.17` maintenance publication, final tag target
   `5b260edc3bddc48986e52179b2ffd261856a89ac`, published timestamp

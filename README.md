@@ -17,9 +17,10 @@ For current maintenance operation, start with
 release checklist, manual smoke evidence template, Windows UIA smoke gates,
 watcher preview, read-only MCP examples, known limitations, the active
 post-v0.1.17 maintenance plan, the current post-v0.1.17 public metadata audit,
-the completed post-v0.1.16 maintenance plan and publication reconciliation, the
-latest published `v0.1.17` release record, the previous published `v0.1.16`
-release record, the completed `v0.1.16` final-release plan, the historical
+the current post-v0.1.17 helper/watcher diagnostics sweep, the completed
+post-v0.1.16 maintenance plan and publication reconciliation, the latest
+published `v0.1.17` release record, the previous published `v0.1.16` release
+record, the completed `v0.1.16` final-release plan, the historical
 `v0.1.16-rc.0` release-candidate record, the previous published `v0.1.15`
 release record, and older completed maintenance plans.
 
@@ -130,6 +131,7 @@ available through `search-captures`.
 - [Operator quickstart](docs/operator-quickstart.md)
 - [Post-v0.1.17 maintenance plan](docs/next-round-plan-post-v0.1.17.md)
 - [Public metadata audit after v0.1.17](docs/public-metadata-audit-post-v0.1.17.md)
+- [Helper and watcher diagnostics sweep after v0.1.17](docs/helper-watcher-diagnostics-sweep-post-v0.1.17.md)
 - [Post-v0.1.16 maintenance plan](docs/next-round-plan-post-v0.1.16.md)
 - [Public metadata audit after v0.1.16](docs/public-metadata-audit-post-v0.1.16.md)
 - [Helper and watcher diagnostics sweep after v0.1.16](docs/helper-watcher-diagnostics-sweep-post-v0.1.16.md)

@@ -272,11 +272,14 @@ def test_watch_cli_counts_heartbeat_only_without_capture_or_raw_jsonl(
     assert _raw_watcher_jsonl_files(home) == []
 
 
-def test_watch_cli_suppresses_failed_watcher_stderr(tmp_path, monkeypatch, capsys):
+def test_watch_cli_suppresses_failed_watcher_stdout_and_stderr(
+    tmp_path, monkeypatch, capsys
+):
     monkeypatch.setenv("WINCHRONICLE_HOME", str(tmp_path / "state"))
     fake_watcher = tmp_path / "fake_failed_watcher.py"
     fake_watcher.write_text(
         "import sys\n"
+        "print('Watcher stdout observed text must not echo')\n"
         "print('Lock screen content must not echo', file=sys.stderr)\n"
         "raise SystemExit(7)\n",
         encoding="utf-8",
@@ -294,6 +297,7 @@ def test_watch_cli_suppresses_failed_watcher_stderr(tmp_path, monkeypatch, capsy
     output = capsys.readouterr().out
 
     assert output.strip() == "ERROR: watcher failed with exit code 7"
+    assert "Watcher stdout observed text" not in output
     assert "Lock screen content" not in output
 
 

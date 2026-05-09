@@ -27,27 +27,25 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AG1 - Public Metadata And Evidence Freshness Follow-up.
-- Stage status: AG1 review in progress; AG0 landed through PR #161 and
+- Current stage: AG2 - Helper And Watcher Preview Diagnostics Review.
+- Stage status: AG2 review in progress; AG1 landed through PR #162 and
   post-merge Windows Harness.
-- Last completed evidence: AG0 baseline cursor PR #161 merged as
-  `a994ab768deeaf08746bad296c1f8100d6ed22fb`, PR Windows Harness run
-  `25602296648` passed, and post-AG0 `main` Windows Harness run `25602345201`
+- Last completed evidence: AG1 public metadata audit PR #162 merged as
+  `0a5d72ea12ac030161ed387286dc15dc63c80b01`, PR Windows Harness run
+  `25602763122` passed, and post-AG1 `main` Windows Harness run `25602836902`
   passed on that SHA.
-- Last validation: `gh repo view YSCJRH/WinChronicle` verified the public
-  repository on `main` still has empty description, homepage, and topics;
-  `gh release view v0.1.17 --json
-  tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` verified
-  the published, non-draft, non-prerelease release at `2026-05-09T12:56:45Z`;
-  `gh release view v0.1.16 --json
-  tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` verified
-  the previous stable release remains published at `2026-05-09T09:31:17Z`.
-- Next atomic task: land this AG1 public metadata/evidence freshness audit
-  through PR and post-merge Windows Harness validation, then start AG2 helper
-  and watcher preview diagnostics review.
-- Known blockers: none for product code. Empty GitHub description, homepage,
-  topics, and unverifiable social preview remain manual maintainer checklist
-  items.
+- Last validation: `gh run view 25602836902 --json
+  databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
+  verified the post-AG1 `main` Windows Harness concluded `success`; current
+  helper/watcher docs and tests still cover timeout, malformed output, invalid
+  embedded helper payload, no observed-content echo, duplicate skip, denylist
+  skip, heartbeat-only diagnostics, raw watcher JSONL policy, and diagnostic
+  artifact policy.
+- Next atomic task: land this AG2 helper/watcher diagnostics review through PR
+  and post-merge Windows Harness validation, then start AG3 MCP and memory
+  contract review.
+- Known blockers: none for product code. Live UIA smoke remains manual and
+  outside default CI.
 
 ## Phased Work
 
@@ -75,6 +73,8 @@ service install, no polling capture loop, and no default background capture.
 - Do not run new manual UIA smoke unless product behavior, helper/watcher
   behavior, manual smoke scripts, capture behavior, privacy behavior, product
   CLI/MCP shape, capture surfaces, or release approval requirements change.
+- Completed in PR #162 with PR Windows Harness run `25602763122` and
+  post-merge `main` Windows Harness run `25602836902`.
 
 ### Stage AG2 - Helper And Watcher Preview Diagnostics Review
 
@@ -84,6 +84,7 @@ service install, no polling capture loop, and no default background capture.
   for discovered drift in timeout, malformed output, no observed-content echo,
   duplicate skip, denylist skip, heartbeat-only diagnostics, or diagnostic
   artifact policy.
+- Add `docs/helper-watcher-diagnostics-sweep-post-v0.1.17.md`.
 - Keep real UIA smoke manual and outside default CI.
 
 ### Stage AG3 - MCP And Memory Contract Review
@@ -169,6 +170,12 @@ Every implementation stage should run:
 - Started AG1 as a docs/tests-only public metadata audit because repository
   metadata remains manually maintained and empty public metadata is not a
   product-code blocker.
+- Completed AG1 after PR #162 merged as
+  `0a5d72ea12ac030161ed387286dc15dc63c80b01` and post-merge `main` Windows
+  Harness run `25602836902` passed.
+- Started AG2 as a docs/tests-only helper/watcher diagnostics review because
+  the current evidence surface already covers the expected v0.1 preview failure
+  modes, and no product drift has been found.
 
 ## Validation Log
 
@@ -195,3 +202,17 @@ Every implementation stage should run:
   - stale AG0/current-decision wording scan across `README.md`, `docs`, and
     `tests` - passed with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 170 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AG1 completion:
+  - `gh pr view 162 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #162 merged at `2026-05-09T13:55:16Z` as `0a5d72ea12ac030161ed387286dc15dc63c80b01`.
+  - `gh run view 25602763122 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #162 Windows Harness concluded `success` on `ec056dd0c368c1d4d8b182f49383198e5acbbaf0`.
+  - `gh run view 25602836902 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AG1 `main` Windows Harness concluded `success` on `0a5d72ea12ac030161ed387286dc15dc63c80b01`.
+- Stage AG2 initialization:
+  - Reviewed `docs/uia-helper-quality-matrix.md`, `docs/watcher-preview.md`, `docs/operator-diagnostics.md`, `harness/scorecards/capture-quality.md`, `tests/test_cli.py`, `tests/test_uia_helper_contract.py`, `tests/test_watcher_events.py`, `tests/test_operator_diagnostics_docs.py`, and `tests/test_compatibility_contracts.py`.
+  - Found no new helper/watcher diagnostics drift requiring product code, schema, CLI/MCP JSON, helper/watcher capture behavior, privacy storage behavior, or capture-surface changes.
+- Stage AG2 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_watcher_events.py tests/test_uia_helper_quality_matrix.py tests/test_version_identity.py -q` - passed, 94 tests.
+  - `python -m pytest -q` - passed, 172 tests.
+  - `git diff --check` - passed.
+  - stale AG0/AG1 cursor and v0.1.16 helper/watcher typo scan across
+    `README.md`, `docs`, and `tests` - passed with no matches.
+  - `python harness/scripts/run_harness.py` - passed, including 172 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
