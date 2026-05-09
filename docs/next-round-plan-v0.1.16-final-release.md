@@ -38,21 +38,19 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AE2 - Manual Final Smoke Refresh.
-- Stage status: AE2 complete; direct `v0.1.16` final planning remains open,
-  but `v0.1.16` is not published and final publication is not authorized by
-  this plan.
-- Last completed evidence: AE1 deterministic gate evidence was recorded in PR
-  #145, merged as `d990b77c0bd60b850c22f5783bf0126a8e137aa8`, and
-  post-merge Windows Harness run `25597248992` passed on that SHA.
-- Last validation: AE2 fresh manual final UIA smoke passed for Notepad, Edge,
-  VS Code metadata with the known Monaco warning, and watcher preview live
-  smoke. VS Code strict remains a diagnostic non-blocking failure. Artifact
-  paths are local only under
-  `C:\Users\34793\AppData\Local\Temp\winchronicle-ae2-final-smoke-a3da7c0177fc42059a484cf07435777a`.
-- Next atomic task: prepare the AE3 `v0.1.16` final release record and
-  publication decision, then request review and CI before any final
-  publication.
+- Current stage: AE3 - v0.1.16 Final Release Record And Publication.
+- Stage status: AE3 in progress; `docs/release-v0.1.16.md` is prepared for
+  review, but `v0.1.16` is not published until this release-record PR and its
+  post-merge `main` Windows Harness pass.
+- Last completed evidence: AE2 manual smoke evidence was recorded in PR #146,
+  merged as `1ea902a8630b9d0b18397af69cfcd84a9ce4d24a`, and post-merge
+  Windows Harness run `25597463319` passed on that SHA.
+- Last validation: the `v0.1.16` final release record cites AE1 deterministic
+  gates, AE2 fresh manual smoke, the published `v0.1.16-rc.0` prerelease, and
+  unchanged privacy/scope boundaries.
+- Next atomic task: merge the AE3 release-record PR after review and PR
+  Windows Harness, wait for post-merge `main` Windows Harness, then publish
+  `v0.1.16` final against the passing post-merge SHA.
 - Known blockers: final publication is blocked until AE3, review, PR Windows
   Harness, post-merge Windows Harness, and explicit publication approval
   complete.
@@ -197,6 +195,8 @@ Stage-specific gates:
   gates passed and no product or contract change was required.
 - Completed AE2 with fresh final manual UIA smoke, while preserving the known
   VS Code strict Monaco diagnostic as non-blocking.
+- Prepared `docs/release-v0.1.16.md` for AE3 so final publication has an
+  auditable release decision record before the tag is created.
 
 ## Validation Log
 
@@ -231,3 +231,14 @@ Stage-specific gates:
   - `powershell -ExecutionPolicy Bypass -File harness/scripts/smoke-uia-vscode.ps1 -Strict -ArtifactDir <artifact-root>\vscode-strict -TimeoutSeconds 45` - diagnostic failure, non-blocking; known Monaco/UIA limitation.
   - `python -m winchronicle watch --watcher dotnet --watcher-arg resources/win-uia-watcher/bin/Debug/net8.0-windows/win-uia-watcher.dll --helper dotnet --helper-arg resources/win-uia-helper/bin/Debug/net8.0-windows/win-uia-helper.dll --duration 5 --depth 2 --heartbeat-ms 500 --capture-on-start` with temporary `WINCHRONICLE_HOME` - passed; `captures_written: 3`, `heartbeats: 6`, `duplicates_skipped: 1`, `denylisted_skipped: 0`.
   - Artifact root: `C:\Users\34793\AppData\Local\Temp\winchronicle-ae2-final-smoke-a3da7c0177fc42059a484cf07435777a`. Local artifacts were not committed.
+- Stage AE2 completion:
+  - PR #146 Windows Harness run `25597418104` - passed.
+  - PR #146 merged as `1ea902a8630b9d0b18397af69cfcd84a9ce4d24a`.
+  - `gh run view 25597463319 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AE2 `main` Windows Harness concluded `success` on `1ea902a8630b9d0b18397af69cfcd84a9ce4d24a`.
+- Stage AE3 final release record preparation:
+  - Added `docs/release-v0.1.16.md` with deterministic gate evidence, manual
+    smoke evidence, watcher preview evidence, release notes, compatibility
+    evidence, privacy/scope confirmation, rollback notes, and publication
+    decision summary.
+  - Publication remains pending until this AE3 PR and post-merge `main`
+    Windows Harness pass.
