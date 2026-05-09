@@ -28,6 +28,7 @@ V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 V0117_RELEASE = ROOT / "docs" / "release-v0.1.17.md"
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
+HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
 POST_V0116_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.16.md"
 PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
 HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
@@ -53,6 +54,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "v0.1.16 final-release plan",
         "Post-v0.1.17 maintenance plan",
         "Public metadata audit after v0.1.17",
+        "Helper and watcher diagnostics sweep after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -88,6 +90,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "v0.1.16 final-release plan",
         "Post-v0.1.17 maintenance plan",
         "Public metadata audit after v0.1.17",
+        "Helper and watcher diagnostics sweep after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -884,17 +887,16 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "AF7 publication reconciliation landed on `main` as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
         "PR #160 Windows Harness run `25601966464` passed",
         "post-merge `main` Windows Harness run `25602018700` passed",
-        "Current stage: AG1 - Public Metadata And Evidence Freshness Follow-up.",
-        "Stage status: AG1 review in progress; AG0 landed through PR #161",
-        "Last completed evidence: AG0 baseline cursor PR #161 merged as `a994ab768deeaf08746bad296c1f8100d6ed22fb`",
-        "PR Windows Harness run `25602296648` passed",
-        "post-AG0 `main` Windows Harness run `25602345201`",
-        "gh repo view YSCJRH/WinChronicle",
-        "gh release view v0.1.17",
-        "gh release view v0.1.16",
-        "Next atomic task: land this AG1 public metadata/evidence freshness audit",
-        "then start AG2 helper and watcher preview diagnostics review",
-        "Empty GitHub description, homepage, topics, and unverifiable social preview remain manual maintainer checklist items",
+        "Current stage: AG2 - Helper And Watcher Preview Diagnostics Review.",
+        "Stage status: AG2 review in progress; AG1 landed through PR #162",
+        "Last completed evidence: AG1 public metadata audit PR #162 merged as `0a5d72ea12ac030161ed387286dc15dc63c80b01`",
+        "PR Windows Harness run `25602763122` passed",
+        "post-AG1 `main` Windows Harness run `25602836902`",
+        "current helper/watcher docs and tests still cover timeout, malformed output",
+        "raw watcher JSONL policy",
+        "Next atomic task: land this AG2 helper/watcher diagnostics review",
+        "then start AG3 MCP and memory contract review",
+        "Live UIA smoke remains manual and outside default CI",
         "Stage AG0 - Post-v0.1.17 Baseline Cursor",
         "Stage AG1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AG2 - Helper And Watcher Preview Diagnostics Review",
@@ -926,6 +928,17 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "repository is public on `main`, with empty description, homepage, and topics",
         "`v0.1.17` is published, not a draft, not a prerelease",
         "`v0.1.16` remains published as the previous stable release",
+        "Stage AG1 completion:",
+        "PR #162 merged at `2026-05-09T13:55:16Z`",
+        "PR #162 Windows Harness concluded `success`",
+        "post-AG1 `main` Windows Harness concluded `success`",
+        "Stage AG2 initialization:",
+        "Reviewed `docs/uia-helper-quality-matrix.md`, `docs/watcher-preview.md`",
+        "Found no new helper/watcher diagnostics drift",
+        "Stage AG2 local validation:",
+        "passed, 94 tests",
+        "passed, 172 tests",
+        "stale AG0/AG1 cursor and v0.1.16 helper/watcher typo scan",
     ):
         assert phrase in normalized
 
@@ -1157,6 +1170,54 @@ def test_public_metadata_audit_post_v016_records_manual_gaps_without_scope_expan
     assert "This audit does not authorize screenshots" in text
 
 
+def test_helper_watcher_diagnostics_sweep_post_v017_is_docs_only_and_scoped():
+    text = HELPER_WATCHER_V0117.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Helper And Watcher Diagnostics Sweep After v0.1.17",
+        "published `v0.1.17` maintenance release",
+        "AG1 public metadata audit",
+        "does not change schemas, successful CLI/MCP JSON shape",
+        "Helper quality matrix",
+        "Watcher preview docs",
+        "Operator diagnostics",
+        "Capture quality scorecard",
+        "Deterministic tests",
+        "Helper timeout",
+        "Helper malformed JSON",
+        "Helper empty stdout",
+        "Helper nonzero exit",
+        "Watcher nonzero exit",
+        "Helper failure surfaced by watcher",
+        "Malformed watcher JSONL",
+        "Invalid embedded helper payload",
+        "Watcher timeout",
+        "Heartbeat-only run",
+        "Duplicate skip",
+        "Denylist or lock-screen skip",
+        "Raw watcher JSONL persistence",
+        "Product targeted-capture pass-through",
+        "AG2 found no new helper/watcher diagnostics drift",
+        "no observed-content echo",
+        "raw watcher JSONL non-persistence",
+        "product targeted-capture pass-through rejection",
+        "No schema, successful CLI/MCP JSON, helper/watcher capture behavior",
+        "Fresh manual UIA smoke remains outside default CI",
+        "AF6 manual UIA smoke is fresh for the published `v0.1.17` maintenance release record",
+        "The next smallest implementation task is to land this AG2 review",
+        "Validation Log",
+        "passed, 94 tests",
+        "passed, 172 tests",
+        "Stale AG0/AG1 cursor and v0.1.16 helper/watcher typo scan",
+        "python harness/scripts/run_harness.py",
+        "does not authorize screenshot capture",
+        "product targeted capture",
+        "live UIA smoke in default CI",
+    ):
+        assert phrase in normalized
+
+
 def test_helper_watcher_diagnostics_sweep_post_v016_is_docs_only_and_scoped():
     text = HELPER_WATCHER_V0116.read_text(encoding="utf-8")
     normalized = _normalized(text)
@@ -1165,7 +1226,7 @@ def test_helper_watcher_diagnostics_sweep_post_v016_is_docs_only_and_scoped():
         "Helper And Watcher Diagnostics Sweep After v0.1.16",
         "published `v0.1.16` final release",
         "AF1 completion reconciliation",
-        "adds a narrow content-free CLI diagnostic fix",
+        "added a narrow content-free CLI diagnostic fix",
         "does not change schemas, successful CLI/MCP JSON shape",
         "Helper quality matrix",
         "Watcher preview docs",
