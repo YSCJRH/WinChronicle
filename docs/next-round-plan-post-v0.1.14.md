@@ -29,11 +29,9 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AC5 - v0.1.15 Release Readiness.
-- Stage status: F - AC5 release-readiness docs/tests/version metadata are
-  implemented; local validation, PR Windows Harness, and post-merge `main`
-  Windows Harness passed; explicit release approval and publication are
-  pending.
+- Current stage: G - v0.1.15 Published Baseline Reconciliation.
+- Stage status: G - `v0.1.15` published; baseline reconciliation is in
+  progress on `main`.
 - Last completed evidence: `v0.1.14` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.14, targets
   `e7e339f4e08828b9954599db76b87201dbcb139b`, publication reconciliation PR
@@ -41,14 +39,20 @@ service install, no polling capture loop, and no default background capture.
   merged as `48994134a3d348745f735e2a6fad56ea82495266`, and post-merge
   `main` Windows Harness run `25588297846` passed. AC5 PR #132 merged as
   `7a7f065817b9d7f660248916935fd7b66fadbdd6`, and post-merge `main` Windows
-  Harness run `25588898702` passed.
+  Harness run `25588898702` passed. AC5 evidence PR #133 merged as
+  `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`, and `v0.1.15` was published
+  at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15 targeting
+  `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`.
 - Last validation: AC5 local validation passed with focused docs/version
   pytest, full pytest, helper build, watcher build, install CLI smoke, full
   harness, runtime version check, `git diff --check`, PR Windows Harness run
-  `25588833988`, and post-merge `main` Windows Harness run `25588898702`.
-- Next atomic task: wait for explicit release approval before publishing
-  `v0.1.15`; after publication, reconcile the release record, tag target,
-  release URL, and active cursor.
+  `25588833988`, post-merge `main` Windows Harness run `25588898702`, release
+  URL https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15, tag target
+  `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`, and latest `main` Windows
+  Harness run `25589165182`.
+- Next atomic task: open the `v0.1.15` publication reconciliation PR, verify
+  PR and post-merge Windows Harness, then establish the post-v0.1.15
+  maintenance cursor before starting new implementation work.
 - Known blockers: none.
 
 ## Phased Work
@@ -283,4 +287,10 @@ Stage-specific gates:
   - PR #132 Windows Harness run `25588833988` - passed.
   - PR #132 merged as `7a7f065817b9d7f660248916935fd7b66fadbdd6`.
   - Post-merge `main` Windows Harness run `25588898702` - passed.
-- Pending explicit `v0.1.15` release approval and publication.
+  - PR #133 Windows Harness run `25589110606` - passed.
+  - PR #133 merged as `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`.
+  - Post-merge `main` Windows Harness run `25589165182` - passed.
+- Stage AC5 publication validation:
+  - `gh release create v0.1.15 --target 4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2` - passed after explicit release approval.
+  - `gh release view v0.1.15 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name` - passed; `v0.1.15` is published, not a draft or prerelease, published at `2026-05-09T02:44:06Z`, and targets `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`.
+  - `git rev-parse v0.1.15` - passed and printed `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`.
