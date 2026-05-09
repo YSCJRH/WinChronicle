@@ -24,6 +24,7 @@ V0114_RELEASE = ROOT / "docs" / "release-v0.1.14.md"
 V0115_RELEASE = ROOT / "docs" / "release-v0.1.15.md"
 V0116_RC0_RELEASE = ROOT / "docs" / "release-candidate-v0.1.16-rc.0.md"
 V0116_FINAL_PLAN = ROOT / "docs" / "next-round-plan-v0.1.16-final-release.md"
+V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -38,6 +39,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "product targeted capture flags are exposed",
         "v0.1.14 maintenance release record",
         "v0.1.15 maintenance release record",
+        "v0.1.16 final release record",
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
         "Post-v0.1.15 maintenance plan",
@@ -64,6 +66,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "OCR engine integration",
         "v0.1.14 maintenance release record",
         "v0.1.15 maintenance release record",
+        "v0.1.16 final release record",
         "v0.1.16-rc.0 release candidate record",
         "v0.1.16 final-release plan",
         "Post-v0.1.15 maintenance plan",
@@ -688,9 +691,9 @@ def test_v0116_final_release_plan_keeps_direct_final_gated_and_scoped():
         "No product code, schemas, CLI/MCP JSON shape, helper/watcher behavior, privacy runtime behavior, or capture surfaces changed",
         "Direct final release can proceed only after fresh final gates",
         "explicit final manual smoke evidence",
-        "Stage status: AE2 complete",
-        "AE2 fresh manual final UIA smoke passed for Notepad, Edge",
-        "Next atomic task: prepare the AE3 `v0.1.16` final release record",
+        "Stage status: AE3 in progress",
+        "`docs/release-v0.1.16.md` is prepared for review",
+        "Next atomic task: merge the AE3 release-record PR",
         "If final-readiness work requires any product or contract change",
         "prepare `v0.1.16-rc.1` instead",
         "Do not publish or retag `v0.1.16` during AE0",
@@ -710,8 +713,56 @@ def test_v0116_final_release_plan_keeps_direct_final_gated_and_scoped():
         "PR #145 Windows Harness run `25597196866`",
         "post-AE1 `main` Windows Harness concluded `success`",
         "Stage AE2 manual final smoke validation",
-        "VS Code strict remains a diagnostic non-blocking failure",
+        "diagnostic failure, non-blocking; known Monaco/UIA limitation",
         "`captures_written: 3`",
+        "PR #146 Windows Harness run `25597418104`",
+        "post-AE2 `main` Windows Harness concluded `success`",
+        "Added `docs/release-v0.1.16.md`",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
+def test_v0116_final_release_record_is_ready_and_scoped():
+    text = V0116_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "`v0.1.16` final is ready for publication",
+        "Publication status: ready for final publication; not yet published.",
+        "Release | `v0.1.16`",
+        "Stage | AE3 final release record and publication readiness",
+        "Current candidate `main` SHA before this record | `1ea902a8630b9d0b18397af69cfcd84a9ce4d24a`",
+        "Release URL | Pending until GitHub release publication",
+        "Final tag target | Pending until this record PR merges",
+        "Previous prerelease baseline | `v0.1.16-rc.0`",
+        "`v0.1.16-rc.0` tag target | `70caf364f68d8c159eb74bbbc23e7469db22a244`",
+        "Previous stable release | `v0.1.15`",
+        "`v0.1.15` tag target | `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`",
+        "AE0 PR Windows Harness | Passed, run `25596958129`",
+        "AE1 PR Windows Harness | Passed, run `25597196866`",
+        "AE2 PR Windows Harness | Passed, run `25597418104`",
+        "AE2 post-merge `main` Windows Harness | Passed, run `25597463319`",
+        "AD5 final pre-publication `main` Windows Harness | Passed, run `25596273094`",
+        "`python -m pytest -q` | Pass | `151 passed`",
+        "Notepad targeted UIA smoke | Pass",
+        "Edge targeted UIA smoke | Pass",
+        "VS Code metadata smoke | Pass with diagnostic warning",
+        "VS Code strict Monaco marker | Diagnostic failure, non-blocking",
+        "Real watcher/helper short preview | Pass",
+        "`captures_written: 3`, `denylisted_skipped: 0`, `duplicates_skipped: 1`, `heartbeats: 6`",
+        "Promotes the published `v0.1.16-rc.0` prerelease contract to `v0.1.16`",
+        "must report `0.1.16`",
+        "exact read-only MCP tool list remains unchanged",
+        "Product CLI exposes no targeted `--hwnd`, `--pid`, `--window-title`",
+        "Phase 6 remains specification-only",
+        "This final release does not expand the capture surface beyond `v0.1.16-rc.0`",
+        "MCP remains read-only",
+        "Do not retag or modify `v0.1.16-rc.0`",
+        "Fallback path: `v0.1.16-rc.1`",
+        "Publication approval: standing user goal authorizes publishing after review",
     ):
         assert phrase in normalized
 

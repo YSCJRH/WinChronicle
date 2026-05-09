@@ -6,8 +6,10 @@ smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest published release record is
 [v0.1.15 maintenance release record](release-v0.1.15.md). The active
 `v0.1.16` final-release cursor is recorded in
-[v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md). The
-completed post-v0.1.15 prerelease path is recorded in
+[v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md), and
+the prepared final release record is
+[v0.1.16 final release record](release-v0.1.16.md). The completed
+post-v0.1.15 prerelease path is recorded in
 [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md). The current
 published prerelease candidate remains
 [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md)
@@ -56,6 +58,10 @@ historical records. After the `v0.1.15` publication:
   `b260ebaa8808bddcce20da166038511de23bf3b5`, post-prerelease-reconciliation
   Windows Harness run `25596579705`, and docs/tests-only drift from the
   prerelease tag;
+- the prepared `v0.1.16` final release record is ready for publication review
+  but must not be treated as the latest published release until the GitHub
+  release exists and post-publication reconciliation records its URL, tag
+  target, and timestamp;
 - the completed post-v0.1.15 execution cursor records AD4 PR #139, PR Windows
   Harness run `25595449096`, post-merge Windows Harness run `25595513141`,
   AD5 prerelease publication, and publication reconciliation evidence;
