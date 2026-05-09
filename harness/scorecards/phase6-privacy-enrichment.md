@@ -56,6 +56,9 @@ exposure.
 Residual policy fixtures also cover future opt-in requirement booleans, raw
 cache local-state, artifact-commit, and encryption/exception controls, derived
 text pipeline controls, and MCP untrusted-content trust requirements.
+Deferred fixture closure also covers sample-only allowlist markers, empty
+screenshot/OCR allowlists, app_name wildcard/global selector variants, empty
+selectors, and non_goals duplicate and unknown variants.
 
 ## Required Future Opt-In Contract
 

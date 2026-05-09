@@ -33,8 +33,21 @@ PHASE6_CONTRACT_RESIDUAL_POLICY_FIXTURES = (
     / "docs"
     / "phase6-privacy-contract-residual-policy-fixtures-post-v0.1.17.md"
 )
+PHASE6_CONTRACT_DEFERRED_FIXTURE_CLOSURE = (
+    ROOT / "docs" / "phase6-privacy-contract-deferred-fixture-closure-post-v0.1.17.md"
+)
 PHASE6_FIXTURE_DIR = ROOT / "harness" / "fixtures" / "phase6"
 PHASE6_INVALID_FIXTURES = (
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_app_name_all_allowlist.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_app_name_wildcard_allowlist.json",
     ROOT
     / "harness"
     / "fixtures"
@@ -65,6 +78,11 @@ PHASE6_INVALID_FIXTURES = (
     / "fixtures"
     / "phase6"
     / "privacy_enrichment_contract_invalid_derived_text_sqlite_index_before_redaction_allowed.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_empty_app_selector.json",
     ROOT
     / "harness"
     / "fixtures"
@@ -144,6 +162,21 @@ PHASE6_INVALID_FIXTURES = (
     / "harness"
     / "fixtures"
     / "phase6"
+    / "privacy_enrichment_contract_invalid_non_goals_duplicate.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_non_goals_unknown.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_ocr_allowlist_empty.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
     / "privacy_enrichment_contract_invalid_ocr_default_enabled.json",
     ROOT
     / "harness"
@@ -195,6 +228,16 @@ PHASE6_INVALID_FIXTURES = (
     / "fixtures"
     / "phase6"
     / "privacy_enrichment_contract_invalid_runtime_status.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_sample_allowlist_entries_not_sample_only.json",
+    ROOT
+    / "harness"
+    / "fixtures"
+    / "phase6"
+    / "privacy_enrichment_contract_invalid_screenshots_allowlist_empty.json",
     ROOT
     / "harness"
     / "fixtures"
@@ -291,6 +334,10 @@ def test_phase6_privacy_scorecard_records_threat_model_and_preflight_artifacts()
         "Residual policy fixtures also cover future opt-in requirement booleans",
         "derived text pipeline controls",
         "MCP untrusted-content trust requirements",
+        "Deferred fixture closure also covers sample-only allowlist markers",
+        "empty screenshot/OCR allowlists",
+        "app_name wildcard/global selector variants",
+        "non_goals duplicate and unknown variants",
         "sample shape examples only, not approved apps",
         "do not authorize screenshot capture, OCR, raw screenshot caches",
     )
@@ -560,6 +607,35 @@ def test_phase6_privacy_contract_residual_policy_fixtures_record_expansion():
         "Post-residual-policy-fixtures `main` Windows Harness run `25609341275` concluded `success`",
         "Decide whether to add lower-priority deferred Phase 6 contract fixtures",
         "sample-only allowlist marker",
+    )
+    for phrase in required_phrases:
+        assert phrase in normalized
+
+
+def test_phase6_privacy_contract_deferred_fixture_closure_records_final_batch():
+    text = PHASE6_CONTRACT_DEFERRED_FIXTURE_CLOSURE.read_text(encoding="utf-8")
+    normalized = _normalize_markdown(text)
+
+    required_phrases = (
+        "targeted Phase 6 privacy-enrichment deferred fixture closure",
+        "does not implement or authorize screenshot capture, OCR",
+        "promotes the lower-priority deferred candidates to committed fixtures",
+        "privacy_enrichment_contract_invalid_sample_allowlist_entries_not_sample_only.json",
+        "privacy_enrichment_contract_invalid_screenshots_allowlist_empty.json",
+        "privacy_enrichment_contract_invalid_ocr_allowlist_empty.json",
+        "privacy_enrichment_contract_invalid_empty_app_selector.json",
+        "privacy_enrichment_contract_invalid_app_name_wildcard_allowlist.json",
+        "privacy_enrichment_contract_invalid_app_name_all_allowlist.json",
+        "privacy_enrichment_contract_invalid_non_goals_duplicate.json",
+        "privacy_enrichment_contract_invalid_non_goals_unknown.json",
+        "41 committed invalid fixtures",
+        "Phase 6 fixture coverage is adequate for the v0.1 maintenance boundary",
+        "These fixtures are not runtime configuration",
+        "Product code must not read them in v0.1",
+        "focused Phase 6/docs validation reported 92 tests",
+        "full pytest reported 189 tests",
+        "no runtime, helper/watcher, CLI/MCP output, privacy-runtime",
+        "After PR review and merge, reconcile the deferred-fixture-closure evidence",
     )
     for phrase in required_phrases:
         assert phrase in normalized
