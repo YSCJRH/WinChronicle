@@ -16,6 +16,8 @@ current post-v0.1.18 MCP/memory contract review is
 [MCP and memory contract sweep after v0.1.18](mcp-memory-contract-sweep-post-v0.1.18.md). The
 current post-v0.1.18 compatibility guardrail review is
 [Compatibility guardrail sweep after v0.1.18](compatibility-guardrail-sweep-post-v0.1.18.md). The
+current post-v0.1.18 release-readiness decision is
+[Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md). The
 completed post-v0.1.17 maintenance cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -148,6 +150,10 @@ historical records. After the `v0.1.18` maintenance publication:
   observed-content trust boundaries, watcher preview limits, durable memory
   contract, product targeted-capture absence, Phase 6 spec-only status,
   background install/polling absence, and no new product-code drift;
+- the current post-v0.1.18 release-readiness decision records that AH1-AH4 do
+  not warrant a new release-readiness or publication path, `v0.1.18` must not
+  be retagged, no runtime/resource/version diff exists, and no fresh manual UIA
+  smoke decision is made because no publication path is opened;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0
