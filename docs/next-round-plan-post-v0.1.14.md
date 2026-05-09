@@ -29,21 +29,21 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AC4 - Compatibility Guardrail Sweep.
-- Stage status: B - AC4 compatibility guardrail docs/tests are implemented
-  and local validation passed; PR Windows Harness and post-merge Windows
-  Harness are pending.
+- Current stage: AC5 - v0.1.15 Release Readiness.
+- Stage status: B - AC5 release-readiness docs/tests/version metadata are
+  implemented and local validation passed; PR Windows Harness, post-merge
+  Windows Harness, explicit release approval, and publication are pending.
 - Last completed evidence: `v0.1.14` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.14, targets
   `e7e339f4e08828b9954599db76b87201dbcb139b`, publication reconciliation PR
-  #126 merged as `2627e17dd215d3b7233d237ca5f094eacaff2983`, AC3 PR #130
-  merged as `79637edd43ac15b425d5a2600a61472c9e27e031`, and post-merge
-  `main` Windows Harness run `25587885292` passed.
-- Last validation: AC4 local validation passed with focused guardrail tests,
-  focused docs/version pytest, full pytest, helper build, watcher build,
-  install CLI smoke, full harness, boundary scans, and `git diff --check`.
-- Next atomic task: open the AC4 PR and verify PR/post-merge Windows Harness
-  before starting AC5 release readiness.
+  #126 merged as `2627e17dd215d3b7233d237ca5f094eacaff2983`, AC4 PR #131
+  merged as `48994134a3d348745f735e2a6fad56ea82495266`, and post-merge
+  `main` Windows Harness run `25588297846` passed.
+- Last validation: AC5 local validation passed with focused docs/version
+  pytest, full pytest, helper build, watcher build, install CLI smoke, full
+  harness, runtime version check, and `git diff --check`.
+- Next atomic task: open the AC5 PR, verify PR/post-merge Windows Harness,
+  and wait for explicit release approval before publishing `v0.1.15`.
 - Known blockers: none.
 
 ## Phased Work
@@ -259,5 +259,21 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AC4 PR Windows Harness.
-- Pending AC4 post-merge `main` Windows Harness.
+- Stage AC4 remote validation:
+  - PR #131 Windows Harness run `25588225151` - passed.
+  - PR #131 merged as `48994134a3d348745f735e2a6fad56ea82495266`.
+  - Post-merge `main` Windows Harness run `25588297846` - passed.
+- Stage AC5 initialization:
+  - `gh release view v0.1.15 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name` - confirmed release not found before AC5 readiness.
+- Stage AC5 local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 46 tests.
+  - `python -m pytest -q` - passed, 137 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.15`.
+  - `git diff --check` - passed.
+- Pending AC5 PR Windows Harness.
+- Pending AC5 post-merge `main` Windows Harness.
+- Pending explicit `v0.1.15` release approval and publication.
