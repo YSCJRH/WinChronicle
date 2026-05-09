@@ -330,7 +330,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "completed Phase 6 contract coverage audit" in readme_intro_normalized
     assert "completed Phase 6 contract gap fixture expansion" in readme_intro_normalized
     assert "completed Phase 6 residual schema coverage audit" in readme_intro_normalized
-    assert "current Phase 6 residual policy fixture expansion" in readme_intro_normalized
+    assert "completed Phase 6 residual policy fixture expansion" in readme_intro_normalized
+    assert "current Phase 6 deferred fixture coverage decision" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
@@ -800,8 +801,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Phase 6 residual schema coverage audit PR #178" in evidence
     assert "post-residual-audit\n  `main` Windows Harness run `25609004391`" in checklist
     assert "post-residual-audit\n  `main` Windows Harness run `25609004391`" in evidence
-    assert "current Phase 6 residual policy fixture expansion" in checklist
-    assert "current Phase 6 residual policy fixture expansion" in evidence
+    assert "Phase 6 residual policy fixture\n  expansion PR #179" in checklist
+    assert "Phase 6 residual policy fixture\n  expansion PR #179" in evidence
+    assert "post-residual-policy-fixtures `main` Windows Harness\n  run `25609341275`" in checklist
+    assert "post-residual-policy-fixtures `main` Windows Harness\n  run `25609341275`" in evidence
+    assert "current Phase 6 deferred fixture coverage\n  decision" in checklist
+    assert "current Phase 6 deferred fixture coverage\n  decision" in evidence
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist

@@ -556,7 +556,10 @@ def test_phase6_privacy_contract_residual_policy_fixtures_record_expansion():
         "individual `non_goals.contains`",
         "focused Phase 6/docs validation reported 91 tests",
         "full pytest reported 188 tests",
-        "Land this residual policy fixture expansion through PR",
+        "PR #179 Windows Harness run `25609287443` concluded `success`",
+        "Post-residual-policy-fixtures `main` Windows Harness run `25609341275` concluded `success`",
+        "Decide whether to add lower-priority deferred Phase 6 contract fixtures",
+        "sample-only allowlist marker",
     )
     for phrase in required_phrases:
         assert phrase in normalized
