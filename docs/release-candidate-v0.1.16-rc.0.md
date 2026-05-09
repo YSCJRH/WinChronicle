@@ -8,9 +8,8 @@ not commit observed-content artifacts.
 ## Release Decision
 
 `v0.1.16-rc.0` is a release-candidate readiness candidate. Local AD5
-validation passed, including fresh manual UIA smoke. PR Windows Harness,
-post-merge `main` Windows Harness, and GitHub prerelease publication are
-pending.
+validation, fresh manual UIA smoke, PR Windows Harness, and post-merge `main`
+Windows Harness passed. GitHub prerelease publication is pending.
 
 The release-candidate path is required before direct `v0.1.16` final because
 AD2-AD4 included compatible runtime drift fixes, not only documentation and
@@ -39,9 +38,10 @@ Publication status: release-candidate readiness; not yet published.
 | Stage | AD5 release-candidate readiness |
 | Evidence date | 2026-05-09, Asia/Shanghai |
 | Base `main` SHA before AD5 readiness | `2c7d0b0b24d9a159c084f262cb24ec7ee9873a39` |
-| Candidate PR | Pending |
-| Candidate PR Windows Harness | Pending |
-| Candidate post-merge `main` Windows Harness | Pending |
+| Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/140 |
+| Candidate PR Windows Harness | Passed, run `25596082939`, https://github.com/YSCJRH/WinChronicle/actions/runs/25596082939 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25596122521`, https://github.com/YSCJRH/WinChronicle/actions/runs/25596122521 |
+| Candidate post-merge `main` SHA | `bca4b6485f194a46bca7fa6e1e3866b5105479da` |
 | Publication status | Release-candidate readiness; not yet published |
 | Release URL | Pending |
 | Final tag target | Pending |
@@ -86,8 +86,8 @@ Environment:
 | `python -c "import winchronicle; print(winchronicle.__version__)"` | Pass | printed `0.1.16` |
 | `git diff --check` | Pass | no whitespace errors |
 
-The AD5 PR Windows Harness, post-merge `main` Windows Harness, and GitHub
-prerelease publication are pending.
+The AD5 PR Windows Harness and post-merge `main` Windows Harness passed.
+GitHub prerelease publication is pending.
 
 ## Manual UIA Smoke Gates
 
@@ -196,8 +196,8 @@ expanding the capture surface from `v0.1.15`.
 - Reason: AD2-AD4 include compatible runtime/privacy drift fixes.
 - Fallback path: follow-up release candidate if any product or contract
   regression is found.
-- Deterministic gates: AD5 local validation passed; PR Windows Harness,
-  post-merge `main` Windows Harness, and GitHub prerelease publication are
+- Deterministic gates: AD5 local validation, PR Windows Harness, and
+  post-merge `main` Windows Harness passed; GitHub prerelease publication is
   pending.
 - Manual UIA gates: fresh manual UIA smoke passed for Notepad and Edge; VS
   Code metadata passed with the known Monaco diagnostic warning; VS Code
