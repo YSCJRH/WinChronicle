@@ -23,20 +23,23 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AF4 - Compatibility Guardrail Sweep.
-- Stage status: AF4 review in progress; AF3 is complete.
-- Last completed evidence: `docs/mcp-memory-contract-sweep-post-v0.1.16.md`
-  and AF3 MCP/memory review PR #154 merged as
-  `f55638cf213b40c07d01f1872a7ff828b3a85d6f`, PR Windows Harness run
-  `25599715499` passed, and post-merge `main` Windows Harness run
-  `25599772190` passed on that SHA.
-- Last validation: `docs/compatibility-guardrail-sweep-post-v0.1.16.md`
-  records the AF4 ordered MCP smoke guardrail, complete targeted-flag docs,
-  `generate-memory` manifest compatibility shape, focused guardrail tests,
-  boundary scan and control/capture dependency scan, and deterministic
-  no-capture-surface expansion decision.
-- Next atomic task: land this AF4 review through PR and post-merge Windows
-  Harness validation, then record AF4 completion.
+- Current stage: AF5 - Release-Readiness Decision.
+- Stage status: AF4 complete; AF5 is ready to start.
+- Last completed evidence:
+  `docs/compatibility-guardrail-sweep-post-v0.1.16.md` and AF4 compatibility
+  guardrail PR #156 merged as
+  `20758124f5679be3a733ac0de8ed9c99e1d8777b`, PR Windows Harness run
+  `25600358015` passed, and post-merge `main` Windows Harness run
+  `25600405807` passed on that SHA.
+- Last validation: AF4 completion confirms the ordered MCP smoke guardrail,
+  complete targeted-flag docs, `generate-memory` manifest compatibility shape,
+  focused guardrail tests, boundary scan, control/capture dependency scan,
+  full local harness, PR Windows Harness, and post-merge `main` Windows
+  Harness passed without capture-surface expansion.
+- Next atomic task: start AF5 by deciding whether the post-v0.1.16 docs,
+  harness, and compatibility-test changes warrant a release-readiness plan or
+  should remain maintenance evidence before the next blueprint implementation
+  lane.
 - Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
@@ -84,6 +87,18 @@ service install, no polling capture loop, and no default background capture.
   content trust boundaries, watcher preview limits, durable memory contract,
   product targeted capture absence, and Phase 6 spec-only status.
 - Strengthen tests only for discovered drift.
+
+### Stage AF5 - Release-Readiness Decision
+
+- Decide whether the AF1-AF4 documentation, harness, and compatibility-test
+  guardrails warrant a post-v0.1.16 release-readiness plan.
+- If a release-readiness plan is warranted, require a fresh version decision,
+  evidence-freshness check, and manual UIA smoke freshness decision before any
+  publication.
+- If no release is warranted, start the next smallest blueprint implementation
+  lane with contracts, fixtures, tests, and scorecards first.
+- Do not retag `v0.1.16`; use a future compatible version only through an
+  explicit release-readiness record.
 
 ## Public Interfaces And Non-goals
 
@@ -145,11 +160,18 @@ Every implementation stage should run:
   `generate-memory` manifest JSON omitted observed-content trust metadata and
   that standalone MCP smoke should freeze a literal tool list plus the full
   forbidden write/file/network/control term set.
-- Completed AF3 after PR #154 and post-merge `main` Windows Harness passed.
+- Completed AF3 after AF3 MCP/memory review PR #154 merged as
+  `f55638cf213b40c07d01f1872a7ff828b3a85d6f` and post-merge `main` Windows
+  Harness passed; evidence is recorded in
+  `docs/mcp-memory-contract-sweep-post-v0.1.16.md`.
 - Started AF4 as a compatibility guardrail sweep; read-only reviews found only
   documentation and guardrail precision drifts around public MCP ordering,
   complete targeted-flag wording, ordered MCP smoke comparison, and the AF3
   `generate-memory` manifest JSON compatibility shape.
+- Completed AF4 after PR #156 and post-merge `main` Windows Harness passed.
+- Chose AF5 as an explicit release-readiness decision because AF1-AF4 changed
+  docs, deterministic tests, and harness guardrails without changing product
+  behavior, capture surfaces, schemas, MCP tool schemas, or version metadata.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -211,3 +233,24 @@ Every implementation stage should run:
   - PR #154 Windows Harness run `25599715499` - passed.
   - PR #154 merged as `f55638cf213b40c07d01f1872a7ff828b3a85d6f`.
   - `gh run view 25599772190 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF3 `main` Windows Harness concluded `success` on `f55638cf213b40c07d01f1872a7ff828b3a85d6f`.
+- Stage AF4 local validation:
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py tests/test_version_identity.py -q` - passed; 50 tests passed.
+  - `python -m pytest tests/test_compatibility_contracts.py tests/test_mcp_tools.py tests/test_phase6_privacy_scorecard.py tests/test_watcher_events.py tests/test_state_compatibility.py tests/test_memory_pipeline.py tests/test_version_identity.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` - passed; 113 tests passed.
+  - `python harness/scripts/run_mcp_smoke.py` - passed.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python -m pytest -q` - passed; 165 tests passed.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed with 0 warnings and 0 errors.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+  - Boundary scan and control/capture dependency scan reviewed only existing
+    disabled-surface contracts, documentation, tests, scorecards, fixtures,
+    privacy canaries, and local smoke variable names; no new product
+    CLI/MCP targeted capture, write/control tool, screenshot/OCR, audio,
+    keyboard, clipboard, network/cloud upload, LLM, desktop control,
+    daemon/service, polling capture, default background capture, or runtime
+    dependency path was found.
+- Stage AF4 completion:
+  - PR #156 Windows Harness run `25600358015` - passed.
+  - PR #156 merged as `20758124f5679be3a733ac0de8ed9c99e1d8777b`.
+  - `gh run view 25600405807 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF4 `main` Windows Harness concluded `success` on `20758124f5679be3a733ac0de8ed9c99e1d8777b`.
