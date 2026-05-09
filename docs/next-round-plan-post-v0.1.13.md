@@ -30,10 +30,9 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AB5 - v0.1.14 Release Readiness.
-- Stage status: B - AB5 release-readiness metadata, release record, version
-  identity updates, and local validation are complete; PR Windows Harness,
-  post-merge Windows Harness, and publication are pending.
+- Current stage: G - v0.1.14 Published Baseline Reconciliation.
+- Stage status: G - `v0.1.14` published; baseline reconciliation is in
+  progress on `main`.
 - Last completed evidence: `v0.1.13` is published at
   https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.13, targets
   `1070343d9bcfd60c48238835e26b6c32f9060ae7`, publication reconciliation PR
@@ -41,14 +40,15 @@ service install, no polling capture loop, and no default background capture.
   merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`, AB1 PR #121 merged
   as `1f557faf9ef2460cc456ea6966495b5f175ad809`, and AB2 PR #122 merged as
   `9cdb6f80b0665915dd403101911c14293d60946f`, and AB3 PR #123 merged as
-  `13f1a33ca6bcbc2cc8d5863ac0be9e48d0ccb204`, and AB4 PR #124 merged as
-  `cd5215e6e6333c7fe00fe47a526ea0d15dcf1bd7`.
-- Last validation: AB5 local validation passed with focused docs/version tests,
-  full pytest, helper build, watcher build, install CLI smoke, full harness,
-  and `git diff --check`.
-- Next atomic task: open the AB5 release-readiness PR, verify PR and post-merge
-  Windows Harness, then request or use explicit release approval for
-  `v0.1.14`.
+  `13f1a33ca6bcbc2cc8d5863ac0be9e48d0ccb204`, AB4 PR #124 merged as
+  `cd5215e6e6333c7fe00fe47a526ea0d15dcf1bd7`, and AB5 PR #125 merged as
+  `e7e339f4e08828b9954599db76b87201dbcb139b`.
+- Last validation: `v0.1.14` publication validation passed: release URL
+  https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.14, tag target
+  `e7e339f4e08828b9954599db76b87201dbcb139b`, and runtime version `0.1.14`.
+- Next atomic task: open the `v0.1.14` publication reconciliation PR, verify
+  PR and post-merge Windows Harness, then establish the post-v0.1.14
+  maintenance cursor before starting new implementation work.
 - Known blockers: none.
 
 ## Phased Work
@@ -230,6 +230,10 @@ Stage-specific gates:
   deterministic harness evidence, compatibility evidence, and release-planning
   records only. AB5 is limited to release documentation, tests, and version
   metadata.
+- Published `v0.1.14` from
+  `e7e339f4e08828b9954599db76b87201dbcb139b`. Do not retag `v0.1.14`;
+  reconcile documentation and then establish a post-v0.1.14 maintenance plan
+  before starting new implementation work.
 
 ## Validation Log
 
@@ -323,6 +327,23 @@ Stage-specific gates:
   - `python harness/scripts/run_install_cli_smoke.py` - passed.
   - `python harness/scripts/run_harness.py` - passed.
   - `git diff --check` - passed.
-- Pending AB5 PR Windows Harness.
-- Pending AB5 post-merge `main` Windows Harness.
-- Pending `v0.1.14` publication approval and GitHub release.
+- Stage AB5 remote validation:
+  - PR #125 Windows Harness run `25585067457` - passed.
+  - PR #125 merged as `e7e339f4e08828b9954599db76b87201dbcb139b`.
+  - Post-merge `main` Windows Harness run `25585147402` - passed.
+- v0.1.14 publication validation:
+  - `gh release create v0.1.14 --target e7e339f4e08828b9954599db76b87201dbcb139b --title "v0.1.14" --notes <inline release notes>` - passed.
+  - `gh release view v0.1.14 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name` - passed; release URL https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.14, not draft, not prerelease, published at `2026-05-08T23:52:43Z`, and target `e7e339f4e08828b9954599db76b87201dbcb139b`.
+  - `git fetch --tags origin` - passed.
+  - `git rev-parse v0.1.14` - passed and printed `e7e339f4e08828b9954599db76b87201dbcb139b`.
+  - `python -c "import winchronicle; print(winchronicle.__version__)"` - passed and printed `0.1.14`.
+- v0.1.14 publication reconciliation local validation:
+  - `python -m pytest tests/test_version_identity.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 40 tests.
+  - `python -m pytest -q` - passed, 131 tests.
+  - `dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo` - passed, 0 warnings, 0 errors.
+  - `python harness/scripts/run_install_cli_smoke.py` - passed.
+  - `python harness/scripts/run_harness.py` - passed.
+  - `git diff --check` - passed.
+- Pending v0.1.14 publication reconciliation PR Windows Harness.
+- Pending v0.1.14 publication reconciliation post-merge `main` Windows Harness.

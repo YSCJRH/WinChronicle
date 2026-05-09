@@ -6,14 +6,12 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.13 maintenance release record](release-v0.1.13.md). The active
+[v0.1.14 maintenance release record](release-v0.1.14.md). The active
 post-v0.1.13 execution cursor lives in
 [Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md). For release
-evidence shape, use [Release evidence guide](release-evidence.md). The current
-compatible release-readiness candidate is
-[v0.1.14 maintenance release-readiness record](release-v0.1.14.md). The previous
+evidence shape, use [Release evidence guide](release-evidence.md). The previous
 stable release record is
-[v0.1.12 maintenance release record](release-v0.1.12.md), the completed
+[v0.1.13 maintenance release record](release-v0.1.13.md), the completed
 post-v0.1.12 execution cursor lives in
 [Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md), and the
 post-v0.1.10 plan is completed historical evidence.
@@ -34,15 +32,15 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.13` until a later plan explicitly prepares
+- the stable baseline is `v0.1.14` until a later plan explicitly prepares
   another version;
-- `v0.1.13` is the latest published release; its release URL, tag target, and
+- `v0.1.14` is the latest published release; its release URL, tag target, and
   Windows Harness evidence are recorded in the release record;
-- `v0.1.14` is the current compatible release-readiness candidate; it must not
-  be treated as published until the GitHub release exists and the release record
-  is reconciled;
-- the post-v0.1.13 execution cursor is active and records post-publication
-  reconciliation PR #119 plus post-merge Windows Harness run `25581662790`;
+- the completed post-v0.1.13 execution cursor records `v0.1.14` publication,
+  PR #125, and post-merge Windows Harness run `25585147402`;
+- the post-v0.1.13 execution cursor also records the initial `v0.1.13`
+  post-publication reconciliation PR #119 plus post-merge Windows Harness run
+  `25581662790`;
 - public metadata and evidence-freshness checks record repository description,
   homepage, topics, release metadata, and social preview status or manual
   follow-up items without treating empty repository metadata as a product-code

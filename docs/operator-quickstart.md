@@ -162,7 +162,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Roadmap](roadmap.md)
 - [Contributing](../CONTRIBUTING.md)
 - [Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md)
-- [v0.1.14 maintenance release-readiness record](release-v0.1.14.md)
+- [v0.1.14 maintenance release record](release-v0.1.14.md)
 - [v0.1.13 maintenance release record](release-v0.1.13.md)
 - [v0.1.12 maintenance release record](release-v0.1.12.md)
 

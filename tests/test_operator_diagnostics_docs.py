@@ -66,7 +66,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert "[v0.1.13 maintenance release record](release-v0.1.13.md)" in quickstart
     assert (
-        "[v0.1.14 maintenance release-readiness record](release-v0.1.14.md)"
+        "[v0.1.14 maintenance release record](release-v0.1.14.md)"
         in quickstart
     )
     assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
@@ -100,7 +100,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert "[v0.1.13 maintenance release record](docs/release-v0.1.13.md)" in readme
     assert (
-        "[v0.1.14 maintenance release-readiness record](docs/release-v0.1.14.md)"
+        "[v0.1.14 maintenance release record](docs/release-v0.1.14.md)"
         in readme
     )
 
@@ -124,14 +124,14 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
 
     assert "active post-v0.1.13 maintenance plan" in readme_intro_normalized
     assert "public metadata audit" in readme_intro_normalized
-    assert "`v0.1.14` release-readiness record" in readme_intro_normalized
-    assert "latest published `v0.1.13` release record" in readme_intro_normalized
+    assert "latest published `v0.1.14` release record" in readme_intro_normalized
+    assert "`v0.1.13` release record" in readme_intro_normalized
     assert "completed post-v0.1.12 maintenance plan" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
     assert "v0.1.13 maintenance release record" in readme_operator_docs
-    assert "v0.1.14 maintenance release-readiness record" in readme_operator_docs
+    assert "v0.1.14 maintenance release record" in readme_operator_docs
     assert "Post-v0.1.13 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.13" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.13" in readme_operator_docs
@@ -167,9 +167,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Blueprint gap audit after v0.1.12"
     )
     assert readme_operator_docs.index("Post-v0.1.13 maintenance plan") < readme_operator_docs.index(
-        "v0.1.14 maintenance release-readiness record"
+        "v0.1.14 maintenance release record"
     )
-    assert readme_operator_docs.index("v0.1.14 maintenance release-readiness record") < readme_operator_docs.index(
+    assert readme_operator_docs.index("v0.1.14 maintenance release record") < readme_operator_docs.index(
         "v0.1.13 maintenance release record"
     )
     assert readme_operator_docs.index("v0.1.13 maintenance release record") < readme_operator_docs.index(
@@ -288,12 +288,10 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-v0.1.14.md" in evidence
     assert "next-round-plan-post-v0.1.13.md" in checklist
     assert "next-round-plan-post-v0.1.13.md" in evidence
-    assert "v0.1.14` is the current compatible release-readiness candidate" in checklist
-    assert "v0.1.14` is the current compatible release-readiness candidate" in evidence
+    assert "v0.1.14` is the latest published release" in checklist
+    assert "v0.1.14` is the latest published release" in evidence
     assert "public metadata and evidence-freshness checks" in checklist
     assert "public metadata evidence should record" in evidence
-    assert "release-v0.1.12.md" in checklist
-    assert "release-v0.1.12.md" in evidence
     assert "next-round-plan-post-v0.1.12.md" in checklist
     assert "next-round-plan-post-v0.1.12.md" in evidence
     assert "release-v0.1.10.md" not in checklist
@@ -974,8 +972,8 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "publication reconciliation on `main` is `f4781a91f2120f3eca5088b87bf9034be752274f`",
         "Windows Harness run `25581662790` passed",
         "reports `0.1.13`",
-        "Current stage: AB5 - v0.1.14 Release Readiness.",
-        "Stage status: B - AB5 release-readiness metadata, release record, version identity updates, and local validation are complete",
+        "Current stage: G - v0.1.14 Published Baseline Reconciliation.",
+        "Stage status: G - `v0.1.14` published; baseline reconciliation is in progress on `main`.",
         "publication reconciliation PR #119 merged as `f4781a91f2120f3eca5088b87bf9034be752274f`",
         "AB0 PR #120 merged as `6a78e4aa1d084cb425351f9e514cb40e6d76f7c0`",
         "AB1 PR #121 merged as `1f557faf9ef2460cc456ea6966495b5f175ad809`",
@@ -1062,9 +1060,23 @@ def test_post_v013_plan_is_active_without_expanding_scope():
         "python harness/scripts/run_install_cli_smoke.py` - passed.",
         "python harness/scripts/run_harness.py` - passed.",
         "git diff --check` - passed.",
-        "Pending AB5 PR Windows Harness.",
-        "Pending AB5 post-merge `main` Windows Harness.",
-        "Pending `v0.1.14` publication approval and GitHub release.",
+        "Stage AB5 remote validation:",
+        "PR #125 Windows Harness run `25585067457` - passed.",
+        "PR #125 merged as `e7e339f4e08828b9954599db76b87201dbcb139b`.",
+        "Post-merge `main` Windows Harness run `25585147402` - passed.",
+        "v0.1.14 publication validation:",
+        "gh release create v0.1.14",
+        "gh release view v0.1.14",
+        "published at `2026-05-08T23:52:43Z`",
+        "git rev-parse v0.1.14",
+        "printed `0.1.14`",
+        "v0.1.14 publication reconciliation local validation:",
+        "passed, 40 tests.",
+        "python -m pytest -q` - passed, 131 tests.",
+        "python harness/scripts/run_install_cli_smoke.py` - passed.",
+        "python harness/scripts/run_harness.py` - passed.",
+        "Pending v0.1.14 publication reconciliation PR Windows Harness.",
+        "Pending v0.1.14 publication reconciliation post-merge `main` Windows Harness.",
     ):
         assert expected in normalized
 
@@ -1456,10 +1468,12 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "stable baseline is `v0.1.13`",
-        "`v0.1.13` is the latest published release",
-        "post-v0.1.13 execution cursor is active",
-        "PR #119 plus post-merge Windows Harness run `25581662790`",
+        "stable baseline is `v0.1.14`",
+        "`v0.1.14` is the latest published release",
+        "completed post-v0.1.13 execution cursor records `v0.1.14` publication",
+        "PR #125, and post-merge Windows Harness run `25585147402`",
+        "post-v0.1.13 execution cursor also records the initial `v0.1.13`",
+        "PR #119 plus post-merge Windows Harness run\n  `25581662790`",
         "post-v0.1.12 execution cursor is completed historical context",
         "PR #118 plus post-merge Windows Harness run `25580877004`",
         "post-v0.1.11 execution cursor is completed historical context",
@@ -1512,10 +1526,12 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "`v0.1.13` is the stable baseline",
-        "`v0.1.13` is the latest published release",
-        "post-v0.1.13 execution cursor is active",
-        "PR #119 plus post-merge Windows Harness run `25581662790`",
+        "`v0.1.14` is the stable baseline",
+        "`v0.1.14` is the latest published release",
+        "completed post-v0.1.13 execution cursor records `v0.1.14` publication",
+        "PR #125, and post-merge Windows Harness run `25585147402`",
+        "post-v0.1.13 execution cursor also records the initial `v0.1.13`",
+        "PR #119 plus post-merge Windows Harness run\n  `25581662790`",
         "post-v0.1.12 execution cursor is completed historical context",
         "PR #118 plus post-merge Windows Harness run `25580877004`",
         "post-v0.1.11 execution cursor is completed historical context",
@@ -1592,12 +1608,11 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         assert gate in ledger
 
     for expected in (
-        "Stable release baseline | `v0.1.13`",
+        "Stable release baseline | `v0.1.14`",
         "Current maintenance plan | [Post-v0.1.13 maintenance plan]",
         "Latest completed maintenance plan | [Post-v0.1.12 maintenance plan]",
-        "Current release-readiness record | [v0.1.14 maintenance release-readiness record]",
-        "Published release record | [v0.1.13 maintenance release record]",
-        "Latest published release record | [v0.1.13 maintenance release record]",
+        "Published release record | [v0.1.14 maintenance release record]",
+        "Latest published release record | [v0.1.14 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.1.0 final release readiness record]",
         "Last freshness decision | For the post-v0.1.13 compatible maintenance path toward `v0.1.14`",
         "inherited `v0.1.0` Notepad, Edge, VS Code metadata",
