@@ -27,25 +27,27 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: Phase 6 Privacy-Enrichment Contract Fixture Expansion.
-- Stage status: fixture expansion in progress; the lane remains
-  docs/tests/fixtures-only and adds no runtime capture surface.
-- Last completed evidence: Phase 6 preflight reconciliation PR #169 merged as
-  `297f2637a0d1a24a3359076f956322b0fda81575`, PR Windows Harness run
-  `25605887788` passed, and post-reconciliation `main` Windows Harness run
-  `25605945162` passed on that SHA.
-- Last validation: `gh run view 25605945162 --json
+- Current stage: Phase 6 Remaining Negative Contract Fixture Expansion.
+- Stage status: first committed negative fixture expansion complete; the next
+  Phase 6 step remains docs/tests/fixtures-only.
+- Last completed evidence: Phase 6 committed negative contract fixture
+  expansion PR #170 merged as `0ce32c7bf40a134fc18b5cf5647b36d617aac421`, PR
+  Windows Harness run `25606272408` passed, and post-fixture-expansion `main`
+  Windows Harness run `25606329451` passed on that SHA.
+- Last validation: `gh run view 25606329451 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-reconciliation `main` Windows Harness concluded `success`;
+  verified the post-fixture-expansion `main` Windows Harness concluded
+  `success`;
   `git diff
   --stat v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` and
   `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources
-  pyproject.toml` printed no files through the Phase 6 preflight
-  reconciliation, so AG1-AG6, the preflight, and its reconciliation contain no
+  pyproject.toml` printed no files through the Phase 6 fixture expansion, so
+  AG1-AG6, the preflight, its reconciliation, and fixture expansion contain no
   runtime, helper/watcher, CLI/MCP output, privacy-runtime, capture-surface, or
   version-metadata change.
-- Next atomic task: land the Phase 6 committed negative contract fixture
-  expansion through PR and post-merge Windows Harness validation.
+- Next atomic task: add committed negative Phase 6 contract fixtures for the
+  remaining in-memory schema rejection cases: runtime capture allowed in v0.1
+  and missing required non-goal coverage.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -265,6 +267,12 @@ Every implementation stage should run:
   adds durable invalid fixtures for unsafe default-enabled screenshots/OCR,
   missing raw cache cleanup, raw screenshot MCP exposure, and runtime allowlist
   configuration, with no product runtime behavior change.
+- Completed the Phase 6 committed negative contract fixture expansion after PR
+  #170 merged as `0ce32c7bf40a134fc18b5cf5647b36d617aac421` and post-merge
+  `main` Windows Harness run `25606329451` passed.
+- Selected the remaining negative fixture expansion as the next Phase 6 step:
+  commit durable fixtures for the two remaining unsafe in-memory schema cases,
+  runtime capture allowed in v0.1 and missing required non-goal coverage.
 
 ## Validation Log
 
@@ -427,4 +435,15 @@ Every implementation stage should run:
   - Product-source contract-artifact reference scan for `phase6-privacy-enrichment-contract`, `privacy_enrichment_contract`, `harness/fixtures/phase6`, and `harness\\fixtures\\phase6` across `src` and `resources` - passed with no matches.
   - `git diff --check` - passed.
   - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
+  - `python harness/scripts/run_harness.py` - passed, including 184 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Phase 6 privacy-enrichment contract fixture expansion completion:
+  - `gh pr view 170 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName` - passed; PR #170 merged at `2026-05-09T16:44:08Z` as `0ce32c7bf40a134fc18b5cf5647b36d617aac421`.
+  - `gh run view 25606272408 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #170 Windows Harness concluded `success` on `2ac1569d9cf4ee0fc95b01a19850eee8b60c3968`.
+  - `gh run view 25606329451 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-fixture-expansion `main` Windows Harness concluded `success` on `0ce32c7bf40a134fc18b5cf5647b36d617aac421`.
+- Phase 6 privacy-enrichment contract fixture expansion reconciliation local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py -q` - passed, 76 tests.
+  - `git diff --check` - passed.
+  - stale fixture-expansion-in-progress cursor scan across `README.md`, `docs`, and `tests` - passed with no matches.
+  - `git diff --name-only v0.1.17..HEAD -- src\winchronicle resources pyproject.toml` - passed with no files.
+  - `python -m pytest -q` - passed, 184 tests.
   - `python harness/scripts/run_harness.py` - passed, including 184 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

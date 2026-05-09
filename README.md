@@ -20,8 +20,9 @@ post-v0.1.17 maintenance plan, the completed post-v0.1.17 public metadata
 audit, the completed post-v0.1.17 helper/watcher diagnostics sweep, the completed
 post-v0.1.17 MCP/memory contract sweep, the completed post-v0.1.17 compatibility
 guardrail sweep, the completed post-v0.1.17 release-readiness decision, the
-completed Phase 6 privacy contract preflight, the current Phase 6 privacy
-contract fixture expansion, the
+completed Phase 6 privacy contract preflight, the completed Phase 6 privacy
+contract fixture expansion, the current remaining Phase 6 negative contract
+fixture expansion, the
 completed post-v0.1.16 maintenance plan and publication reconciliation, the
 latest published `v0.1.17` release record, the previous published `v0.1.16`
 release record, the completed `v0.1.16` final-release plan, the historical

@@ -1,7 +1,8 @@
 # Phase 6 Privacy Contract Fixture Expansion After v0.1.17
 
-This record continues the Phase 6 privacy-enrichment contract lane after the
-completed contract preflight. It is contract-only. It does not implement or
+This record completed the first Phase 6 committed negative fixture expansion
+after the completed contract preflight. It is contract-only. It does not
+implement or
 authorize screenshot capture, OCR, raw screenshot caches, runtime allowlist
 parsing, CLI/MCP output changes, helper/watcher behavior changes, product
 targeted capture, desktop control, network upload, LLM calls, daemon/service
@@ -69,9 +70,19 @@ warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy
 check, fixture capture/search/memory, deterministic watcher fixture, and
 watcher fake-helper smoke.
 
+PR and post-merge validation:
+
+- PR #170 merged at `2026-05-09T16:44:08Z` as
+  `0ce32c7bf40a134fc18b5cf5647b36d617aac421`.
+- PR #170 Windows Harness run `25606272408` concluded `success` on
+  `2ac1569d9cf4ee0fc95b01a19850eee8b60c3968`.
+- Post-fixture-expansion `main` Windows Harness run `25606329451` concluded
+  `success` on `0ce32c7bf40a134fc18b5cf5647b36d617aac421`.
+
 ## Next Task
 
-Land this fixture expansion through PR and post-merge Windows Harness
-validation. Screenshot/OCR implementation remains out of scope for v0.1
-maintenance unless a future plan explicitly authorizes tests-first runtime
-work.
+Add committed negative Phase 6 contract fixtures for the remaining unsafe
+in-memory schema rejection cases: runtime capture allowed in v0.1 and missing
+required non-goal coverage. Screenshot/OCR implementation remains out of scope
+for v0.1 maintenance unless a future plan explicitly authorizes tests-first
+runtime work.

@@ -325,7 +325,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "completed post-v0.1.17 compatibility guardrail sweep" in readme_intro_normalized
     assert "completed post-v0.1.17 release-readiness decision" in readme_intro_normalized
     assert "completed Phase 6 privacy contract preflight" in readme_intro_normalized
-    assert "current Phase 6 privacy contract fixture expansion" in readme_intro_normalized
+    assert "completed Phase 6 privacy contract fixture expansion" in readme_intro_normalized
+    assert "current remaining Phase 6 negative contract fixture expansion" in readme_intro_normalized
     assert "latest published `v0.1.5` release" not in readme_intro
     assert "latest published `v0.1.3` release" not in readme_intro
     assert "v0.1.12 maintenance release record" in readme_operator_docs
@@ -718,8 +719,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Phase 6 preflight\n  reconciliation PR #169" in evidence
     assert "post-reconciliation `main` Windows Harness run\n  `25605945162`" in checklist
     assert "post-reconciliation `main` Windows Harness run\n  `25605945162`" in evidence
-    assert "current Phase 6 privacy-enrichment contract fixture\n  expansion" in checklist
-    assert "current Phase 6 privacy-enrichment contract fixture\n  expansion" in evidence
+    assert "Phase 6 committed negative contract fixture expansion PR\n  #170" in checklist
+    assert "Phase 6 committed negative contract fixture expansion PR\n  #170" in evidence
+    assert "post-fixture-expansion `main` Windows Harness run `25606329451`" in checklist
+    assert "post-fixture-expansion `main` Windows Harness run `25606329451`" in evidence
+    assert "current remaining Phase 6 negative contract fixture expansion" in checklist
+    assert "current remaining Phase 6 negative contract fixture expansion" in evidence
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
     assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
     assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist
