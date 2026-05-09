@@ -54,7 +54,9 @@ historical records. After the `v0.1.16` final publication:
   final release;
 - the active post-v0.1.16 execution cursor records `v0.1.16` publication,
   final tag target `255f2a01cddde330d756a87359c4d3a8be4b11a2`, published
-  timestamp `2026-05-09T09:31:17Z`, and the post-v0.1.16 baseline;
+  timestamp `2026-05-09T09:31:17Z`, AE4 PR #148, PR Windows Harness run
+  `25598038285`, post-merge Windows Harness run `25598080136`, and the
+  post-v0.1.16 baseline;
 - the completed post-v0.1.15 execution cursor records AD4 PR #139, PR Windows
   Harness run `25595449096`, post-merge Windows Harness run `25595513141`,
   AD5 prerelease publication, and publication reconciliation evidence;

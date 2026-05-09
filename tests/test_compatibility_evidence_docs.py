@@ -726,6 +726,9 @@ def test_v0116_final_release_plan_keeps_direct_final_gated_and_scoped():
         "gh release create v0.1.16",
         "published at `2026-05-09T09:31:17Z`",
         "git ls-remote --tags origin v0.1.16",
+        "Stage AE4 publication reconciliation:",
+        "PR #148 Windows Harness run `25598038285`",
+        "post-AE4 `main` Windows Harness concluded `success`",
     ):
         assert phrase in normalized
 
@@ -756,6 +759,9 @@ def test_v0116_final_release_record_is_ready_and_scoped():
         "AE2 post-merge `main` Windows Harness | Passed, run `25597463319`",
         "AE3 PR Windows Harness | Passed, run `25597623991`",
         "AE3 post-merge `main` Windows Harness | Passed, run `25597678444`",
+        "AE4 publication reconciliation PR | https://github.com/YSCJRH/WinChronicle/pull/148",
+        "AE4 publication reconciliation Windows Harness | Passed, run `25598038285`",
+        "AE4 post-publication `main` Windows Harness | Passed, run `25598080136`",
         "AD5 final pre-publication `main` Windows Harness | Passed, run `25596273094`",
         "`python -m pytest -q` | Pass | `151 passed`",
         "Notepad targeted UIA smoke | Pass",
@@ -793,8 +799,12 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
         "published at `2026-05-09T09:31:17Z`",
         "Current stage: AF0 - Post-v0.1.16 Published Baseline Cursor.",
-        "Stage status: AF0 ready to start",
-        "Next atomic task: start AF0",
+        "Stage status: AF0 complete",
+        "AE4 publication reconciliation PR #148 merged as",
+        "`b36581c25a609f801a48cefda7354781d6dfb888`",
+        "PR Windows Harness run `25598038285` passed",
+        "post-merge `main` Windows Harness run `25598080136` passed",
+        "Next atomic task: start AF1",
         "Stage AF0 - Post-v0.1.16 Baseline Cursor",
         "Stage AF1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AF2 - Helper And Watcher Preview Diagnostics Review",
@@ -806,6 +816,7 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "gh release view v0.1.16",
         "git rev-parse v0.1.16",
         "git ls-remote --tags origin v0.1.16",
+        "Stage AF0 baseline landing:",
     ):
         assert phrase in normalized
 

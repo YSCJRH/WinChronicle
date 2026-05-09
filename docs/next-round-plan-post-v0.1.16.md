@@ -24,15 +24,17 @@ service install, no polling capture loop, and no default background capture.
 ## Execution Cursor
 
 - Current stage: AF0 - Post-v0.1.16 Published Baseline Cursor.
-- Stage status: AF0 ready to start after AE4 publication reconciliation.
-- Last completed evidence: `v0.1.16` final publication passed and was verified
-  with GitHub release metadata, remote tag lookup, and tag target
-  `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
-- Last validation: AE3 PR #147 Windows Harness run `25597623991` and
-  post-merge `main` Windows Harness run `25597678444` passed before final
-  publication.
-- Next atomic task: start AF0 by recording the post-v0.1.16 baseline after
-  this publication reconciliation lands on `main`.
+- Stage status: AF0 complete; AE4 publication reconciliation landed on
+  `main`, and AF1 is ready to start.
+- Last completed evidence: AE4 publication reconciliation PR #148 merged as
+  `b36581c25a609f801a48cefda7354781d6dfb888`, PR Windows Harness run
+  `25598038285` passed, and post-merge `main` Windows Harness run
+  `25598080136` passed on that SHA.
+- Last validation: `v0.1.16` release metadata, final tag target, remote tag,
+  `v0.1.16-rc.0` prerelease metadata, and the AE4 publication-reconciliation
+  landing on `main` were verified.
+- Next atomic task: start AF1 by re-checking public metadata and evidence
+  freshness after the published `v0.1.16` baseline.
 - Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
@@ -122,6 +124,8 @@ Every implementation stage should run:
 
 - Chose AF0 as a docs-only active cursor so post-v0.1.16 work does not begin
   from the completed final-release plan.
+- Completed AF0 after AE4 publication reconciliation landed on `main` and its
+  post-merge Windows Harness passed.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -132,3 +136,7 @@ Every implementation stage should run:
   - `git rev-parse v0.1.16` - passed and printed `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
   - `git ls-remote --tags origin v0.1.16` - passed and printed `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
   - `gh release view v0.1.16-rc.0 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name` - passed; the prerelease remains published and targets `70caf364f68d8c159eb74bbbc23e7469db22a244`.
+- Stage AF0 baseline landing:
+  - PR #148 Windows Harness run `25598038285` - passed.
+  - PR #148 merged as `b36581c25a609f801a48cefda7354781d6dfb888`.
+  - `gh run view 25598080136 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AE4 `main` Windows Harness concluded `success` on `b36581c25a609f801a48cefda7354781d6dfb888`.

@@ -42,12 +42,13 @@ service install, no polling capture loop, and no default background capture.
 - Current stage: AE4 - v0.1.16 Final Publication Reconciliation.
 - Stage status: AE4 complete; `v0.1.16` is published as the latest stable
   release and this final-release plan is complete.
-- Last completed evidence: AE3 release-record PR #147 merged as
-  `255f2a01cddde330d756a87359c4d3a8be4b11a2`, post-merge Windows Harness run
-  `25597678444` passed, and GitHub release publication passed for
-  `v0.1.16`.
+- Last completed evidence: AE4 publication reconciliation PR #148 merged as
+  `b36581c25a609f801a48cefda7354781d6dfb888`, PR Windows Harness run
+  `25598038285` passed, and post-merge `main` Windows Harness run
+  `25598080136` passed.
 - Last validation: `v0.1.16` release metadata, final tag target, remote tag,
-  and `v0.1.16-rc.0` prerelease metadata were verified after publication.
+  `v0.1.16-rc.0` prerelease metadata, and the post-v0.1.16 cursor were
+  verified after publication.
 - Next atomic task: start the post-`v0.1.16` maintenance cursor in
   [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md).
 - Known blockers: none for the published `v0.1.16` final release.
@@ -252,3 +253,8 @@ Stage-specific gates:
   - `git rev-parse v0.1.16` - passed and printed `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
   - `git ls-remote --tags origin v0.1.16` - passed and printed `255f2a01cddde330d756a87359c4d3a8be4b11a2`.
   - `gh release view v0.1.16-rc.0 --json tagName,url,targetCommitish,isDraft,isPrerelease,publishedAt,name` - passed; the prerelease remains published and targets `70caf364f68d8c159eb74bbbc23e7469db22a244`.
+- Stage AE4 publication reconciliation:
+  - Added `docs/next-round-plan-post-v0.1.16.md` and updated operator/release evidence docs for the published `v0.1.16` baseline.
+  - PR #148 Windows Harness run `25598038285` - passed.
+  - PR #148 merged as `b36581c25a609f801a48cefda7354781d6dfb888`.
+  - `gh run view 25598080136 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AE4 `main` Windows Harness concluded `success` on `b36581c25a609f801a48cefda7354781d6dfb888`.
