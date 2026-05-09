@@ -7,9 +7,9 @@ It does not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.15` is a release-readiness candidate. Local AC5 validation passed. PR
-Windows Harness, post-merge `main` Windows Harness, and GitHub release
-publication are pending.
+`v0.1.15` is a release-readiness candidate. Local AC5 validation passed, PR
+Windows Harness passed, and post-merge `main` Windows Harness passed. GitHub
+release publication is pending explicit release approval.
 
 The direct compatible release path is allowed because AC0-AC4 changed
 documentation, tests, GitHub metadata evidence, deterministic harness evidence,
@@ -34,9 +34,10 @@ Publication status: release-readiness candidate; not yet published.
 | Stage | Release-readiness candidate |
 | Evidence date | 2026-05-09, Asia/Shanghai |
 | Base `main` SHA before AC5 readiness | `48994134a3d348745f735e2a6fad56ea82495266` |
-| Candidate PR | Pending |
-| Candidate PR Windows Harness | Pending |
-| Candidate post-merge `main` Windows Harness | Pending |
+| Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/132 |
+| Candidate PR Windows Harness | Passed, run `25588833988`, https://github.com/YSCJRH/WinChronicle/actions/runs/25588833988 |
+| Candidate post-merge `main` Windows Harness | Passed, run `25588898702`, https://github.com/YSCJRH/WinChronicle/actions/runs/25588898702 |
+| Candidate post-merge `main` SHA | `7a7f065817b9d7f660248916935fd7b66fadbdd6` |
 | Publication status | Release-readiness candidate; not yet published |
 | Release URL | Pending |
 | Final tag target | Pending |
@@ -85,8 +86,8 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The AC5 PR Windows Harness, post-merge `main` Windows Harness, and GitHub
-release publication are pending.
+The AC5 PR Windows Harness and post-merge `main` Windows Harness passed.
+GitHub release publication is pending explicit release approval.
 
 ## Release Notes
 
