@@ -16,8 +16,8 @@ For current maintenance operation, start with
 [`docs/operator-quickstart.md`](docs/operator-quickstart.md). It links the
 release checklist, manual smoke evidence template, Windows UIA smoke gates,
 watcher preview, read-only MCP examples, known limitations, the active
-post-v0.1.14 maintenance plan, the `v0.1.15` release-readiness record, the
-latest published `v0.1.14` release record, the completed post-v0.1.13
+post-v0.1.14 maintenance plan, the latest published `v0.1.15` release record,
+the previous published `v0.1.14` release record, the completed post-v0.1.13
 maintenance plan, and the completed post-v0.1.12 maintenance plan.
 
 ## Why WinChronicle
@@ -126,7 +126,7 @@ available through `search-captures`.
 
 - [Operator quickstart](docs/operator-quickstart.md)
 - [Post-v0.1.14 maintenance plan](docs/next-round-plan-post-v0.1.14.md)
-- [v0.1.15 maintenance release-readiness record](docs/release-v0.1.15.md)
+- [v0.1.15 maintenance release record](docs/release-v0.1.15.md)
 - [v0.1.14 maintenance release record](docs/release-v0.1.14.md)
 - [Release checklist](docs/release-checklist.md)
 - [Release evidence guide](docs/release-evidence.md)

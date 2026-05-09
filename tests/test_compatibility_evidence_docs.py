@@ -34,9 +34,8 @@ def test_release_checklist_requires_compatibility_evidence():
         "exact read-only MCP tool list",
         "Phase 6 screenshot/OCR work remains specification-only",
         "product targeted capture flags are exposed",
-        "v0.1.13 maintenance release record",
         "v0.1.14 maintenance release record",
-        "v0.1.15 maintenance release-readiness record",
+        "v0.1.15 maintenance release record",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
         "Post-v0.1.12 maintenance plan",
@@ -58,9 +57,8 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Phase 6 remains specification-only",
         "no screenshot capture code",
         "OCR engine integration",
-        "v0.1.13 maintenance release record",
         "v0.1.14 maintenance release record",
-        "v0.1.15 maintenance release-readiness record",
+        "v0.1.15 maintenance release record",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
         "Post-v0.1.12 maintenance plan",
@@ -575,21 +573,21 @@ def test_v0114_release_record_is_ready_and_compatible():
         assert f"`{tool_name}`" in text
 
 
-def test_v0115_release_record_is_ready_and_compatible():
+def test_v0115_release_record_is_published_and_compatible():
     text = V0115_RELEASE.read_text(encoding="utf-8")
     normalized = _normalized(text)
 
     for phrase in (
-        "Publication status: release-readiness candidate; not yet published.",
+        "Publication status: published maintenance release.",
         "Release | `v0.1.15`",
-        "Stage | Release-readiness candidate",
+        "Stage | Published maintenance release",
         "Base `main` SHA before AC5 readiness | `48994134a3d348745f735e2a6fad56ea82495266`",
         "Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/132",
         "Candidate PR Windows Harness | Passed, run `25588833988`",
         "Candidate post-merge `main` Windows Harness | Passed, run `25588898702`",
         "Candidate post-merge `main` SHA | `7a7f065817b9d7f660248916935fd7b66fadbdd6`",
-        "Release URL | Pending",
-        "Final tag target | Pending",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15",
+        "Final tag target | `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`",
         "Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.14",
         "`v0.1.14` tag target | `e7e339f4e08828b9954599db76b87201dbcb139b`",
         "AC0 PR Windows Harness | Passed, run `25586296541`",
@@ -608,11 +606,11 @@ def test_v0115_release_record_is_ready_and_compatible():
         "no OCR engine integration",
         "explicitly accepts inherited `v0.1.0` Notepad",
         "Fallback path: release candidate if any product or contract change",
-        "Publication approval: pending explicit release approval.",
-        "AC5 local validation passed; PR Windows Harness",
-        "GitHub release publication is pending explicit release approval.",
-        "Release URL: pending.",
-        "Final tag target: pending.",
+        "Publication approval: received before publication.",
+        "AC5 local validation, PR Windows Harness",
+        "GitHub release publication passed.",
+        "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15.",
+        "Final tag target: `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`.",
     ):
         assert phrase in normalized
 

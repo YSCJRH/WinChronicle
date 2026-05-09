@@ -1,15 +1,14 @@
 # v0.1.15 Maintenance Release Record
 
-This record captures the compatible `v0.1.15` maintenance release-readiness
-candidate from the published `v0.1.14` baseline. It records commands, results,
-commit identifiers, CI URLs, environment notes, and local artifact paths only.
-It does not commit observed-content artifacts.
+This record captures the published compatible `v0.1.15` maintenance release
+from the published `v0.1.14` baseline. It records commands, results, commit
+identifiers, CI URLs, environment notes, and local artifact paths only. It does
+not commit observed-content artifacts.
 
 ## Release Decision
 
-`v0.1.15` is a release-readiness candidate. Local AC5 validation passed, PR
-Windows Harness passed, and post-merge `main` Windows Harness passed. GitHub
-release publication is pending explicit release approval.
+`v0.1.15` is published. Local AC5 validation, PR Windows Harness, post-merge
+`main` Windows Harness, and GitHub release publication passed.
 
 The direct compatible release path is allowed because AC0-AC4 changed
 documentation, tests, GitHub metadata evidence, deterministic harness evidence,
@@ -24,23 +23,23 @@ publication, prepare a release candidate instead of publishing `v0.1.15`
 directly. If such a regression is found after publication, publish a follow-up
 release candidate instead of retagging `v0.1.15`.
 
-Publication status: release-readiness candidate; not yet published.
+Publication status: published maintenance release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.1.15` |
-| Stage | Release-readiness candidate |
+| Stage | Published maintenance release |
 | Evidence date | 2026-05-09, Asia/Shanghai |
 | Base `main` SHA before AC5 readiness | `48994134a3d348745f735e2a6fad56ea82495266` |
 | Candidate PR | https://github.com/YSCJRH/WinChronicle/pull/132 |
 | Candidate PR Windows Harness | Passed, run `25588833988`, https://github.com/YSCJRH/WinChronicle/actions/runs/25588833988 |
 | Candidate post-merge `main` Windows Harness | Passed, run `25588898702`, https://github.com/YSCJRH/WinChronicle/actions/runs/25588898702 |
 | Candidate post-merge `main` SHA | `7a7f065817b9d7f660248916935fd7b66fadbdd6` |
-| Publication status | Release-readiness candidate; not yet published |
-| Release URL | Pending |
-| Final tag target | Pending |
+| Publication status | Published maintenance release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15 |
+| Final tag target | `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2` |
 | Previous stable release | `v0.1.14` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.14 |
 | `v0.1.14` tag target | `e7e339f4e08828b9954599db76b87201dbcb139b` |
@@ -86,8 +85,8 @@ Environment:
 | `python harness/scripts/run_harness.py` | Pass | pytest, helper build, watcher build, watcher smoke, MCP smoke, install CLI smoke, fixture capture/search, memory, fixture watcher, and preview watcher smoke passed |
 | `git diff --check` | Pass | no whitespace errors |
 
-The AC5 PR Windows Harness and post-merge `main` Windows Harness passed.
-GitHub release publication is pending explicit release approval.
+The AC5 PR Windows Harness, post-merge `main` Windows Harness, and GitHub
+release publication passed.
 
 ## Release Notes
 
@@ -174,12 +173,11 @@ This maintenance release does not expand the capture surface from `v0.1.14`.
 
 ## Release Decision Summary
 
-- Release path: compatible `v0.1.15` maintenance release-readiness candidate.
+- Release path: compatible `v0.1.15` maintenance release, published.
 - Fallback path: release candidate if any product or contract change is
   required before publication.
-- Deterministic gates: AC5 local validation passed; PR Windows Harness,
-  post-merge `main` Windows Harness, and GitHub release publication are
-  pending.
+- Deterministic gates: AC5 local validation, PR Windows Harness, post-merge
+  `main` Windows Harness, and GitHub release publication passed.
 - Manual UIA gates: inherited `v0.1.0` Notepad, Edge, VS Code metadata, VS Code
   strict diagnostic, and watcher preview manual evidence is accepted by this
   AC5 record for the compatible `v0.1.15` path only because product UIA helper
@@ -187,6 +185,6 @@ This maintenance release does not expand the capture surface from `v0.1.14`.
   behavior, privacy behavior, product CLI/MCP shape, and capture surfaces are
   unchanged.
 - Privacy/scope confirmation: unchanged and recorded above.
-- Publication approval: pending explicit release approval.
-- Release URL: pending.
-- Final tag target: pending.
+- Publication approval: received before publication.
+- Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.15.
+- Final tag target: `4869ce7b5b0f6ad3ab41c844e4f010640c0c36c2`.
