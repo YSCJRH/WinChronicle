@@ -39,6 +39,15 @@ abc123
     assert scan_for_unredacted_secrets(redacted) == []
 
 
+def test_redact_text_removes_plain_winchronicle_token_canary():
+    redacted, counts = redact_text("debug marker winchronicle_plain_canary_token")
+
+    assert "winchronicle_plain_canary_token" not in redacted
+    assert redacted == "debug marker [REDACTED:token_canary]"
+    assert counts["token_canary"] == 1
+    assert scan_for_unredacted_secrets(redacted) == []
+
+
 def test_password_field_value_is_not_in_normalized_capture():
     fixture_path = ROOT / "harness" / "fixtures" / "privacy" / "password_field.json"
     capture = normalize_fixture(load_json(fixture_path))

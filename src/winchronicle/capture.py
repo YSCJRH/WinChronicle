@@ -202,9 +202,6 @@ def capture_frontmost_with_helper(
 def privacy_check_path(path: Path | str) -> PrivacyCheckResult:
     record = load_json(path)
 
-    if denylist_reason(record):
-        return PrivacyCheckResult(True, ["PASS: denylisted app capture would be skipped"])
-
     if record.get("schema_version") == 1:
         capture = record
         try:
@@ -213,6 +210,9 @@ def privacy_check_path(path: Path | str) -> PrivacyCheckResult:
             return PrivacyCheckResult(False, [f"FAIL: capture does not validate: {exc}"])
         raw_password_values: list[str] = []
     else:
+        if denylist_reason(record):
+            return PrivacyCheckResult(True, ["PASS: denylisted app capture would be skipped"])
+
         raw_password_values = _raw_password_values(record)
         try:
             if record.get("source") == "win-uia-helper":
@@ -226,6 +226,11 @@ def privacy_check_path(path: Path | str) -> PrivacyCheckResult:
     failures = scan_for_unredacted_secrets(serialized)
     messages: list[str] = []
 
+    if record.get("schema_version") == 1 and denylist_reason(capture):
+        failures.append("denylisted_capture")
+
+    failures.extend(_normalized_password_failures(capture))
+
     for raw_value in raw_password_values:
         if raw_value and raw_value in serialized:
             failures.append("password_field")
@@ -238,7 +243,7 @@ def privacy_check_path(path: Path | str) -> PrivacyCheckResult:
         unique = sorted(set(failures))
         return PrivacyCheckResult(
             False,
-            [f"FAIL: unredacted {name} would be written" for name in unique],
+            [_privacy_failure_message(name) for name in unique],
         )
 
     messages.extend(
@@ -246,7 +251,7 @@ def privacy_check_path(path: Path | str) -> PrivacyCheckResult:
             "PASS: no password value persisted",
             "PASS: no API key canary persisted",
             "PASS: no private key persisted",
-            "PASS: no JWT/GitHub/Slack token persisted",
+            "PASS: no JWT/GitHub/Slack/WinChronicle token persisted",
             "PASS: observed content marked untrusted",
         ]
     )
@@ -263,6 +268,30 @@ def _raw_password_values(fixture: dict[str, Any]) -> list[str]:
         for value in values
         if isinstance(value, str) and value and not value.startswith("[REDACTED:")
     ]
+
+
+def _normalized_password_failures(capture: dict[str, Any]) -> list[str]:
+    focused = capture.get("focused_element", {})
+    if not focused.get("is_password"):
+        return []
+
+    redacted = "[REDACTED:password_field]"
+    field_values = (focused.get("value"), focused.get("text"))
+    length_values = (focused.get("value_length"), focused.get("text_length"))
+    has_raw_value = any(
+        value is not None and value != redacted
+        for value in field_values
+    )
+    has_stored_length = any(length != 0 for length in length_values)
+    if has_raw_value or has_stored_length:
+        return ["password_field"]
+    return []
+
+
+def _privacy_failure_message(name: str) -> str:
+    if name == "denylisted_capture":
+        return "FAIL: denylisted normalized capture would already be stored"
+    return f"FAIL: unredacted {name} would be written"
 
 
 def _capture_filename(capture: dict[str, Any], fixture_name: str | None) -> str:

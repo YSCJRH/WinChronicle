@@ -41,6 +41,9 @@ PHASE6_CONTRACT_CLOSURE_RELEASE_DECISION = (
     ROOT / "docs" / "phase6-contract-closure-release-readiness-decision-post-v0.1.17.md"
 )
 NEXT_BLUEPRINT_LANE_SELECTION = ROOT / "docs" / "next-blueprint-lane-selection-post-v0.1.17.md"
+PRIVACY_POLICY_PARITY_AUDIT = (
+    ROOT / "docs" / "privacy-policy-contract-parity-audit-post-v0.1.17.md"
+)
 RELEASE_DECISION_V0116 = ROOT / "docs" / "release-readiness-decision-post-v0.1.16.md"
 
 
@@ -67,6 +70,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Release-readiness decision after v0.1.17",
         "Phase 6 contract closure release-readiness decision after v0.1.17",
         "Next blueprint lane selection after v0.1.17",
+        "Privacy-policy contract parity audit after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -108,6 +112,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Release-readiness decision after v0.1.17",
         "Phase 6 contract closure release-readiness decision after v0.1.17",
         "Next blueprint lane selection after v0.1.17",
+        "Privacy-policy contract parity audit after v0.1.17",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -904,16 +909,15 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "AF7 publication reconciliation landed on `main` as `110ace3f27d8bb9f1eff2c45449998fd0373a998`",
         "PR #160 Windows Harness run `25601966464` passed",
         "post-merge `main` Windows Harness run `25602018700` passed",
-        "Current stage: Fixture And Privacy Baseline Contract Parity Audit.",
-        "Stage status: Next blueprint lane is selected as Fixture and privacy baseline",
-        "Last completed evidence: Phase 6 contract closure release-readiness decision PR #183 merged as `784a01385c5e77785bdcc3f2298df988f94e5c66`",
-        "PR Windows Harness run `25610492799` passed",
-        "post-merge `main` Windows Harness run `25610538811` passed",
-        "verified the post-PR #183 `main` Windows Harness concluded `success`",
-        "no runtime, helper/watcher, CLI/MCP output, privacy-runtime",
-        "printed no files through the next blueprint lane selection",
-        "next blueprint lane selection remains docs/tests-only",
-        "Next atomic task: start the privacy-policy contract parity audit",
+        "Current stage: Privacy-Check Release-Readiness Decision.",
+        "Stage status: Privacy-policy contract parity audit identified and fixed a narrow privacy-check validation gap",
+        "Last completed evidence: Next blueprint lane selection PR #184 merged as `998403d739570dd81677d4f8b3b8244b8a769caf`",
+        "PR Windows Harness run `25610819243` passed",
+        "post-merge `main` Windows Harness run `25610880531` passed",
+        "verified the post-PR #184 `main` Windows Harness concluded `success`",
+        "printed no files through the lane-selection baseline",
+        "adds a narrow privacy-check runtime fix",
+        "Next atomic task: record whether the privacy-check runtime hardening warrants a `v0.1.18`",
         "sample-only allowlist marker",
         "Live UIA smoke remains manual and outside default CI",
         "Stage AG0 - Post-v0.1.17 Baseline Cursor",
@@ -924,7 +928,10 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "Stage AG5 - Release-Readiness Decision",
         "Completed Blueprint Lane - Phase 6 Privacy-Enrichment Contract Closure",
         "Next Blueprint Lane - Fixture And Privacy Baseline Contract Parity Audit",
+        "Fixture And Privacy Baseline - Privacy Policy Contract Parity Audit",
         "Select the Fixture and privacy baseline lane",
+        "Harden `privacy-check` so denylisted fixture dry-runs still pass as skipped",
+        "Treat watcher-preview parity as out of scope for this audit",
         "credit-card Luhn-positive redaction as a documented v0.1 non-goal",
         "`v0.1.17` is the latest published stable release and must not be retagged",
         "`v0.1.16` remains the previous stable release and must not be retagged",
@@ -1124,9 +1131,18 @@ def test_post_v0117_plan_is_active_without_expanding_scope():
         "post-PR #183 `main` Windows Harness concluded `success`",
         "Recorded the next blueprint lane selection matrix",
         "Selected the first task in that lane as a privacy-policy contract parity audit",
+        "Completed the privacy-policy contract parity audit",
+        "existing normalized denylisted captures",
+        "existing normalized password-field semantics",
+        "plain WinChronicle token-canary redaction",
+        "Selected the next step as a release-readiness decision for the narrow privacy-check runtime hardening",
         "Next blueprint lane selection local validation:",
         "passed, 94 tests",
         "passed, 191 tests",
+        "Privacy-policy contract parity audit local validation:",
+        "passed, 110 tests",
+        "passed, 201 tests",
+        "passed with exactly `src/winchronicle/capture.py`",
         "Phase 6 contract closure release-readiness decision local validation:",
         "passed, 93 tests",
         "passed, 190 tests",
@@ -1844,6 +1860,43 @@ def test_next_blueprint_lane_selection_starts_privacy_baseline_audit():
         "helper/watcher behavior changes",
     ):
         assert boundary in normalized
+
+
+def test_privacy_policy_contract_parity_audit_records_runtime_hardening():
+    text = PRIVACY_POLICY_PARITY_AUDIT.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Privacy Policy Contract Parity Audit After v0.1.17",
+        "The audit found one privacy-check validation gap",
+        "plain WinChronicle token canaries have independent regression coverage",
+        "Next blueprint lane selection PR #184 merged as `998403d739570dd81677d4f8b3b8244b8a769caf`",
+        "PR #184 Windows Harness run `25610819243` concluded `success`",
+        "Post-merge `main` Windows Harness run `25610880531` concluded `success`",
+        "Disabled capture and control surfaces",
+        "App denylist",
+        "Title denylist",
+        "Redaction rules",
+        "Plain token canary evidence",
+        "Existing normalized denylisted captures",
+        "Existing normalized password fields",
+        "Credit-card redaction",
+        "Trust boundary",
+        "Watcher preview parity",
+        "Out of scope for this audit.",
+        "The only runtime change made by this audit is a privacy-check hardening",
+        "does not change capture, helper, watcher, CLI/MCP output, schema, or storage behavior",
+        "No schema expansion, CLI/MCP output expansion",
+        "Result: passed; focused privacy/docs validation reported 110 tests",
+        "full pytest reported 201 tests",
+        "working-tree runtime diff was limited to `src/winchronicle/capture.py`",
+        "full deterministic harness passed, including 201 pytest tests",
+        "does not authorize screenshot capture",
+        "product targeted capture",
+        "MCP write tools",
+        "record a release-readiness decision for the narrow privacy-check runtime fix",
+    ):
+        assert phrase in normalized
 
 
 def _normalized(text: str) -> str:
