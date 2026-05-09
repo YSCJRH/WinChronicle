@@ -96,6 +96,12 @@ def test_mcp_stdio_rejects_non_contract_tool_names(tmp_path):
         "keyboard",
         "clipboard",
         "network_upload",
+        "desktop_control",
+        "control_desktop",
+        "press_key",
+        "capture_hwnd",
+        "capture_pid",
+        "capture_window_title",
         "click",
         "type",
     )
@@ -122,6 +128,7 @@ def test_mcp_stdio_rejects_non_contract_tool_names(tmp_path):
         assert response["error"]["code"] == -32000
         assert "observed" not in response["error"]["message"].lower()
         assert name not in TOOL_NAMES
+        assert "not allowed" in response["error"]["message"]
 
 
 def test_mcp_empty_state_tools_return_empty_read_only_results(tmp_path):

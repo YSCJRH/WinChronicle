@@ -15,7 +15,8 @@ Phase 5 memory acceptance criteria:
 - Event Markdown must have golden fixture coverage for the terminal, editor,
   and browser deterministic timeline.
 - Memory generation must have manifest golden coverage for entry ordering,
-  entry types, titles, time ranges, paths, and capture counts.
+  entry types, titles, time ranges, paths, capture counts, trust,
+  `untrusted_observed_content`, and the observed-content instruction boundary.
 - SQLite creates `entries` and, when FTS5 is available, `entries_fts`.
 - `search-memory` searches durable entries without changing raw
   `search-captures` behavior.

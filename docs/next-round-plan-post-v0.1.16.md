@@ -24,19 +24,19 @@ service install, no polling capture loop, and no default background capture.
 ## Execution Cursor
 
 - Current stage: AF3 - MCP And Memory Contract Review.
-- Stage status: AF2 complete; AF3 is ready to start.
-- Last completed evidence: AF2 diagnostics review PR #152 merged as
-  `382cfab357cf13264b141d0bb1eefefc7c9eaf77`, PR Windows Harness run
-  `25599095958` passed, and post-merge `main` Windows Harness run
-  `25599141386` passed on that SHA.
-- Last validation: `docs/helper-watcher-diagnostics-sweep-post-v0.1.16.md`
-  records the AF2 content-free `watch --events` validation diagnostic fix and
-  deterministic coverage for helper/watcher timeout, malformed output, invalid
-  embedded helper payloads, no observed-content echo, duplicate skip,
-  denylist skip, heartbeat-only liveness, and diagnostic artifact policy.
-- Next atomic task: start AF3 by reviewing read-only MCP examples, memory docs,
-  deterministic demo guidance, and scorecards for trust-boundary and
-  response-shape consistency.
+- Stage status: AF3 review in progress; AF2 completion reconciliation is
+  complete.
+- Last completed evidence: AF2 completion PR #153 merged as
+  `3f819b9c2fa9aaaffc2e23ad72c8142c94cd8a15`, PR Windows Harness run
+  `25599243227` passed, and post-merge `main` Windows Harness run
+  `25599306888` passed on that SHA.
+- Last validation: `docs/mcp-memory-contract-sweep-post-v0.1.16.md` records
+  the AF3 `generate-memory` manifest trust-boundary fix, literal standalone
+  MCP smoke tool-list guardrail, expanded forbidden MCP stdio call evidence,
+  exact read-only MCP tool list, durable memory contract, and deterministic
+  no-capture-surface expansion decision.
+- Next atomic task: land this AF3 review through PR and post-merge Windows
+  Harness validation, then record AF3 completion before starting AF4.
 - Known blockers: none for the published `v0.1.16` final release.
 
 ## Phased Work
@@ -72,8 +72,9 @@ service install, no polling capture loop, and no default background capture.
 
 - Re-check read-only MCP examples, memory docs, deterministic demo guidance,
   and scorecards for trust-boundary and response-shape consistency.
-- Strengthen narrow docs/tests only if examples drift from the exact read-only
-  MCP tool list or durable memory contract.
+- Strengthen narrow docs/tests/code only if evidence drifts from the exact
+  read-only MCP tool list, durable memory contract, or observed-content trust
+  boundary.
 
 ### Stage AF4 - Compatibility Guardrail Sweep
 
@@ -133,9 +134,15 @@ Every implementation stage should run:
 - Completed AF1 after PR #150 and post-merge `main` Windows Harness passed.
 - Started AF2 as a diagnostics sweep; a read-only review found a narrow
   `watch --events` validation diagnostic leak, so AF2 includes a content-free
-  CLI wrapper fix plus deterministic evidence without expanding capture
-  surfaces.
+  CLI wrapper fix plus deterministic evidence for invalid embedded helper
+  payloads without expanding capture surfaces.
 - Completed AF2 after PR #152 and post-merge `main` Windows Harness passed.
+- Completed AF2 completion reconciliation after PR #153 and post-merge `main`
+  Windows Harness passed.
+- Started AF3 as an MCP/memory contract sweep; read-only reviews found that
+  `generate-memory` manifest JSON omitted observed-content trust metadata and
+  that standalone MCP smoke should freeze a literal tool list plus the full
+  forbidden write/file/network/control term set.
 - Kept Phase 6 out of scope because the screenshot/OCR scorecard remains a
   planning contract, not implementation authorization.
 
@@ -179,3 +186,7 @@ Every implementation stage should run:
   - PR #152 Windows Harness run `25599095958` - passed.
   - PR #152 merged as `382cfab357cf13264b141d0bb1eefefc7c9eaf77`.
   - `gh run view 25599141386 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF2 `main` Windows Harness concluded `success` on `382cfab357cf13264b141d0bb1eefefc7c9eaf77`.
+- Stage AF2 completion reconciliation:
+  - PR #153 Windows Harness run `25599243227` - passed.
+  - PR #153 merged as `3f819b9c2fa9aaaffc2e23ad72c8142c94cd8a15`.
+  - `gh run view 25599306888 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AF2-completion `main` Windows Harness concluded `success` on `3f819b9c2fa9aaaffc2e23ad72c8142c94cd8a15`.

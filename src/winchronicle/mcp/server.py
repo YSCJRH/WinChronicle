@@ -30,7 +30,23 @@ TOOL_NAMES = [
     "privacy_status",
 ]
 
-CONTROL_TOOL_TERMS = ("click", "type", "press", "key", "clipboard", "screenshot", "ocr", "audio")
+CONTROL_TOOL_TERMS = (
+    "click",
+    "type",
+    "press",
+    "key",
+    "clipboard",
+    "screenshot",
+    "ocr",
+    "audio",
+    "write",
+    "file",
+    "network",
+    "control",
+    "hwnd",
+    "pid",
+    "window_title",
+)
 
 
 def current_context(home: Path | str | None = None) -> dict[str, Any]:
@@ -264,10 +280,10 @@ def _call_tool(name: str, arguments: dict[str, Any], home: Path | str | None) ->
         "recent_activity": recent_activity,
         "privacy_status": privacy_status,
     }
-    if name not in dispatch:
-        raise ValueError(f"unknown read-only tool: {name}")
     if any(term in name for term in CONTROL_TOOL_TERMS):
         raise ValueError(f"control-like tool name is not allowed: {name}")
+    if name not in dispatch:
+        raise ValueError(f"unknown read-only tool: {name}")
     return dispatch[name](home=home, **arguments)
 
 

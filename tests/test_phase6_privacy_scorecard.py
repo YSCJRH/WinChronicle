@@ -15,7 +15,8 @@ ALLOWED_PHASE6_SOURCE_SENTINELS = {
         '"ocr_enabled": False,',
     },
     "src/winchronicle/mcp/server.py": {
-        'CONTROL_TOOL_TERMS = ("click", "type", "press", "key", "clipboard", "screenshot", "ocr", "audio")',
+        '"screenshot",',
+        '"ocr",',
     },
     "src/winchronicle/cli.py": {
         '"--screenshot",',

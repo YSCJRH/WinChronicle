@@ -2,8 +2,9 @@
 
 Phase 4 MCP acceptance criteria:
 
-- MCP is read-only and exposes no desktop control, click, type, keyboard,
-  clipboard, screenshot, OCR, audio, or network tools.
+- MCP is read-only and exposes no write tools, arbitrary file reads, desktop
+  control, click, type, keyboard, clipboard, screenshot, OCR, audio, or network
+  tools.
 - The stdio surface supports `initialize`, `tools/list`, and `tools/call` for:
   `current_context`, `search_captures`, `search_memory`, `read_recent_capture`,
   `recent_activity`, and `privacy_status`.

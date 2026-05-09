@@ -28,6 +28,7 @@ V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 POST_V0116_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.16.md"
 PUBLIC_METADATA_V0116 = ROOT / "docs" / "public-metadata-audit-post-v0.1.16.md"
 HELPER_WATCHER_V0116 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.16.md"
+MCP_MEMORY_V0116 = ROOT / "docs" / "mcp-memory-contract-sweep-post-v0.1.16.md"
 
 
 def test_release_checklist_requires_compatibility_evidence():
@@ -47,6 +48,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
+        "MCP and memory contract sweep after v0.1.16",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -76,6 +78,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
+        "MCP and memory contract sweep after v0.1.16",
         "Post-v0.1.15 maintenance plan",
         "Post-v0.1.14 maintenance plan",
         "Post-v0.1.13 maintenance plan",
@@ -805,14 +808,18 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "tag targets `255f2a01cddde330d756a87359c4d3a8be4b11a2`",
         "published at `2026-05-09T09:31:17Z`",
         "Current stage: AF3 - MCP And Memory Contract Review.",
-        "Stage status: AF2 complete; AF3 is ready to start.",
-        "AF2 diagnostics review PR #152 merged as",
-        "`382cfab357cf13264b141d0bb1eefefc7c9eaf77`",
-        "PR Windows Harness run `25599095958` passed",
-        "post-merge `main` Windows Harness run `25599141386` passed",
+        "Stage status: AF3 review in progress; AF2 completion reconciliation is complete.",
+        "AF2 completion PR #153 merged as",
+        "`3f819b9c2fa9aaaffc2e23ad72c8142c94cd8a15`",
+        "PR Windows Harness run `25599243227` passed",
+        "post-merge `main` Windows Harness run `25599306888` passed",
+        "docs/mcp-memory-contract-sweep-post-v0.1.16.md",
+        "`generate-memory` manifest trust-boundary fix",
+        "literal standalone MCP smoke tool-list guardrail",
+        "expanded forbidden MCP stdio call evidence",
         "invalid embedded helper payloads",
         "`watch --events` validation diagnostic leak",
-        "Next atomic task: start AF3",
+        "Next atomic task: land this AF3 review",
         "Stage AF0 - Post-v0.1.16 Baseline Cursor",
         "Stage AF1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AF2 - Helper And Watcher Preview Diagnostics Review",
@@ -846,6 +853,9 @@ def test_post_v0116_plan_is_active_without_expanding_scope():
         "Stage AF2 completion:",
         "PR #152 Windows Harness run `25599095958`",
         "post-AF2 `main` Windows Harness concluded `success`",
+        "Stage AF2 completion reconciliation:",
+        "PR #153 Windows Harness run `25599243227`",
+        "post-AF2-completion `main` Windows Harness concluded `success`",
     ):
         assert phrase in normalized
 
@@ -926,6 +936,41 @@ def test_helper_watcher_diagnostics_sweep_post_v016_is_docs_only_and_scoped():
         "Fresh manual UIA smoke remains outside default CI",
         "The next smallest implementation task is to land this AF2 review",
         "does not authorize screenshot capture",
+        "product targeted capture",
+        "live UIA smoke in default CI",
+    ):
+        assert phrase in normalized
+
+
+def test_mcp_memory_contract_sweep_post_v016_records_trust_boundary_fix():
+    text = MCP_MEMORY_V0116.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "MCP And Memory Contract Sweep After v0.1.16",
+        "published `v0.1.16` final release",
+        "AF2 completion reconciliation",
+        "compatible trust-boundary guardrail fixes",
+        "`generate-memory` manifest JSON now marks observed-derived metadata as untrusted",
+        "standalone MCP smoke now uses a literal expected tool list",
+        "does not change schemas, MCP tool list, MCP tool schemas",
+        "MCP examples",
+        "MCP scorecard",
+        "Memory scorecard",
+        "Deterministic demo",
+        "Operator quickstart",
+        "Deterministic tests",
+        "Exact MCP tool list",
+        "Read-only MCP boundary",
+        "Observed-content trust boundary",
+        "Memory manifest JSON",
+        "`trust`, `untrusted_observed_content`, and `instruction`",
+        "`desktop_control`, `control_desktop`, `press_key`, `capture_hwnd`",
+        "No fresh manual UIA smoke is required to land this AF3 review",
+        "future release-readiness record should make a fresh manual-smoke freshness decision",
+        "The next smallest implementation task is to land this AF3 review",
+        "does not authorize MCP write tools",
+        "arbitrary file reads",
         "product targeted capture",
         "live UIA smoke in default CI",
     ):

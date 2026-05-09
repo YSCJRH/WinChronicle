@@ -11,6 +11,8 @@ current public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md). The
 current helper/watcher diagnostics review is
 [Helper and watcher diagnostics sweep after v0.1.16](helper-watcher-diagnostics-sweep-post-v0.1.16.md). The
+current MCP/memory contract review is
+[MCP and memory contract sweep after v0.1.16](mcp-memory-contract-sweep-post-v0.1.16.md). The
 completed `v0.1.16` final-release cursor is recorded in
 [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md), and
 the historical prerelease record is
@@ -84,6 +86,10 @@ historical records. After the `v0.1.16` final publication:
   deterministic test coverage, and artifact policy decisions; never commit live
   raw helper JSON, raw watcher JSONL, screenshots, OCR output, or observed text
   to refresh this evidence;
+- MCP/memory contract evidence should record exact read-only tools, forbidden
+  write/file/network/control boundaries, durable memory contract, and
+  observed-content trust metadata for memory manifests without committing
+  observed-content artifacts;
 - the post-v0.1.12 execution cursor is completed historical context and records
   PR #118 plus post-merge Windows Harness run `25580877004`;
 - the post-v0.1.11 execution cursor is completed historical context and
