@@ -22,8 +22,9 @@ post-v0.1.18 MCP/memory contract sweep, the current post-v0.1.18 compatibility
 guardrail sweep, the current post-v0.1.18 release-readiness decision, the
   current post-v0.1.18 next blueprint lane selection, the completed post-v0.1.18
   watcher privacy fixture parity record, the completed post-v0.1.18
-  fixture/helper privacy index parity record, the current post-v0.1.18
-  fixture/privacy parity matrix record, the
+  fixture/helper privacy index parity record, the completed post-v0.1.18
+  fixture/privacy parity matrix record, the next Fixture/privacy follow-up of
+  fixture/privacy residual gap audit, the
 completed post-v0.1.17 maintenance plan, the completed post-v0.1.17 public
 metadata audit, the completed post-v0.1.17 helper/watcher
 diagnostics sweep, the completed post-v0.1.17 MCP/memory contract sweep, the

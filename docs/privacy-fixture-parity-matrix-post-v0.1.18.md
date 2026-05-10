@@ -51,7 +51,7 @@ changes.
 
 ## Validation
 
-Local validation for this matrix record should include:
+Local validation for this matrix record:
 
 ```powershell
 python -m pytest tests/test_privacy_index_parity.py tests/test_watcher_events.py tests/test_fixture_capture.py tests/test_privacy_policy_contract.py -q
@@ -61,6 +61,25 @@ git diff --check
 git diff --name-only v0.1.18..HEAD -- pyproject.toml src\winchronicle\_version.py src\winchronicle\mcp\server.py resources
 python harness/scripts/run_harness.py
 ```
+
+Result: passed locally before PR review. Focused privacy path validation
+reported 33 tests, focused docs/matrix validation reported 100 tests, follow-up
+docs/privacy validation reported 106 tests, full pytest reported 223 tests,
+`git diff --check` passed, the version/MCP/resources product diff printed no
+files, stale AH11/AH10 fixture-helper wording scan returned no matches, and the
+full deterministic harness passed, including 223 pytest tests, helper/watcher
+builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI
+smoke, privacy check, fixture capture/search/memory, deterministic watcher
+fixture, and watcher fake-helper smoke.
+
+## PR And Post-Merge Evidence
+
+- PR #201 merged at `2026-05-10T02:10:33Z` as
+  `3ff86ec086a85bdeedbabb343ca93122e0a47a1e`.
+- PR #201 Windows Harness run `25617277557` concluded `success` on
+  `8f5845e3ea65dad277665c0dd2c9494d95458915`.
+- Post-AH12 `main` Windows Harness run `25617330198` concluded `success` on
+  `3ff86ec086a85bdeedbabb343ca93122e0a47a1e`.
 
 ## Privacy And Security
 

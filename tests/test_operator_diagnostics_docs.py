@@ -431,7 +431,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.18 next blueprint lane selection" in readme_intro_normalized
     assert "completed post-v0.1.18 watcher privacy fixture parity record" in readme_intro_normalized
     assert "completed post-v0.1.18 fixture/helper privacy index parity record" in readme_intro_normalized
-    assert "current post-v0.1.18 fixture/privacy parity matrix record" in readme_intro_normalized
+    assert "completed post-v0.1.18 fixture/privacy parity matrix record" in readme_intro_normalized
+    assert "next Fixture/privacy follow-up of fixture/privacy residual gap audit" in readme_intro_normalized
     assert "completed post-v0.1.17 maintenance plan" in readme_intro_normalized
     assert "completed post-v0.1.16 maintenance plan and publication reconciliation" in readme_intro_normalized
     assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
@@ -995,8 +996,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.18 next blueprint lane selection" in evidence
     assert "completed post-v0.1.18 fixture/helper privacy index parity record" in checklist
     assert "completed post-v0.1.18 fixture/helper privacy index parity record" in evidence
-    assert "current post-v0.1.18 fixture/privacy parity matrix record" in checklist
-    assert "current post-v0.1.18 fixture/privacy parity matrix record" in evidence
+    assert "completed post-v0.1.18 fixture/privacy parity matrix record" in checklist
+    assert "completed post-v0.1.18 fixture/privacy parity matrix record" in evidence
     assert "do\n  not warrant a new release-readiness or publication path" in checklist
     assert "do\n  not warrant a new release-readiness or publication path" in evidence
     assert "`v0.1.18` must not\n  be retagged" in checklist
@@ -1005,8 +1006,10 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "watcher privacy fixture parity completed in AH8" in evidence
     assert "fixture/helper privacy index parity completed in AH10" in checklist
     assert "fixture/helper privacy index parity completed in AH10" in evidence
-    assert "current\n  Fixture/privacy follow-up is fixture/privacy parity matrix consolidation" in checklist
-    assert "current\n  Fixture/privacy follow-up is fixture/privacy parity matrix consolidation" in evidence
+    assert "matrix consolidation completed in AH12" in checklist
+    assert "matrix consolidation completed in AH12" in evidence
+    assert "current Fixture/privacy\n  follow-up is a fixture/privacy residual gap audit" in checklist
+    assert "current Fixture/privacy\n  follow-up is a fixture/privacy residual gap audit" in evidence
     assert "PR #197 merged at `2026-05-10T00:58:38Z`" in checklist
     assert "PR #197 merged at `2026-05-10T00:58:38Z`" in evidence
     assert "PR Windows Harness run\n  `25616023224` succeeded" in checklist
@@ -1025,6 +1028,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "post-merge `main` Windows Harness run `25616673782` succeeded" in evidence
     assert "direct\n  fixture, synthesized UIA helper, and watcher-dispatched privacy evidence" in checklist
     assert "direct\n  fixture, synthesized UIA helper, and watcher-dispatched privacy evidence" in evidence
+    assert "PR #201 merged at\n  `2026-05-10T02:10:33Z`" in checklist
+    assert "PR #201 merged at\n  `2026-05-10T02:10:33Z`" in evidence
+    assert "PR Windows Harness run\n  `25617277557` succeeded" in checklist
+    assert "PR Windows Harness run\n  `25617277557` succeeded" in evidence
+    assert "post-merge `main` Windows Harness run `25617330198` succeeded" in checklist
+    assert "post-merge `main` Windows Harness run `25617330198` succeeded" in evidence
     assert "completed post-v0.1.17 execution cursor records" in checklist
     assert "completed post-v0.1.17 execution cursor records" in evidence
     assert "PR #188" in checklist
@@ -3371,7 +3380,8 @@ def test_roadmap_contribution_and_issue_templates_keep_harness_first_scope():
         "without\nauthorizing new capture surfaces",
         "current selected lane is Fixture and privacy baseline",
         "Watcher privacy fixture\nparity and fixture/helper privacy index parity are complete",
-        "fixture/privacy parity matrix consolidation is in progress",
+        "fixture/privacy parity matrix consolidation is complete",
+        "next follow-up is\na fixture/privacy residual gap audit",
         "privacy baseline privacy-policy contract parity audit is complete\nhistorical work",
         "Fixture and privacy baseline",
         "UIA helper hardening",
@@ -4076,7 +4086,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Current next blueprint lane selection | [Next blueprint lane selection after v0.1.18]",
         "Completed watcher privacy fixture parity | [Watcher privacy fixture parity after v0.1.18]",
         "Completed fixture/helper privacy index parity | [Fixture/helper privacy index parity after v0.1.18]",
-        "Current fixture/privacy parity matrix | [Fixture/privacy parity matrix after v0.1.18]",
+        "Completed fixture/privacy parity matrix | [Fixture/privacy parity matrix after v0.1.18]",
+        "Current Fixture/privacy follow-up | Fixture/privacy residual gap audit tracked by [Post-v0.1.18 maintenance plan]",
         "Previous release-readiness decision | [v0.1.18 maintenance release record]",
         "Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.17 maintenance plan]",
