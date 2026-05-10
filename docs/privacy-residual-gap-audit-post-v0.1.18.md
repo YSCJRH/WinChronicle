@@ -60,3 +60,12 @@ network upload, LLM calls, desktop control, daemon/service install, polling
 capture loops, default background capture, MCP write tools, arbitrary file read
 tools, product targeted capture, raw helper JSON persistence, raw watcher JSONL
 persistence, or committed observed-content artifacts.
+
+## PR And Post-Merge Evidence
+
+- PR #203 merged at `2026-05-10T02:48:11Z` as
+  `9442e4026affb1cb17d2554cb4dd5799d4d6f359`.
+- PR #203 Windows Harness run `25617962810` concluded `success` on
+  `f589a3bbf866995132f204de397f9695f3bd74eb`.
+- Post-AH14 `main` Windows Harness run `25618020212` concluded `success` on
+  `9442e4026affb1cb17d2554cb4dd5799d4d6f359`.

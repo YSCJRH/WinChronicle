@@ -29,19 +29,21 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH14 - Fixture/Privacy Residual Gap Audit.
-- Stage status: AH14 in progress. This branch audits the AH12 parity matrix,
-  closes a direct helper denylist evidence gap, and hardens MCP search query
-  echoes so secret-like queries are redacted in read-only tool results.
-- Last completed evidence: AH13 evidence reconciliation PR #202 merged as
-  `020a9b81dab34cdb145557e57230c49ea83b95a4`, PR Windows Harness run
-  `25617537177` passed, and post-merge `main` Windows Harness run
-  `25617582514` passed on that SHA.
-- Last validation: `gh run view 25617582514 --json
+- Current stage: AH15 - Post-AH14 Evidence Reconciliation.
+- Stage status: AH15 in progress. This branch records AH14 merge and
+  post-merge evidence, then moves the Fixture/privacy baseline cursor to the
+  next release-readiness decision for the privacy-positive MCP output change.
+- Last completed evidence: AH14 fixture/privacy residual gap audit PR #203
+  merged as `9442e4026affb1cb17d2554cb4dd5799d4d6f359`, PR Windows Harness run
+  `25617962810` passed on `f589a3bbf866995132f204de397f9695f3bd74eb`, and
+  post-merge `main` Windows Harness run `25618020212` passed on
+  `9442e4026affb1cb17d2554cb4dd5799d4d6f359`.
+- Last validation: `gh run view 25618020212 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AH13 `main` Windows Harness concluded `success`.
-- Next atomic task: land this AH14 residual gap audit PR, then reconcile AH14
-  evidence and select the next smallest Fixture/privacy follow-up.
+  verified the post-AH14 `main` Windows Harness concluded `success`.
+- Next atomic task: land this AH15 evidence reconciliation PR, then start a
+  privacy-output release-readiness decision for the AH14 MCP search query echo
+  redaction and private-key boundary marker redaction.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -217,10 +219,21 @@ service install, no polling capture loop, and no default background capture.
 
 - Record AH14 PR and post-merge `main` Windows Harness evidence after the
   residual gap audit lands.
-- Return the active cursor to the Fixture/privacy baseline lane without opening
-  a release-readiness or publication path.
+- Return the active cursor to the Fixture/privacy baseline lane without
+  opening a publication path, retagging `v0.1.18`, or treating AH15 itself as a
+  release approval.
 - Select the next smallest follow-up from the updated matrix, privacy policy,
   read-only MCP contract, roadmap, and release/operator evidence indexes.
+
+### Stage AH16 - Privacy Output Release-Readiness Decision
+
+- Decide whether AH14's privacy-positive MCP output and redaction hardening
+  warrants a narrow release-readiness path.
+- If a release-readiness path is warranted, require a fresh version decision,
+  evidence-freshness check, and manual UIA smoke freshness decision before any
+  publication.
+- Do not retag `v0.1.18`; use a future compatible version only through an
+  explicit release-readiness record.
 
 ## Public Interfaces And Non-goals
 
@@ -381,6 +394,15 @@ Every implementation stage should run:
   search-query echo redaction, and standalone private-key boundary marker
   redaction while preserving the read-only MCP tool list and v0.1 capture
   boundary.
+- Completed AH14 after PR #203 merged as
+  `9442e4026affb1cb17d2554cb4dd5799d4d6f359` and post-merge Windows Harness
+  run `25618020212` passed.
+- Started AH15 as a docs/tests-only evidence reconciliation because AH14 is
+  merged and public indexes should not keep the residual gap audit presented as
+  active implementation work.
+- Selected the next Fixture/privacy baseline follow-up as a privacy-output
+  release-readiness decision because AH14 changed read-only MCP search query
+  echo redaction and private-key boundary marker redaction.
 
 ## Validation Log
 
@@ -609,4 +631,20 @@ Every implementation stage should run:
   - `git diff --name-only -- pyproject.toml src\winchronicle\_version.py resources` - passed; printed no files, confirming AH14 does not change package version metadata, helper resources, watcher resources, or other bundled resources.
   - `git diff --name-only -- src\winchronicle\mcp\server.py src\winchronicle\redaction.py harness\specs\privacy-policy.md` - passed; printed only `harness/specs/privacy-policy.md`, `src/winchronicle/mcp/server.py`, and `src/winchronicle/redaction.py`, confirming the runtime/privacy diff is limited to MCP search query echo redaction and private-key boundary marker redaction.
   - stale AH13/AH12 residual-gap wording scan across `README.md`, current docs, current tests, and privacy/MCP scorecards - passed with no matches.
+  - `python harness/scripts/run_harness.py` - passed, including 227 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH14 completion:
+  - `gh pr view 203 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #203 merged at `2026-05-10T02:48:11Z` as `9442e4026affb1cb17d2554cb4dd5799d4d6f359`.
+  - `gh run view 25617962810 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #203 Windows Harness concluded `success` on `f589a3bbf866995132f204de397f9695f3bd74eb`.
+  - `gh run view 25618020212 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH14 `main` Windows Harness concluded `success` on `9442e4026affb1cb17d2554cb4dd5799d4d6f359`.
+- Stage AH15 initialization:
+  - Reviewed AH14 merge evidence, residual gap audit record, privacy parity matrix, privacy/MCP scorecards, roadmap, release/operator evidence indexes, and current doc tests.
+  - Found AH14 changed product privacy output and redaction behavior narrowly, without changing package version metadata, helper/watcher resources, the read-only MCP tool list, MCP input schemas, capture surfaces, helper/watcher binaries, live UIA capture, screenshots, OCR, clipboard, keyboard, audio, network, LLM, desktop-control, daemon/service, polling, default background, MCP write, arbitrary file-read, or product targeted capture behavior.
+  - Selected a privacy-output release-readiness decision as the next smallest follow-up before any publication path or additional behavior work.
+- Stage AH15 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 96 tests.
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_privacy_policy_contract.py tests/test_uia_helper_quality_matrix.py tests/test_version_identity.py -q` - passed, 107 tests.
+  - `python -m pytest -q` - passed, 227 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- pyproject.toml src\winchronicle resources` - passed; printed no files, confirming AH15 is docs/tests only with no product runtime, package metadata, helper/watcher resource, or other bundled resource diff.
+  - stale AH14/current-residual-gap wording scan across `README.md`, current docs, current tests, and privacy/MCP scorecards - passed with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 227 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

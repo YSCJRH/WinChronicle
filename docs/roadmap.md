@@ -11,8 +11,9 @@ first. The near-term work is compatible maintenance: make deterministic demos,
 privacy evidence, release evidence, and contribution paths easier to audit. The
 current selected lane is Fixture and privacy baseline. Watcher privacy fixture
 parity and fixture/helper privacy index parity are complete,
-fixture/privacy parity matrix consolidation is complete, and the current
-follow-up is a fixture/privacy residual gap audit. The previous Fixture
+fixture/privacy parity matrix consolidation and fixture/privacy residual gap
+audit are complete, and the next follow-up is a privacy-output
+release-readiness decision. The previous Fixture
 and privacy baseline privacy-policy contract parity audit is complete
 historical work.
 
