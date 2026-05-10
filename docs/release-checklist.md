@@ -22,7 +22,7 @@ current post-v0.1.18 release-readiness decision is
 [Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md). The
 current post-v0.1.18 next blueprint lane selection is
 [Next blueprint lane selection after v0.1.18](next-blueprint-lane-selection-post-v0.1.18.md). The
-current post-v0.1.18 watcher privacy fixture parity record is
+completed post-v0.1.18 watcher privacy fixture parity record is
 [Watcher privacy fixture parity after v0.1.18](watcher-privacy-fixture-parity-post-v0.1.18.md). The
 completed post-v0.1.17 execution cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
@@ -156,12 +156,17 @@ inherited historical evidence:
   be retagged, no runtime/resource/version diff exists, and no fresh manual UIA
   smoke decision is made because no publication path is opened;
 - the current post-v0.1.18 next blueprint lane selection selects Fixture and
-  privacy baseline, starting with watcher privacy fixture parity as
-  deterministic fixtures/tests/scorecards/docs work only;
-- the current post-v0.1.18 watcher privacy fixture parity record uses
+  privacy baseline; watcher privacy fixture parity completed in AH8, and the
+  next Fixture/privacy follow-up is fixture/helper privacy index parity;
+- the completed post-v0.1.18 watcher privacy fixture parity record uses
   temp-generated watcher JSONL derived from existing privacy fixtures to prove
   watcher redaction, denylist skip-before-storage, untrusted search/MCP/memory
   metadata, raw secret search exclusion, and raw watcher JSONL non-persistence;
+  PR #197 merged at `2026-05-10T00:58:38Z` as
+  `3984e736654daeaf858b62ea4710d1b57805043c`, PR Windows Harness run
+  `25616023224` succeeded on `506536b0c55f68beb9eeb7a248cdb42d45337677`, and
+  post-merge `main` Windows Harness run `25616063920` succeeded on
+  `3984e736654daeaf858b62ea4710d1b57805043c`;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0
