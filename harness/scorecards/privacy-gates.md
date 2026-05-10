@@ -12,6 +12,9 @@
   include `trust = "untrusted_observed_content"`.
 - Memory Markdown and MCP results must preserve the untrusted observed-content
   boundary and must not reintroduce redacted secret canaries.
+- Watcher-dispatched captures must preserve the same redaction, denylist,
+  trust-boundary, SQLite search, memory search, and raw JSONL non-persistence
+  gates as fixture and helper capture paths.
 - Phase 6 screenshot/OCR work is not accepted until opt-in configuration,
   per-app allowlist, short-TTL raw cache behavior, and privacy regression tests
   are specified before implementation.

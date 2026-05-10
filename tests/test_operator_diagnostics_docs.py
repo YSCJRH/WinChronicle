@@ -75,6 +75,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Next blueprint lane selection after v0.1.18](next-blueprint-lane-selection-post-v0.1.18.md)"
         in quickstart
     )
+    assert (
+        "[Watcher privacy fixture parity after v0.1.18](watcher-privacy-fixture-parity-post-v0.1.18.md)"
+        in quickstart
+    )
     assert "[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md)"
@@ -231,6 +235,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[Next blueprint lane selection after v0.1.18](docs/next-blueprint-lane-selection-post-v0.1.18.md)"
+        in readme
+    )
+    assert (
+        "[Watcher privacy fixture parity after v0.1.18](docs/watcher-privacy-fixture-parity-post-v0.1.18.md)"
         in readme
     )
     assert (
@@ -405,6 +413,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.18 compatibility guardrail sweep" in readme_intro_normalized
     assert "current post-v0.1.18 release-readiness decision" in readme_intro_normalized
     assert "current post-v0.1.18 next blueprint lane selection" in readme_intro_normalized
+    assert "current post-v0.1.18 watcher privacy fixture parity record" in readme_intro_normalized
     assert "completed post-v0.1.17 maintenance plan" in readme_intro_normalized
     assert "completed post-v0.1.16 maintenance plan and publication reconciliation" in readme_intro_normalized
     assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
@@ -750,6 +759,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "compatibility-guardrail-sweep-post-v0.1.18.md" in current_section
     assert "release-readiness-decision-post-v0.1.18.md" in current_section
     assert "next-blueprint-lane-selection-post-v0.1.18.md" in current_section
+    assert "watcher-privacy-fixture-parity-post-v0.1.18.md" in current_section
     assert "next-round-plan-post-v0.1.17.md" in current_section
     assert "public-metadata-audit-post-v0.1.17.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in current_section
@@ -883,6 +893,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-readiness-decision-post-v0.1.18.md" in evidence
     assert "next-blueprint-lane-selection-post-v0.1.18.md" in checklist
     assert "next-blueprint-lane-selection-post-v0.1.18.md" in evidence
+    assert "watcher-privacy-fixture-parity-post-v0.1.18.md" in checklist
+    assert "watcher-privacy-fixture-parity-post-v0.1.18.md" in evidence
     assert "release-candidate-v0.1.16-rc.0.md" in checklist
     assert "release-candidate-v0.1.16-rc.0.md" in evidence
     assert "next-round-plan-post-v0.1.17.md" in checklist
@@ -3310,8 +3322,8 @@ def test_roadmap_contribution_and_issue_templates_keep_harness_first_scope():
     for expected in (
         "without\nauthorizing new capture surfaces",
         "current selected lane is Fixture and privacy baseline",
-        "starting with watcher\nprivacy fixture parity",
-        "privacy baseline\nprivacy-policy contract parity audit is complete historical work",
+        "Watcher privacy fixture\nparity is in progress",
+        "privacy baseline privacy-policy contract parity audit is complete historical\nwork",
         "Fixture and privacy baseline",
         "UIA helper hardening",
         "Watcher preview",
@@ -4013,6 +4025,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.18]",
         "Latest release-readiness decision | [Release-readiness decision after v0.1.18]",
         "Current next blueprint lane selection | [Next blueprint lane selection after v0.1.18]",
+        "Current watcher privacy fixture parity | [Watcher privacy fixture parity after v0.1.18]",
         "Previous release-readiness decision | [v0.1.18 maintenance release record]",
         "Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.17 maintenance plan]",

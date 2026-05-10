@@ -20,7 +20,8 @@ post-v0.1.18 maintenance plan, the current post-v0.1.18 public metadata audit,
 the current post-v0.1.18 helper/watcher diagnostics sweep, the current
 post-v0.1.18 MCP/memory contract sweep, the current post-v0.1.18 compatibility
 guardrail sweep, the current post-v0.1.18 release-readiness decision, the
-current post-v0.1.18 next blueprint lane selection, the
+current post-v0.1.18 next blueprint lane selection, the current post-v0.1.18
+watcher privacy fixture parity record, the
 completed post-v0.1.17 maintenance plan, the completed post-v0.1.17 public
 metadata audit, the completed post-v0.1.17 helper/watcher
 diagnostics sweep, the completed post-v0.1.17 MCP/memory contract sweep, the
@@ -154,6 +155,7 @@ available through `search-captures`.
 - [Compatibility guardrail sweep after v0.1.18](docs/compatibility-guardrail-sweep-post-v0.1.18.md)
 - [Release-readiness decision after v0.1.18](docs/release-readiness-decision-post-v0.1.18.md)
 - [Next blueprint lane selection after v0.1.18](docs/next-blueprint-lane-selection-post-v0.1.18.md)
+- [Watcher privacy fixture parity after v0.1.18](docs/watcher-privacy-fixture-parity-post-v0.1.18.md)
 - [Post-v0.1.17 maintenance plan](docs/next-round-plan-post-v0.1.17.md)
 - [Public metadata audit after v0.1.17](docs/public-metadata-audit-post-v0.1.17.md)
 - [Helper and watcher diagnostics sweep after v0.1.17](docs/helper-watcher-diagnostics-sweep-post-v0.1.17.md)

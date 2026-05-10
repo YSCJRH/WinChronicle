@@ -21,6 +21,7 @@ or token canaries.
 | Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.18](compatibility-guardrail-sweep-post-v0.1.18.md) |
 | Latest release-readiness decision | [Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md) |
 | Current next blueprint lane selection | [Next blueprint lane selection after v0.1.18](next-blueprint-lane-selection-post-v0.1.18.md) |
+| Current watcher privacy fixture parity | [Watcher privacy fixture parity after v0.1.18](watcher-privacy-fixture-parity-post-v0.1.18.md) |
 | Previous release-readiness decision | [v0.1.18 maintenance release record](release-v0.1.18.md) |
 | Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md) |
 | Previous maintenance plan | [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md) |

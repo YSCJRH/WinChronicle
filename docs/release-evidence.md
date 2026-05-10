@@ -20,6 +20,8 @@ current post-v0.1.18 release-readiness decision is
 [Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md). The
 current post-v0.1.18 next blueprint lane selection is
 [Next blueprint lane selection after v0.1.18](next-blueprint-lane-selection-post-v0.1.18.md). The
+current post-v0.1.18 watcher privacy fixture parity record is
+[Watcher privacy fixture parity after v0.1.18](watcher-privacy-fixture-parity-post-v0.1.18.md). The
 completed post-v0.1.17 maintenance cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -159,6 +161,10 @@ historical records. After the `v0.1.18` maintenance publication:
 - the current post-v0.1.18 next blueprint lane selection selects Fixture and
   privacy baseline, starting with watcher privacy fixture parity as
   deterministic fixtures/tests/scorecards/docs work only;
+- the current post-v0.1.18 watcher privacy fixture parity record uses
+  temp-generated watcher JSONL derived from existing privacy fixtures to prove
+  watcher redaction, denylist skip-before-storage, untrusted search/MCP/memory
+  metadata, raw secret search exclusion, and raw watcher JSONL non-persistence;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0
