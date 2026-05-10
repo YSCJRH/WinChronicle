@@ -11,7 +11,9 @@ REDACTION_RULES = [
     (
         "private_key",
         re.compile(
-            r"-----BEGIN [A-Z ]*PRIVATE KEY-----.*?-----END [A-Z ]*PRIVATE KEY-----",
+            r"-----BEGIN [A-Z ]*PRIVATE KEY-----.*?-----END [A-Z ]*PRIVATE KEY-----"
+            r"|-----BEGIN [A-Z ]*PRIVATE KEY-----"
+            r"|-----END [A-Z ]*PRIVATE KEY-----",
             re.DOTALL,
         ),
     ),

@@ -50,6 +50,14 @@ FORBIDDEN_TOOL_TERMS = (
     "pid",
     "window_title",
 )
+SECRET_QUERY_TERMS = (
+    "CorrectHorseBatteryStaple!",
+    "sk-winchronicle-test-canary-1234567890abcdef",
+    "ghp_winchroniclecanary1234567890ABCD",
+    "xoxb-winchronicle-canary-token",
+    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3aW5jaHJvbmljbGUifQ.signature12345",
+    "-----BEGIN PRIVATE KEY-----",
+)
 
 
 def test_mcp_exact_read_only_tool_contract_is_frozen():
@@ -72,6 +80,7 @@ def test_mcp_compatibility_examples_freeze_exact_read_only_tool_list():
         assert f"## `{tool_name}`" in text
     assert 'trust": "untrusted_observed_content"' in text
     assert "There are no MCP tools for click, type, key press" in text
+    assert "secret-like query strings are not reintroduced in MCP output" in text
     assert '"home": "C:\\\\Users\\\\example\\\\AppData\\\\Local\\\\WinChronicle"' in text
     assert '"db_exists": true' in text
     assert '"capture_count": 3' in text
@@ -150,6 +159,20 @@ def test_mcp_empty_state_tools_return_empty_read_only_results(tmp_path):
     assert memory_search["result"]["matches"] == []
     assert recent["result"]["capture"] is None
     assert activity["result"]["captures"] == []
+
+
+def test_mcp_search_tools_redact_secret_like_query_echoes(tmp_path):
+    home = tmp_path / "state"
+
+    for raw_query in SECRET_QUERY_TERMS:
+        capture_search = search_captures_tool(raw_query, home=home)
+        memory_search = search_memory_tool(raw_query, home=home)
+
+        for result in (capture_search, memory_search):
+            validate_mcp_tool_result(result)
+            assert result["result"]["matches"] == []
+            assert raw_query not in json.dumps(result, sort_keys=True)
+            assert result["result"]["query"].startswith("[REDACTED:")
 
 
 def test_mcp_search_matches_cli_search_and_marks_untrusted(tmp_path):

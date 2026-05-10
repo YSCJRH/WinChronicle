@@ -87,6 +87,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md)"
         in quickstart
     )
+    assert (
+        "[Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md)"
+        in quickstart
+    )
     assert "[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md)"
@@ -255,6 +259,10 @@ def test_operator_quickstart_links_diagnostics_playbook():
     )
     assert (
         "[Fixture/privacy parity matrix after v0.1.18](docs/privacy-fixture-parity-matrix-post-v0.1.18.md)"
+        in readme
+    )
+    assert (
+        "[Fixture/privacy residual gap audit after v0.1.18](docs/privacy-residual-gap-audit-post-v0.1.18.md)"
         in readme
     )
     assert (
@@ -432,7 +440,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "completed post-v0.1.18 watcher privacy fixture parity record" in readme_intro_normalized
     assert "completed post-v0.1.18 fixture/helper privacy index parity record" in readme_intro_normalized
     assert "completed post-v0.1.18 fixture/privacy parity matrix record" in readme_intro_normalized
-    assert "next Fixture/privacy follow-up of fixture/privacy residual gap audit" in readme_intro_normalized
+    assert "current post-v0.1.18 fixture/privacy residual gap audit" in readme_intro_normalized
     assert "completed post-v0.1.17 maintenance plan" in readme_intro_normalized
     assert "completed post-v0.1.16 maintenance plan and publication reconciliation" in readme_intro_normalized
     assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
@@ -475,6 +483,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Watcher privacy fixture parity after v0.1.18" in readme_operator_docs
     assert "Fixture/helper privacy index parity after v0.1.18" in readme_operator_docs
     assert "Fixture/privacy parity matrix after v0.1.18" in readme_operator_docs
+    assert "Fixture/privacy residual gap audit after v0.1.18" in readme_operator_docs
     assert "Post-v0.1.17 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.17" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.17" in readme_operator_docs
@@ -567,6 +576,18 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Next blueprint lane selection after v0.1.18"
     )
     assert readme_operator_docs.index("Next blueprint lane selection after v0.1.18") < readme_operator_docs.index(
+        "Watcher privacy fixture parity after v0.1.18"
+    )
+    assert readme_operator_docs.index("Watcher privacy fixture parity after v0.1.18") < readme_operator_docs.index(
+        "Fixture/helper privacy index parity after v0.1.18"
+    )
+    assert readme_operator_docs.index("Fixture/helper privacy index parity after v0.1.18") < readme_operator_docs.index(
+        "Fixture/privacy parity matrix after v0.1.18"
+    )
+    assert readme_operator_docs.index("Fixture/privacy parity matrix after v0.1.18") < readme_operator_docs.index(
+        "Fixture/privacy residual gap audit after v0.1.18"
+    )
+    assert readme_operator_docs.index("Fixture/privacy residual gap audit after v0.1.18") < readme_operator_docs.index(
         "Post-v0.1.17 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.17 maintenance plan") < readme_operator_docs.index(
@@ -783,6 +804,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "next-blueprint-lane-selection-post-v0.1.18.md" in current_section
     assert "watcher-privacy-fixture-parity-post-v0.1.18.md" in current_section
     assert "fixture-helper-privacy-index-parity-post-v0.1.18.md" in current_section
+    assert "privacy-fixture-parity-matrix-post-v0.1.18.md" in current_section
+    assert "privacy-residual-gap-audit-post-v0.1.18.md" in current_section
     assert "next-round-plan-post-v0.1.17.md" in current_section
     assert "public-metadata-audit-post-v0.1.17.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in current_section
@@ -998,6 +1021,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "completed post-v0.1.18 fixture/helper privacy index parity record" in evidence
     assert "completed post-v0.1.18 fixture/privacy parity matrix record" in checklist
     assert "completed post-v0.1.18 fixture/privacy parity matrix record" in evidence
+    assert "current post-v0.1.18 fixture/privacy residual gap audit" in checklist
+    assert "current post-v0.1.18 fixture/privacy residual gap audit" in evidence
     assert "do\n  not warrant a new release-readiness or publication path" in checklist
     assert "do\n  not warrant a new release-readiness or publication path" in evidence
     assert "`v0.1.18` must not\n  be retagged" in checklist
@@ -1008,8 +1033,12 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "fixture/helper privacy index parity completed in AH10" in evidence
     assert "matrix consolidation completed in AH12" in checklist
     assert "matrix consolidation completed in AH12" in evidence
-    assert "current Fixture/privacy\n  follow-up is a fixture/privacy residual gap audit" in checklist
-    assert "current Fixture/privacy\n  follow-up is a fixture/privacy residual gap audit" in evidence
+    assert "current Fixture/privacy\n  follow-up is the fixture/privacy residual gap audit" in checklist
+    assert "current Fixture/privacy\n  follow-up is the fixture/privacy residual gap audit" in evidence
+    assert "helper-only denylist evidence gap" in checklist
+    assert "helper-only denylist evidence gap" in evidence
+    assert "secret-like MCP search query\n  echoes" in checklist
+    assert "secret-like MCP search query\n  echoes" in evidence
     assert "PR #197 merged at `2026-05-10T00:58:38Z`" in checklist
     assert "PR #197 merged at `2026-05-10T00:58:38Z`" in evidence
     assert "PR Windows Harness run\n  `25616023224` succeeded" in checklist
@@ -3381,7 +3410,7 @@ def test_roadmap_contribution_and_issue_templates_keep_harness_first_scope():
         "current selected lane is Fixture and privacy baseline",
         "Watcher privacy fixture\nparity and fixture/helper privacy index parity are complete",
         "fixture/privacy parity matrix consolidation is complete",
-        "next follow-up is\na fixture/privacy residual gap audit",
+        "current\nfollow-up is a fixture/privacy residual gap audit",
         "privacy baseline privacy-policy contract parity audit is complete\nhistorical work",
         "Fixture and privacy baseline",
         "UIA helper hardening",
@@ -4087,7 +4116,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Completed watcher privacy fixture parity | [Watcher privacy fixture parity after v0.1.18]",
         "Completed fixture/helper privacy index parity | [Fixture/helper privacy index parity after v0.1.18]",
         "Completed fixture/privacy parity matrix | [Fixture/privacy parity matrix after v0.1.18]",
-        "Current Fixture/privacy follow-up | Fixture/privacy residual gap audit tracked by [Post-v0.1.18 maintenance plan]",
+        "Current Fixture/privacy residual gap audit | [Fixture/privacy residual gap audit after v0.1.18]",
         "Previous release-readiness decision | [v0.1.18 maintenance release record]",
         "Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.17 maintenance plan]",

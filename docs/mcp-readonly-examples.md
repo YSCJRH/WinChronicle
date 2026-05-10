@@ -52,6 +52,10 @@ payloads always include:
 }
 ```
 
+Search tools use the raw query only for local SQLite lookup. Their returned
+`result.query` field is redacted with the same secret rules used for captured
+content, so secret-like query strings are not reintroduced in MCP output.
+
 ## `privacy_status`
 
 Request:

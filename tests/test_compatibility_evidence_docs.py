@@ -47,6 +47,9 @@ FIXTURE_HELPER_PRIVACY_INDEX_PARITY_V0118 = (
 PRIVACY_FIXTURE_PARITY_MATRIX_V0118 = (
     ROOT / "docs" / "privacy-fixture-parity-matrix-post-v0.1.18.md"
 )
+PRIVACY_RESIDUAL_GAP_AUDIT_V0118 = (
+    ROOT / "docs" / "privacy-residual-gap-audit-post-v0.1.18.md"
+)
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
@@ -105,6 +108,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Release-readiness decision after v0.1.18",
         "Next blueprint lane selection after v0.1.18",
         "Fixture/privacy parity matrix after v0.1.18",
+        "Fixture/privacy residual gap audit after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -157,6 +161,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Release-readiness decision after v0.1.18",
         "Next blueprint lane selection after v0.1.18",
         "Fixture/privacy parity matrix after v0.1.18",
+        "Fixture/privacy residual gap audit after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -179,6 +184,7 @@ def test_scorecards_remain_the_evidence_oracles_for_mcp_and_phase6():
     phase6 = PHASE6_SCORECARD.read_text(encoding="utf-8")
 
     assert "tool list is an exact compatibility contract" in mcp
+    assert "secret-looking query strings" in mcp
     assert "does not authorize implementing" in phase6
     assert "No screenshot capture code, OCR engine integration" in phase6
 
@@ -1033,14 +1039,16 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "publication reconciliation landed on `main` as `f40e165ce35464e5eb8df65f10ef153f8145177b`",
         "PR #188 Windows Harness run `25612920731` passed",
         "post-merge `main` Windows Harness run `25612977738`",
-        "Current stage: AH13 - Post-AH12 Evidence Reconciliation.",
-        "Stage status: AH13 in progress.",
-        "Last completed evidence: AH12 fixture/privacy parity matrix PR #201 merged",
-        "PR Windows Harness run `25617277557` passed",
-        "post-merge `main` Windows Harness run `25617330198` passed",
-        "verified the post-AH12 `main` Windows Harness concluded `success`",
-        "Next atomic task: land this AH13 evidence reconciliation PR",
-        "fixture/privacy residual gap audit",
+        "Current stage: AH14 - Fixture/Privacy Residual Gap Audit.",
+        "Stage status: AH14 in progress.",
+        "closes a direct helper denylist evidence gap",
+        "secret-like queries are redacted in read-only tool results",
+        "Last completed evidence: AH13 evidence reconciliation PR #202 merged",
+        "PR Windows Harness run `25617537177` passed",
+        "post-merge `main` Windows Harness run `25617582514` passed",
+        "verified the post-AH13 `main` Windows Harness concluded `success`",
+        "Next atomic task: land this AH14 residual gap audit PR",
+        "reconcile AH14 evidence",
         "Stage AH0 - Post-v0.1.18 Baseline Cursor",
         "Stage AH1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AH2 - Helper And Watcher Preview Diagnostics Review",
@@ -1055,6 +1063,8 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "Stage AH11 - Post-AH10 Evidence Reconciliation",
         "Stage AH12 - Fixture/Privacy Parity Matrix Consolidation",
         "Stage AH13 - Post-AH12 Evidence Reconciliation",
+        "Stage AH14 - Fixture/Privacy Residual Gap Audit",
+        "Stage AH15 - Post-AH14 Evidence Reconciliation",
         "`v0.1.18` is the latest published stable release and must not be retagged",
         "`v0.1.17` remains the previous stable release and must not be retagged",
         "Manual UIA smoke for `v0.1.18` was freshly rerun",
@@ -1269,6 +1279,23 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "passed, 106 tests",
         "printed no files, confirming AH13 does not change version metadata",
         "stale AH12/current-matrix wording scan",
+        "Stage AH13 completion:",
+        "PR #202 merged at `2026-05-10T02:23:37Z`",
+        "gh run view 25617537177",
+        "post-AH13 `main` Windows Harness concluded `success`",
+        "Stage AH14 initialization:",
+        "helper-only denylist evidence gap",
+        "raw secret-like queries",
+        "Added `docs/privacy-residual-gap-audit-post-v0.1.18.md`",
+        "Stage AH14 local validation:",
+        "passed, 25 tests",
+        "passed, 34 tests",
+        "passed, 107 tests",
+        "passed, 227 tests",
+        "printed no files, confirming AH14 does not change package version metadata",
+        "runtime/privacy diff is limited to MCP search query echo redaction",
+        "stale AH13/AH12 residual-gap wording scan",
+        "including 227 pytest tests",
     ):
         assert phrase in normalized
 
@@ -2641,13 +2668,16 @@ def test_privacy_fixture_parity_matrix_post_v018_consolidates_paths():
         "Watcher-dispatched capture",
         "tests/test_privacy_index_parity.py::test_fixture_privacy_capture_and_memory_indexes_exclude_raw_terms",
         "tests/test_privacy_index_parity.py::test_uia_helper_privacy_capture_and_memory_indexes_exclude_raw_terms",
+        "tests/test_privacy_index_parity.py::test_uia_helper_denylisted_privacy_captures_are_skipped_without_artifacts",
         "tests/test_watcher_events.py::test_watcher_privacy_fixture_preserves_redaction_skip_and_trust",
+        "tests/test_mcp_tools.py",
         "tests/test_fixture_capture.py::test_denylisted_app_capture_is_skipped",
         "SQLite `captures`, `captures_fts`, `entries`, `entries_fts`",
-        "`search_captures`, `search_memory_entries`, and MCP `search_memory`",
+        "full MCP search payloads with redacted query echoes",
         "raw `.jsonl` stream persists under state",
         "docs/watcher-privacy-fixture-parity-post-v0.1.18.md",
         "docs/fixture-helper-privacy-index-parity-post-v0.1.18.md",
+        "docs/privacy-residual-gap-audit-post-v0.1.18.md",
         "harness/scorecards/privacy-gates.md",
         "Result: passed locally before PR review.",
         "Focused privacy path validation reported 33 tests",
@@ -2661,6 +2691,7 @@ def test_privacy_fixture_parity_matrix_post_v018_consolidates_paths():
         "Post-AH12 `main` Windows Harness run `25617330198` concluded `success`",
         "python -m pytest tests/test_privacy_index_parity.py tests/test_watcher_events.py tests/test_fixture_capture.py tests/test_privacy_policy_contract.py -q",
         "does not add a new capture surface",
+        "redacting secret-like MCP search query echoes",
     ):
         assert phrase in normalized
 
@@ -2682,6 +2713,53 @@ def test_privacy_fixture_parity_matrix_post_v018_consolidates_paths():
         "network",
         "LLM",
         "desktop-control",
+    ):
+        assert boundary in normalized
+
+
+def test_privacy_residual_gap_audit_post_v018_closes_helper_and_mcp_gaps():
+    text = PRIVACY_RESIDUAL_GAP_AUDIT_V0118.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Fixture/Privacy Residual Gap Audit After v0.1.18",
+        "checks the consolidated fixture/privacy parity matrix",
+        "helper-only parity test",
+        "test_uia_helper_denylisted_privacy_captures_are_skipped_without_artifacts",
+        "no capture path",
+        "no capture-buffer JSON",
+        "no memory Markdown",
+        "no SQLite capture count",
+        "MCP search tools used raw queries",
+        "returned `result.query` is passed through the existing redaction pipeline",
+        "test_mcp_search_tools_redact_secret_like_query_echoes",
+        "private-key boundary markers",
+        "test_redact_text_removes_private_key_boundary_markers",
+        "raw terms are absent from full MCP search payloads",
+        "Focused MCP/privacy-redaction validation reported 25 tests",
+        "focused cross-path privacy validation reported 34 tests",
+        "focused docs/privacy validation reported 107 tests",
+        "full pytest reported 227 tests",
+        "runtime/privacy diff was limited",
+        "stale AH13/AH12 residual-gap wording scan returned no matches",
+        "full deterministic harness passed",
+        "does not add screenshot capture",
+    ):
+        assert phrase in normalized
+
+    for boundary in (
+        "OCR",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network upload",
+        "LLM calls",
+        "desktop control",
+        "MCP write tools",
+        "arbitrary file read tools",
+        "product targeted capture",
+        "raw helper JSON persistence",
+        "raw watcher JSONL persistence",
     ):
         assert boundary in normalized
 

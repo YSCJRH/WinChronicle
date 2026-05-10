@@ -67,7 +67,8 @@ Current text patterns:
   `ghs_`, `ghr_`, and fine-grained `github_pat_` tokens
 - `slack_token`: `xox[baprs]-` tokens and Slack app-level `xapp-` tokens
 - `jwt`: three long base64url-like segments separated by dots
-- `private_key`: PEM blocks from `BEGIN ... PRIVATE KEY` through matching `END`
+- `private_key`: PEM blocks from `BEGIN ... PRIVATE KEY` through matching `END`,
+  plus standalone private-key boundary markers
 - `token_canary`: strings containing `winchronicle...canary`
 
 Password fields are redacted by field semantics, not by text pattern. If

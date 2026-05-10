@@ -7,9 +7,9 @@ from winchronicle.capture import (
     capture_once_from_uia_helper_record,
 )
 from winchronicle.memory import generate_memory_entries
-from winchronicle.mcp.server import search_memory_tool
+from winchronicle.mcp.server import search_captures_tool, search_memory_tool
 from winchronicle.schema import validate_capture, validate_uia_helper_output
-from winchronicle.storage import search_captures, search_memory_entries
+from winchronicle.storage import capture_count, search_captures, search_memory_entries
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -109,6 +109,49 @@ def test_uia_helper_privacy_capture_and_memory_indexes_exclude_raw_terms(
     _assert_raw_terms_not_indexed(home, RAW_SECRET_TERMS)
 
 
+def test_uia_helper_denylisted_privacy_captures_are_skipped_without_artifacts(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    cases = (
+        (
+            "denylisted-app",
+            _helper_output_from_privacy_fixture("denylisted_app"),
+            "denylisted app: Bitwarden.exe",
+            "super secret value",
+        ),
+        (
+            "title-denylisted",
+            _title_denylisted_helper_output(),
+            "denylisted title pattern",
+            "title-denylisted helper observed text must not persist",
+        ),
+    )
+
+    for case_name, output, expected_reason, observed_text in cases:
+        validate_uia_helper_output(output)
+        result = capture_once_from_uia_helper_record(
+            output,
+            home,
+            f"helper-{case_name}",
+        )
+
+        assert result.path is None
+        assert result.capture is None
+        assert result.skipped is True
+        assert result.reason == expected_reason
+        assert observed_text not in _state_payload(home)
+        assert search_captures(observed_text, home) == []
+        assert search_memory_entries(observed_text, home) == []
+        assert search_memory_tool(observed_text, home=home)["result"]["matches"] == []
+        assert capture_count(home) == 0
+
+    assert _read_capture_files(home) == []
+    assert list((home / "memory").glob("*.md")) == []
+
+
 def _helper_output_from_privacy_fixture(fixture_name: str) -> dict:
     fixture_path = ROOT / "harness" / "fixtures" / "privacy" / f"{fixture_name}.json"
     output = json.loads(fixture_path.read_text(encoding="utf-8"))
@@ -158,6 +201,22 @@ def _helper_output_from_privacy_fixture(fixture_name: str) -> dict:
     return output
 
 
+def _title_denylisted_helper_output() -> dict:
+    output = _helper_output_from_privacy_fixture("prompt_injection_visible_text")
+    observed_text = "title-denylisted helper observed text must not persist"
+    output["timestamp"] = "2026-04-25T13:40:03+08:00"
+    output["window"]["process_name"] = "notepad.exe"
+    output["window"]["exe_path"] = "C:\\Windows\\System32\\notepad.exe"
+    output["window"]["app_name"] = "Notepad"
+    output["window"]["title"] = "Secret recovery phrase - Notepad"
+    output["focused_element"]["name"] = "Untitled - Notepad"
+    output["focused_element"]["text"] = observed_text
+    output["visible_text"] = observed_text
+    output["url"] = None
+    output["uia_stats"]["chars_collected"] = len(output["visible_text"])
+    return output
+
+
 def _assert_raw_terms_not_indexed(home: Path, raw_terms: tuple[str, ...]) -> None:
     capture_payload = "\n".join(
         path.read_text(encoding="utf-8")
@@ -174,7 +233,12 @@ def _assert_raw_terms_not_indexed(home: Path, raw_terms: tuple[str, ...]) -> Non
         assert term not in sqlite_payload
         assert search_captures(term, home) == []
         assert search_memory_entries(term, home) == []
-        assert search_memory_tool(term, home=home)["result"]["matches"] == []
+        capture_tool_result = search_captures_tool(term, home=home)
+        memory_tool_result = search_memory_tool(term, home=home)
+        assert capture_tool_result["result"]["matches"] == []
+        assert memory_tool_result["result"]["matches"] == []
+        assert term not in json.dumps(capture_tool_result, sort_keys=True)
+        assert term not in json.dumps(memory_tool_result, sort_keys=True)
 
 
 def _read_capture_files(home: Path) -> list[dict]:
@@ -201,4 +265,19 @@ def _sqlite_text_payload(home: Path) -> str:
                 continue
             for row in conn.execute(f"SELECT * FROM {table}"):
                 payload.append(json.dumps([str(value) for value in row], sort_keys=True))
+    return "\n".join(payload)
+
+
+def _state_payload(home: Path) -> str:
+    payload: list[str] = []
+    for root in ("capture-buffer", "memory"):
+        path = home / root
+        if not path.exists():
+            continue
+        payload.extend(
+            child.read_text(encoding="utf-8")
+            for child in sorted(path.rglob("*"))
+            if child.is_file()
+        )
+    payload.append(_sqlite_text_payload(home))
     return "\n".join(payload)

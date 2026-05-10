@@ -28,6 +28,8 @@ completed post-v0.1.18 fixture/helper privacy index parity record is
 [Fixture/helper privacy index parity after v0.1.18](fixture-helper-privacy-index-parity-post-v0.1.18.md). The
 completed post-v0.1.18 fixture/privacy parity matrix record is
 [Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md). The
+current post-v0.1.18 fixture/privacy residual gap audit is
+[Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md). The
 completed post-v0.1.17 execution cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -163,7 +165,7 @@ inherited historical evidence:
   privacy baseline; watcher privacy fixture parity completed in AH8,
   fixture/helper privacy index parity completed in AH10, fixture/privacy parity
   matrix consolidation completed in AH12, and the current Fixture/privacy
-  follow-up is a fixture/privacy residual gap audit;
+  follow-up is the fixture/privacy residual gap audit;
 - the completed post-v0.1.18 watcher privacy fixture parity record uses
   temp-generated watcher JSONL derived from existing privacy fixtures to prove
   watcher redaction, denylist skip-before-storage, untrusted search/MCP/memory
@@ -193,6 +195,11 @@ inherited historical evidence:
   `25617277557` succeeded on `8f5845e3ea65dad277665c0dd2c9494d95458915`, and
   post-merge `main` Windows Harness run `25617330198` succeeded on
   `3ff86ec086a85bdeedbabb343ca93122e0a47a1e`;
+- the current post-v0.1.18 fixture/privacy residual gap audit closes the
+  helper-only denylist evidence gap, redacts secret-like MCP search query
+  echoes, and extends private-key redaction to standalone boundary markers
+  without changing the read-only MCP tool list, helper/watcher binaries, or
+  capture surfaces;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0
