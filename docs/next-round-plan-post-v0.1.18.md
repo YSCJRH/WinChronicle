@@ -29,19 +29,20 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH12 - Fixture/Privacy Parity Matrix Consolidation.
-- Stage status: AH12 in progress. This branch consolidates watcher, direct
-  fixture, and synthesized helper privacy evidence into one scorecard matrix
-  and one post-v0.1.18 audit record.
-- Last completed evidence: AH11 post-AH10 evidence reconciliation PR #200
-  merged as `32fc7e643c85aeced8ad714c75dbc8830eba77a8`, PR Windows Harness run
-  `25616911022` passed, and post-merge `main` Windows Harness run
-  `25616951807` passed on that SHA.
-- Last validation: `gh run view 25616951807 --json
+- Current stage: AH13 - Post-AH12 Evidence Reconciliation.
+- Stage status: AH13 in progress. This branch records AH12 merge and
+  post-merge evidence, then moves the Fixture/privacy baseline cursor to the
+  next smallest follow-up.
+- Last completed evidence: AH12 fixture/privacy parity matrix PR #201 merged as
+  `3ff86ec086a85bdeedbabb343ca93122e0a47a1e`, PR Windows Harness run
+  `25617277557` passed, and post-merge `main` Windows Harness run
+  `25617330198` passed on that SHA.
+- Last validation: `gh run view 25617330198 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AH11 `main` Windows Harness concluded `success`.
-- Next atomic task: land this AH12 fixture/privacy parity matrix PR, then
-  reconcile PR and post-merge evidence.
+  verified the post-AH12 `main` Windows Harness concluded `success`.
+- Next atomic task: land this AH13 evidence reconciliation PR, then start a
+  fixture/privacy residual gap audit using the consolidated matrix as the
+  evidence index.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -189,6 +190,17 @@ service install, no polling capture loop, and no default background capture.
   daemon/service, polling, default background, MCP write, or product targeted
   capture behavior.
 
+### Stage AH13 - Post-AH12 Evidence Reconciliation
+
+- Record AH12 PR and post-merge `main` Windows Harness evidence after
+  fixture/privacy parity matrix consolidation lands.
+- Return the active cursor to the Fixture/privacy baseline lane without opening
+  a release-readiness or publication path.
+- Select the next atomic task as a fixture/privacy residual gap audit so the new
+  matrix is reviewed for any remaining direct fixture, synthesized helper,
+  watcher, storage, memory, MCP, scorecard, or evidence-index gaps before any
+  behavior change.
+
 ## Public Interfaces And Non-goals
 
 - CLI command set remains unchanged:
@@ -329,6 +341,15 @@ Every implementation stage should run:
 - Started AH12 as a docs/tests/scorecard-only matrix consolidation because
   watcher-dispatched, direct fixture, and synthesized helper privacy parity are
   now proven but split across separate evidence records and tests.
+- Completed AH12 after PR #201 merged as
+  `3ff86ec086a85bdeedbabb343ca93122e0a47a1e` and post-merge Windows Harness
+  run `25617330198` passed.
+- Started AH13 as a docs/tests-only evidence reconciliation because AH12 is
+  merged, no release path is warranted, and public indexes should not keep
+  fixture/privacy parity matrix consolidation presented as active implementation
+  work.
+- Selected the next Fixture/privacy baseline follow-up as a residual gap audit
+  using the consolidated matrix before any additional behavior change.
 
 ## Validation Log
 
@@ -524,4 +545,19 @@ Every implementation stage should run:
   - `git diff --check` - passed.
   - `git diff --name-only v0.1.18..HEAD -- pyproject.toml src\winchronicle\_version.py src\winchronicle\mcp\server.py resources` - passed; printed no files, confirming AH12 does not change version metadata, MCP server code, resources, helper, or watcher binaries/projects.
   - stale AH11/AH10 fixture-helper wording scan across `README.md`, current docs, current tests, and privacy scorecards - passed with no matches.
+  - `python harness/scripts/run_harness.py` - passed, including 223 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH12 completion:
+  - `gh pr view 201 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #201 merged at `2026-05-10T02:10:33Z` as `3ff86ec086a85bdeedbabb343ca93122e0a47a1e`.
+  - `gh run view 25617277557 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #201 Windows Harness concluded `success` on `8f5845e3ea65dad277665c0dd2c9494d95458915`.
+  - `gh run view 25617330198 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH12 `main` Windows Harness concluded `success` on `3ff86ec086a85bdeedbabb343ca93122e0a47a1e`.
+- Stage AH13 initialization:
+  - Reviewed AH12 merge evidence, fixture/privacy parity matrix record, privacy scorecard, roadmap, release/operator evidence indexes, and current doc tests.
+  - Found AH12 changed docs/tests/scorecards only, did not change product runtime, schemas, version metadata, MCP server code, resources, helper/watcher projects, helper/watcher behavior, live UIA capture, or capture surfaces.
+  - Selected a fixture/privacy residual gap audit as the next smallest follow-up so the consolidated matrix can be checked for remaining evidence gaps before behavior changes.
+- Stage AH13 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_privacy_policy_contract.py tests/test_uia_helper_quality_matrix.py tests/test_version_identity.py -q` - passed, 106 tests.
+  - `python -m pytest -q` - passed, 223 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only v0.1.18..HEAD -- pyproject.toml src\winchronicle\_version.py src\winchronicle\mcp\server.py resources` - passed; printed no files, confirming AH13 does not change version metadata, MCP server code, resources, helper, or watcher binaries/projects.
+  - stale AH12/current-matrix wording scan across `README.md`, current docs, current tests, and privacy scorecards - passed with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 223 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
