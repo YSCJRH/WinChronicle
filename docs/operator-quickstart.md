@@ -148,6 +148,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [MCP and memory contract sweep after v0.1.18](mcp-memory-contract-sweep-post-v0.1.18.md)
 - [Compatibility guardrail sweep after v0.1.18](compatibility-guardrail-sweep-post-v0.1.18.md)
 - [Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md)
+- [Next blueprint lane selection after v0.1.18](next-blueprint-lane-selection-post-v0.1.18.md)
 - [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md)
 - [Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md)
 - [Helper and watcher diagnostics sweep after v0.1.17](helper-watcher-diagnostics-sweep-post-v0.1.17.md)

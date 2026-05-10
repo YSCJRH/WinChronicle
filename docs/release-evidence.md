@@ -18,6 +18,8 @@ current post-v0.1.18 compatibility guardrail review is
 [Compatibility guardrail sweep after v0.1.18](compatibility-guardrail-sweep-post-v0.1.18.md). The
 current post-v0.1.18 release-readiness decision is
 [Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md). The
+current post-v0.1.18 next blueprint lane selection is
+[Next blueprint lane selection after v0.1.18](next-blueprint-lane-selection-post-v0.1.18.md). The
 completed post-v0.1.17 maintenance cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -154,6 +156,9 @@ historical records. After the `v0.1.18` maintenance publication:
   not warrant a new release-readiness or publication path, `v0.1.18` must not
   be retagged, no runtime/resource/version diff exists, and no fresh manual UIA
   smoke decision is made because no publication path is opened;
+- the current post-v0.1.18 next blueprint lane selection selects Fixture and
+  privacy baseline, starting with watcher privacy fixture parity as
+  deterministic fixtures/tests/scorecards/docs work only;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0

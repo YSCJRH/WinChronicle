@@ -9,10 +9,9 @@ product behavior change.
 WinChronicle remains local-first, UIA-first, harness-first, and read-only MCP
 first. The near-term work is compatible maintenance: make deterministic demos,
 privacy evidence, release evidence, and contribution paths easier to audit. The
-current selected lane is pending after the post-v0.1.18 AH5 no-release
-decision. The immediate next step is a post-v0.1.18 next blueprint lane
-selection record; the previous Fixture and privacy baseline privacy-policy
-contract parity audit is complete historical work.
+current selected lane is Fixture and privacy baseline, starting with watcher
+privacy fixture parity. The previous Fixture and privacy baseline
+privacy-policy contract parity audit is complete historical work.
 
 ## Work Lanes
 

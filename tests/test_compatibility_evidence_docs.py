@@ -35,6 +35,9 @@ COMPATIBILITY_V0118 = ROOT / "docs" / "compatibility-guardrail-sweep-post-v0.1.1
 RELEASE_DECISION_V0118 = (
     ROOT / "docs" / "release-readiness-decision-post-v0.1.18.md"
 )
+NEXT_BLUEPRINT_LANE_SELECTION_V0118 = (
+    ROOT / "docs" / "next-blueprint-lane-selection-post-v0.1.18.md"
+)
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
@@ -91,6 +94,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "MCP and memory contract sweep after v0.1.18",
         "Compatibility guardrail sweep after v0.1.18",
         "Release-readiness decision after v0.1.18",
+        "Next blueprint lane selection after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -141,6 +145,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "MCP and memory contract sweep after v0.1.18",
         "Compatibility guardrail sweep after v0.1.18",
         "Release-readiness decision after v0.1.18",
+        "Next blueprint lane selection after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -1017,13 +1022,13 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "publication reconciliation landed on `main` as `f40e165ce35464e5eb8df65f10ef153f8145177b`",
         "PR #188 Windows Harness run `25612920731` passed",
         "post-merge `main` Windows Harness run `25612977738`",
-        "Current stage: AH6 - Post-AH5 Cursor Reconciliation.",
-        "Stage status: AH5 is merged",
-        "Last completed evidence: AH5 release-readiness decision PR #194 merged as",
-        "PR Windows Harness run `25614929381` passed",
-        "post-merge `main` Windows Harness run `25614978807` passed",
-        "Next atomic task: land this AH6 cursor reconciliation PR",
-        "post-v0.1.18 next blueprint lane selection record",
+        "Current stage: AH7 - Next Blueprint Lane Selection.",
+        "Stage status: AH7 in progress.",
+        "Last completed evidence: AH6 cursor reconciliation PR #195 merged as",
+        "PR Windows Harness run `25615214406` passed",
+        "post-merge `main` Windows Harness run `25615262484` passed",
+        "Next atomic task: land this AH7 lane-selection PR",
+        "start watcher privacy fixture parity",
         "Stage AH0 - Post-v0.1.18 Baseline Cursor",
         "Stage AH1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AH2 - Helper And Watcher Preview Diagnostics Review",
@@ -1031,6 +1036,7 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "Stage AH4 - Compatibility Guardrail Sweep",
         "Stage AH5 - Release-Readiness Decision",
         "Stage AH6 - Post-AH5 Cursor Reconciliation",
+        "Stage AH7 - Next Blueprint Lane Selection",
         "`v0.1.18` is the latest published stable release and must not be retagged",
         "`v0.1.17` remains the previous stable release and must not be retagged",
         "Manual UIA smoke for `v0.1.18` was freshly rerun",
@@ -1135,6 +1141,21 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "printed no files, confirming AH6 is docs/tests only",
         "current-entry stale AH5 and stale roadmap lane wording scan",
         "python harness/scripts/run_harness.py",
+        "Stage AH6 completion:",
+        "gh pr view 195",
+        "PR #195 merged at `2026-05-10T00:12:26Z`",
+        "gh run view 25615214406",
+        "post-AH6 `main` Windows Harness concluded `success`",
+        "Stage AH7 initialization:",
+        "Reviewed `docs/roadmap.md`",
+        "watcher-specific privacy parity was out of scope",
+        "Stage AH7 local validation:",
+        "passed, 92 tests",
+        "passed, 214 tests",
+        "printed no files, confirming AH7 is docs/tests only",
+        "stale AH6 and pending-roadmap wording scan",
+        "python harness/scripts/run_harness.py",
+        "including 214 pytest tests",
     ):
         assert phrase in normalized
 
@@ -2302,6 +2323,67 @@ def test_next_blueprint_lane_selection_starts_privacy_baseline_audit():
         "full deterministic harness passed, including 191 pytest tests",
         "Observed content remains untrusted",
         "Start the privacy-policy contract parity audit",
+    ):
+        assert phrase in normalized
+
+    for boundary in (
+        "screenshot capture",
+        "OCR",
+        "raw screenshot caches",
+        "runtime allowlist parsing",
+        "audio recording",
+        "keyboard capture",
+        "clipboard capture",
+        "network/cloud upload",
+        "LLM calls",
+        "desktop control",
+        "product targeted capture",
+        "daemon/service install",
+        "polling capture loops",
+        "default background capture",
+        "MCP write tools",
+        "arbitrary file read tools",
+        "real UIA capture changes",
+        "helper/watcher behavior changes",
+    ):
+        assert boundary in normalized
+
+
+def test_next_blueprint_lane_selection_post_v018_starts_watcher_privacy_parity():
+    text = NEXT_BLUEPRINT_LANE_SELECTION_V0118.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Next Blueprint Lane Selection After v0.1.18",
+        "The selected lane is Fixture and privacy baseline",
+        "watcher privacy fixture parity",
+        "deterministic watcher JSONL fixtures",
+        "redaction, denylist skipping",
+        "raw JSONL non-persistence",
+        "AH5 release-readiness decision PR #194 merged as `0bc33714d8fe2e9926d6c4753c8c7780fb1e9e00`",
+        "PR #194 Windows Harness run `25614929381` concluded `success`",
+        "Post-merge `main` Windows Harness run `25614978807` concluded `success`",
+        "AH6 cursor reconciliation PR #195 merged as `545be8dd326b2e9453c1949db44d3445e218b789`",
+        "PR #195 Windows Harness run `25615214406` concluded `success`",
+        "Post-merge `main` Windows Harness run `25615262484` concluded `success`",
+        r"git diff --name-only v0.1.18..HEAD -- src\winchronicle resources pyproject.toml",
+        "Fixture and privacy baseline | Selected.",
+        "UIA helper hardening | Defer.",
+        "Watcher preview | Defer as standalone behavior work.",
+        "Read-only MCP | Defer.",
+        "Durable memory | Defer.",
+        "Docs and deterministic demo | Defer.",
+        "Phase 6 privacy enrichment | Closed for this pass.",
+        "Start the Fixture and privacy baseline lane with watcher privacy fixture parity",
+        "does not authorize product runtime behavior changes",
+        "Result: passed locally before PR review.",
+        "Focused docs/version validation",
+        "reported 92 tests",
+        "full pytest reported 214 tests",
+        "stale AH6/pending-roadmap wording scan returned no matches",
+        "full deterministic harness passed, including 214 pytest tests",
+        "synthetic deterministic fixtures",
+        "Start watcher privacy fixture parity",
     ):
         assert phrase in normalized
 
