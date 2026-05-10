@@ -52,6 +52,15 @@ helper captures without changing product runtime behavior.
   install CLI smoke, privacy check, fixture capture/search/memory,
   deterministic watcher fixture, and watcher fake-helper smoke.
 
+## PR And Post-Merge Evidence
+
+- PR #199 merged at `2026-05-10T01:33:45Z` as
+  `cf1dab1d58e6e637c73aee748056591b597d70b1`.
+- PR #199 Windows Harness run `25616618385` concluded `success` on
+  `591a87b4ec237388ec83525083d560285dc62638`.
+- Post-AH10 `main` Windows Harness run `25616673782` concluded `success` on
+  `cf1dab1d58e6e637c73aee748056591b597d70b1`.
+
 ## Privacy And Security
 
 This task strengthens deterministic privacy evidence only. It does not add a
@@ -60,7 +69,8 @@ commit generated captures or memory artifacts, and does not change live UIA,
 watcher, MCP, screenshot, OCR, clipboard, keyboard, audio, network, LLM, or
 desktop-control behavior.
 
-## Next Step
+## Completed Follow-Up
 
-After this PR lands, reconcile AH10 PR and post-merge harness evidence, then
-select the next smallest Fixture/privacy baseline follow-up.
+AH10 PR and post-merge harness evidence has been reconciled in the active
+post-v0.1.18 maintenance plan. The selected next smallest Fixture/privacy
+baseline follow-up is fixture/privacy parity matrix consolidation.

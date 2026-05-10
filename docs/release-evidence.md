@@ -22,7 +22,7 @@ current post-v0.1.18 next blueprint lane selection is
 [Next blueprint lane selection after v0.1.18](next-blueprint-lane-selection-post-v0.1.18.md). The
 completed post-v0.1.18 watcher privacy fixture parity record is
 [Watcher privacy fixture parity after v0.1.18](watcher-privacy-fixture-parity-post-v0.1.18.md). The
-current post-v0.1.18 fixture/helper privacy index parity record is
+completed post-v0.1.18 fixture/helper privacy index parity record is
 [Fixture/helper privacy index parity after v0.1.18](fixture-helper-privacy-index-parity-post-v0.1.18.md). The
 completed post-v0.1.17 maintenance cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
@@ -161,8 +161,9 @@ historical records. After the `v0.1.18` maintenance publication:
   be retagged, no runtime/resource/version diff exists, and no fresh manual UIA
   smoke decision is made because no publication path is opened;
 - the current post-v0.1.18 next blueprint lane selection selects Fixture and
-  privacy baseline; watcher privacy fixture parity completed in AH8, and the
-  next Fixture/privacy follow-up is fixture/helper privacy index parity;
+  privacy baseline; watcher privacy fixture parity completed in AH8,
+  fixture/helper privacy index parity completed in AH10, and the next
+  Fixture/privacy follow-up is fixture/privacy parity matrix consolidation;
 - the completed post-v0.1.18 watcher privacy fixture parity record uses
   temp-generated watcher JSONL derived from existing privacy fixtures to prove
   watcher redaction, denylist skip-before-storage, untrusted search/MCP/memory
@@ -172,11 +173,16 @@ historical records. After the `v0.1.18` maintenance publication:
   `25616023224` succeeded on `506536b0c55f68beb9eeb7a248cdb42d45337677`, and
   post-merge `main` Windows Harness run `25616063920` succeeded on
   `3984e736654daeaf858b62ea4710d1b57805043c`;
-- the current post-v0.1.18 fixture/helper privacy index parity record reuses
+- the completed post-v0.1.18 fixture/helper privacy index parity record reuses
   existing synthetic privacy fixtures to prove direct fixture and synthesized
   UIA helper captures exclude raw passwords and token canaries from capture
   files, memory files, SQLite search tables, capture search, memory search, and
-  MCP memory search without committing new raw helper or watcher artifacts;
+  MCP memory search without committing new raw helper or watcher artifacts; PR
+  #199 merged at `2026-05-10T01:33:45Z` as
+  `cf1dab1d58e6e637c73aee748056591b597d70b1`, PR Windows Harness run
+  `25616618385` succeeded on `591a87b4ec237388ec83525083d560285dc62638`, and
+  post-merge `main` Windows Harness run `25616673782` succeeded on
+  `cf1dab1d58e6e637c73aee748056591b597d70b1`;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0
