@@ -10,8 +10,8 @@ WinChronicle remains local-first, UIA-first, harness-first, and read-only MCP
 first. The near-term work is compatible maintenance: make deterministic demos,
 privacy evidence, release evidence, and contribution paths easier to audit. The
 current selected lane is Fixture and privacy baseline. Watcher privacy fixture
-parity and fixture/helper privacy index parity are complete, and the next
-follow-up is fixture/privacy parity matrix consolidation. The previous Fixture
+parity and fixture/helper privacy index parity are complete, and
+fixture/privacy parity matrix consolidation is in progress. The previous Fixture
 and privacy baseline privacy-policy contract parity audit is complete
 historical work.
 

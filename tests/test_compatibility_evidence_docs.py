@@ -44,6 +44,9 @@ WATCHER_PRIVACY_FIXTURE_PARITY_V0118 = (
 FIXTURE_HELPER_PRIVACY_INDEX_PARITY_V0118 = (
     ROOT / "docs" / "fixture-helper-privacy-index-parity-post-v0.1.18.md"
 )
+PRIVACY_FIXTURE_PARITY_MATRIX_V0118 = (
+    ROOT / "docs" / "privacy-fixture-parity-matrix-post-v0.1.18.md"
+)
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
@@ -101,6 +104,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Compatibility guardrail sweep after v0.1.18",
         "Release-readiness decision after v0.1.18",
         "Next blueprint lane selection after v0.1.18",
+        "Fixture/privacy parity matrix after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -152,6 +156,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Compatibility guardrail sweep after v0.1.18",
         "Release-readiness decision after v0.1.18",
         "Next blueprint lane selection after v0.1.18",
+        "Fixture/privacy parity matrix after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -1028,14 +1033,14 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "publication reconciliation landed on `main` as `f40e165ce35464e5eb8df65f10ef153f8145177b`",
         "PR #188 Windows Harness run `25612920731` passed",
         "post-merge `main` Windows Harness run `25612977738`",
-        "Current stage: AH11 - Post-AH10 Evidence Reconciliation.",
-        "Stage status: AH11 in progress.",
-        "Last completed evidence: AH10 fixture/helper privacy index parity PR #199 merged",
-        "PR Windows Harness run `25616618385` passed",
-        "post-merge `main` Windows Harness run `25616673782` passed",
-        "verified the post-AH10 `main` Windows Harness concluded `success`",
-        "Next atomic task: land this AH11 evidence reconciliation PR",
-        "fixture/privacy parity matrix consolidation",
+        "Current stage: AH12 - Fixture/Privacy Parity Matrix Consolidation.",
+        "Stage status: AH12 in progress.",
+        "Last completed evidence: AH11 post-AH10 evidence reconciliation PR #200 merged",
+        "PR Windows Harness run `25616911022` passed",
+        "post-merge `main` Windows Harness run `25616951807` passed",
+        "verified the post-AH11 `main` Windows Harness concluded `success`",
+        "Next atomic task: land this AH12 fixture/privacy parity matrix PR",
+        "reconcile PR and post-merge evidence",
         "Stage AH0 - Post-v0.1.18 Baseline Cursor",
         "Stage AH1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AH2 - Helper And Watcher Preview Diagnostics Review",
@@ -1048,6 +1053,7 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "Stage AH9 - Post-AH8 Evidence Reconciliation",
         "Stage AH10 - Fixture/Helper Privacy Index Parity",
         "Stage AH11 - Post-AH10 Evidence Reconciliation",
+        "Stage AH12 - Fixture/Privacy Parity Matrix Consolidation",
         "`v0.1.18` is the latest published stable release and must not be retagged",
         "`v0.1.17` remains the previous stable release and must not be retagged",
         "Manual UIA smoke for `v0.1.18` was freshly rerun",
@@ -1234,6 +1240,22 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "printed no files, confirming AH11 does not change version metadata",
         "stale AH10/current-fixture-helper wording scan",
         "including 221 pytest tests",
+        "Stage AH11 completion:",
+        "gh pr view 200",
+        "PR #200 merged at `2026-05-10T01:49:48Z`",
+        "gh run view 25616911022",
+        "post-AH11 `main` Windows Harness concluded `success`",
+        "Stage AH12 initialization:",
+        "evidence already exists across watcher-dispatched, direct fixture, and synthesized helper paths",
+        "Added `docs/privacy-fixture-parity-matrix-post-v0.1.18.md`",
+        "canonical `harness/scorecards/privacy-gates.md` matrix",
+        "Stage AH12 local validation:",
+        "passed, 33 tests",
+        "passed, 100 tests",
+        "passed, 223 tests",
+        "printed no files, confirming AH12 does not change version metadata",
+        "stale AH11/AH10 fixture-helper wording scan",
+        "including 223 pytest tests",
     ):
         assert phrase in normalized
 
@@ -2566,8 +2588,8 @@ def test_fixture_helper_privacy_index_parity_post_v018_records_direct_paths():
         "PR #199 merged at `2026-05-10T01:33:45Z`",
         "PR #199 Windows Harness run `25616618385` concluded `success`",
         "Post-AH10 `main` Windows Harness run `25616673782` concluded `success`",
-        "Completed Follow-Up",
-        "fixture/privacy parity matrix consolidation",
+        "Current Follow-Up",
+        "docs/privacy-fixture-parity-matrix-post-v0.1.18.md",
         "does not add a new capture surface",
     ):
         assert phrase in normalized
@@ -2581,6 +2603,55 @@ def test_fixture_helper_privacy_index_parity_post_v018_records_direct_paths():
         "MCP",
         "screenshot",
         "OCR",
+        "clipboard",
+        "keyboard",
+        "audio",
+        "network",
+        "LLM",
+        "desktop-control",
+    ):
+        assert boundary in normalized
+
+
+def test_privacy_fixture_parity_matrix_post_v018_consolidates_paths():
+    text = PRIVACY_FIXTURE_PARITY_MATRIX_V0118.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Fixture/Privacy Parity Matrix After v0.1.18",
+        "consolidates the Fixture and privacy baseline evidence",
+        "AH8 watcher privacy fixture parity",
+        "AH10 fixture/helper privacy index parity",
+        "Direct fixture capture",
+        "Synthesized UIA helper capture",
+        "Watcher-dispatched capture",
+        "tests/test_privacy_index_parity.py::test_fixture_privacy_capture_and_memory_indexes_exclude_raw_terms",
+        "tests/test_privacy_index_parity.py::test_uia_helper_privacy_capture_and_memory_indexes_exclude_raw_terms",
+        "tests/test_watcher_events.py::test_watcher_privacy_fixture_preserves_redaction_skip_and_trust",
+        "tests/test_fixture_capture.py::test_denylisted_app_capture_is_skipped",
+        "SQLite `captures`, `captures_fts`, `entries`, `entries_fts`",
+        "`search_captures`, `search_memory_entries`, and MCP `search_memory`",
+        "raw `.jsonl` stream persists under state",
+        "docs/watcher-privacy-fixture-parity-post-v0.1.18.md",
+        "docs/fixture-helper-privacy-index-parity-post-v0.1.18.md",
+        "harness/scorecards/privacy-gates.md",
+        "python -m pytest tests/test_privacy_index_parity.py tests/test_watcher_events.py tests/test_fixture_capture.py tests/test_privacy_policy_contract.py -q",
+        "does not add a new capture surface",
+    ):
+        assert phrase in normalized
+
+    for boundary in (
+        "raw helper JSON",
+        "raw watcher JSONL",
+        "generated capture-buffer JSON",
+        "generated memory Markdown",
+        "screenshots",
+        "OCR output",
+        "passwords",
+        "secrets",
+        "token canaries",
+        "live UIA",
+        "MCP",
         "clipboard",
         "keyboard",
         "audio",

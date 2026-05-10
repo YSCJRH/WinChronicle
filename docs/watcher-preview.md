@@ -68,7 +68,7 @@ watcher:
 | --- | --- |
 | Heartbeat-only run | CLI fake-watcher test asserts `captures_written = 0`, `heartbeats > 0`, no capture buffer, and no raw watcher JSONL under temporary state. |
 | Duplicate content fingerprint | Fixture dispatch test replays the same watcher events and asserts duplicate skips without extra captures. |
-| Watcher privacy fixture parity | Focused tests generate deterministic watcher JSONL under `tmp_path` from existing privacy fixtures and assert redaction, denylist, trust-boundary, MCP/memory-search parity, and no raw watcher JSONL under `WINCHRONICLE_HOME`. |
+| Watcher privacy fixture parity | Focused tests generate deterministic watcher JSONL under `tmp_path` from existing privacy fixtures and assert redaction, denylist, trust-boundary, MCP/memory-search parity, and no raw watcher JSONL under `WINCHRONICLE_HOME`; [Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md) maps this against direct fixture and synthesized helper evidence. |
 | Denylisted app or lock screen | Lock-screen helper fixture dispatch asserts `denylisted_skipped`, no capture artifact, no raw watcher JSONL under state, and no searchable observed content. |
 | Watcher exits nonzero | Fake watcher exits with a code; CLI reports only the stable exit-code diagnostic. |
 | Helper failure surfaced by watcher | Fake watcher emits helper-adjacent stdout/stderr and exits; CLI suppresses observed-adjacent output. |

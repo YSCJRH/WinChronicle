@@ -16,6 +16,7 @@ targeted capture.
 | --- | --- | --- | --- | --- | --- | --- |
 | Deterministic helper fixture | Notepad fixture | Helper JSON validates, normalizes to a capture, indexes searchable visible text, records frontmost `capture_target`, and keeps all prohibited capture surfaces false. | Covered by `tests/test_uia_helper_contract.py`; local F2 validation passed. | Fixture JSON is committed because it is synthetic. Generated captures stay under temporary `WINCHRONICLE_HOME`. | Low; synthetic text and schema-only validation. | Hard automated gate. |
 | Deterministic helper fixture | Password fixture | Password field values normalize to `[REDACTED:password_field]` and raw password text does not persist. | Covered by helper privacy tests. | Synthetic fixture may be committed; generated capture artifacts stay temporary. | High if regressed; prevents password storage. | Hard automated privacy gate. |
+| Deterministic privacy matrix | Direct fixture / helper / watcher parity | Direct fixture, synthesized helper, and watcher-dispatched privacy paths map to the same password, obvious-secret, storage/search, trust-boundary, disabled-surface, and artifact-policy gates. | Covered by [Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md). | Matrix is committed; generated captures, memory, helper outputs, and watcher JSONL stay temporary. | High if stale; prevents fragmented privacy evidence. | Hard automated privacy audit gate. |
 | Deterministic helper fixture | Budget/stale traversal fixture | `uia_stats` records stale skips, exception skips, timeout, node budget, depth budget, char budget, and truncation without crashing. | Covered by helper contract tests. | Synthetic fixture may be committed; no live observed content. | Medium; guards runaway UIA traversal and stale COM failures. | Hard automated contract gate. |
 | Deterministic wrapper diagnostics | Fake helper wrapper | Timeout, invalid JSON, empty stdout, and nonzero helper exit return stable diagnostics without echoing observed stdout or stderr. | Covered by CLI/helper wrapper tests and post-v0.1 operator diagnostics docs. | No raw helper stdout/stderr is committed or printed in failure messages. | Medium; prevents observed-content leakage through diagnostics. | Hard automated gate. |
 | Harness boundary guard | Targeted helper path | Targeted capture requires both `--harness` and `WINCHRONICLE_HARNESS=1`; product CLI and MCP expose no targeted HWND/PID/title capture. | Covered by Windows-only helper tests, schema, scorecards, and docs. | No artifact is needed for the rejection path. | High; regression would expand the capture surface. | Hard boundary gate. |
@@ -38,6 +39,8 @@ evidence should record:
 - VS Code availability and metadata smoke result.
 - VS Code strict Monaco result as diagnostic/non-blocking.
 - Manual frontmost result as diagnostic/manual confidence evidence only.
+- Fixture/privacy parity matrix freshness when privacy fixture, helper, watcher,
+  storage, memory, or MCP search gates change.
 - Any diagnostic artifacts by local path only.
 
 Do not promote a new application to a hard gate from this matrix alone. New app
