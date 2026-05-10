@@ -46,6 +46,13 @@ capture storage, privacy runtime behavior, or capture surfaces.
 - AH4 completion post-merge `main` Windows Harness run `25614585178`
   concluded `success` on
   `a773bcd6535bcac9bdfef87162aa1c5f8fc23369`.
+- AH5 PR Windows Harness run `25614929381` concluded `success` on
+  `9016b49678cbb9faefd98ab80ff003fad57e08d1`.
+- AH5 merged as `0bc33714d8fe2e9926d6c4753c8c7780fb1e9e00` through PR #194
+  at `2026-05-09T23:56:35Z`.
+- AH5 completion post-merge `main` Windows Harness run `25614978807`
+  concluded `success` on
+  `0bc33714d8fe2e9926d6c4753c8c7780fb1e9e00`.
 - The latest full manual UIA smoke source remains the published `v0.1.18`
   release record. AH5 does not accept, reject, refresh, or publish with that
   evidence; a future release-readiness record must decide manual smoke
@@ -112,6 +119,21 @@ harness passed, including 213 pytest tests, helper/watcher builds with 0
 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy
 check, fixture capture/search/memory, deterministic watcher fixture, and
 watcher fake-helper smoke.
+
+AH5 PR and post-merge validation:
+
+```powershell
+gh pr view 194 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title
+gh run view 25614929381 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt
+gh run view 25614978807 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt
+```
+
+Result: passed; PR #194 merged at `2026-05-09T23:56:35Z` as
+`0bc33714d8fe2e9926d6c4753c8c7780fb1e9e00`, PR Windows Harness run
+`25614929381` concluded `success` on
+`9016b49678cbb9faefd98ab80ff003fad57e08d1`, and post-AH5 `main` Windows
+Harness run `25614978807` concluded `success` on
+`0bc33714d8fe2e9926d6c4753c8c7780fb1e9e00`.
 
 ## Privacy And Security
 
