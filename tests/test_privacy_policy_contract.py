@@ -65,6 +65,7 @@ def test_privacy_policy_disabled_surfaces_match_status_and_mcp(tmp_path):
         assert mcp_result[key] is False
 
     assert "CLI `status` and MCP `privacy_status` must report the same disabled privacy surfaces" in scorecard
+    assert "Direct fixture and synthesized UIA helper captures must prove raw passwords" in scorecard
     assert "Targeted UIA capture is harness-only helper behavior" in spec
 
 

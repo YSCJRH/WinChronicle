@@ -41,6 +41,9 @@ NEXT_BLUEPRINT_LANE_SELECTION_V0118 = (
 WATCHER_PRIVACY_FIXTURE_PARITY_V0118 = (
     ROOT / "docs" / "watcher-privacy-fixture-parity-post-v0.1.18.md"
 )
+FIXTURE_HELPER_PRIVACY_INDEX_PARITY_V0118 = (
+    ROOT / "docs" / "fixture-helper-privacy-index-parity-post-v0.1.18.md"
+)
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
@@ -1025,15 +1028,14 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "publication reconciliation landed on `main` as `f40e165ce35464e5eb8df65f10ef153f8145177b`",
         "PR #188 Windows Harness run `25612920731` passed",
         "post-merge `main` Windows Harness run `25612977738`",
-        "Current stage: AH9 - Post-AH8 Evidence Reconciliation.",
-        "Stage status: AH9 in progress.",
-        "Last completed evidence: AH8 watcher privacy fixture parity PR #197 merged",
-        "PR Windows Harness run `25616023224` passed",
-        "post-merge `main` Windows Harness run `25616063920` passed",
-        "Last validation: AH9 local validation passed",
-        "full deterministic harness passed",
-        "Next atomic task: land this AH9 evidence reconciliation PR",
-        "fixture/helper privacy index parity",
+        "Current stage: AH10 - Fixture/Helper Privacy Index Parity.",
+        "Stage status: AH10 in progress.",
+        "Last completed evidence: AH9 evidence reconciliation PR #198 merged",
+        "PR Windows Harness run `25616305777` passed",
+        "post-merge `main` Windows Harness run `25616355896` passed",
+        "verified the post-AH9 `main` Windows Harness concluded `success`",
+        "Next atomic task: land this AH10 fixture/helper privacy index parity PR",
+        "reconcile AH10 evidence",
         "Stage AH0 - Post-v0.1.18 Baseline Cursor",
         "Stage AH1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AH2 - Helper And Watcher Preview Diagnostics Review",
@@ -1044,6 +1046,7 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "Stage AH7 - Next Blueprint Lane Selection",
         "Stage AH8 - Watcher Privacy Fixture Parity",
         "Stage AH9 - Post-AH8 Evidence Reconciliation",
+        "Stage AH10 - Fixture/Helper Privacy Index Parity",
         "`v0.1.18` is the latest published stable release and must not be retagged",
         "`v0.1.17` remains the previous stable release and must not be retagged",
         "Manual UIA smoke for `v0.1.18` was freshly rerun",
@@ -1198,6 +1201,22 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "stale AH8/current-watcher wording scan",
         "python harness/scripts/run_harness.py",
         "including 218 pytest tests",
+        "Stage AH9 completion:",
+        "gh pr view 198",
+        "PR #198 merged at `2026-05-10T01:15:20Z`",
+        "gh run view 25616305777",
+        "post-AH9 `main` Windows Harness concluded `success`",
+        "Stage AH10 initialization:",
+        "direct fixtures, helper output, and watcher captures converge on normalization",
+        "Added `tests/test_privacy_index_parity.py`",
+        "Stage AH10 local validation:",
+        "passed, 2 tests",
+        "passed, 7 tests",
+        "passed, 94 tests",
+        "passed, 221 tests",
+        "printed no files, confirming AH10 does not change version metadata",
+        "stale AH9/current-follow-up wording scan",
+        "including 221 pytest tests",
     ):
         assert phrase in normalized
 
@@ -2495,6 +2514,57 @@ def test_watcher_privacy_fixture_parity_post_v018_records_temp_fixture_scope():
         "generated memory",
         "screenshots",
         "OCR output",
+    ):
+        assert boundary in normalized
+
+
+def test_fixture_helper_privacy_index_parity_post_v018_records_direct_paths():
+    text = FIXTURE_HELPER_PRIVACY_INDEX_PARITY_V0118.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Fixture/Helper Privacy Index Parity After v0.1.18",
+        "AH8 proved watcher-dispatched privacy parity",
+        "direct fixture captures and synthesized UIA helper captures",
+        "existing synthetic privacy fixtures",
+        "password_field.json",
+        "secrets_visible_text.json",
+        "capture-buffer JSON",
+        "memory Markdown",
+        "SQLite `captures`, `captures_fts`, `entries`, `entries_fts`",
+        "`search_captures`, `search_memory_entries`, and MCP `search_memory`",
+        "Added `tests/test_privacy_index_parity.py`",
+        "source = \"fixture\"",
+        "trigger.source = \"manual\"",
+        "source = \"uia_helper\"",
+        "trigger.source = \"win_uia_helper\"",
+        "API key, GitHub token, Slack token, JWT, and private key redaction",
+        "passed, 2 tests",
+        "passed, 7 tests",
+        "passed, 94 tests",
+        "passed, 221 tests",
+        "printed no files, confirming AH10 does not change version metadata",
+        "stale AH9/current-follow-up wording scan",
+        "including 221 pytest tests",
+        "does not add a new capture surface",
+    ):
+        assert phrase in normalized
+
+    for boundary in (
+        "raw helper/watcher streams",
+        "generated captures",
+        "memory artifacts",
+        "live UIA",
+        "watcher",
+        "MCP",
+        "screenshot",
+        "OCR",
+        "clipboard",
+        "keyboard",
+        "audio",
+        "network",
+        "LLM",
+        "desktop-control",
     ):
         assert boundary in normalized
 
