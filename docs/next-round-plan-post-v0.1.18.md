@@ -29,19 +29,19 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH7 - Next Blueprint Lane Selection.
-- Stage status: AH7 in progress. This branch selects the next blueprint lane
-  after AH5/AH6 and keeps the product boundary unchanged.
-- Last completed evidence: AH6 cursor reconciliation PR #195 merged as
-  `545be8dd326b2e9453c1949db44d3445e218b789`, PR Windows Harness run
-  `25615214406` passed, and post-merge `main` Windows Harness run
-  `25615262484` passed on that SHA.
-- Last validation: `gh run view 25615262484 --json
+- Current stage: AH8 - Watcher Privacy Fixture Parity.
+- Stage status: AH8 in progress. This branch starts the selected Fixture and
+  privacy baseline lane with deterministic watcher privacy parity fixtures and
+  focused tests.
+- Last completed evidence: AH7 next-blueprint-lane selection PR #196 merged as
+  `25223872d81486a33b3890b1791d529bf176c8ec`, PR Windows Harness run
+  `25615510542` passed, and post-merge `main` Windows Harness run
+  `25615551057` passed on that SHA.
+- Last validation: `gh run view 25615551057 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AH6 `main` Windows Harness concluded `success`.
-- Next atomic task: land this AH7 lane-selection PR, then start watcher privacy
-  fixture parity with deterministic fixtures, focused tests, scorecards, and
-  docs first.
+  verified the post-AH7 `main` Windows Harness concluded `success`.
+- Next atomic task: land this AH8 watcher privacy fixture parity PR, then
+  reconcile AH8 evidence and select the next Fixture/privacy baseline follow-up.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -130,6 +130,18 @@ service install, no polling capture loop, and no default background capture.
   reuse for publication.
 - Start the selected lane with contracts, fixtures, tests, scorecards, and docs
   first.
+
+### Stage AH8 - Watcher Privacy Fixture Parity
+
+- Add deterministic watcher JSONL coverage for the existing watcher dispatch
+  privacy pipeline without live UIA capture.
+- Prove watcher-dispatched captures preserve password-field redaction, obvious
+  secret redaction, denylist skip-before-storage, untrusted observed-content
+  metadata, SQLite search safety, memory search safety, MCP memory-search
+  safety, and raw watcher JSONL non-persistence.
+- Update watcher preview docs, privacy scorecards, release/operator evidence
+  indexes, and focused tests before any behavior change. If tests expose a
+  product gap, make the smallest compatible fix in a separate, test-led step.
 
 ## Public Interfaces And Non-goals
 
@@ -232,6 +244,13 @@ Every implementation stage should run:
 - Selected Fixture and privacy baseline as the next lane, starting with watcher
   privacy fixture parity using deterministic watcher JSONL fixtures, focused
   tests, scorecards, and docs first.
+- Completed AH7 after PR #196 merged as
+  `25223872d81486a33b3890b1791d529bf176c8ec` and post-merge Windows Harness
+  run `25615551057` passed.
+- Started AH8 as a fixture/tests/docs-first watcher privacy parity task because
+  the watcher dispatch code already routes through the shared normalization,
+  redaction, denylist, storage, search, and memory pipeline, but watcher tests
+  did not yet prove password, secret, denylist, trust, and memory parity.
 
 ## Validation Log
 
@@ -346,3 +365,19 @@ Every implementation stage should run:
   - `git diff --name-only v0.1.18..HEAD -- src\winchronicle resources pyproject.toml` - passed; printed no files, confirming AH7 is docs/tests only with no product/runtime/version diff.
   - stale AH6 and pending-roadmap wording scan across `README.md`, current docs, and current doc tests - passed with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 214 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH7 completion:
+  - `gh pr view 196 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #196 merged at `2026-05-10T00:29:22Z` as `25223872d81486a33b3890b1791d529bf176c8ec`.
+  - `gh run view 25615510542 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #196 Windows Harness concluded `success` on `2e3844f10bb20772ec78a6c7b9a24a888dfbbd9b`.
+  - `gh run view 25615551057 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH7 `main` Windows Harness concluded `success` on `25223872d81486a33b3890b1791d529bf176c8ec`.
+- Stage AH8 initialization:
+  - Reviewed `harness/specs/privacy-policy.md`, `docs/next-blueprint-lane-selection-post-v0.1.18.md`, `docs/watcher-preview.md`, `harness/fixtures/watcher`, `harness/fixtures/privacy`, `tests/test_watcher_events.py`, `tests/test_privacy_check.py`, `tests/test_redaction.py`, `tests/test_memory_pipeline.py`, `src/winchronicle/events.py`, `src/winchronicle/capture.py`, `src/winchronicle/privacy.py`, `src/winchronicle/redaction.py`, `src/winchronicle/storage.py`, and `src/winchronicle/memory.py`.
+  - Found watcher dispatch already validates watcher events, validates embedded helper output, checks `denylist_reason`, normalizes through `normalize_uia_helper_output`, redacts before storage, persists through `persist_capture`, indexes SQLite search, and feeds generated memory from indexed captures.
+  - Added temp-generated watcher privacy JSONL in focused tests, derived from existing privacy fixtures, to prove the existing path preserves password-field redaction, obvious secret redaction, denylist skip-before-storage, untrusted search/MCP/memory metadata, raw-secret search exclusion, and raw watcher JSONL non-persistence without committing a new sensitive watcher JSONL fixture.
+- Stage AH8 local validation:
+  - `python -m pytest tests/test_watcher_events.py tests/test_privacy_check.py tests/test_redaction.py -q` - passed, 31 tests.
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 93 tests.
+  - `python -m pytest -q` - passed, 218 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only v0.1.18..HEAD -- pyproject.toml src\winchronicle\_version.py src\winchronicle\mcp\server.py resources` - passed; printed no files, confirming AH8 does not change version metadata, MCP server code, resources, helper, or watcher binaries/projects.
+  - stale AH7 and old committed watcher privacy fixture wording scan across `README.md`, current docs, current tests, and privacy scorecards - passed with no matches.
+  - `python harness/scripts/run_harness.py` - passed, including 218 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

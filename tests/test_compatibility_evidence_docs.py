@@ -38,6 +38,9 @@ RELEASE_DECISION_V0118 = (
 NEXT_BLUEPRINT_LANE_SELECTION_V0118 = (
     ROOT / "docs" / "next-blueprint-lane-selection-post-v0.1.18.md"
 )
+WATCHER_PRIVACY_FIXTURE_PARITY_V0118 = (
+    ROOT / "docs" / "watcher-privacy-fixture-parity-post-v0.1.18.md"
+)
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
@@ -1022,13 +1025,13 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "publication reconciliation landed on `main` as `f40e165ce35464e5eb8df65f10ef153f8145177b`",
         "PR #188 Windows Harness run `25612920731` passed",
         "post-merge `main` Windows Harness run `25612977738`",
-        "Current stage: AH7 - Next Blueprint Lane Selection.",
-        "Stage status: AH7 in progress.",
-        "Last completed evidence: AH6 cursor reconciliation PR #195 merged as",
-        "PR Windows Harness run `25615214406` passed",
-        "post-merge `main` Windows Harness run `25615262484` passed",
-        "Next atomic task: land this AH7 lane-selection PR",
-        "start watcher privacy fixture parity",
+        "Current stage: AH8 - Watcher Privacy Fixture Parity.",
+        "Stage status: AH8 in progress.",
+        "Last completed evidence: AH7 next-blueprint-lane selection PR #196 merged as",
+        "PR Windows Harness run `25615510542` passed",
+        "post-merge `main` Windows Harness run `25615551057` passed",
+        "Next atomic task: land this AH8 watcher privacy fixture parity PR",
+        "select the next Fixture/privacy baseline follow-up",
         "Stage AH0 - Post-v0.1.18 Baseline Cursor",
         "Stage AH1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AH2 - Helper And Watcher Preview Diagnostics Review",
@@ -1037,6 +1040,7 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "Stage AH5 - Release-Readiness Decision",
         "Stage AH6 - Post-AH5 Cursor Reconciliation",
         "Stage AH7 - Next Blueprint Lane Selection",
+        "Stage AH8 - Watcher Privacy Fixture Parity",
         "`v0.1.18` is the latest published stable release and must not be retagged",
         "`v0.1.17` remains the previous stable release and must not be retagged",
         "Manual UIA smoke for `v0.1.18` was freshly rerun",
@@ -1156,6 +1160,22 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "stale AH6 and pending-roadmap wording scan",
         "python harness/scripts/run_harness.py",
         "including 214 pytest tests",
+        "Stage AH7 completion:",
+        "gh pr view 196",
+        "PR #196 merged at `2026-05-10T00:29:22Z`",
+        "gh run view 25615510542",
+        "post-AH7 `main` Windows Harness concluded `success`",
+        "Stage AH8 initialization:",
+        "Reviewed `harness/specs/privacy-policy.md`",
+        "Found watcher dispatch already validates watcher events",
+        "without committing a new sensitive watcher JSONL fixture",
+        "Stage AH8 local validation:",
+        "passed, 31 tests",
+        "passed, 93 tests",
+        "passed, 218 tests",
+        "printed no files, confirming AH8 does not change version metadata",
+        "stale AH7 and old committed watcher privacy fixture wording scan",
+        "including 218 pytest tests",
     ):
         assert phrase in normalized
 
@@ -2406,6 +2426,50 @@ def test_next_blueprint_lane_selection_post_v018_starts_watcher_privacy_parity()
         "arbitrary file read tools",
         "real UIA capture changes",
         "helper/watcher behavior changes",
+    ):
+        assert boundary in normalized
+
+
+def test_watcher_privacy_fixture_parity_post_v018_records_temp_fixture_scope():
+    text = WATCHER_PRIVACY_FIXTURE_PARITY_V0118.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Watcher Privacy Fixture Parity After v0.1.18",
+        "starts the Fixture and privacy baseline lane",
+        "does not authorize live UIA capture changes",
+        "screenshot/OCR implementation",
+        "helper/watcher behavior changes",
+        "The focused tests generate deterministic watcher JSONL under `tmp_path`",
+        "existing synthetic privacy fixtures",
+        "avoids committing a second raw watcher JSONL stream",
+        "password-field redaction",
+        "obvious API key, private key, JWT, GitHub token, Slack token, and canary redaction",
+        "prompt-injection text stored only as untrusted observed content",
+        "denylisted app skipping before storage and indexing",
+        "heartbeat counting without capture writes",
+        "watch --watcher` consumes watcher stdout",
+        "MCP memory search",
+        "Result: passed locally before PR review.",
+        "Focused watcher/privacy/redaction validation reported 31 tests",
+        "focused docs/version validation reported 93 tests",
+        "full pytest reported 218 tests",
+        "stale AH7/old committed watcher privacy fixture wording scan returned no matches",
+        "does not add a new capture surface",
+    ):
+        assert phrase in normalized
+
+    for boundary in (
+        "clipboard capture",
+        "keyboard capture",
+        "audio recording",
+        "desktop control",
+        "network/cloud upload",
+        "LLM calls",
+        "generated captures",
+        "generated memory",
+        "screenshots",
+        "OCR output",
     ):
         assert boundary in normalized
 
