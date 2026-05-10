@@ -29,21 +29,19 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH9 - Post-AH8 Evidence Reconciliation.
-- Stage status: AH9 in progress. This branch records AH8 merge and post-merge
-  evidence, then moves the Fixture/privacy baseline cursor to the next
-  smallest follow-up.
-- Last completed evidence: AH8 watcher privacy fixture parity PR #197 merged
-  as `3984e736654daeaf858b62ea4710d1b57805043c`, PR Windows Harness run
-  `25616023224` passed, and post-merge `main` Windows Harness run
-  `25616063920` passed on that SHA.
-- Last validation: AH9 local validation passed: focused docs/version tests
-  reported 93 tests, full pytest reported 218 tests, `git diff --check`
-  passed, product-code diff check printed no files, stale AH8/current-watcher
-  wording scan returned no matches, and the full deterministic harness passed.
-- Next atomic task: land this AH9 evidence reconciliation PR, then start
-  fixture/helper privacy index parity for capture files, memory files, SQLite
-  search tables, and MCP memory-search results.
+- Current stage: AH10 - Fixture/Helper Privacy Index Parity.
+- Stage status: AH10 in progress. This branch adds deterministic parity tests
+  and evidence for direct fixture and synthesized UIA helper privacy captures.
+- Last completed evidence: AH9 evidence reconciliation PR #198 merged as
+  `603519ec3a428f65aae21b0c614f48dc6d4b156a`, PR Windows Harness run
+  `25616305777` passed, and post-merge `main` Windows Harness run
+  `25616355896` passed on that SHA.
+- Last validation: `gh run view 25616355896 --json
+  databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
+  verified the post-AH9 `main` Windows Harness concluded `success`.
+- Next atomic task: land this AH10 fixture/helper privacy index parity PR, then
+  reconcile AH10 evidence and select the next Fixture/privacy baseline
+  follow-up.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -154,6 +152,18 @@ service install, no polling capture loop, and no default background capture.
 - Select the next atomic task as fixture/helper privacy index parity so the
   direct capture and helper paths get the same raw-secret absence evidence that
   AH8 added for watcher-dispatched captures.
+
+### Stage AH10 - Fixture/Helper Privacy Index Parity
+
+- Reuse existing synthetic privacy fixtures to cover direct fixture capture and
+  synthesized UIA helper capture paths without committing new raw helper,
+  watcher, capture, memory, screenshot, OCR, or observed-content artifacts.
+- Prove raw passwords and token canaries are absent from capture files, memory
+  Markdown, SQLite `captures`, `captures_fts`, `entries`, `entries_fts`,
+  `search_captures`, `search_memory_entries`, and MCP `search_memory`.
+- Update the privacy scorecard and operator/release evidence indexes before any
+  behavior change. If tests expose a product gap, make the smallest compatible
+  fix in a separate, test-led step.
 
 ## Public Interfaces And Non-goals
 
@@ -272,6 +282,14 @@ Every implementation stage should run:
 - Selected the next Fixture/privacy baseline follow-up as fixture/helper
   privacy index parity for raw-secret absence across capture files, memory
   files, SQLite search tables, and MCP memory-search results.
+- Completed AH9 after PR #198 merged as
+  `603519ec3a428f65aae21b0c614f48dc6d4b156a` and post-merge Windows Harness
+  run `25616355896` passed.
+- Started AH10 as a tests/docs-only fixture/helper privacy index parity task
+  because the runtime paths already share normalization, redaction,
+  persistence, SQLite indexing, memory generation, and MCP memory search.
+- Reused existing synthetic privacy fixtures rather than committing new raw
+  helper/watcher artifacts.
 
 ## Validation Log
 
@@ -421,3 +439,19 @@ Every implementation stage should run:
   - `git diff --name-only v0.1.18..HEAD -- pyproject.toml src\winchronicle\_version.py src\winchronicle\mcp\server.py resources` - passed; printed no files, confirming AH9 does not change version metadata, MCP server code, resources, helper, or watcher binaries/projects.
   - stale AH8/current-watcher wording scan across `README.md`, current docs, and current tests - passed with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 218 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH9 completion:
+  - `gh pr view 198 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #198 merged at `2026-05-10T01:15:20Z` as `603519ec3a428f65aae21b0c614f48dc6d4b156a`.
+  - `gh run view 25616305777 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #198 Windows Harness concluded `success` on `a0193c511f8e9df8efd158362efa3e8ffb02c49d`.
+  - `gh run view 25616355896 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH9 `main` Windows Harness concluded `success` on `603519ec3a428f65aae21b0c614f48dc6d4b156a`.
+- Stage AH10 initialization:
+  - Read-only explorer found direct fixtures, helper output, and watcher captures converge on normalization, redaction, `persist_capture`, SQLite indexing, memory generation, and MCP memory search, but direct fixture/helper tests did not yet prove AH8-width raw-secret absence across capture files, memory Markdown, SQLite search tables, and MCP memory search.
+  - Added `tests/test_privacy_index_parity.py` using existing synthetic privacy fixtures to cover direct fixture and synthesized UIA helper privacy captures without committing new raw helper or watcher artifacts.
+- Stage AH10 local validation:
+  - `python -m pytest tests/test_privacy_index_parity.py -q` - passed, 2 tests.
+  - `python -m pytest tests/test_privacy_index_parity.py tests/test_privacy_policy_contract.py -q` - passed, 7 tests.
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 94 tests.
+  - `python -m pytest -q` - passed, 221 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only v0.1.18..HEAD -- pyproject.toml src\winchronicle\_version.py src\winchronicle\mcp\server.py resources` - passed; printed no files, confirming AH10 does not change version metadata, MCP server code, resources, helper, or watcher binaries/projects.
+  - stale AH9/current-follow-up wording scan across `README.md`, current docs, current tests, and privacy scorecards - passed with no matches.
+  - `python harness/scripts/run_harness.py` - passed, including 221 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

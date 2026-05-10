@@ -24,6 +24,8 @@ current post-v0.1.18 next blueprint lane selection is
 [Next blueprint lane selection after v0.1.18](next-blueprint-lane-selection-post-v0.1.18.md). The
 completed post-v0.1.18 watcher privacy fixture parity record is
 [Watcher privacy fixture parity after v0.1.18](watcher-privacy-fixture-parity-post-v0.1.18.md). The
+current post-v0.1.18 fixture/helper privacy index parity record is
+[Fixture/helper privacy index parity after v0.1.18](fixture-helper-privacy-index-parity-post-v0.1.18.md). The
 completed post-v0.1.17 execution cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -167,6 +169,11 @@ inherited historical evidence:
   `25616023224` succeeded on `506536b0c55f68beb9eeb7a248cdb42d45337677`, and
   post-merge `main` Windows Harness run `25616063920` succeeded on
   `3984e736654daeaf858b62ea4710d1b57805043c`;
+- the current post-v0.1.18 fixture/helper privacy index parity record reuses
+  existing synthetic privacy fixtures to prove direct fixture and synthesized
+  UIA helper captures exclude raw passwords and token canaries from capture
+  files, memory files, SQLite search tables, capture search, memory search, and
+  MCP memory search without committing new raw helper or watcher artifacts;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0

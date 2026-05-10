@@ -15,6 +15,10 @@
 - Watcher-dispatched captures must preserve the same redaction, denylist,
   trust-boundary, SQLite search, memory search, and raw JSONL non-persistence
   gates as fixture and helper capture paths.
+- Direct fixture and synthesized UIA helper captures must prove raw passwords
+  and token canaries are absent from capture-buffer JSON, memory Markdown,
+  SQLite `captures`, `captures_fts`, `entries`, `entries_fts`, capture search,
+  memory search, and MCP memory search.
 - Phase 6 screenshot/OCR work is not accepted until opt-in configuration,
   per-app allowlist, short-TTL raw cache behavior, and privacy regression tests
   are specified before implementation.
