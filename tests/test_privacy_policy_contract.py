@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PRIVACY_POLICY = ROOT / "harness" / "specs" / "privacy-policy.md"
 PRIVACY_GATES = ROOT / "harness" / "scorecards" / "privacy-gates.md"
 PRIVACY_FIXTURES = ROOT / "harness" / "fixtures" / "privacy"
+PRIVACY_PARITY_MATRIX = ROOT / "docs" / "privacy-fixture-parity-matrix-post-v0.1.18.md"
 
 EXPECTED_DISABLED_SURFACE_PHRASES = {
     "screenshots_enabled": "Screenshots.",
@@ -136,6 +137,52 @@ def test_privacy_policy_trust_boundary_matches_capture_status_and_mcp(tmp_path):
     assert mcp_result["trust_boundary_instruction"] == TRUST_BOUNDARY_INSTRUCTION
     assert '"trust": "untrusted_observed_content"' in spec
     assert "Prompt injection text may be stored only as untrusted observed content." in scorecard
+
+
+def test_fixture_privacy_parity_matrix_covers_all_capture_paths():
+    scorecard = PRIVACY_GATES.read_text(encoding="utf-8")
+    matrix = PRIVACY_PARITY_MATRIX.read_text(encoding="utf-8")
+    combined = _normalized(scorecard + "\n" + matrix)
+
+    for path_label in (
+        "Direct fixture capture",
+        "Synthesized UIA helper capture",
+        "Watcher-dispatched capture",
+    ):
+        assert path_label in combined
+
+    for evidence in (
+        "tests/test_privacy_index_parity.py",
+        "tests/test_watcher_events.py",
+        "tests/test_fixture_capture.py",
+        "tests/test_memory_pipeline.py",
+        "tests/test_privacy_policy_contract.py",
+        "harness/fixtures/privacy/password_field.json",
+        "harness/fixtures/privacy/secrets_visible_text.json",
+    ):
+        assert evidence in combined
+
+    for assertion in (
+        "SQLite `captures`",
+        "`captures_fts`",
+        "`entries_fts`",
+        "capture search",
+        "memory search",
+        "MCP memory search",
+        "trust = \"untrusted_observed_content\"",
+        "raw watcher JSONL non-persistence",
+        "no raw helper JSON",
+        "no raw watcher JSONL",
+        "no generated state or observed content is committed",
+        "does not enable live UIA",
+        "screenshots",
+        "OCR",
+        "keyboard",
+        "clipboard",
+        "desktop control",
+        "product targeted capture",
+    ):
+        assert assertion in combined
 
 
 def _section(text: str, heading: str) -> str:

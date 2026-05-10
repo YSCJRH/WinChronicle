@@ -26,6 +26,8 @@ completed post-v0.1.18 watcher privacy fixture parity record is
 [Watcher privacy fixture parity after v0.1.18](watcher-privacy-fixture-parity-post-v0.1.18.md). The
 completed post-v0.1.18 fixture/helper privacy index parity record is
 [Fixture/helper privacy index parity after v0.1.18](fixture-helper-privacy-index-parity-post-v0.1.18.md). The
+current post-v0.1.18 fixture/privacy parity matrix record is
+[Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md). The
 completed post-v0.1.17 execution cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -159,7 +161,7 @@ inherited historical evidence:
   smoke decision is made because no publication path is opened;
 - the current post-v0.1.18 next blueprint lane selection selects Fixture and
   privacy baseline; watcher privacy fixture parity completed in AH8,
-  fixture/helper privacy index parity completed in AH10, and the next
+  fixture/helper privacy index parity completed in AH10, and the current
   Fixture/privacy follow-up is fixture/privacy parity matrix consolidation;
 - the completed post-v0.1.18 watcher privacy fixture parity record uses
   temp-generated watcher JSONL derived from existing privacy fixtures to prove
@@ -180,6 +182,11 @@ inherited historical evidence:
   `25616618385` succeeded on `591a87b4ec237388ec83525083d560285dc62638`, and
   post-merge `main` Windows Harness run `25616673782` succeeded on
   `cf1dab1d58e6e637c73aee748056591b597d70b1`;
+- the current post-v0.1.18 fixture/privacy parity matrix record maps direct
+  fixture, synthesized UIA helper, and watcher-dispatched privacy evidence to
+  the same password, obvious-secret, storage/search, trust-boundary,
+  disabled-surface, and artifact-policy gates without committing generated
+  captures, memory, helper outputs, or watcher JSONL;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0

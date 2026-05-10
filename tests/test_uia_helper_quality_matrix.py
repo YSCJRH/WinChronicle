@@ -19,6 +19,7 @@ def test_uia_helper_quality_matrix_has_required_columns_and_rows():
     for row_label in (
         "Notepad fixture",
         "Password fixture",
+        "Direct fixture / helper / watcher parity",
         "Budget/stale traversal fixture",
         "Fake helper wrapper",
         "Targeted helper path",
@@ -38,6 +39,7 @@ def test_uia_helper_quality_matrix_preserves_gate_statuses():
     expected_statuses = {
         "Notepad fixture": "Hard automated gate.",
         "Password fixture": "Hard automated privacy gate.",
+        "Direct fixture / helper / watcher parity": "Hard automated privacy audit gate.",
         "Budget/stale traversal fixture": "Hard automated contract gate.",
         "Fake helper wrapper": "Hard automated gate.",
         "Targeted helper path": "Hard boundary gate.",
@@ -89,6 +91,7 @@ def test_uia_helper_quality_matrix_uses_latest_manual_smoke_evidence():
     ]["Current result"]
     assert "docs/release-v0.1.18.md" in text
     assert "docs/manual-smoke-evidence-ledger.md" in text
+    assert "Fixture/privacy parity matrix after v0.1.18" in text
     assert "Frontmost-only diagnostic last recorded `v0.1.0` final" in rows[
         "Operator-selected foreground app"
     ]["Current result"]

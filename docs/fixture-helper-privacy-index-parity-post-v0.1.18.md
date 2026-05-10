@@ -69,8 +69,8 @@ commit generated captures or memory artifacts, and does not change live UIA,
 watcher, MCP, screenshot, OCR, clipboard, keyboard, audio, network, LLM, or
 desktop-control behavior.
 
-## Completed Follow-Up
+## Current Follow-Up
 
 AH10 PR and post-merge harness evidence has been reconciled in the active
-post-v0.1.18 maintenance plan. The selected next smallest Fixture/privacy
-baseline follow-up is fixture/privacy parity matrix consolidation.
+post-v0.1.18 maintenance plan. Fixture/privacy parity matrix consolidation is
+tracked by `docs/privacy-fixture-parity-matrix-post-v0.1.18.md`.
