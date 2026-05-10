@@ -413,7 +413,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "current post-v0.1.18 compatibility guardrail sweep" in readme_intro_normalized
     assert "current post-v0.1.18 release-readiness decision" in readme_intro_normalized
     assert "current post-v0.1.18 next blueprint lane selection" in readme_intro_normalized
-    assert "current post-v0.1.18 watcher privacy fixture parity record" in readme_intro_normalized
+    assert "completed post-v0.1.18 watcher privacy fixture parity record" in readme_intro_normalized
+    assert "next Fixture/privacy follow-up of fixture/helper privacy index parity" in readme_intro_normalized
     assert "completed post-v0.1.17 maintenance plan" in readme_intro_normalized
     assert "completed post-v0.1.16 maintenance plan and publication reconciliation" in readme_intro_normalized
     assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
@@ -975,8 +976,16 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "do\n  not warrant a new release-readiness or publication path" in evidence
     assert "`v0.1.18` must not\n  be retagged" in checklist
     assert "`v0.1.18` must not\n  be retagged" in evidence
-    assert "starting with watcher privacy fixture parity" in checklist
-    assert "starting with watcher privacy fixture parity" in evidence
+    assert "watcher privacy fixture parity completed in AH8" in checklist
+    assert "watcher privacy fixture parity completed in AH8" in evidence
+    assert "next Fixture/privacy follow-up is fixture/helper privacy index parity" in checklist
+    assert "next Fixture/privacy follow-up is fixture/helper privacy index parity" in evidence
+    assert "PR #197 merged at `2026-05-10T00:58:38Z`" in checklist
+    assert "PR #197 merged at `2026-05-10T00:58:38Z`" in evidence
+    assert "PR Windows Harness run\n  `25616023224` succeeded" in checklist
+    assert "PR Windows Harness run\n  `25616023224` succeeded" in evidence
+    assert "post-merge `main` Windows Harness run `25616063920` succeeded" in checklist
+    assert "post-merge `main` Windows Harness run `25616063920` succeeded" in evidence
     assert "completed post-v0.1.17 execution cursor records" in checklist
     assert "completed post-v0.1.17 execution cursor records" in evidence
     assert "PR #188" in checklist
@@ -3322,8 +3331,9 @@ def test_roadmap_contribution_and_issue_templates_keep_harness_first_scope():
     for expected in (
         "without\nauthorizing new capture surfaces",
         "current selected lane is Fixture and privacy baseline",
-        "Watcher privacy fixture\nparity is in progress",
-        "privacy baseline privacy-policy contract parity audit is complete historical\nwork",
+        "Watcher privacy fixture\nparity is complete",
+        "next follow-up is fixture/helper privacy index\nparity",
+        "privacy baseline privacy-policy contract\nparity audit is complete historical work",
         "Fixture and privacy baseline",
         "UIA helper hardening",
         "Watcher preview",
@@ -4025,7 +4035,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Current compatibility guardrail sweep | [Compatibility guardrail sweep after v0.1.18]",
         "Latest release-readiness decision | [Release-readiness decision after v0.1.18]",
         "Current next blueprint lane selection | [Next blueprint lane selection after v0.1.18]",
-        "Current watcher privacy fixture parity | [Watcher privacy fixture parity after v0.1.18]",
+        "Completed watcher privacy fixture parity | [Watcher privacy fixture parity after v0.1.18]",
+        "Current Fixture/privacy follow-up | Fixture/helper privacy index parity tracked by [Post-v0.1.18 maintenance plan]",
         "Previous release-readiness decision | [v0.1.18 maintenance release record]",
         "Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.17 maintenance plan]",

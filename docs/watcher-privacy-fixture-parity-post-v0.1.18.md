@@ -70,6 +70,15 @@ builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI
 smoke, privacy check, fixture capture/search/memory, deterministic watcher
 fixture, and watcher fake-helper smoke.
 
+## PR And Post-Merge Evidence
+
+- PR #197 merged at `2026-05-10T00:58:38Z` as
+  `3984e736654daeaf858b62ea4710d1b57805043c`.
+- PR #197 Windows Harness run `25616023224` concluded `success` on
+  `506536b0c55f68beb9eeb7a248cdb42d45337677`.
+- Post-AH8 `main` Windows Harness run `25616063920` concluded `success` on
+  `3984e736654daeaf858b62ea4710d1b57805043c`.
+
 ## Privacy And Security
 
 This task strengthens deterministic privacy evidence for the watcher preview
