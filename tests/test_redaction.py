@@ -48,6 +48,15 @@ def test_redact_text_removes_plain_winchronicle_token_canary():
     assert scan_for_unredacted_secrets(redacted) == []
 
 
+def test_redact_text_removes_private_key_boundary_markers():
+    redacted, counts = redact_text("debug marker -----BEGIN PRIVATE KEY-----")
+
+    assert "BEGIN PRIVATE KEY" not in redacted
+    assert redacted == "debug marker [REDACTED:private_key]"
+    assert counts["private_key"] == 1
+    assert scan_for_unredacted_secrets(redacted) == []
+
+
 def test_password_field_value_is_not_in_normalized_capture():
     fixture_path = ROOT / "harness" / "fixtures" / "privacy" / "password_field.json"
     capture = normalize_fixture(load_json(fixture_path))

@@ -12,6 +12,7 @@ from winchronicle.privacy import (
     TRUST_BOUNDARY_INSTRUCTION,
     privacy_contract_payload,
 )
+from winchronicle.redaction import redact_text
 from winchronicle.storage import (
     capture_count,
     list_captures,
@@ -77,7 +78,7 @@ def search_captures_tool(
     return _tool_result(
         "search_captures",
         {
-            "query": query,
+            "query": _redacted_query(query),
             "matches": matches,
         },
     )
@@ -102,7 +103,7 @@ def search_memory_tool(
     return _tool_result(
         "search_memory",
         {
-            "query": query,
+            "query": _redacted_query(query),
             "entry_type": entry_type,
             "matches": matches,
         },
@@ -269,6 +270,11 @@ def _observed_capture(capture: dict[str, str] | None) -> dict[str, Any] | None:
 
 def _bounded_limit(limit: int) -> int:
     return max(0, min(int(limit), 50))
+
+
+def _redacted_query(query: str) -> str:
+    redacted, _ = redact_text(query)
+    return redacted or ""
 
 
 def _call_tool(name: str, arguments: dict[str, Any], home: Path | str | None) -> dict[str, Any]:

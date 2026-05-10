@@ -29,20 +29,19 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH13 - Post-AH12 Evidence Reconciliation.
-- Stage status: AH13 in progress. This branch records AH12 merge and
-  post-merge evidence, then moves the Fixture/privacy baseline cursor to the
-  next smallest follow-up.
-- Last completed evidence: AH12 fixture/privacy parity matrix PR #201 merged as
-  `3ff86ec086a85bdeedbabb343ca93122e0a47a1e`, PR Windows Harness run
-  `25617277557` passed, and post-merge `main` Windows Harness run
-  `25617330198` passed on that SHA.
-- Last validation: `gh run view 25617330198 --json
+- Current stage: AH14 - Fixture/Privacy Residual Gap Audit.
+- Stage status: AH14 in progress. This branch audits the AH12 parity matrix,
+  closes a direct helper denylist evidence gap, and hardens MCP search query
+  echoes so secret-like queries are redacted in read-only tool results.
+- Last completed evidence: AH13 evidence reconciliation PR #202 merged as
+  `020a9b81dab34cdb145557e57230c49ea83b95a4`, PR Windows Harness run
+  `25617537177` passed, and post-merge `main` Windows Harness run
+  `25617582514` passed on that SHA.
+- Last validation: `gh run view 25617582514 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AH12 `main` Windows Harness concluded `success`.
-- Next atomic task: land this AH13 evidence reconciliation PR, then start a
-  fixture/privacy residual gap audit using the consolidated matrix as the
-  evidence index.
+  verified the post-AH13 `main` Windows Harness concluded `success`.
+- Next atomic task: land this AH14 residual gap audit PR, then reconcile AH14
+  evidence and select the next smallest Fixture/privacy follow-up.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -201,6 +200,28 @@ service install, no polling capture loop, and no default background capture.
   watcher, storage, memory, MCP, scorecard, or evidence-index gaps before any
   behavior change.
 
+### Stage AH14 - Fixture/Privacy Residual Gap Audit
+
+- Audit the AH12 fixture/privacy parity matrix for remaining direct fixture,
+  synthesized helper, watcher, storage, memory, MCP, scorecard, or
+  evidence-index gaps.
+- Close narrow evidence or privacy-output gaps with tests before behavior
+  changes. Any product change must be privacy-positive, local-only, and keep the
+  read-only MCP tool list and input schemas unchanged.
+- Keep live UIA capture, helper/watcher binaries, screenshot/OCR, clipboard,
+  keyboard, audio, network, LLM, desktop-control, daemon/service, polling,
+  default-background, MCP write, arbitrary file-read, and product targeted
+  capture behavior out of scope.
+
+### Stage AH15 - Post-AH14 Evidence Reconciliation
+
+- Record AH14 PR and post-merge `main` Windows Harness evidence after the
+  residual gap audit lands.
+- Return the active cursor to the Fixture/privacy baseline lane without opening
+  a release-readiness or publication path.
+- Select the next smallest follow-up from the updated matrix, privacy policy,
+  read-only MCP contract, roadmap, and release/operator evidence indexes.
+
 ## Public Interfaces And Non-goals
 
 - CLI command set remains unchanged:
@@ -350,6 +371,16 @@ Every implementation stage should run:
   work.
 - Selected the next Fixture/privacy baseline follow-up as a residual gap audit
   using the consolidated matrix before any additional behavior change.
+- Completed AH13 after PR #202 merged as
+  `020a9b81dab34cdb145557e57230c49ea83b95a4` and post-merge Windows Harness
+  run `25617582514` passed.
+- Started AH14 as a fixture/privacy residual gap audit because the AH12 matrix
+  made two remaining gaps visible: helper-only denylist evidence and raw
+  secret-like query echoes in MCP search results.
+- Closed those gaps with a standalone helper denylist parity test, MCP
+  search-query echo redaction, and standalone private-key boundary marker
+  redaction while preserving the read-only MCP tool list and v0.1 capture
+  boundary.
 
 ## Validation Log
 
@@ -561,3 +592,21 @@ Every implementation stage should run:
   - `git diff --name-only v0.1.18..HEAD -- pyproject.toml src\winchronicle\_version.py src\winchronicle\mcp\server.py resources` - passed; printed no files, confirming AH13 does not change version metadata, MCP server code, resources, helper, or watcher binaries/projects.
   - stale AH12/current-matrix wording scan across `README.md`, current docs, current tests, and privacy scorecards - passed with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 223 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH13 completion:
+  - `gh pr view 202 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #202 merged at `2026-05-10T02:23:37Z` as `020a9b81dab34cdb145557e57230c49ea83b95a4`.
+  - `gh run view 25617537177 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #202 Windows Harness concluded `success` on `90a29ae645288e3bab1a31f5844da45d954c6346`.
+  - `gh run view 25617582514 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH13 `main` Windows Harness concluded `success` on `020a9b81dab34cdb145557e57230c49ea83b95a4`.
+- Stage AH14 initialization:
+  - Read-only reviewer found no direct capture-path product gap in normalization, redaction, denylist, memory, or read-only MCP boundaries, but identified a helper-only denylist evidence gap and a full-MCP-payload ambiguity because `search_captures` and `search_memory` echoed raw secret-like queries.
+  - Reviewed `docs/privacy-fixture-parity-matrix-post-v0.1.18.md`, `harness/scorecards/privacy-gates.md`, `src/winchronicle/capture.py`, `src/winchronicle/events.py`, `src/winchronicle/mcp/server.py`, `src/winchronicle/redaction.py`, and current privacy/MCP tests.
+  - Added `docs/privacy-residual-gap-audit-post-v0.1.18.md`, direct helper denylist parity coverage, redacted MCP search query echoes, and standalone private-key boundary marker redaction.
+- Stage AH14 local validation:
+  - `python -m pytest tests/test_mcp_tools.py tests/test_privacy_index_parity.py tests/test_redaction.py tests/test_privacy_policy_contract.py -q` - passed, 25 tests.
+  - `python -m pytest tests/test_privacy_index_parity.py tests/test_watcher_events.py tests/test_fixture_capture.py tests/test_privacy_policy_contract.py -q` - passed, 34 tests.
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_privacy_policy_contract.py tests/test_uia_helper_quality_matrix.py tests/test_version_identity.py -q` - passed, 107 tests.
+  - `python -m pytest -q` - passed, 227 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- pyproject.toml src\winchronicle\_version.py resources` - passed; printed no files, confirming AH14 does not change package version metadata, helper resources, watcher resources, or other bundled resources.
+  - `git diff --name-only -- src\winchronicle\mcp\server.py src\winchronicle\redaction.py harness\specs\privacy-policy.md` - passed; printed only `harness/specs/privacy-policy.md`, `src/winchronicle/mcp/server.py`, and `src/winchronicle/redaction.py`, confirming the runtime/privacy diff is limited to MCP search query echo redaction and private-key boundary marker redaction.
+  - stale AH13/AH12 residual-gap wording scan across `README.md`, current docs, current tests, and privacy/MCP scorecards - passed with no matches.
+  - `python harness/scripts/run_harness.py` - passed, including 227 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

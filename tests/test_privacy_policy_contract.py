@@ -120,6 +120,7 @@ def test_privacy_policy_redaction_rules_match_runtime_non_goal():
     assert "focused_element.is_password" in spec
     assert "Credit-card Luhn-positive redaction" in spec
     assert "not implemented in v0.1" in spec
+    assert "standalone private-key boundary markers" in spec
     assert "credit_card" not in rule_names
 
 
@@ -156,6 +157,7 @@ def test_fixture_privacy_parity_matrix_covers_all_capture_paths():
         "tests/test_watcher_events.py",
         "tests/test_fixture_capture.py",
         "tests/test_memory_pipeline.py",
+        "tests/test_mcp_tools.py",
         "tests/test_privacy_policy_contract.py",
         "harness/fixtures/privacy/password_field.json",
         "harness/fixtures/privacy/secrets_visible_text.json",
@@ -169,6 +171,8 @@ def test_fixture_privacy_parity_matrix_covers_all_capture_paths():
         "capture search",
         "memory search",
         "MCP memory search",
+        "full MCP search payloads",
+        "redacted query echoes",
         "trust = \"untrusted_observed_content\"",
         "raw watcher JSONL non-persistence",
         "no raw helper JSON",
