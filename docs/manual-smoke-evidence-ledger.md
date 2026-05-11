@@ -25,7 +25,7 @@ or token canaries.
 | Completed fixture/helper privacy index parity | [Fixture/helper privacy index parity after v0.1.18](fixture-helper-privacy-index-parity-post-v0.1.18.md) |
 | Completed fixture/privacy parity matrix | [Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md) |
 | Completed fixture/privacy residual gap audit | [Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md) |
-| Current Fixture/privacy follow-up | Privacy-output release-readiness decision tracked by [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md) |
+| Current privacy-output release-readiness decision | [Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md) |
 | Previous release-readiness decision | [v0.1.18 maintenance release record](release-v0.1.18.md) |
 | Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md) |
 | Previous maintenance plan | [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md) |
@@ -106,6 +106,11 @@ smoke. These command patterns are evidence shapes only; replace
 - The post-v0.1.18 release-readiness decision does not open a new publication
   path, does not retag `v0.1.18`, and does not make a fresh manual UIA smoke
   decision because AH1-AH4 are docs/tests/evidence guardrails only.
+- The privacy-output release-readiness decision after `v0.1.18` starts a
+  narrow `v0.1.19` release-readiness path for AH14 MCP search query echo
+  redaction and private-key boundary marker redaction, but it does not decide
+  manual smoke freshness. The `v0.1.19` release-readiness record must decide
+  whether to inherit or rerun manual UIA smoke.
 - Fresh manual smoke must use the
   [Manual smoke evidence template](manual-smoke-evidence-template.md).
 - Inherited evidence can provide context, but it is not current evidence unless

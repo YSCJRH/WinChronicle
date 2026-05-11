@@ -30,6 +30,8 @@ completed post-v0.1.18 fixture/privacy parity matrix record is
 [Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md). The
 completed post-v0.1.18 fixture/privacy residual gap audit is
 [Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md). The
+current post-v0.1.18 privacy-output release-readiness decision is
+[Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md). The
 completed post-v0.1.17 execution cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -165,7 +167,7 @@ inherited historical evidence:
   privacy baseline; watcher privacy fixture parity completed in AH8,
   fixture/helper privacy index parity completed in AH10, fixture/privacy parity
   matrix consolidation completed in AH12, fixture/privacy residual gap audit
-  completed in AH14, and the current Fixture/privacy follow-up is a
+  completed in AH14, and the current Fixture/privacy follow-up is the
   privacy-output release-readiness decision;
 - the completed post-v0.1.18 watcher privacy fixture parity record uses
   temp-generated watcher JSONL derived from existing privacy fixtures to prove
@@ -205,6 +207,16 @@ inherited historical evidence:
   `25617962810` succeeded on `f589a3bbf866995132f204de397f9695f3bd74eb`, and
   post-merge `main` Windows Harness run `25618020212` succeeded on
   `9442e4026affb1cb17d2554cb4dd5799d4d6f359`;
+- the current post-v0.1.18 privacy-output release-readiness decision records
+  that AH14 privacy-positive MCP output and redaction hardening warrants a
+  narrow `v0.1.19` release-readiness path, does not warrant immediate
+  publication, does not retag `v0.1.18`, and requires a future version
+  decision plus manual UIA smoke freshness decision before publication; AH15
+  PR #204 merged at `2026-05-10T03:03:06Z` as
+  `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`, PR Windows Harness run
+  `25618201016` succeeded on `48715b92447630765bbb03bd459acdf71e466a72`, and
+  post-merge `main` Windows Harness run `25618271963` succeeded on
+  `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0
