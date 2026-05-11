@@ -29,21 +29,21 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH15 - Post-AH14 Evidence Reconciliation.
-- Stage status: AH15 in progress. This branch records AH14 merge and
-  post-merge evidence, then moves the Fixture/privacy baseline cursor to the
-  next release-readiness decision for the privacy-positive MCP output change.
-- Last completed evidence: AH14 fixture/privacy residual gap audit PR #203
-  merged as `9442e4026affb1cb17d2554cb4dd5799d4d6f359`, PR Windows Harness run
-  `25617962810` passed on `f589a3bbf866995132f204de397f9695f3bd74eb`, and
-  post-merge `main` Windows Harness run `25618020212` passed on
-  `9442e4026affb1cb17d2554cb4dd5799d4d6f359`.
-- Last validation: `gh run view 25618020212 --json
+- Current stage: AH16 - Privacy Output Release-Readiness Decision.
+- Stage status: AH16 in progress. This branch decides whether AH14's
+  privacy-positive MCP search query echo redaction and private-key boundary
+  marker redaction warrant a narrow release-readiness path.
+- Last completed evidence: AH15 post-AH14 evidence reconciliation PR #204
+  merged as `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`, PR Windows Harness run
+  `25618201016` passed on `48715b92447630765bbb03bd459acdf71e466a72`, and
+  post-merge `main` Windows Harness run `25618271963` passed on
+  `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`.
+- Last validation: `gh run view 25618271963 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AH14 `main` Windows Harness concluded `success`.
-- Next atomic task: land this AH15 evidence reconciliation PR, then start a
-  privacy-output release-readiness decision for the AH14 MCP search query echo
-  redaction and private-key boundary marker redaction.
+  verified the post-AH15 `main` Windows Harness concluded `success`.
+- Next atomic task: land this AH16 privacy-output release-readiness decision
+  PR, then start the narrow `v0.1.19` release-readiness record required by
+  this decision before any publication.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
@@ -403,6 +403,16 @@ Every implementation stage should run:
 - Selected the next Fixture/privacy baseline follow-up as a privacy-output
   release-readiness decision because AH14 changed read-only MCP search query
   echo redaction and private-key boundary marker redaction.
+- Completed AH15 after PR #204 merged as
+  `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb` and post-merge Windows Harness
+  run `25618271963` passed.
+- Started AH16 as a release-readiness decision because AH14 introduced a
+  compatible, privacy-positive product output hardening after the published
+  `v0.1.18` tag.
+- Recorded the AH16 decision: start a narrow `v0.1.19` release-readiness path,
+  do not publish immediately, do not retag `v0.1.18`, and require the future
+  release-readiness record to decide the version bump, evidence freshness, and
+  manual UIA smoke freshness before publication.
 
 ## Validation Log
 
@@ -648,3 +658,18 @@ Every implementation stage should run:
   - `git diff --name-only -- pyproject.toml src\winchronicle resources` - passed; printed no files, confirming AH15 is docs/tests only with no product runtime, package metadata, helper/watcher resource, or other bundled resource diff.
   - stale AH14/current-residual-gap wording scan across `README.md`, current docs, current tests, and privacy/MCP scorecards - passed with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 227 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH15 completion:
+  - `gh pr view 204 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #204 merged at `2026-05-10T03:03:06Z` as `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`.
+  - `gh run view 25618201016 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #204 Windows Harness concluded `success` on `48715b92447630765bbb03bd459acdf71e466a72`.
+  - `gh run view 25618271963 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH15 `main` Windows Harness concluded `success` on `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`.
+- Stage AH16 initialization:
+  - `gh release view v0.1.18 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.18` is published, not a draft, not a prerelease, published at `2026-05-09T21:38:33Z`, and targets `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.
+  - `git diff --name-only v0.1.18..HEAD -- pyproject.toml src\winchronicle resources` - passed; printed `src/winchronicle/mcp/server.py` and `src/winchronicle/redaction.py`, confirming the only product runtime diffs since `v0.1.18` are AH14 privacy-output hardening changes.
+  - `git diff --stat v0.1.18..HEAD -- pyproject.toml src\winchronicle resources harness\specs\privacy-policy.md` - passed; printed only `harness/specs/privacy-policy.md`, `src/winchronicle/mcp/server.py`, and `src/winchronicle/redaction.py`.
+- Stage AH16 local validation:
+  - `python -m pytest tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_privacy_policy_contract.py tests/test_uia_helper_quality_matrix.py tests/test_version_identity.py -q` - passed, 108 tests.
+  - `python -m pytest -q` - passed, 228 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- pyproject.toml src\winchronicle resources` - passed; printed no files, confirming AH16 is docs/tests only with no product runtime, package metadata, helper/watcher resource, or other bundled resource diff.
+  - stale AH15/current-follow-up wording scan across `README.md`, current docs, and current tests - passed with no matches.
+  - `python harness/scripts/run_harness.py` - passed, including 228 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.

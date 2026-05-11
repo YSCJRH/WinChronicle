@@ -50,6 +50,9 @@ PRIVACY_FIXTURE_PARITY_MATRIX_V0118 = (
 PRIVACY_RESIDUAL_GAP_AUDIT_V0118 = (
     ROOT / "docs" / "privacy-residual-gap-audit-post-v0.1.18.md"
 )
+PRIVACY_OUTPUT_RELEASE_DECISION_V0118 = (
+    ROOT / "docs" / "privacy-output-release-readiness-decision-post-v0.1.18.md"
+)
 POST_V0117_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.17.md"
 PUBLIC_METADATA_V0117 = ROOT / "docs" / "public-metadata-audit-post-v0.1.17.md"
 HELPER_WATCHER_V0117 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.17.md"
@@ -109,6 +112,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Next blueprint lane selection after v0.1.18",
         "Fixture/privacy parity matrix after v0.1.18",
         "Fixture/privacy residual gap audit after v0.1.18",
+        "Privacy-output release-readiness decision after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -162,6 +166,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Next blueprint lane selection after v0.1.18",
         "Fixture/privacy parity matrix after v0.1.18",
         "Fixture/privacy residual gap audit after v0.1.18",
+        "Privacy-output release-readiness decision after v0.1.18",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -1039,16 +1044,17 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "publication reconciliation landed on `main` as `f40e165ce35464e5eb8df65f10ef153f8145177b`",
         "PR #188 Windows Harness run `25612920731` passed",
         "post-merge `main` Windows Harness run `25612977738`",
-        "Current stage: AH15 - Post-AH14 Evidence Reconciliation.",
-        "Stage status: AH15 in progress.",
-        "privacy-positive MCP output change",
-        "Last completed evidence: AH14 fixture/privacy residual gap audit PR #203",
-        "merged as `9442e4026affb1cb17d2554cb4dd5799d4d6f359`",
-        "PR Windows Harness run `25617962810` passed",
-        "post-merge `main` Windows Harness run `25618020212` passed",
-        "verified the post-AH14 `main` Windows Harness concluded `success`",
-        "Next atomic task: land this AH15 evidence reconciliation PR",
-        "privacy-output release-readiness decision",
+        "Current stage: AH16 - Privacy Output Release-Readiness Decision.",
+        "Stage status: AH16 in progress.",
+        "privacy-positive MCP search query echo redaction",
+        "private-key boundary marker redaction",
+        "Last completed evidence: AH15 post-AH14 evidence reconciliation PR #204",
+        "merged as `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`",
+        "PR Windows Harness run `25618201016` passed",
+        "post-merge `main` Windows Harness run `25618271963` passed",
+        "verified the post-AH15 `main` Windows Harness concluded `success`",
+        "Next atomic task: land this AH16 privacy-output release-readiness decision",
+        "narrow `v0.1.19` release-readiness record",
         "Stage AH0 - Post-v0.1.18 Baseline Cursor",
         "Stage AH1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AH2 - Helper And Watcher Preview Diagnostics Review",
@@ -1314,6 +1320,20 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "printed no files, confirming AH15 is docs/tests only",
         "stale AH14/current-residual-gap wording scan",
         "including 227 pytest tests",
+        "Stage AH15 completion:",
+        "PR #204 merged at `2026-05-10T03:03:06Z`",
+        "gh run view 25618201016",
+        "post-AH15 `main` Windows Harness concluded `success`",
+        "Stage AH16 initialization:",
+        "gh release view v0.1.18",
+        "printed `src/winchronicle/mcp/server.py` and `src/winchronicle/redaction.py`",
+        "only product runtime diffs since `v0.1.18` are AH14 privacy-output hardening changes",
+        "Stage AH16 local validation:",
+        "passed, 108 tests",
+        "passed, 228 tests",
+        "printed no files, confirming AH16 is docs/tests only",
+        "stale AH15/current-follow-up wording scan",
+        "including 228 pytest tests",
     ):
         assert phrase in normalized
 
@@ -2783,6 +2803,51 @@ def test_privacy_residual_gap_audit_post_v018_closes_helper_and_mcp_gaps():
         "raw watcher JSONL persistence",
     ):
         assert boundary in normalized
+
+
+def test_privacy_output_release_decision_starts_v019_readiness():
+    text = PRIVACY_OUTPUT_RELEASE_DECISION_V0118.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "Privacy-Output Release-Readiness Decision After v0.1.18",
+        "start a narrow `v0.1.19` release-readiness path",
+        "Do not retag `v0.1.18`",
+        "Immediate publication is not warranted",
+        "Is a release-readiness path warranted? | Yes.",
+        "Is immediate publication warranted? | No.",
+        "Should `v0.1.18` be retagged? | No.",
+        "Should the next release-readiness target be `v0.1.19`? | Yes.",
+        "Is fresh manual UIA smoke decided here? | No.",
+        "Create the narrow `v0.1.19` release-readiness record.",
+        "`src/winchronicle/mcp/server.py`",
+        "Read-only MCP output behavior changed in a privacy-positive way",
+        "`src/winchronicle/redaction.py`, `harness/specs/privacy-policy.md`",
+        "No helper/watcher binary, dependency, or package-version metadata change",
+        "Latest published release remains",
+        "https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.18",
+        "`v0.1.18` is not a draft or prerelease",
+        "`serverInfo.version` remain `0.1.18`",
+        "AH14 fixture/privacy residual gap audit PR #203 merged as `9442e4026affb1cb17d2554cb4dd5799d4d6f359`",
+        "PR #203 Windows Harness run `25617962810` concluded `success`",
+        "Post-AH14 `main` Windows Harness run `25618020212` concluded `success`",
+        "AH15 evidence reconciliation PR #204 merged as `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`",
+        "PR #204 Windows Harness run `25618201016` concluded `success`",
+        "Post-AH15 `main` Windows Harness run `25618271963` concluded `success`",
+        "git diff --name-only v0.1.18..HEAD -- pyproject.toml src\\winchronicle resources",
+        "limited to `src/winchronicle/mcp/server.py` and `src/winchronicle/redaction.py`",
+        "git diff --name-only -- pyproject.toml src\\winchronicle resources",
+        "Result: passed; focused docs/privacy/version validation reported 108 tests",
+        "full pytest reported 228 tests",
+        "current decision branch printed no files under `pyproject.toml`, `src\\winchronicle`, or `resources`",
+        "full deterministic harness passed, including 228 pytest tests",
+        "privacy-positive but not release-complete",
+        "does not authorize implementation of screenshot capture",
+        "product targeted capture",
+        "default background capture",
+        "Create the narrow `v0.1.19` release-readiness record",
+    ):
+        assert phrase in normalized
 
 
 def test_privacy_policy_contract_parity_audit_records_runtime_hardening():

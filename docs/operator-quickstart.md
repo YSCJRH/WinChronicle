@@ -153,6 +153,7 @@ as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
 - [Fixture/helper privacy index parity after v0.1.18](fixture-helper-privacy-index-parity-post-v0.1.18.md)
 - [Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md)
 - [Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md)
+- [Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md)
 - [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md)
 - [Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md)
 - [Helper and watcher diagnostics sweep after v0.1.17](helper-watcher-diagnostics-sweep-post-v0.1.17.md)
