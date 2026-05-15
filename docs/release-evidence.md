@@ -8,17 +8,17 @@ artifacts. The latest published release record is
 release record is [v0.1.17 maintenance release record](release-v0.1.17.md). The
 active post-v0.1.18 maintenance cursor is recorded in
 [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md), and the
-current post-v0.1.18 public metadata/evidence freshness audit is
+completed post-v0.1.18 public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md). The
-current post-v0.1.18 helper/watcher diagnostics review is
+completed post-v0.1.18 helper/watcher diagnostics review is
 [Helper and watcher diagnostics sweep after v0.1.18](helper-watcher-diagnostics-sweep-post-v0.1.18.md). The
-current post-v0.1.18 MCP/memory contract review is
+completed post-v0.1.18 MCP/memory contract review is
 [MCP and memory contract sweep after v0.1.18](mcp-memory-contract-sweep-post-v0.1.18.md). The
-current post-v0.1.18 compatibility guardrail review is
+completed post-v0.1.18 compatibility guardrail review is
 [Compatibility guardrail sweep after v0.1.18](compatibility-guardrail-sweep-post-v0.1.18.md). The
-current post-v0.1.18 release-readiness decision is
+completed post-v0.1.18 release-readiness decision is
 [Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md). The
-current post-v0.1.18 next blueprint lane selection is
+completed post-v0.1.18 next blueprint lane selection is
 [Next blueprint lane selection after v0.1.18](next-blueprint-lane-selection-post-v0.1.18.md). The
 completed post-v0.1.18 watcher privacy fixture parity record is
 [Watcher privacy fixture parity after v0.1.18](watcher-privacy-fixture-parity-post-v0.1.18.md). The
@@ -28,8 +28,10 @@ completed post-v0.1.18 fixture/privacy parity matrix record is
 [Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md). The
 completed post-v0.1.18 fixture/privacy residual gap audit is
 [Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md). The
-current post-v0.1.18 privacy-output release-readiness decision is
+completed post-v0.1.18 privacy-output release-readiness decision is
 [Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md). The
+current `v0.1.19` release-readiness record is
+[v0.1.19 release-readiness record](release-v0.1.19.md). The
 completed post-v0.1.17 maintenance cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -141,32 +143,32 @@ historical records. After the `v0.1.18` maintenance publication:
   `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`, the post-v0.1.18 baseline,
   AH0 baseline PR #189, PR Windows Harness run `25613203047`, and post-AH0
   `main` Windows Harness run `25613244560`;
-- the current post-v0.1.18 public metadata/evidence freshness audit records
+- the completed post-v0.1.18 public metadata/evidence freshness audit records
   repository metadata, `v0.1.18` release metadata, previous stable `v0.1.17`
   release metadata, post-AH0 `main` Windows Harness evidence, manual repository
   metadata gaps, and does not treat empty GitHub metadata as a product-code
   blocker;
-- the current post-v0.1.18 helper/watcher diagnostics review records timeout,
+- the completed post-v0.1.18 helper/watcher diagnostics review records timeout,
   malformed output, invalid embedded helper payload, no observed-content echo,
   duplicate skip, denylist skip, heartbeat-only liveness, diagnostic artifact
   policy, raw watcher JSONL non-persistence, product targeted-capture
   pass-through rejection, current `v0.1.18` manual-smoke matrix rows, and no new
   product-code drift;
-- the current post-v0.1.18 MCP/memory contract review records the exact
+- the completed post-v0.1.18 MCP/memory contract review records the exact
   read-only MCP tool list, local-only `privacy_status`, `search_captures` and
   `search_memory` CLI/MCP parity, durable memory Markdown and manifest trust
   metadata, FTS/idempotence/secret-exclusion gates, fixture-only demo scope, and
   no new product-code drift;
-- the current post-v0.1.18 compatibility guardrail review records version
+- the completed post-v0.1.18 compatibility guardrail review records version
   identity, exact read-only MCP tools, disabled privacy surfaces,
   observed-content trust boundaries, watcher preview limits, durable memory
   contract, product targeted-capture absence, Phase 6 spec-only status,
   background install/polling absence, and no new product-code drift;
-- the current post-v0.1.18 release-readiness decision records that AH1-AH4 do
+- the completed post-v0.1.18 release-readiness decision records that AH1-AH4 do
   not warrant a new release-readiness or publication path, `v0.1.18` must not
   be retagged, no runtime/resource/version diff exists, and no fresh manual UIA
   smoke decision is made because no publication path is opened;
-- the current post-v0.1.18 next blueprint lane selection selects Fixture and
+- the completed post-v0.1.18 next blueprint lane selection selects Fixture and
   privacy baseline; watcher privacy fixture parity completed in AH8,
   fixture/helper privacy index parity completed in AH10, fixture/privacy parity
   matrix consolidation completed in AH12, fixture/privacy residual gap audit
@@ -210,7 +212,7 @@ historical records. After the `v0.1.18` maintenance publication:
   `25617962810` succeeded on `f589a3bbf866995132f204de397f9695f3bd74eb`, and
   post-merge `main` Windows Harness run `25618020212` succeeded on
   `9442e4026affb1cb17d2554cb4dd5799d4d6f359`;
-- the current post-v0.1.18 privacy-output release-readiness decision records
+- the completed post-v0.1.18 privacy-output release-readiness decision records
   that AH14 privacy-positive MCP output and redaction hardening warrants a
   narrow `v0.1.19` release-readiness path, does not warrant immediate
   publication, does not retag `v0.1.18`, and requires a future version
@@ -220,6 +222,13 @@ historical records. After the `v0.1.18` maintenance publication:
   `25618201016` succeeded on `48715b92447630765bbb03bd459acdf71e466a72`, and
   post-merge `main` Windows Harness run `25618271963` succeeded on
   `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`;
+- the current `v0.1.19` release-readiness record bumps package/runtime/MCP
+  version identity to `0.1.19`, records fresh Notepad, Edge, and VS Code
+  metadata manual UIA smoke, keeps VS Code strict Monaco capture diagnostic
+  and non-blocking, records heartbeat-only live watcher diagnostics, records
+  local deterministic validation passed, keeps GitHub release publication
+  pending until PR Windows Harness, post-merge `main` Windows Harness, release metadata verification, remote tag
+  verification, and publication reconciliation complete;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0

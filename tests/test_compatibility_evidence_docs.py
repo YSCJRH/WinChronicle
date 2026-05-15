@@ -27,6 +27,7 @@ V0116_FINAL_PLAN = ROOT / "docs" / "next-round-plan-v0.1.16-final-release.md"
 V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 V0117_RELEASE = ROOT / "docs" / "release-v0.1.17.md"
 V0118_RELEASE = ROOT / "docs" / "release-v0.1.18.md"
+V0119_RELEASE = ROOT / "docs" / "release-v0.1.19.md"
 POST_V0118_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.18.md"
 PUBLIC_METADATA_V0118 = ROOT / "docs" / "public-metadata-audit-post-v0.1.18.md"
 HELPER_WATCHER_V0118 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.18.md"
@@ -113,6 +114,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Fixture/privacy parity matrix after v0.1.18",
         "Fixture/privacy residual gap audit after v0.1.18",
         "Privacy-output release-readiness decision after v0.1.18",
+        "v0.1.19 release-readiness record",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -167,6 +169,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Fixture/privacy parity matrix after v0.1.18",
         "Fixture/privacy residual gap audit after v0.1.18",
         "Privacy-output release-readiness decision after v0.1.18",
+        "v0.1.19 release-readiness record",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
         "Helper and watcher diagnostics sweep after v0.1.16",
@@ -1030,6 +1033,65 @@ def test_v0118_release_record_is_published_and_scoped():
         assert f"`{tool_name}`" in text
 
 
+def test_v0119_release_record_is_validated_and_scoped():
+    text = V0119_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "`v0.1.19` is a compatible maintenance release-readiness candidate with local deterministic validation passed and PR review pending.",
+        "Publication still requires local deterministic validation evidence, PR review, PR Windows Harness, post-merge",
+        "Publication status: local deterministic validation passed; pending PR review, PR Windows Harness, post-merge `main` Windows Harness",
+        "Release | `v0.1.19`",
+        "Stage | `v0.1.19` release-readiness record",
+        "Base `main` SHA before this record | `d2d4d9bc90039ff9fbc2edcee9754b8955a5f6ed`",
+        "Candidate branch | `codex/v0.1.19-release-readiness-record`",
+        "Publication status | Local deterministic validation passed; PR review pending",
+        "Release URL | Pending: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.19",
+        "Previous stable release | `v0.1.18`",
+        "`v0.1.18` tag target | `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`",
+        "AH14 residual gap audit PR | https://github.com/YSCJRH/WinChronicle/pull/203",
+        "Privacy-output release decision PR | https://github.com/YSCJRH/WinChronicle/pull/205",
+        "PR #205 Windows Harness | Passed, run `25648554264`",
+        "PR #205 post-merge `main` Windows Harness | Passed, run `25648668344`",
+        "`gh release view v0.1.19 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` | Pass | release not found",
+        "`git tag --list \"v0.1.19*\"` | Pass | no local tags returned",
+        "`git ls-remote --tags origin v0.1.19 v0.1.19-rc.0` | Pass | no remote tags returned",
+        "product/runtime diff was limited to `src/winchronicle/mcp/server.py` and `src/winchronicle/redaction.py`",
+        "`python -m pytest tests/test_mcp_tools.py tests/test_redaction.py tests/test_privacy_index_parity.py tests/test_privacy_policy_contract.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` | Pass | `123 passed",
+        "`python -m pytest -q` | Pass | `229 passed",
+        "`git diff --check` | Pass | no whitespace errors",
+        "`git diff --name-only -- src\\winchronicle resources pyproject.toml` | Pass | printed only `pyproject.toml` and `src/winchronicle/_version.py`",
+        "`python harness/scripts/run_harness.py` | Pass | full harness passed",
+        "Deterministic watcher fixture and fake-helper preview | Pass",
+        "Notepad targeted UIA smoke | Pass",
+        "Edge targeted UIA smoke | Pass",
+        "VS Code metadata smoke | Pass with diagnostic warning",
+        "VS Code strict Monaco marker | Diagnostic failure, non-blocking",
+        "Real watcher/helper short preview | Heartbeat-only liveness diagnostic",
+        "Controlled Notepad live watcher retry | Heartbeat-only liveness diagnostic",
+        "`captures_written: 0`, `denylisted_skipped: 0`, `duplicates_skipped: 0`, `heartbeats: 10`",
+        "Aligns package, runtime, and MCP server version identity to `0.1.19`",
+        "post-`v0.1.18` privacy-output hardening from PR #203",
+        "returned read-only MCP `result.query` values are redacted",
+        "must report `0.1.19`",
+        "exact read-only MCP tool list remains unchanged",
+        "Product CLI exposes no targeted `--hwnd`, `--pid`, `--window-title`",
+        "Phase 6 remains specification-only",
+        "does not expand the capture surface beyond `v0.1.18`",
+        "Do not retag or modify `v0.1.18`, `v0.1.17`, or `v0.1.16`",
+        "Release path: direct `v0.1.19` compatible maintenance publication",
+        "after local deterministic validation, PR review, PR Windows Harness",
+        "Publication approval: standing user goal authorizes publishing after review",
+        "GitHub release publication: pending.",
+        "Release URL: pending, https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.19.",
+        "Final tag target: pending post-merge `main` SHA.",
+    ):
+        assert phrase in normalized
+
+    for tool_name in TOOL_NAMES:
+        assert f"`{tool_name}`" in text
+
+
 def test_post_v0118_plan_is_active_without_expanding_scope():
     text = POST_V0118_PLAN.read_text(encoding="utf-8")
     normalized = _normalized(text)
@@ -1044,17 +1106,18 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "publication reconciliation landed on `main` as `f40e165ce35464e5eb8df65f10ef153f8145177b`",
         "PR #188 Windows Harness run `25612920731` passed",
         "post-merge `main` Windows Harness run `25612977738`",
-        "Current stage: AH16 - Privacy Output Release-Readiness Decision.",
-        "Stage status: AH16 in progress.",
-        "privacy-positive MCP search query echo redaction",
-        "private-key boundary marker redaction",
-        "Last completed evidence: AH15 post-AH14 evidence reconciliation PR #204",
-        "merged as `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`",
-        "PR Windows Harness run `25618201016` passed",
-        "post-merge `main` Windows Harness run `25618271963` passed",
-        "verified the post-AH15 `main` Windows Harness concluded `success`",
-        "Next atomic task: land this AH16 privacy-output release-readiness decision",
-        "narrow `v0.1.19` release-readiness record",
+        "Current stage: AH17 - v0.1.19 Release Readiness.",
+        "Stage status: `v0.1.19` release-readiness in progress.",
+        "version identity to `0.1.19`",
+        "records fresh manual UIA smoke",
+        "has passed local deterministic validation",
+        "Last completed evidence: AH16 privacy-output release-readiness decision PR #205",
+        "merged as `d2d4d9bc90039ff9fbc2edcee9754b8955a5f6ed`",
+        "PR Windows Harness run `25648554264` passed",
+        "post-merge `main` Windows Harness run `25648668344` passed",
+        "verified the post-AH16 `main` Windows Harness concluded `success`",
+        "Next atomic task: commit and push the `v0.1.19` release-readiness PR",
+        "publish `v0.1.19` only after PR review, PR Windows Harness",
         "Stage AH0 - Post-v0.1.18 Baseline Cursor",
         "Stage AH1 - Public Metadata And Evidence Freshness Follow-up",
         "Stage AH2 - Helper And Watcher Preview Diagnostics Review",
@@ -1072,12 +1135,14 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "Stage AH14 - Fixture/Privacy Residual Gap Audit",
         "Stage AH15 - Post-AH14 Evidence Reconciliation",
         "Stage AH16 - Privacy Output Release-Readiness Decision",
+        "Stage AH17 - v0.1.19 Release Readiness",
+        "Stage AH18 - v0.1.19 Publication Reconciliation",
         "without opening a publication path",
         "retagging `v0.1.18`",
         "release approval",
         "`v0.1.18` is the latest published stable release and must not be retagged",
         "`v0.1.17` remains the previous stable release and must not be retagged",
-        "Manual UIA smoke for `v0.1.18` was freshly rerun",
+        "Manual UIA smoke for `v0.1.19` was freshly rerun",
         "Phase 6 stays at spec/scorecard level",
         "Do not implement screenshot capture, OCR, audio recording",
         "keyboard capture, clipboard capture, network upload, LLM calls",
@@ -1334,6 +1399,24 @@ def test_post_v0118_plan_is_active_without_expanding_scope():
         "printed no files, confirming AH16 is docs/tests only",
         "stale AH15/current-follow-up wording scan",
         "including 228 pytest tests",
+        "Stage AH16 completion:",
+        "PR #205 merged at `2026-05-11T03:25:53Z`",
+        "gh run view 25648554264",
+        "post-AH16 `main` Windows Harness concluded `success`",
+        "Stage AH17 initialization:",
+        "gh release view v0.1.19",
+        "release not found",
+        "git tag --list \"v0.1.19*\"",
+        "printed no remote tags",
+        "Fresh manual UIA smoke used local artifact root",
+        "Notepad and Edge targeted UIA smoke passed",
+        "VS Code metadata smoke passed with the known Monaco diagnostic warning",
+        "live watcher preview plus controlled Notepad watcher retry returned heartbeat-only liveness",
+        "Stage AH17 local validation:",
+        "passed, 123 tests",
+        "passed, 229 tests",
+        "printed only `pyproject.toml` and `src/winchronicle/_version.py`",
+        "Static Node REPL audits remain handoff checks only",
     ):
         assert phrase in normalized
 

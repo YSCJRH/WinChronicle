@@ -26,6 +26,7 @@ or token canaries.
 | Completed fixture/privacy parity matrix | [Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md) |
 | Completed fixture/privacy residual gap audit | [Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md) |
 | Current privacy-output release-readiness decision | [Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md) |
+| Current release-readiness record | [v0.1.19 release-readiness record](release-v0.1.19.md) |
 | Previous release-readiness decision | [v0.1.18 maintenance release record](release-v0.1.18.md) |
 | Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md) |
 | Previous maintenance plan | [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md) |
@@ -42,7 +43,7 @@ or token canaries.
 | Latest full manual UIA smoke source | [v0.1.18 maintenance release record](release-v0.1.18.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
 | Last freshness decision | For the published `v0.1.18` maintenance release, fresh hard-gate manual UIA smoke was rerun because privacy-check validation behavior changed after `v0.1.17`. Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning, VS Code strict remains a diagnostic non-blocking failure, and watcher preview live smoke returned heartbeat-only liveness evidence. Artifact paths are local only. |
-| Next freshness decision | Future post-v0.1.18 maintenance or release-readiness work must decide whether to inherit `v0.1.18` manual smoke or rerun it. |
+| Next freshness decision | The current `v0.1.19` release-readiness record reran fresh hard-gate manual UIA smoke because privacy-output and read-only MCP response behavior changed after `v0.1.18`. |
 
 ## Latest Known Manual Evidence
 
@@ -53,6 +54,11 @@ or token canaries.
 | VS Code metadata smoke | Conditional hard manual release gate when `code.cmd` is available | Pass with diagnostic warning | Fresh for the published `v0.1.18` maintenance release; previous fresh source was published `v0.1.17` maintenance in AF6 | [v0.1.18 maintenance release record](release-v0.1.18.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change | Local JSON artifact only; do not commit editor contents |
 | VS Code strict Monaco marker | Diagnostic, non-blocking for v0.1 | Diagnostic failure, known Monaco/UIA limitation | Fresh diagnostic for the published `v0.1.18` maintenance release | [v0.1.18 maintenance release record](release-v0.1.18.md) | Refresh only if investigating Monaco/UIA exposure, changing smoke scripts, or release approval requires a new diagnostic | Local diagnostic artifact path only |
 | Watcher preview live smoke | Preview diagnostic/manual confidence gate | Heartbeat-only liveness diagnostic; `captures_written: 0`, `heartbeats: 9`, `duplicates_skipped: 0`, `denylisted_skipped: 0` | Fresh diagnostic for the published `v0.1.18` maintenance release; deterministic watcher gates remain required | [v0.1.18 maintenance release record](release-v0.1.18.md) and `python harness/scripts/run_harness.py` | Refresh only if watcher preview behavior, live smoke scripts, deterministic watcher gates, or release approval requirements change | Do not save or commit raw watcher JSONL |
+| Notepad targeted UIA smoke | Hard manual release gate | Pass | Fresh for the pending `v0.1.19` maintenance release-readiness path | [v0.1.19 release-readiness record](release-v0.1.19.md) | Rerun before publication if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change again | Local JSON artifact path only; do not commit capture JSON |
+| Edge targeted UIA smoke | Hard manual release gate | Pass | Fresh for the pending `v0.1.19` maintenance release-readiness path | [v0.1.19 release-readiness record](release-v0.1.19.md) | Rerun before publication if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change again | Local JSON artifact path only; do not commit local HTML or capture JSON |
+| VS Code metadata smoke | Conditional hard manual release gate when `code.cmd` is available | Pass with diagnostic warning | Fresh for the pending `v0.1.19` maintenance release-readiness path | [v0.1.19 release-readiness record](release-v0.1.19.md) | Rerun before publication if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change again | Local JSON artifact only; do not commit editor contents |
+| VS Code strict Monaco marker | Diagnostic, non-blocking for v0.1 | Diagnostic failure, known Monaco/UIA limitation | Fresh diagnostic for the pending `v0.1.19` maintenance release-readiness path | [v0.1.19 release-readiness record](release-v0.1.19.md) | Refresh only if investigating Monaco/UIA exposure, changing smoke scripts, or release approval requires a new diagnostic | Local diagnostic artifact path only |
+| Watcher preview live smoke | Preview diagnostic/manual confidence gate | Heartbeat-only liveness diagnostic; `captures_written: 0`, `heartbeats: 10`, `duplicates_skipped: 0`, `denylisted_skipped: 0` | Fresh diagnostic for the pending `v0.1.19` maintenance release-readiness path; deterministic watcher gates passed locally and remain required in PR/post-merge Windows Harness | [v0.1.19 release-readiness record](release-v0.1.19.md) and `python harness/scripts/run_harness.py` | Refresh only if watcher preview behavior, live smoke scripts, deterministic watcher gates, or release approval requirements change | Do not save or commit raw watcher JSONL |
 
 ## Command Patterns
 
@@ -109,8 +115,14 @@ smoke. These command patterns are evidence shapes only; replace
 - The privacy-output release-readiness decision after `v0.1.18` starts a
   narrow `v0.1.19` release-readiness path for AH14 MCP search query echo
   redaction and private-key boundary marker redaction, but it does not decide
-  manual smoke freshness. The `v0.1.19` release-readiness record must decide
-  whether to inherit or rerun manual UIA smoke.
+  manual smoke freshness. The current `v0.1.19` release-readiness record
+  resolves that question by rerunning manual UIA smoke.
+- The `v0.1.19` release-readiness record reran fresh hard-gate manual UIA
+  smoke because privacy-output and read-only MCP response behavior changed
+  after `v0.1.18`. Notepad and Edge passed, VS Code metadata passed with the
+  known Monaco diagnostic warning, VS Code strict remains diagnostic and
+  non-blocking, and live watcher preview returned heartbeat-only liveness
+  evidence in this desktop state.
 - Fresh manual smoke must use the
   [Manual smoke evidence template](manual-smoke-evidence-template.md).
 - Inherited evidence can provide context, but it is not current evidence unless

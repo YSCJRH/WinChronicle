@@ -14,7 +14,7 @@ def test_project_runtime_and_mcp_versions_match(tmp_path):
     pyproject = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     project_version = pyproject["project"]["version"]
 
-    assert project_version == "0.1.18"
+    assert project_version == "0.1.19"
     assert winchronicle.__version__ == project_version
     assert _mcp_server_version(tmp_path / "state") == project_version
 
