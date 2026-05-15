@@ -16,16 +16,16 @@ For current maintenance operation, start with
 [`docs/operator-quickstart.md`](docs/operator-quickstart.md). It links the
 release checklist, manual smoke evidence template, Windows UIA smoke gates,
 watcher preview, read-only MCP examples, known limitations, the active
-post-v0.1.18 maintenance plan, the current post-v0.1.18 public metadata audit,
-the current post-v0.1.18 helper/watcher diagnostics sweep, the current
-post-v0.1.18 MCP/memory contract sweep, the current post-v0.1.18 compatibility
-guardrail sweep, the current post-v0.1.18 release-readiness decision, the
-current post-v0.1.18 next blueprint lane selection, the completed post-v0.1.18
+post-v0.1.18 maintenance plan, the completed post-v0.1.18 public metadata audit,
+the completed post-v0.1.18 helper/watcher diagnostics sweep, the completed
+post-v0.1.18 MCP/memory contract sweep, the completed post-v0.1.18 compatibility
+guardrail sweep, the completed post-v0.1.18 release-readiness decision, the
+completed post-v0.1.18 next blueprint lane selection, the completed post-v0.1.18
 watcher privacy fixture parity record, the completed post-v0.1.18
 fixture/helper privacy index parity record, the completed post-v0.1.18
 fixture/privacy parity matrix record, the completed post-v0.1.18
-fixture/privacy residual gap audit, the current post-v0.1.18 privacy-output
-release-readiness decision, the
+fixture/privacy residual gap audit, the completed post-v0.1.18 privacy-output
+release-readiness decision, the current `v0.1.19` release-readiness record, the
 completed post-v0.1.17 maintenance plan, the completed post-v0.1.17 public
 metadata audit, the completed post-v0.1.17 helper/watcher
 diagnostics sweep, the completed post-v0.1.17 MCP/memory contract sweep, the
@@ -164,6 +164,7 @@ available through `search-captures`.
 - [Fixture/privacy parity matrix after v0.1.18](docs/privacy-fixture-parity-matrix-post-v0.1.18.md)
 - [Fixture/privacy residual gap audit after v0.1.18](docs/privacy-residual-gap-audit-post-v0.1.18.md)
 - [Privacy-output release-readiness decision after v0.1.18](docs/privacy-output-release-readiness-decision-post-v0.1.18.md)
+- [v0.1.19 release-readiness record](docs/release-v0.1.19.md)
 - [Post-v0.1.17 maintenance plan](docs/next-round-plan-post-v0.1.17.md)
 - [Public metadata audit after v0.1.17](docs/public-metadata-audit-post-v0.1.17.md)
 - [Helper and watcher diagnostics sweep after v0.1.17](docs/helper-watcher-diagnostics-sweep-post-v0.1.17.md)

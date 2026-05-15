@@ -29,22 +29,27 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH16 - Privacy Output Release-Readiness Decision.
-- Stage status: AH16 in progress. This branch decides whether AH14's
-  privacy-positive MCP search query echo redaction and private-key boundary
-  marker redaction warrant a narrow release-readiness path.
-- Last completed evidence: AH15 post-AH14 evidence reconciliation PR #204
-  merged as `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`, PR Windows Harness run
-  `25618201016` passed on `48715b92447630765bbb03bd459acdf71e466a72`, and
-  post-merge `main` Windows Harness run `25618271963` passed on
-  `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`.
-- Last validation: `gh run view 25618271963 --json
+- Current stage: AH17 - v0.1.19 Release Readiness.
+- Stage status: `v0.1.19` release-readiness in progress. This branch bumps
+  version identity to `0.1.19`, records fresh manual UIA smoke, has passed
+  local deterministic validation, and keeps publication pending until PR
+  review, PR Windows Harness, post-merge `main` Windows Harness, and
+  publication verification complete.
+- Last completed evidence: AH16 privacy-output release-readiness decision PR
+  #205 merged as `d2d4d9bc90039ff9fbc2edcee9754b8955a5f6ed`, PR Windows
+  Harness run `25648554264` passed on
+  `f29efa9d5c7dc3da6057731000ae4e238b2153ab`, and post-merge `main` Windows
+  Harness run `25648668344` passed on
+  `d2d4d9bc90039ff9fbc2edcee9754b8955a5f6ed`.
+- Last validation: `gh run view 25648668344 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
-  verified the post-AH15 `main` Windows Harness concluded `success`.
-- Next atomic task: land this AH16 privacy-output release-readiness decision
-  PR, then start the narrow `v0.1.19` release-readiness record required by
-  this decision before any publication.
-- Known blockers: none for product code. Live UIA smoke remains manual and
+  verified the post-AH16 `main` Windows Harness concluded `success`.
+- Next atomic task: commit and push the `v0.1.19` release-readiness PR, then
+  publish `v0.1.19` only after PR review, PR Windows Harness, and post-merge
+  `main` Windows Harness pass, followed by release metadata and remote tag
+  verification.
+- Known blockers: none for product code. PR review and remote Windows Harness
+  gates remain pending before publication. Live UIA smoke remains manual and
   outside default CI.
 
 ## Phased Work
@@ -235,6 +240,29 @@ service install, no polling capture loop, and no default background capture.
 - Do not retag `v0.1.18`; use a future compatible version only through an
   explicit release-readiness record.
 
+### Stage AH17 - v0.1.19 Release Readiness
+
+- Record `docs/release-v0.1.19.md`.
+- Bump package/runtime/MCP version identity to `0.1.19` only on the
+  release-readiness branch.
+- Rerun fresh hard-gate manual UIA smoke because privacy-output and read-only
+  MCP response behavior changed after `v0.1.18`.
+- Keep direct maintenance publication pending until reviewed PR, PR Windows
+  Harness, post-merge `main` Windows Harness, GitHub release publication,
+  metadata verification, remote tag verification, and publication
+  reconciliation complete.
+- Do not retag `v0.1.18`; it remains published and immutable.
+
+### Stage AH18 - v0.1.19 Publication Reconciliation
+
+- Reconcile `docs/release-v0.1.19.md`, freshness docs, and this cursor with
+  the published release URL, published timestamp, final tag target, PR Windows
+  Harness run, post-merge `main` Windows Harness run, and remote tag
+  verification.
+- Keep the `v0.1.19` tag immutable after publication.
+- Do not retag `v0.1.19` or `v0.1.18`.
+- After this reconciliation lands, start a post-v0.1.19 maintenance cursor.
+
 ## Public Interfaces And Non-goals
 
 - CLI command set remains unchanged:
@@ -269,9 +297,9 @@ Every implementation stage should run:
 
 - `v0.1.18` is the latest published stable release and must not be retagged.
 - `v0.1.17` remains the previous stable release and must not be retagged.
-- Manual UIA smoke for `v0.1.18` was freshly rerun in the release-readiness
-  branch and remains the latest full manual UIA smoke source until a later plan
-  makes a new freshness decision.
+- Manual UIA smoke for `v0.1.19` was freshly rerun in the release-readiness
+  branch and is the latest full manual UIA smoke source for this pending release
+  path.
 - Phase 6 stays at spec/scorecard level for this round.
 
 ## Decision Log
@@ -413,6 +441,14 @@ Every implementation stage should run:
   do not publish immediately, do not retag `v0.1.18`, and require the future
   release-readiness record to decide the version bump, evidence freshness, and
   manual UIA smoke freshness before publication.
+- Completed AH16 after PR #205 merged as
+  `d2d4d9bc90039ff9fbc2edcee9754b8955a5f6ed` and post-merge Windows Harness
+  run `25648668344` passed.
+- Started the `v0.1.19` release-readiness record after PR #205 merged and
+  post-merge `main` Windows Harness run `25648668344` passed. The
+  release-readiness branch bumps version identity to `0.1.19`, records fresh
+  manual UIA smoke, passed local deterministic validation, and keeps
+  publication pending until review and remote gates complete.
 
 ## Validation Log
 
@@ -673,3 +709,21 @@ Every implementation stage should run:
   - `git diff --name-only -- pyproject.toml src\winchronicle resources` - passed; printed no files, confirming AH16 is docs/tests only with no product runtime, package metadata, helper/watcher resource, or other bundled resource diff.
   - stale AH15/current-follow-up wording scan across `README.md`, current docs, and current tests - passed with no matches.
   - `python harness/scripts/run_harness.py` - passed, including 228 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+- Stage AH16 completion:
+  - `gh pr view 205 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName,title` - passed; PR #205 merged at `2026-05-11T03:25:53Z` as `d2d4d9bc90039ff9fbc2edcee9754b8955a5f6ed`.
+  - `gh run view 25648554264 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; PR #205 Windows Harness concluded `success` on `f29efa9d5c7dc3da6057731000ae4e238b2153ab`.
+  - `gh run view 25648668344 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` - passed; post-AH16 `main` Windows Harness concluded `success` on `d2d4d9bc90039ff9fbc2edcee9754b8955a5f6ed`.
+- Stage AH17 initialization:
+  - `gh release view v0.1.19 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed with `release not found`, confirming no existing `v0.1.19` release to retag.
+  - `git tag --list "v0.1.19*"` - passed and printed no local tags.
+  - `git ls-remote --tags origin v0.1.19 v0.1.19-rc.0` - passed and printed no remote tags.
+  - `gh release view v0.1.18 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` - passed; `v0.1.18` is published, not a draft, not a prerelease, published at `2026-05-09T21:38:33Z`, and targets `2e22ec9805edb0efd48e5ef4aacbcff13f0490ec`.
+  - Fresh manual UIA smoke used local artifact root `C:\Users\34793\AppData\Local\Temp\winchronicle-v019-smoke-410f3fb03ccf4c2d861ce33e93598919`; Notepad and Edge targeted UIA smoke passed, VS Code metadata smoke passed with the known Monaco diagnostic warning, VS Code strict Monaco marker failed as a diagnostic non-blocking gate, and live watcher preview plus controlled Notepad watcher retry returned heartbeat-only liveness with `heartbeats: 10`.
+- Stage AH17 local validation:
+  - `python -m pytest tests/test_mcp_tools.py tests/test_redaction.py tests/test_privacy_index_parity.py tests/test_privacy_policy_contract.py tests/test_compatibility_evidence_docs.py tests/test_operator_diagnostics_docs.py tests/test_version_identity.py -q` - passed, 123 tests.
+  - `python -m pytest -q` - passed, 229 tests.
+  - `git diff --check` - passed.
+  - `git diff --name-only -- src\winchronicle resources pyproject.toml` - passed; printed only `pyproject.toml` and `src/winchronicle/_version.py`, confirming the product/runtime scope is limited to version metadata plus docs/tests.
+  - stale AH15/AH16/current release-state wording scan across `README.md`, current docs, and current tests - passed after excluding the archived AH16 decision record; the raw broad scan found only a historical command example inside `docs/privacy-output-release-readiness-decision-post-v0.1.18.md`.
+  - `python harness/scripts/run_harness.py` - passed, including 229 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke.
+  - Static Node REPL audits remain handoff checks only and were not used as a substitute for executable validation.

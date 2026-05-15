@@ -95,6 +95,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md)"
         in quickstart
     )
+    assert "[v0.1.19 release-readiness record](release-v0.1.19.md)" in quickstart
     assert "[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md)" in quickstart
     assert (
         "[Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md)"
@@ -273,6 +274,7 @@ def test_operator_quickstart_links_diagnostics_playbook():
         "[Privacy-output release-readiness decision after v0.1.18](docs/privacy-output-release-readiness-decision-post-v0.1.18.md)"
         in readme
     )
+    assert "[v0.1.19 release-readiness record](docs/release-v0.1.19.md)" in readme
     assert (
         "[MCP and memory contract sweep after v0.1.17](docs/mcp-memory-contract-sweep-post-v0.1.17.md)"
         in readme
@@ -439,17 +441,18 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     readme_intro_normalized = " ".join(readme_intro.split())
 
     assert "active post-v0.1.18 maintenance plan" in readme_intro_normalized
-    assert "current post-v0.1.18 public metadata audit" in readme_intro_normalized
-    assert "current post-v0.1.18 helper/watcher diagnostics sweep" in readme_intro_normalized
-    assert "current post-v0.1.18 MCP/memory contract sweep" in readme_intro_normalized
-    assert "current post-v0.1.18 compatibility guardrail sweep" in readme_intro_normalized
-    assert "current post-v0.1.18 release-readiness decision" in readme_intro_normalized
-    assert "current post-v0.1.18 next blueprint lane selection" in readme_intro_normalized
+    assert "completed post-v0.1.18 public metadata audit" in readme_intro_normalized
+    assert "completed post-v0.1.18 helper/watcher diagnostics sweep" in readme_intro_normalized
+    assert "completed post-v0.1.18 MCP/memory contract sweep" in readme_intro_normalized
+    assert "completed post-v0.1.18 compatibility guardrail sweep" in readme_intro_normalized
+    assert "completed post-v0.1.18 release-readiness decision" in readme_intro_normalized
+    assert "completed post-v0.1.18 next blueprint lane selection" in readme_intro_normalized
     assert "completed post-v0.1.18 watcher privacy fixture parity record" in readme_intro_normalized
     assert "completed post-v0.1.18 fixture/helper privacy index parity record" in readme_intro_normalized
     assert "completed post-v0.1.18 fixture/privacy parity matrix record" in readme_intro_normalized
     assert "completed post-v0.1.18 fixture/privacy residual gap audit" in readme_intro_normalized
-    assert "current post-v0.1.18 privacy-output release-readiness decision" in readme_intro_normalized
+    assert "completed post-v0.1.18 privacy-output release-readiness decision" in readme_intro_normalized
+    assert "current `v0.1.19` release-readiness record" in readme_intro_normalized
     assert "completed post-v0.1.17 maintenance plan" in readme_intro_normalized
     assert "completed post-v0.1.16 maintenance plan and publication reconciliation" in readme_intro_normalized
     assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
@@ -494,6 +497,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "Fixture/privacy parity matrix after v0.1.18" in readme_operator_docs
     assert "Fixture/privacy residual gap audit after v0.1.18" in readme_operator_docs
     assert "Privacy-output release-readiness decision after v0.1.18" in readme_operator_docs
+    assert "v0.1.19 release-readiness record" in readme_operator_docs
     assert "Post-v0.1.17 maintenance plan" in readme_operator_docs
     assert "Public metadata audit after v0.1.17" in readme_operator_docs
     assert "Helper and watcher diagnostics sweep after v0.1.17" in readme_operator_docs
@@ -601,6 +605,9 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
         "Privacy-output release-readiness decision after v0.1.18"
     )
     assert readme_operator_docs.index("Privacy-output release-readiness decision after v0.1.18") < readme_operator_docs.index(
+        "v0.1.19 release-readiness record"
+    )
+    assert readme_operator_docs.index("v0.1.19 release-readiness record") < readme_operator_docs.index(
         "Post-v0.1.17 maintenance plan"
     )
     assert readme_operator_docs.index("Post-v0.1.17 maintenance plan") < readme_operator_docs.index(
@@ -820,6 +827,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "privacy-fixture-parity-matrix-post-v0.1.18.md" in current_section
     assert "privacy-residual-gap-audit-post-v0.1.18.md" in current_section
     assert "privacy-output-release-readiness-decision-post-v0.1.18.md" in current_section
+    assert "release-v0.1.19.md" in current_section
     assert "next-round-plan-post-v0.1.17.md" in current_section
     assert "public-metadata-audit-post-v0.1.17.md" in current_section
     assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in current_section
@@ -957,6 +965,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "watcher-privacy-fixture-parity-post-v0.1.18.md" in evidence
     assert "privacy-output-release-readiness-decision-post-v0.1.18.md" in checklist
     assert "privacy-output-release-readiness-decision-post-v0.1.18.md" in evidence
+    assert "release-v0.1.19.md" in checklist
+    assert "release-v0.1.19.md" in evidence
     assert "release-candidate-v0.1.16-rc.0.md" in checklist
     assert "release-candidate-v0.1.16-rc.0.md" in evidence
     assert "next-round-plan-post-v0.1.17.md" in checklist
@@ -1021,18 +1031,18 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "v0.1.16-rc.0` is historical prerelease evidence" in evidence
     assert "active post-v0.1.18 execution cursor records" in checklist
     assert "active post-v0.1.18 execution cursor records" in evidence
-    assert "current post-v0.1.18 public metadata/evidence freshness audit" in checklist
-    assert "current post-v0.1.18 public metadata/evidence freshness audit" in evidence
-    assert "current post-v0.1.18 helper/watcher diagnostics review" in checklist
-    assert "current post-v0.1.18 helper/watcher diagnostics review" in evidence
-    assert "current post-v0.1.18 MCP/memory contract review" in checklist
-    assert "current post-v0.1.18 MCP/memory contract review" in evidence
-    assert "current post-v0.1.18 compatibility guardrail review" in checklist
-    assert "current post-v0.1.18 compatibility guardrail review" in evidence
-    assert "current post-v0.1.18 release-readiness decision" in checklist
-    assert "current post-v0.1.18 release-readiness decision" in evidence
-    assert "current post-v0.1.18 next blueprint lane selection" in checklist
-    assert "current post-v0.1.18 next blueprint lane selection" in evidence
+    assert "completed post-v0.1.18 public metadata/evidence freshness audit" in checklist
+    assert "completed post-v0.1.18 public metadata/evidence freshness audit" in evidence
+    assert "completed post-v0.1.18 helper/watcher diagnostics review" in checklist
+    assert "completed post-v0.1.18 helper/watcher diagnostics review" in evidence
+    assert "completed post-v0.1.18 MCP/memory contract review" in checklist
+    assert "completed post-v0.1.18 MCP/memory contract review" in evidence
+    assert "completed post-v0.1.18 compatibility guardrail review" in checklist
+    assert "completed post-v0.1.18 compatibility guardrail review" in evidence
+    assert "completed post-v0.1.18 release-readiness decision" in checklist
+    assert "completed post-v0.1.18 release-readiness decision" in evidence
+    assert "completed post-v0.1.18 next blueprint lane selection" in checklist
+    assert "completed post-v0.1.18 next blueprint lane selection" in evidence
     assert "completed post-v0.1.18 fixture/helper privacy index parity record" in checklist
     assert "completed post-v0.1.18 fixture/helper privacy index parity record" in evidence
     assert "completed post-v0.1.18 fixture/privacy parity matrix record" in checklist
@@ -1063,8 +1073,8 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "PR Windows Harness run\n  `25617962810` succeeded" in evidence
     assert "post-merge `main` Windows Harness run `25618020212` succeeded" in checklist
     assert "post-merge `main` Windows Harness run `25618020212` succeeded" in evidence
-    assert "current post-v0.1.18 privacy-output release-readiness decision" in checklist
-    assert "current post-v0.1.18 privacy-output release-readiness decision" in evidence
+    assert "completed post-v0.1.18 privacy-output release-readiness decision" in checklist
+    assert "completed post-v0.1.18 privacy-output release-readiness decision" in evidence
     assert "narrow `v0.1.19` release-readiness path" in checklist
     assert "narrow `v0.1.19` release-readiness path" in evidence
     assert "does not warrant immediate\n  publication" in checklist
@@ -1075,6 +1085,16 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "PR Windows Harness run\n  `25618201016` succeeded" in evidence
     assert "post-merge `main` Windows Harness run `25618271963` succeeded" in checklist
     assert "post-merge `main` Windows Harness run `25618271963` succeeded" in evidence
+    assert "current `v0.1.19` release-readiness record" in checklist
+    assert "current `v0.1.19` release-readiness record" in evidence
+    assert "version identity to `0.1.19`" in checklist
+    assert "version identity to `0.1.19`" in evidence
+    assert "records fresh Notepad, Edge, and VS Code\n  metadata manual UIA smoke" in checklist
+    assert "records fresh Notepad, Edge, and VS Code\n  metadata manual UIA smoke" in evidence
+    assert "records\n  local deterministic validation passed" in checklist
+    assert "records\n  local deterministic validation passed" in evidence
+    assert "keeps GitHub release publication\n  pending until PR Windows Harness" in checklist
+    assert "keeps GitHub release publication\n  pending until PR Windows Harness" in evidence
     assert "PR #197 merged at `2026-05-10T00:58:38Z`" in checklist
     assert "PR #197 merged at `2026-05-10T00:58:38Z`" in evidence
     assert "PR Windows Harness run\n  `25616023224` succeeded" in checklist
@@ -3446,8 +3466,8 @@ def test_roadmap_contribution_and_issue_templates_keep_harness_first_scope():
         "current selected lane is Fixture and privacy baseline",
         "Watcher privacy fixture\nparity and fixture/helper privacy index parity are complete",
         "fixture/privacy parity matrix consolidation and fixture/privacy residual gap\naudit are complete",
-        "current follow-up is a privacy-output\nrelease-readiness decision",
-        "starts a narrow `v0.1.19` readiness path",
+        "current follow-up is a `v0.1.19`\nrelease-readiness record",
+        "privacy-output hardening path",
         "privacy baseline privacy-policy contract parity audit is complete\nhistorical work",
         "Fixture and privacy baseline",
         "UIA helper hardening",
@@ -4155,6 +4175,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Completed fixture/privacy parity matrix | [Fixture/privacy parity matrix after v0.1.18]",
         "Completed fixture/privacy residual gap audit | [Fixture/privacy residual gap audit after v0.1.18]",
         "Current privacy-output release-readiness decision | [Privacy-output release-readiness decision after v0.1.18]",
+        "Current release-readiness record | [v0.1.19 release-readiness record]",
         "Previous release-readiness decision | [v0.1.18 maintenance release record]",
         "Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.17 maintenance plan]",
@@ -4178,10 +4199,12 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "then is explicitly accepted by the U4",
         "manual smoke is explicitly accepted by the W4",
         "manual smoke is accepted by the X1 freshness decision as",
-        "Next freshness decision | Future post-v0.1.18 maintenance or release-readiness work",
+        "Next freshness decision | The current `v0.1.19` release-readiness record reran fresh hard-gate manual UIA smoke",
         "Fresh for the published `v0.1.18` maintenance release; previous fresh source was published `v0.1.17` maintenance in AF6",
         "Fresh diagnostic for the published `v0.1.18` maintenance release",
         "Heartbeat-only liveness diagnostic; `captures_written: 0`, `heartbeats: 9`, `duplicates_skipped: 0`, `denylisted_skipped: 0`",
+        "Fresh for the pending `v0.1.19` maintenance release-readiness path",
+        "Heartbeat-only liveness diagnostic; `captures_written: 0`, `heartbeats: 10`, `duplicates_skipped: 0`, `denylisted_skipped: 0`",
         "manual smoke is explicitly accepted by the T4 release-readiness\n  record",
         "For the completed post-v0.1.7 compatible maintenance path toward `v0.1.8`",
         "then is explicitly accepted by the U4",
@@ -4222,7 +4245,10 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "does not make a fresh manual UIA smoke\n  decision",
         "The privacy-output release-readiness decision after `v0.1.18` starts a",
         "narrow `v0.1.19` release-readiness path",
-        "`v0.1.19` release-readiness record must decide",
+        "current `v0.1.19` release-readiness record\n  resolves that question",
+        "The `v0.1.19` release-readiness record reran fresh hard-gate manual UIA",
+        "privacy-output and read-only MCP response behavior changed",
+        "VS Code strict remains diagnostic and\n  non-blocking",
         "Deterministic harness smoke changes require fresh deterministic gate",
     ):
         assert expected in ledger
