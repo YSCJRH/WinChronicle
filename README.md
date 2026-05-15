@@ -25,7 +25,7 @@ watcher privacy fixture parity record, the completed post-v0.1.18
 fixture/helper privacy index parity record, the completed post-v0.1.18
 fixture/privacy parity matrix record, the completed post-v0.1.18
 fixture/privacy residual gap audit, the completed post-v0.1.18 privacy-output
-release-readiness decision, the current `v0.1.19` release-readiness record, the
+release-readiness decision, the published `v0.1.19` maintenance release record, the
 completed post-v0.1.17 maintenance plan, the completed post-v0.1.17 public
 metadata audit, the completed post-v0.1.17 helper/watcher
 diagnostics sweep, the completed post-v0.1.17 MCP/memory contract sweep, the
@@ -164,7 +164,7 @@ available through `search-captures`.
 - [Fixture/privacy parity matrix after v0.1.18](docs/privacy-fixture-parity-matrix-post-v0.1.18.md)
 - [Fixture/privacy residual gap audit after v0.1.18](docs/privacy-residual-gap-audit-post-v0.1.18.md)
 - [Privacy-output release-readiness decision after v0.1.18](docs/privacy-output-release-readiness-decision-post-v0.1.18.md)
-- [v0.1.19 release-readiness record](docs/release-v0.1.19.md)
+- [v0.1.19 maintenance release record](docs/release-v0.1.19.md)
 - [Post-v0.1.17 maintenance plan](docs/next-round-plan-post-v0.1.17.md)
 - [Public metadata audit after v0.1.17](docs/public-metadata-audit-post-v0.1.17.md)
 - [Helper and watcher diagnostics sweep after v0.1.17](docs/helper-watcher-diagnostics-sweep-post-v0.1.17.md)
