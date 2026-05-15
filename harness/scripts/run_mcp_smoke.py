@@ -101,7 +101,7 @@ def main() -> int:
             return 1
 
         responses = _parse_response_stream(completed.stdout)
-        if len(responses) != 5:
+        if len(responses) != 6:
             print("FAIL: MCP stdio did not return the expected response count")
             return 1
 
@@ -140,6 +140,19 @@ def main() -> int:
             return 1
         if memory_matches[0]["trust"] != TRUST:
             print("FAIL: MCP memory search result lacked the trust boundary")
+            return 1
+
+        recent = _tool_payload(responses[5])
+        validate_mcp_tool_result(recent)
+        if "captures" not in recent["result"] or "sessions" not in recent["result"]:
+            print("FAIL: MCP recent_activity lacked captures or sessions")
+            return 1
+        recent_captures = recent["result"]["captures"]
+        if not recent_captures or recent_captures[0]["trust"] != TRUST:
+            print("FAIL: MCP recent_activity capture lacked the trust boundary")
+            return 1
+        if not isinstance(recent["result"]["sessions"], list):
+            print("FAIL: MCP recent_activity sessions field was not a list")
             return 1
 
     print("PASS: MCP stdio smoke passed")
@@ -182,6 +195,15 @@ def _build_request_stream() -> bytes:
             "params": {
                 "name": "search_memory",
                 "arguments": {"query": "AssertionError", "limit": 5},
+            },
+        },
+        {
+            "jsonrpc": "2.0",
+            "id": 6,
+            "method": "tools/call",
+            "params": {
+                "name": "recent_activity",
+                "arguments": {"limit": 5},
             },
         },
     ]

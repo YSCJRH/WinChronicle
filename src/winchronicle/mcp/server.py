@@ -13,6 +13,7 @@ from winchronicle.privacy import (
     privacy_contract_payload,
 )
 from winchronicle.redaction import redact_text
+from winchronicle.session import list_sessions, session_count
 from winchronicle.storage import (
     capture_count,
     list_captures,
@@ -129,7 +130,10 @@ def recent_activity(
     captures = list_captures(home, limit=_bounded_limit(limit), since=since)
     return _tool_result(
         "recent_activity",
-        {"captures": [_observed_capture(capture) for capture in captures]},
+        {
+            "captures": [_observed_capture(capture) for capture in captures],
+            "sessions": list_sessions(home, limit=_bounded_limit(limit)),
+        },
     )
 
 
@@ -139,6 +143,7 @@ def privacy_status(home: Path | str | None = None) -> dict[str, Any]:
         "home": str(paths["home"]),
         "db_exists": paths["db"].exists(),
         "capture_count": capture_count(paths["home"]),
+        "session_count": session_count(paths["home"]),
         **privacy_contract_payload(),
         "tools": TOOL_NAMES,
         "control_tools": [],

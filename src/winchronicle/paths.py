@@ -32,6 +32,8 @@ def state_paths(home: Path | str | None = None) -> dict[str, Path]:
         "capture_buffer": root / "capture-buffer",
         "db": root / "index.db",
         "memory": root / "memory",
+        "reports": root / "reports",
+        "sessions": root / "sessions",
         "logs": root / "logs",
     }
 
@@ -41,6 +43,8 @@ def ensure_state(home: Path | str | None = None) -> dict[str, Path]:
     paths["home"].mkdir(parents=True, exist_ok=True)
     paths["capture_buffer"].mkdir(parents=True, exist_ok=True)
     paths["memory"].mkdir(parents=True, exist_ok=True)
+    paths["reports"].mkdir(parents=True, exist_ok=True)
+    paths["sessions"].mkdir(parents=True, exist_ok=True)
     paths["logs"].mkdir(parents=True, exist_ok=True)
     if not paths["config"].exists():
         paths["config"].write_text(CONFIG_TEXT, encoding="utf-8")

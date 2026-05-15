@@ -10,6 +10,7 @@ from .memory import generate_memory_entries
 from .mcp.server import run_stdio
 from .paths import ensure_state, state_paths
 from .privacy import privacy_contract_payload
+from .session import monitor_events, read_session, run_monitor_watcher_command, session_count
 from .storage import capture_count, init_db, memory_entry_count, search_captures, search_memory_entries
 
 
@@ -89,6 +90,45 @@ def build_parser() -> argparse.ArgumentParser:
     watch.add_argument("--heartbeat-ms", type=int, default=5000)
     watch.add_argument("--capture-on-start", action="store_true")
 
+    monitor = subparsers.add_parser(
+        "monitor",
+        help="Run an explicit finite local UIA monitor session.",
+    )
+    monitor_source = monitor.add_mutually_exclusive_group(required=True)
+    monitor_source.add_argument("--events", type=Path)
+    monitor_source.add_argument("--watcher", help="Path or command for win-uia-watcher.")
+    monitor.add_argument(
+        "--watcher-arg",
+        action="append",
+        default=[],
+        help="Extra argument passed to the watcher command before watch.",
+    )
+    monitor.add_argument("--helper", help="Path or command for win-uia-helper.")
+    monitor.add_argument(
+        "--helper-arg",
+        action="append",
+        default=[],
+        help="Extra argument passed to the helper command before capture-frontmost.",
+    )
+    monitor.add_argument("--depth", type=int, default=80)
+    monitor.add_argument("--duration", type=int, default=30)
+    monitor.add_argument("--debounce-ms", type=int, default=750)
+    monitor.add_argument("--heartbeat-ms", type=int, default=5000)
+    monitor.add_argument("--capture-on-start", action="store_true")
+    monitor.add_argument("--session-id")
+    monitor.add_argument(
+        "--exclude-app",
+        action="append",
+        default=[],
+        help="Skip exact app names in this monitor session.",
+    )
+
+    summarize_session = subparsers.add_parser(
+        "summarize-session",
+        help="Print a saved monitor session summary as JSON.",
+    )
+    summarize_session.add_argument("session")
+
     subparsers.add_parser("mcp-stdio", help="Run the read-only MCP stdio server.")
 
     return parser
@@ -113,6 +153,7 @@ def main(argv: list[str] | None = None) -> int:
             "db_exists": paths["db"].exists(),
             "capture_count": capture_count(paths["home"]),
             "memory_entry_count": memory_entry_count(paths["home"]),
+            "session_count": session_count(paths["home"]),
             **privacy_contract_payload(),
         }
         print(json.dumps(payload, indent=2, sort_keys=True))
@@ -209,6 +250,63 @@ def main(argv: list[str] | None = None) -> int:
                 print("ERROR: watcher output could not be captured safely")
                 return 1
         print(json.dumps(result.to_json(), indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "monitor":
+        if args.events:
+            paths = ensure_state()
+            try:
+                result = monitor_events(
+                    args.events,
+                    paths["home"],
+                    session_id=args.session_id,
+                    exclude_apps=args.exclude_app,
+                )
+            except ValueError as exc:
+                print(f"ERROR: {exc}")
+                return 1
+            except Exception:
+                print("ERROR: monitor output could not be captured safely")
+                return 1
+        else:
+            _reject_forbidden_passthrough(parser, args.watcher_arg, "--watcher-arg")
+            _reject_forbidden_passthrough(parser, args.helper_arg, "--helper-arg")
+            if not 0 <= args.depth <= 80:
+                parser.error("--depth must be between 0 and 80")
+            if args.duration < 0:
+                parser.error("--duration must be non-negative")
+            paths = ensure_state()
+            helper_command = [args.helper, *args.helper_arg] if args.helper else None
+            try:
+                result = run_monitor_watcher_command(
+                    [args.watcher, *args.watcher_arg],
+                    helper_command,
+                    depth=args.depth,
+                    duration_seconds=args.duration,
+                    debounce_ms=args.debounce_ms,
+                    heartbeat_ms=args.heartbeat_ms,
+                    capture_on_start=args.capture_on_start,
+                    home=paths["home"],
+                    session_id=args.session_id,
+                    exclude_apps=args.exclude_app,
+                )
+            except RuntimeError as exc:
+                print(f"ERROR: {exc}")
+                return 1
+            except Exception:
+                print("ERROR: monitor output could not be captured safely")
+                return 1
+        print(json.dumps(result.to_json(), indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "summarize-session":
+        paths = state_paths()
+        try:
+            result = read_session(args.session, paths["home"])
+        except Exception:
+            print("ERROR: session summary could not be read safely")
+            return 1
+        print(json.dumps(result, indent=2, sort_keys=True))
         return 0
 
     if args.command == "mcp-stdio":

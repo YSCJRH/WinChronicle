@@ -95,7 +95,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
     matrix = (ROOT / "docs" / "uia-helper-quality-matrix.md").read_text(encoding="utf-8")
 
-    assert "The current status is a `v0.1` harness-first baseline" in readme
+    assert "The current status is a `v0.2` monitor-session baseline" in readme
     assert (
         "Do not continue the historical maintenance loop automatically."
         in " ".join(readme.split())
@@ -108,8 +108,7 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     ) in " ".join(closure.split())
     assert "Do not create another compatibility sweep" in closure
     assert (
-        "The fixture/privacy maintenance loop that followed `v0.1.18` is "
-        "closed for now"
+        "The current stable baseline is the `v0.2` monitor-session baseline"
     ) in " ".join(roadmap.split())
     assert "These are options for human review, not an automatically authorized backlog." in roadmap
     assert "Any future runtime behavior, capture-surface expansion, release path" in roadmap
@@ -2308,14 +2307,15 @@ def test_roadmap_contribution_and_issue_templates_keep_harness_first_scope():
     )
 
     for expected in (
-        "does\nnot authorize new capture surfaces",
-        "The current stable baseline is the `v0.1` harness-first baseline",
-        "fixture/privacy maintenance loop that followed `v0.1.18` is\nclosed for now",
+        "does not authorize new capture surfaces",
+        "The current stable baseline is the `v0.2` monitor-session baseline",
+        "fixture/privacy maintenance loop that\nfollowed `v0.1.18` is closed for now",
         "Do not turn\nthose records into another autonomous maintenance loop.",
         "needs explicit human product approval",
         "These are options for human review, not an automatically authorized backlog.",
         "Fixture and privacy baseline",
         "UIA helper hardening",
+        "Monitor sessions",
         "Watcher preview",
         "Read-only MCP",
         "Durable memory",

@@ -4,8 +4,10 @@ This index keeps historical maintenance, audit, readiness, and release evidence
 reachable without making the README a ledger. It is historical reference only;
 it does not start a new maintenance loop or authorize new release work.
 
-## Core v0.1 Docs
+## Core Product Docs
 
+- [v0.2 monitor session](v0.2-monitor-session.md)
+- [v0.2.0 release record](release-v0.2.0.md)
 - [v0.1 closure note](goal-closure-v0.1.md)
 - [Operator quickstart](operator-quickstart.md)
 - [Roadmap](roadmap.md)

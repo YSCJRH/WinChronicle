@@ -18,12 +18,14 @@ tool-capable coding agents.
 - Provides an explicit .NET UIA helper preview through `capture-frontmost`.
 - Provides explicit, finite watcher preview modes for deterministic fixture
   replay and caller-provided watcher commands.
+- Provides an explicit, finite v0.2 monitor-session path that turns watcher
+  events into a local timeline, deterministic suggestions, and an HTML report.
 - Exposes read-only MCP tools for current context, capture search, memory
   search, recent capture reads, recent activity, and privacy status.
 
 ## What It Does Not Do
 
-WinChronicle v0.1 is not Windows Recall, a screen recorder, spyware, or a
+WinChronicle v0.2 is not Windows Recall, a screen recorder, spyware, or a
 desktop automation tool. It does not implement screenshots, OCR, audio
 recording, keylogging, clipboard capture, cloud upload, LLM summarization,
 desktop control, MCP write tools, daemon/service installation, default
@@ -57,6 +59,8 @@ python -m winchronicle capture-once --fixture harness/fixtures/uia/terminal_erro
 python -m winchronicle search-captures "AssertionError"
 python -m winchronicle generate-memory --date 2026-04-25
 python -m winchronicle search-memory "AssertionError"
+python -m winchronicle monitor --events harness/fixtures/watcher/notepad_burst.jsonl --session-id demo
+python -m winchronicle summarize-session demo
 python -m winchronicle mcp-stdio
 ```
 
@@ -64,10 +68,10 @@ For the full fixture-only walkthrough, use
 [Deterministic demo](docs/deterministic-demo.md). For routine validation, start
 with [Operator quickstart](docs/operator-quickstart.md).
 
-## UIA Helper And Watcher Preview
+## UIA Helper, Watcher, And Monitor Preview
 
-The helper and watcher are explicit preview paths, not background capture
-services:
+The helper, watcher, and monitor session are explicit preview paths, not
+background capture services:
 
 ```powershell
 dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo
@@ -77,6 +81,9 @@ dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo
 `capture-frontmost` requires a caller-provided helper path. `watch --events`
 replays deterministic JSONL fixtures. `watch --watcher` runs a caller-provided
 watcher command for a finite duration and does not save raw watcher JSONL.
+`monitor` uses the same explicit watcher sources, writes a local session JSON
+summary under the state home, and creates a local HTML report without saving raw
+watcher JSONL.
 
 Live UIA smoke requires an interactive Windows desktop and should record only
 commands, results, timestamps, environment notes, and local artifact paths.
@@ -100,10 +107,12 @@ control.
 
 ## Current Status
 
-The current status is a `v0.1` harness-first baseline: local-first, UIA-first,
-and read-only MCP first, with the previous fixture/privacy maintenance loop
-closed. Future runtime behavior, capture-surface expansion, or release work
-requires explicit human product authorization. Do not continue the historical
+The current status is a `v0.2` monitor-session baseline: local-first,
+UIA-first, harness-first, and read-only MCP first. v0.2 adds an explicit,
+finite, local monitor session while keeping screenshots, OCR, audio, keyboard,
+clipboard, cloud upload, desktop control, default background capture, and MCP
+write tools out of scope. Future capture-surface expansion still requires
+explicit human product authorization. Do not continue the historical
 maintenance loop automatically.
 
 ## Key Docs
@@ -113,6 +122,8 @@ maintenance loop automatically.
 - [v0.1 closure note](docs/goal-closure-v0.1.md)
 - [Known limitations](docs/known-limitations.md)
 - [Deterministic demo](docs/deterministic-demo.md)
+- [v0.2 monitor session](docs/v0.2-monitor-session.md)
+- [v0.2.0 release record](docs/release-v0.2.0.md)
 - [Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)
 - [Read-only MCP examples](docs/mcp-readonly-examples.md)
 - [Watcher preview](docs/watcher-preview.md)

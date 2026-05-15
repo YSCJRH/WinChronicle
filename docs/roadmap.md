@@ -1,22 +1,25 @@
 # Roadmap
 
-This roadmap describes the current v0.1 baseline and the human-approved
-directions available after closure of the previous maintenance loop. It does
-not authorize new capture surfaces or product behavior by itself.
+This roadmap describes the current v0.2 monitor-session baseline and the
+human-approved directions available after closure of the previous maintenance
+loop. It does not authorize new capture surfaces or product behavior by itself.
 
 ## Current Stable Baseline
 
 WinChronicle remains local-first, UIA-first, harness-first, and read-only MCP
-first. The current stable baseline is the `v0.1` harness-first baseline in this
-repository. The fixture/privacy maintenance loop that followed `v0.1.18` is
-closed for now; its evidence remains available through the
+first. The current stable baseline is the `v0.2` monitor-session baseline in
+this repository. It adds an explicit, finite, local monitor session on top of
+the `v0.1` harness-first baseline. The fixture/privacy maintenance loop that
+followed `v0.1.18` is closed for now; its evidence remains available through the
 [maintenance index](maintenance-index.md) and the
 [v0.1 closure note](goal-closure-v0.1.md). This roadmap does not start a new
-release-readiness path or maintenance cursor.
+maintenance cursor.
 
 The baseline includes deterministic fixture capture, privacy gates, redaction,
 SQLite capture search, deterministic Markdown memory, read-only MCP examples,
-an explicit UIA helper preview, and explicit finite watcher preview paths.
+an explicit UIA helper preview, explicit finite watcher preview paths, explicit
+monitor sessions, local session JSON, deterministic suggestions, and local HTML
+reports.
 
 ## Closed For Automatic Continuation
 
@@ -37,8 +40,9 @@ These are options for human review, not an automatically authorized backlog.
 | --- | --- | --- |
 | Fixture and privacy baseline | Deterministic fixtures, schema validation, privacy gates, SQLite search, and scorecards are covered by tests. | New broad parity matrices, residual gap audits, or release-readiness loops. |
 | UIA helper hardening | `capture-frontmost` is explicit opt-in; targeted UIA remains helper-only harness smoke. | Product targeted capture flags, window control, or helper behavior changes. |
+| Monitor sessions | `monitor` turns explicit watcher events into local session JSON, deterministic suggestions, and HTML reports. | Daemon/service install, default background capture, polling loops, LLM summaries, or broader watcher capture. |
 | Watcher preview | Watcher use is explicit, finite-duration, and preview-only. Deterministic watcher fixtures and fake-helper smoke are covered. | Daemon/service install, default background capture, polling loops, or broader watcher capture. |
-| Read-only MCP | MCP exposes only `current_context`, `search_captures`, `search_memory`, `read_recent_capture`, `recent_activity`, and `privacy_status`. | MCP write tools, arbitrary file reads, desktop control, screenshot/OCR/audio/keyboard/clipboard/network tools, or response-contract changes. |
+| Read-only MCP | MCP exposes only `current_context`, `search_captures`, `search_memory`, `read_recent_capture`, `recent_activity`, and `privacy_status`; `recent_activity` may include local monitor session summaries. | MCP write tools, arbitrary file reads, desktop control, screenshot/OCR/audio/keyboard/clipboard/network tools, or new MCP tools. |
 | Durable memory | Deterministic Markdown memory and `entries` / `entries_fts` search are implemented with goldens. | LLM reducer/classifier calls, network upload, or new memory output contracts. |
 | Screenshot/OCR enrichment | Not implemented in v0.1. | Any screenshot or OCR implementation, artifact storage, privacy policy change, or UI exposure. |
 

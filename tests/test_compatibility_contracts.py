@@ -24,10 +24,12 @@ EXPECTED_CLI_COMMANDS = [
     "generate-memory",
     "init",
     "mcp-stdio",
+    "monitor",
     "privacy-check",
     "search-captures",
     "search-memory",
     "status",
+    "summarize-session",
     "watch",
 ]
 EXPECTED_MCP_TOOLS = [
@@ -156,8 +158,17 @@ def test_product_cli_surface_contract_has_no_targeted_or_capture_expansion_flags
                     f"--helper-arg={forbidden}",
                 ],
                 ["watch", "--watcher", "watcher.exe", f"--watcher-arg={forbidden}"],
+                ["monitor", "--watcher", "watcher.exe", f"--watcher-arg={forbidden}"],
                 [
                     "watch",
+                    "--watcher",
+                    "watcher.exe",
+                    "--helper",
+                    "helper.exe",
+                    f"--helper-arg={forbidden}",
+                ],
+                [
+                    "monitor",
                     "--watcher",
                     "watcher.exe",
                     "--helper",

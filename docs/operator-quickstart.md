@@ -62,6 +62,8 @@ python -m winchronicle capture-once --fixture harness/fixtures/uia/terminal_erro
 python -m winchronicle search-captures "AssertionError"
 python -m winchronicle generate-memory --date 2026-04-25
 python -m winchronicle search-memory "AssertionError"
+python -m winchronicle monitor --events harness/fixtures/watcher/notepad_burst.jsonl --session-id demo
+python -m winchronicle summarize-session demo
 ```
 
 `status` should report screenshots, OCR, audio, keyboard capture, clipboard
@@ -104,6 +106,25 @@ strict Monaco diagnostics, use [Operator diagnostics](operator-diagnostics.md).
 Record stable diagnostic lines and local artifact paths only; do not paste raw
 observed content.
 
+## v0.2 Monitor Session
+
+`monitor` is the first product-facing v0.2 session path. It is explicit,
+finite-duration, local-only, and UIA/watcher based:
+
+```powershell
+python -m winchronicle monitor --events harness/fixtures/watcher/notepad_burst.jsonl --session-id demo
+python -m winchronicle summarize-session demo
+```
+
+The command writes a session JSON file under the local state home and a local
+HTML report under the reports directory. It does not install a service, start a
+daemon, save raw watcher JSONL, or add screenshots, OCR, audio, keyboard,
+clipboard, cloud upload, desktop control, or MCP write tools.
+
+Use `--exclude-app <name>` for exact app-name exclusions during a single
+session. Excluded windows are counted, but their observed content is not
+persisted by the monitor session.
+
 ## Read-Only MCP
 
 `mcp-stdio` exposes only read-only context tools:
@@ -127,6 +148,7 @@ or desktop control.
 - [v0.1 closure note](goal-closure-v0.1.md)
 - [Roadmap](roadmap.md)
 - [Known limitations](known-limitations.md)
+- [v0.2 monitor session](v0.2-monitor-session.md)
 - [Maintenance and release history index](maintenance-index.md)
 - [Release checklist](release-checklist.md)
 - [Release evidence guide](release-evidence.md)

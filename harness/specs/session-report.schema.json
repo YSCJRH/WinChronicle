@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://winchronicle.local/specs/session-report.schema.json",
+  "title": "WinChronicle Monitor Session Report v0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "session_schema_version",
+    "session_id",
+    "mode",
+    "started_at",
+    "ended_at",
+    "duration_seconds",
+    "trust",
+    "instruction",
+    "untrusted_observed_content",
+    "captures_written",
+    "duplicates_skipped",
+    "denylisted_skipped",
+    "excluded_skipped",
+    "heartbeats",
+    "app_segments",
+    "suggestions",
+    "source_capture_paths",
+    "report_path"
+  ],
+  "properties": {
+    "session_schema_version": { "const": 1 },
+    "session_id": { "type": "string", "minLength": 1 },
+    "mode": { "enum": ["events", "watcher"] },
+    "started_at": { "type": "string" },
+    "ended_at": { "type": "string" },
+    "duration_seconds": { "type": "integer", "minimum": 0 },
+    "trust": { "const": "untrusted_observed_content" },
+    "instruction": { "type": "string", "minLength": 1 },
+    "untrusted_observed_content": { "const": true },
+    "captures_written": { "type": "integer", "minimum": 0 },
+    "duplicates_skipped": { "type": "integer", "minimum": 0 },
+    "denylisted_skipped": { "type": "integer", "minimum": 0 },
+    "excluded_skipped": { "type": "integer", "minimum": 0 },
+    "heartbeats": { "type": "integer", "minimum": 0 },
+    "app_segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["app_name", "title", "start_timestamp", "end_timestamp", "capture_count"],
+        "properties": {
+          "app_name": { "type": "string" },
+          "title": { "type": "string" },
+          "start_timestamp": { "type": "string" },
+          "end_timestamp": { "type": "string" },
+          "capture_count": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "suggestions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "source_capture_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "report_path": { "type": "string" }
+  }
+}
