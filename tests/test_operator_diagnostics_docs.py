@@ -40,905 +40,108 @@ def test_operator_diagnostics_covers_stable_failure_modes_without_content_echo()
 def test_operator_quickstart_links_diagnostics_playbook():
     quickstart = (ROOT / "docs" / "operator-quickstart.md").read_text(encoding="utf-8")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    maintenance_index = (ROOT / "docs" / "maintenance-index.md").read_text(encoding="utf-8")
 
-    assert "[Operator diagnostics](operator-diagnostics.md)" in quickstart
-    assert "[Blueprint gap audit after v0.1.12](blueprint-gap-audit-post-v0.1.12.md)" in quickstart
-    assert (
-        "[Compatibility guardrail sweep after v0.1.12](compatibility-guardrail-sweep-post-v0.1.12.md)"
-        in quickstart
-    )
-    assert "[Deterministic demo](deterministic-demo.md)" in quickstart
-    assert "[Roadmap](roadmap.md)" in quickstart
-    assert "[Contributing](../CONTRIBUTING.md)" in quickstart
-    assert "[Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md)" in quickstart
-    assert (
-        "[Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md)"
-        in quickstart
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.18](helper-watcher-diagnostics-sweep-post-v0.1.18.md)"
-        in quickstart
-    )
-    assert (
-        "[MCP and memory contract sweep after v0.1.18](mcp-memory-contract-sweep-post-v0.1.18.md)"
-        in quickstart
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.18](compatibility-guardrail-sweep-post-v0.1.18.md)"
-        in quickstart
-    )
-    assert (
-        "[Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md)"
-        in quickstart
-    )
-    assert (
-        "[Next blueprint lane selection after v0.1.18](next-blueprint-lane-selection-post-v0.1.18.md)"
-        in quickstart
-    )
-    assert (
-        "[Watcher privacy fixture parity after v0.1.18](watcher-privacy-fixture-parity-post-v0.1.18.md)"
-        in quickstart
-    )
-    assert (
-        "[Fixture/helper privacy index parity after v0.1.18](fixture-helper-privacy-index-parity-post-v0.1.18.md)"
-        in quickstart
-    )
-    assert (
-        "[Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md)"
-        in quickstart
-    )
-    assert (
-        "[Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md)"
-        in quickstart
-    )
-    assert (
-        "[Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md)"
-        in quickstart
-    )
-    assert "[v0.1.19 maintenance release record](release-v0.1.19.md)" in quickstart
-    assert "[Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md)" in quickstart
-    assert (
-        "[Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md)"
-        in quickstart
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.17](helper-watcher-diagnostics-sweep-post-v0.1.17.md)"
-        in quickstart
-    )
-    assert (
-        "[MCP and memory contract sweep after v0.1.17](mcp-memory-contract-sweep-post-v0.1.17.md)"
-        in quickstart
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.17](compatibility-guardrail-sweep-post-v0.1.17.md)"
-        in quickstart
-    )
-    assert (
-        "[Release-readiness decision after v0.1.17](release-readiness-decision-post-v0.1.17.md)"
-        in quickstart
-    )
-    assert (
-        "[Phase 6 contract closure release-readiness decision after v0.1.17](phase6-contract-closure-release-readiness-decision-post-v0.1.17.md)"
-        in quickstart
-    )
-    assert (
-        "[Next blueprint lane selection after v0.1.17](next-blueprint-lane-selection-post-v0.1.17.md)"
-        in quickstart
-    )
-    assert (
-        "[Privacy-policy contract parity audit after v0.1.17](privacy-policy-contract-parity-audit-post-v0.1.17.md)"
-        in quickstart
-    )
-    assert (
-        "[Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md)"
-        in quickstart
-    )
-    assert "[v0.1.18 maintenance release record](release-v0.1.18.md)" in quickstart
-    assert "[Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)" in quickstart
-    assert (
-        "[Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)"
-        in quickstart
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.16](helper-watcher-diagnostics-sweep-post-v0.1.16.md)"
-        in quickstart
-    )
-    assert (
-        "[MCP and memory contract sweep after v0.1.16](mcp-memory-contract-sweep-post-v0.1.16.md)"
-        in quickstart
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.16](compatibility-guardrail-sweep-post-v0.1.16.md)"
-        in quickstart
-    )
-    assert (
-        "[Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md)"
-        in quickstart
-    )
-    assert "[v0.1.17 maintenance release record](release-v0.1.17.md)" in quickstart
-    assert (
-        "[v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md)"
-        in quickstart
-    )
-    assert "[v0.1.16 final release record](release-v0.1.16.md)" in quickstart
-    assert "[Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md)" in quickstart
-    assert (
-        "[v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md)"
-        in quickstart
-    )
-    assert "[Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md)" in quickstart
-    assert (
-        "[v0.1.15 maintenance release record](release-v0.1.15.md)"
-        in quickstart
-    )
-    assert (
-        "[Public metadata audit after v0.1.14](public-metadata-audit-post-v0.1.14.md)"
-        in quickstart
-    )
-    assert (
-        "[Public metadata audit after v0.1.15](public-metadata-audit-post-v0.1.15.md)"
-        in quickstart
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.15](helper-watcher-diagnostics-sweep-post-v0.1.15.md)"
-        in quickstart
-    )
-    assert (
-        "[MCP and memory contract sweep after v0.1.15](mcp-memory-contract-sweep-post-v0.1.15.md)"
-        in quickstart
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.15](compatibility-guardrail-sweep-post-v0.1.15.md)"
-        in quickstart
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.14](helper-watcher-diagnostics-sweep-post-v0.1.14.md)"
-        in quickstart
-    )
-    assert (
-        "[MCP and memory contract sweep after v0.1.14](mcp-memory-contract-sweep-post-v0.1.14.md)"
-        in quickstart
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.14](compatibility-guardrail-sweep-post-v0.1.14.md)"
-        in quickstart
-    )
-    assert "[Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md)" in quickstart
-    assert (
-        "[Public metadata audit after v0.1.13](public-metadata-audit-post-v0.1.13.md)"
-        in quickstart
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.13](helper-watcher-diagnostics-sweep-post-v0.1.13.md)"
-        in quickstart
-    )
-    assert (
-        "[MCP and memory contract sweep after v0.1.13](mcp-memory-contract-sweep-post-v0.1.13.md)"
-        in quickstart
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.13](compatibility-guardrail-sweep-post-v0.1.13.md)"
-        in quickstart
-    )
-    assert "[v0.1.13 maintenance release record](release-v0.1.13.md)" in quickstart
-    assert (
-        "[v0.1.14 maintenance release record](release-v0.1.14.md)"
-        in quickstart
-    )
-    assert "[Operator diagnostics](docs/operator-diagnostics.md)" in readme
-    assert (
-        "[Post-v0.1.17 maintenance plan](docs/next-round-plan-post-v0.1.17.md)"
-        in readme
-    )
-    assert (
-        "[Public metadata audit after v0.1.17](docs/public-metadata-audit-post-v0.1.17.md)"
-        in readme
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.17](docs/helper-watcher-diagnostics-sweep-post-v0.1.17.md)"
-        in readme
-    )
-    assert (
-        "[MCP and memory contract sweep after v0.1.18](docs/mcp-memory-contract-sweep-post-v0.1.18.md)"
-        in readme
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.18](docs/compatibility-guardrail-sweep-post-v0.1.18.md)"
-        in readme
-    )
-    assert (
-        "[Release-readiness decision after v0.1.18](docs/release-readiness-decision-post-v0.1.18.md)"
-        in readme
-    )
-    assert (
-        "[Next blueprint lane selection after v0.1.18](docs/next-blueprint-lane-selection-post-v0.1.18.md)"
-        in readme
-    )
-    assert (
-        "[Watcher privacy fixture parity after v0.1.18](docs/watcher-privacy-fixture-parity-post-v0.1.18.md)"
-        in readme
-    )
-    assert (
-        "[Fixture/helper privacy index parity after v0.1.18](docs/fixture-helper-privacy-index-parity-post-v0.1.18.md)"
-        in readme
-    )
-    assert (
-        "[Fixture/privacy parity matrix after v0.1.18](docs/privacy-fixture-parity-matrix-post-v0.1.18.md)"
-        in readme
-    )
-    assert (
-        "[Fixture/privacy residual gap audit after v0.1.18](docs/privacy-residual-gap-audit-post-v0.1.18.md)"
-        in readme
-    )
-    assert (
-        "[Privacy-output release-readiness decision after v0.1.18](docs/privacy-output-release-readiness-decision-post-v0.1.18.md)"
-        in readme
-    )
-    assert "[v0.1.19 maintenance release record](docs/release-v0.1.19.md)" in readme
-    assert (
-        "[MCP and memory contract sweep after v0.1.17](docs/mcp-memory-contract-sweep-post-v0.1.17.md)"
-        in readme
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.17](docs/compatibility-guardrail-sweep-post-v0.1.17.md)"
-        in readme
-    )
-    assert (
-        "[Release-readiness decision after v0.1.17](docs/release-readiness-decision-post-v0.1.17.md)"
-        in readme
-    )
-    assert (
-        "[Phase 6 contract closure release-readiness decision after v0.1.17](docs/phase6-contract-closure-release-readiness-decision-post-v0.1.17.md)"
-        in readme
-    )
-    assert (
-        "[Next blueprint lane selection after v0.1.17](docs/next-blueprint-lane-selection-post-v0.1.17.md)"
-        in readme
-    )
-    assert (
-        "[Privacy-policy contract parity audit after v0.1.17](docs/privacy-policy-contract-parity-audit-post-v0.1.17.md)"
-        in readme
-    )
-    assert (
-        "[Privacy-check release-readiness decision after v0.1.17](docs/privacy-check-release-readiness-decision-post-v0.1.17.md)"
-        in readme
-    )
-    assert "[v0.1.18 maintenance release record](docs/release-v0.1.18.md)" in readme
-    assert (
-        "[Blueprint gap audit after v0.1.12](docs/blueprint-gap-audit-post-v0.1.12.md)"
-        in readme
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.12](docs/compatibility-guardrail-sweep-post-v0.1.12.md)"
-        in readme
-    )
-    assert "[Deterministic demo](docs/deterministic-demo.md)" in readme
-    assert "[Roadmap](docs/roadmap.md)" in readme
-    assert "[Contributing](CONTRIBUTING.md)" in readme
-    assert (
-        "[Post-v0.1.18 maintenance plan](docs/next-round-plan-post-v0.1.18.md)"
-        in readme
-    )
-    assert (
-        "[Public metadata audit after v0.1.18](docs/public-metadata-audit-post-v0.1.18.md)"
-        in readme
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.18](docs/helper-watcher-diagnostics-sweep-post-v0.1.18.md)"
-        in readme
-    )
-    assert (
-        "[Post-v0.1.16 maintenance plan](docs/next-round-plan-post-v0.1.16.md)"
-        in readme
-    )
-    assert (
-        "[Public metadata audit after v0.1.16](docs/public-metadata-audit-post-v0.1.16.md)"
-        in readme
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.16](docs/helper-watcher-diagnostics-sweep-post-v0.1.16.md)"
-        in readme
-    )
-    assert (
-        "[MCP and memory contract sweep after v0.1.16](docs/mcp-memory-contract-sweep-post-v0.1.16.md)"
-        in readme
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.16](docs/compatibility-guardrail-sweep-post-v0.1.16.md)"
-        in readme
-    )
-    assert (
-        "[Release-readiness decision after v0.1.16](docs/release-readiness-decision-post-v0.1.16.md)"
-        in readme
-    )
-    assert "[v0.1.17 maintenance release record](docs/release-v0.1.17.md)" in readme
-    assert (
-        "[v0.1.16 final-release plan](docs/next-round-plan-v0.1.16-final-release.md)"
-        in readme
-    )
-    assert "[v0.1.16 final release record](docs/release-v0.1.16.md)" in readme
-    assert "[Post-v0.1.15 maintenance plan](docs/next-round-plan-post-v0.1.15.md)" in readme
-    assert (
-        "[v0.1.16-rc.0 release candidate record](docs/release-candidate-v0.1.16-rc.0.md)"
-        in readme
-    )
-    assert "[Post-v0.1.14 maintenance plan](docs/next-round-plan-post-v0.1.14.md)" in readme
-    assert (
-        "[v0.1.15 maintenance release record](docs/release-v0.1.15.md)"
-        in readme
-    )
-    assert (
-        "[Public metadata audit after v0.1.14](docs/public-metadata-audit-post-v0.1.14.md)"
-        in readme
-    )
-    assert (
-        "[Public metadata audit after v0.1.15](docs/public-metadata-audit-post-v0.1.15.md)"
-        in readme
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.15](docs/helper-watcher-diagnostics-sweep-post-v0.1.15.md)"
-        in readme
-    )
-    assert (
-        "[MCP and memory contract sweep after v0.1.15](docs/mcp-memory-contract-sweep-post-v0.1.15.md)"
-        in readme
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.15](docs/compatibility-guardrail-sweep-post-v0.1.15.md)"
-        in readme
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.14](docs/helper-watcher-diagnostics-sweep-post-v0.1.14.md)"
-        in readme
-    )
-    assert (
-        "[MCP and memory contract sweep after v0.1.14](docs/mcp-memory-contract-sweep-post-v0.1.14.md)"
-        in readme
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.14](docs/compatibility-guardrail-sweep-post-v0.1.14.md)"
-        in readme
-    )
-    assert "[Post-v0.1.13 maintenance plan](docs/next-round-plan-post-v0.1.13.md)" in readme
-    assert (
-        "[Public metadata audit after v0.1.13](docs/public-metadata-audit-post-v0.1.13.md)"
-        in readme
-    )
-    assert (
-        "[Helper and watcher diagnostics sweep after v0.1.13](docs/helper-watcher-diagnostics-sweep-post-v0.1.13.md)"
-        in readme
-    )
-    assert (
-        "[MCP and memory contract sweep after v0.1.13](docs/mcp-memory-contract-sweep-post-v0.1.13.md)"
-        in readme
-    )
-    assert (
-        "[Compatibility guardrail sweep after v0.1.13](docs/compatibility-guardrail-sweep-post-v0.1.13.md)"
-        in readme
-    )
-    assert "[v0.1.13 maintenance release record](docs/release-v0.1.13.md)" in readme
-    assert (
-        "[v0.1.14 maintenance release record](docs/release-v0.1.14.md)"
-        in readme
-    )
+    for expected in (
+        "[Operator diagnostics](operator-diagnostics.md)",
+        "[Deterministic demo](deterministic-demo.md)",
+        "[Roadmap](roadmap.md)",
+        "[Known limitations](known-limitations.md)",
+        "[v0.1 closure note](goal-closure-v0.1.md)",
+        "[Maintenance and release history index](maintenance-index.md)",
+        "[Contributing](../CONTRIBUTING.md)",
+    ):
+        assert expected in quickstart
 
+    for expected in (
+        "[Operator quickstart](docs/operator-quickstart.md)",
+        "[Roadmap](docs/roadmap.md)",
+        "[v0.1 closure note](docs/goal-closure-v0.1.md)",
+        "[Known limitations](docs/known-limitations.md)",
+        "[Deterministic demo](docs/deterministic-demo.md)",
+        "[Read-only MCP examples](docs/mcp-readonly-examples.md)",
+        "[Watcher preview](docs/watcher-preview.md)",
+        "[Maintenance and release history index](docs/maintenance-index.md)",
+        "[Contributing](CONTRIBUTING.md)",
+    ):
+        assert expected in readme
+
+    for expected in (
+        "[Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md)",
+        "[Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md)",
+        "[Helper and watcher diagnostics sweep after v0.1.18](helper-watcher-diagnostics-sweep-post-v0.1.18.md)",
+        "[MCP and memory contract sweep after v0.1.18](mcp-memory-contract-sweep-post-v0.1.18.md)",
+        "[Compatibility guardrail sweep after v0.1.18](compatibility-guardrail-sweep-post-v0.1.18.md)",
+        "[Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md)",
+        "[Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md)",
+        "[v0.1.18 maintenance release record](release-v0.1.18.md)",
+        "[v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md)",
+        "[v0.1.0-rc.0 release record](release-candidate-v0.1.0-rc.0.md)",
+    ):
+        assert expected in maintenance_index
+
+    assert "## Operator Docs" not in readme
+    assert "## Current Maintenance Docs" not in quickstart
+    assert "[Post-v0.1.18 maintenance plan](docs/next-round-plan-post-v0.1.18.md)" not in readme
+    assert "[Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md)" not in quickstart
 
 def test_operator_entry_points_distinguish_current_cursor_from_history():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     quickstart = (ROOT / "docs" / "operator-quickstart.md").read_text(encoding="utf-8")
+    maintenance_index = (ROOT / "docs" / "maintenance-index.md").read_text(encoding="utf-8")
+    closure = (ROOT / "docs" / "goal-closure-v0.1.md").read_text(encoding="utf-8")
+    roadmap = (ROOT / "docs" / "roadmap.md").read_text(encoding="utf-8")
     checklist = (ROOT / "docs" / "release-checklist.md").read_text(encoding="utf-8")
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
     matrix = (ROOT / "docs" / "uia-helper-quality-matrix.md").read_text(encoding="utf-8")
 
-    readme_intro = readme.split("## Why WinChronicle", 1)[0]
-    readme_operator_docs = readme.split("## Operator Docs", 1)[1].split(
-        "Screenshot/OCR enrichment", 1
-    )[0]
-    current_section = quickstart.split("## Current Maintenance Docs", 1)[1].split(
-        "## Historical Release Records", 1
-    )[0]
-    historical_section = quickstart.split("## Historical Release Records", 1)[1]
-    readme_intro_normalized = " ".join(readme_intro.split())
+    assert "The current status is a `v0.1` harness-first baseline" in readme
+    assert (
+        "Do not continue the historical maintenance loop automatically."
+        in " ".join(readme.split())
+    )
+    assert "Maintenance and release history index" in readme
+    assert "The next step is human product review." in closure
+    assert (
+        "It is not a release-readiness record, publication plan, or new "
+        "maintenance cursor."
+    ) in " ".join(closure.split())
+    assert "Do not create another compatibility sweep" in closure
+    assert (
+        "The fixture/privacy maintenance loop that followed `v0.1.18` is "
+        "closed for now"
+    ) in " ".join(roadmap.split())
+    assert "These are options for human review, not an automatically authorized backlog." in roadmap
+    assert "Any future runtime behavior, capture-surface expansion, release path" in roadmap
 
-    assert "active post-v0.1.18 maintenance plan" in readme_intro_normalized
-    assert "completed post-v0.1.18 public metadata audit" in readme_intro_normalized
-    assert "completed post-v0.1.18 helper/watcher diagnostics sweep" in readme_intro_normalized
-    assert "completed post-v0.1.18 MCP/memory contract sweep" in readme_intro_normalized
-    assert "completed post-v0.1.18 compatibility guardrail sweep" in readme_intro_normalized
-    assert "completed post-v0.1.18 release-readiness decision" in readme_intro_normalized
-    assert "completed post-v0.1.18 next blueprint lane selection" in readme_intro_normalized
-    assert "completed post-v0.1.18 watcher privacy fixture parity record" in readme_intro_normalized
-    assert "completed post-v0.1.18 fixture/helper privacy index parity record" in readme_intro_normalized
-    assert "completed post-v0.1.18 fixture/privacy parity matrix record" in readme_intro_normalized
-    assert "completed post-v0.1.18 fixture/privacy residual gap audit" in readme_intro_normalized
-    assert "completed post-v0.1.18 privacy-output release-readiness decision" in readme_intro_normalized
-    assert "published `v0.1.19` maintenance release record" in readme_intro_normalized
-    assert "completed post-v0.1.17 maintenance plan" in readme_intro_normalized
-    assert "completed post-v0.1.16 maintenance plan and publication reconciliation" in readme_intro_normalized
-    assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
-    assert "previous published `v0.1.17` release record" in readme_intro_normalized
-    assert "completed `v0.1.16` final-release plan" in readme_intro_normalized
-    assert "historical `v0.1.16-rc.0` release-candidate record" in readme_intro_normalized
-    assert "previous published `v0.1.15` release record" in readme_intro_normalized
-    assert "older completed maintenance plans" in readme_intro_normalized
-    assert "completed post-v0.1.17 public metadata audit" in readme_intro_normalized
-    assert "completed post-v0.1.17 helper/watcher diagnostics sweep" in readme_intro_normalized
-    assert "completed post-v0.1.17 MCP/memory contract sweep" in readme_intro_normalized
-    assert "completed post-v0.1.17 compatibility guardrail sweep" in readme_intro_normalized
-    assert "completed post-v0.1.17 release-readiness decision" in readme_intro_normalized
-    assert "completed Phase 6 privacy contract preflight" in readme_intro_normalized
-    assert "completed Phase 6 privacy contract fixture expansion" in readme_intro_normalized
-    assert "completed Phase 6 remaining negative contract fixture expansion" in readme_intro_normalized
-    assert "completed Phase 6 contract coverage audit" in readme_intro_normalized
-    assert "completed Phase 6 contract gap fixture expansion" in readme_intro_normalized
-    assert "completed Phase 6 residual schema coverage audit" in readme_intro_normalized
-    assert "completed Phase 6 residual policy fixture expansion" in readme_intro_normalized
-    assert "completed Phase 6 deferred fixture closure" in readme_intro_normalized
-    assert "completed Phase 6 contract closure release-readiness decision" in readme_intro_normalized
-    assert "completed next blueprint lane selection" in readme_intro_normalized
-    assert "completed privacy-policy contract parity audit" in readme_intro_normalized
-    assert "completed privacy-check release-readiness decision" in readme_intro_normalized
-    assert "published `v0.1.18` maintenance release record" in readme_intro_normalized
-    assert "latest published `v0.1.5` release" not in readme_intro
-    assert "latest published `v0.1.3` release" not in readme_intro
-    assert "v0.1.12 maintenance release record" in readme_operator_docs
-    assert "v0.1.13 maintenance release record" in readme_operator_docs
-    assert "v0.1.14 maintenance release record" in readme_operator_docs
-    assert "v0.1.15 maintenance release record" in readme_operator_docs
-    assert "Post-v0.1.18 maintenance plan" in readme_operator_docs
-    assert "Public metadata audit after v0.1.18" in readme_operator_docs
-    assert "Helper and watcher diagnostics sweep after v0.1.18" in readme_operator_docs
-    assert "MCP and memory contract sweep after v0.1.18" in readme_operator_docs
-    assert "Compatibility guardrail sweep after v0.1.18" in readme_operator_docs
-    assert "Release-readiness decision after v0.1.18" in readme_operator_docs
-    assert "Next blueprint lane selection after v0.1.18" in readme_operator_docs
-    assert "Watcher privacy fixture parity after v0.1.18" in readme_operator_docs
-    assert "Fixture/helper privacy index parity after v0.1.18" in readme_operator_docs
-    assert "Fixture/privacy parity matrix after v0.1.18" in readme_operator_docs
-    assert "Fixture/privacy residual gap audit after v0.1.18" in readme_operator_docs
-    assert "Privacy-output release-readiness decision after v0.1.18" in readme_operator_docs
-    assert "v0.1.19 maintenance release record" in readme_operator_docs
-    assert "Post-v0.1.17 maintenance plan" in readme_operator_docs
-    assert "Public metadata audit after v0.1.17" in readme_operator_docs
-    assert "Helper and watcher diagnostics sweep after v0.1.17" in readme_operator_docs
-    assert "MCP and memory contract sweep after v0.1.17" in readme_operator_docs
-    assert "Compatibility guardrail sweep after v0.1.17" in readme_operator_docs
-    assert "Release-readiness decision after v0.1.17" in readme_operator_docs
-    assert "Phase 6 privacy contract preflight after v0.1.17" in readme_operator_docs
-    assert "Phase 6 privacy contract fixture expansion after v0.1.17" in readme_operator_docs
-    assert "Phase 6 privacy contract remaining fixtures after v0.1.17" in readme_operator_docs
-    assert "Phase 6 privacy contract coverage audit after v0.1.17" in readme_operator_docs
-    assert "Phase 6 privacy contract gap fixtures after v0.1.17" in readme_operator_docs
-    assert "Phase 6 privacy contract residual schema coverage audit after v0.1.17" in readme_operator_docs
-    assert "Phase 6 privacy contract residual policy fixtures after v0.1.17" in readme_operator_docs
-    assert "Phase 6 privacy contract deferred fixture closure after v0.1.17" in readme_operator_docs
-    assert "Phase 6 contract closure release-readiness decision after v0.1.17" in readme_operator_docs
-    assert "Next blueprint lane selection after v0.1.17" in readme_operator_docs
-    assert "Privacy-policy contract parity audit after v0.1.17" in readme_operator_docs
-    assert "Privacy-check release-readiness decision after v0.1.17" in readme_operator_docs
-    assert "v0.1.18 maintenance release record" in readme_operator_docs
-    assert "Post-v0.1.16 maintenance plan" in readme_operator_docs
-    assert "Public metadata audit after v0.1.16" in readme_operator_docs
-    assert "Helper and watcher diagnostics sweep after v0.1.16" in readme_operator_docs
-    assert "MCP and memory contract sweep after v0.1.16" in readme_operator_docs
-    assert "Compatibility guardrail sweep after v0.1.16" in readme_operator_docs
-    assert "Release-readiness decision after v0.1.16" in readme_operator_docs
-    assert "v0.1.17 maintenance release record" in readme_operator_docs
-    assert "v0.1.16 final-release plan" in readme_operator_docs
-    assert "v0.1.16 final release record" in readme_operator_docs
-    assert "v0.1.16-rc.0 release candidate record" in readme_operator_docs
-    assert "Post-v0.1.15 maintenance plan" in readme_operator_docs
-    assert "Post-v0.1.14 maintenance plan" in readme_operator_docs
-    assert "Public metadata audit after v0.1.15" in readme_operator_docs
-    assert "Helper and watcher diagnostics sweep after v0.1.15" in readme_operator_docs
-    assert "MCP and memory contract sweep after v0.1.15" in readme_operator_docs
-    assert "Compatibility guardrail sweep after v0.1.15" in readme_operator_docs
-    assert "Public metadata audit after v0.1.14" in readme_operator_docs
-    assert "Helper and watcher diagnostics sweep after v0.1.14" in readme_operator_docs
-    assert "MCP and memory contract sweep after v0.1.14" in readme_operator_docs
-    assert "Compatibility guardrail sweep after v0.1.14" in readme_operator_docs
-    assert "Post-v0.1.13 maintenance plan" in readme_operator_docs
-    assert "Public metadata audit after v0.1.13" in readme_operator_docs
-    assert "Helper and watcher diagnostics sweep after v0.1.13" in readme_operator_docs
-    assert "MCP and memory contract sweep after v0.1.13" in readme_operator_docs
-    assert "Compatibility guardrail sweep after v0.1.13" in readme_operator_docs
-    assert "Post-v0.1.12 maintenance plan" in readme_operator_docs
-    assert "Post-v0.1.11 maintenance plan" in readme_operator_docs
-    assert "v0.1.11 maintenance release record" in readme_operator_docs
-    assert "v0.1.10 maintenance release record" in readme_operator_docs
-    assert "Post-v0.1.10 maintenance plan" in readme_operator_docs
-    assert "v0.1.9 maintenance release record" in readme_operator_docs
-    assert "Post-v0.1.9 maintenance plan" in readme_operator_docs
-    assert "v0.1.8 maintenance release record" in readme_operator_docs
-    assert "Post-v0.1.8 maintenance plan" in readme_operator_docs
-    assert "v0.1.7 maintenance release record" in readme_operator_docs
-    assert "Post-v0.1.7 maintenance plan" in readme_operator_docs
-    assert "Post-v0.1.6 maintenance plan" in readme_operator_docs
-    assert "Post-v0.1.5 maintenance plan" in readme_operator_docs
-    assert "v0.1.6 maintenance release record" in readme_operator_docs
-    assert "Post-v0.1.4 maintenance plan" in readme_operator_docs
-    assert "v0.1.5 maintenance release record" in readme_operator_docs
-    assert "v0.1.4 maintenance release record" in readme_operator_docs
-    assert readme_operator_docs.index("Public metadata audit after v0.1.13") < readme_operator_docs.index(
-        "Helper and watcher diagnostics sweep after v0.1.13"
-    )
-    assert readme_operator_docs.index("Helper and watcher diagnostics sweep after v0.1.13") < readme_operator_docs.index(
-        "MCP and memory contract sweep after v0.1.13"
-    )
-    assert readme_operator_docs.index("MCP and memory contract sweep after v0.1.13") < readme_operator_docs.index(
-        "Compatibility guardrail sweep after v0.1.13"
-    )
-    assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.13") < readme_operator_docs.index(
-        "Blueprint gap audit after v0.1.12"
-    )
-    assert readme_operator_docs.index("Post-v0.1.18 maintenance plan") < readme_operator_docs.index(
-        "Public metadata audit after v0.1.18"
-    )
-    assert readme_operator_docs.index("Public metadata audit after v0.1.18") < readme_operator_docs.index(
-        "Helper and watcher diagnostics sweep after v0.1.18"
-    )
-    assert readme_operator_docs.index("Helper and watcher diagnostics sweep after v0.1.18") < readme_operator_docs.index(
-        "MCP and memory contract sweep after v0.1.18"
-    )
-    assert readme_operator_docs.index("MCP and memory contract sweep after v0.1.18") < readme_operator_docs.index(
-        "Compatibility guardrail sweep after v0.1.18"
-    )
-    assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.18") < readme_operator_docs.index(
-        "Release-readiness decision after v0.1.18"
-    )
-    assert readme_operator_docs.index("Release-readiness decision after v0.1.18") < readme_operator_docs.index(
-        "Next blueprint lane selection after v0.1.18"
-    )
-    assert readme_operator_docs.index("Next blueprint lane selection after v0.1.18") < readme_operator_docs.index(
-        "Watcher privacy fixture parity after v0.1.18"
-    )
-    assert readme_operator_docs.index("Watcher privacy fixture parity after v0.1.18") < readme_operator_docs.index(
-        "Fixture/helper privacy index parity after v0.1.18"
-    )
-    assert readme_operator_docs.index("Fixture/helper privacy index parity after v0.1.18") < readme_operator_docs.index(
-        "Fixture/privacy parity matrix after v0.1.18"
-    )
-    assert readme_operator_docs.index("Fixture/privacy parity matrix after v0.1.18") < readme_operator_docs.index(
-        "Fixture/privacy residual gap audit after v0.1.18"
-    )
-    assert readme_operator_docs.index("Fixture/privacy residual gap audit after v0.1.18") < readme_operator_docs.index(
-        "Privacy-output release-readiness decision after v0.1.18"
-    )
-    assert readme_operator_docs.index("Privacy-output release-readiness decision after v0.1.18") < readme_operator_docs.index(
-        "v0.1.19 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.19 maintenance release record") < readme_operator_docs.index(
-        "Post-v0.1.17 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.17 maintenance plan") < readme_operator_docs.index(
-        "Public metadata audit after v0.1.17"
-    )
-    assert readme_operator_docs.index("Public metadata audit after v0.1.17") < readme_operator_docs.index(
-        "Helper and watcher diagnostics sweep after v0.1.17"
-    )
-    assert readme_operator_docs.index("Helper and watcher diagnostics sweep after v0.1.17") < readme_operator_docs.index(
-        "MCP and memory contract sweep after v0.1.17"
-    )
-    assert readme_operator_docs.index("MCP and memory contract sweep after v0.1.17") < readme_operator_docs.index(
-        "Compatibility guardrail sweep after v0.1.17"
-    )
-    assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.17") < readme_operator_docs.index(
-        "Release-readiness decision after v0.1.17"
-    )
-    assert readme_operator_docs.index("Release-readiness decision after v0.1.17") < readme_operator_docs.index(
-        "Phase 6 privacy contract preflight after v0.1.17"
-    )
-    assert readme_operator_docs.index("Phase 6 privacy contract preflight after v0.1.17") < readme_operator_docs.index(
-        "Phase 6 privacy contract fixture expansion after v0.1.17"
-    )
-    assert readme_operator_docs.index(
-        "Phase 6 privacy contract fixture expansion after v0.1.17"
-    ) < readme_operator_docs.index(
-        "Phase 6 privacy contract remaining fixtures after v0.1.17"
-    )
-    assert readme_operator_docs.index(
-        "Phase 6 privacy contract remaining fixtures after v0.1.17"
-    ) < readme_operator_docs.index(
-        "Phase 6 privacy contract coverage audit after v0.1.17"
-    )
-    assert readme_operator_docs.index(
-        "Phase 6 privacy contract coverage audit after v0.1.17"
-    ) < readme_operator_docs.index(
-        "Phase 6 privacy contract gap fixtures after v0.1.17"
-    )
-    assert readme_operator_docs.index(
-        "Phase 6 privacy contract gap fixtures after v0.1.17"
-    ) < readme_operator_docs.index(
-        "Phase 6 privacy contract residual schema coverage audit after v0.1.17"
-    )
-    assert readme_operator_docs.index(
-        "Phase 6 privacy contract residual schema coverage audit after v0.1.17"
-    ) < readme_operator_docs.index(
-        "Phase 6 privacy contract residual policy fixtures after v0.1.17"
-    )
-    assert readme_operator_docs.index(
-        "Phase 6 privacy contract residual policy fixtures after v0.1.17"
-    ) < readme_operator_docs.index(
-        "Phase 6 privacy contract deferred fixture closure after v0.1.17"
-    )
-    assert readme_operator_docs.index(
-        "Phase 6 privacy contract deferred fixture closure after v0.1.17"
-    ) < readme_operator_docs.index(
-        "Phase 6 contract closure release-readiness decision after v0.1.17"
-    )
-    assert readme_operator_docs.index(
-        "Phase 6 contract closure release-readiness decision after v0.1.17"
-    ) < readme_operator_docs.index(
-        "Next blueprint lane selection after v0.1.17"
-    )
-    assert readme_operator_docs.index(
-        "Next blueprint lane selection after v0.1.17"
-    ) < readme_operator_docs.index(
-        "Privacy-policy contract parity audit after v0.1.17"
-    )
-    assert readme_operator_docs.index(
-        "Privacy-policy contract parity audit after v0.1.17"
-    ) < readme_operator_docs.index(
-        "Privacy-check release-readiness decision after v0.1.17"
-    )
-    assert readme_operator_docs.index(
-        "Privacy-check release-readiness decision after v0.1.17"
-    ) < readme_operator_docs.index(
-        "v0.1.18 maintenance release record"
-    )
-    assert readme_operator_docs.index(
-        "v0.1.18 maintenance release record"
-    ) < readme_operator_docs.index(
-        "Post-v0.1.16 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.16 maintenance plan") < readme_operator_docs.index(
-        "Public metadata audit after v0.1.16"
-    )
-    assert readme_operator_docs.index("Public metadata audit after v0.1.16") < readme_operator_docs.index(
-        "Helper and watcher diagnostics sweep after v0.1.16"
-    )
-    assert readme_operator_docs.index(
-        "Helper and watcher diagnostics sweep after v0.1.16"
-    ) < readme_operator_docs.index(
-        "MCP and memory contract sweep after v0.1.16"
-    )
-    assert readme_operator_docs.index(
-        "MCP and memory contract sweep after v0.1.16"
-    ) < readme_operator_docs.index(
-        "Compatibility guardrail sweep after v0.1.16"
-    )
-    assert readme_operator_docs.index(
-        "Compatibility guardrail sweep after v0.1.16"
-    ) < readme_operator_docs.index(
-        "Release-readiness decision after v0.1.16"
-    )
-    assert readme_operator_docs.index(
-        "Release-readiness decision after v0.1.16"
-    ) < readme_operator_docs.index(
-        "v0.1.17 maintenance release record"
-    )
-    assert readme_operator_docs.index(
-        "v0.1.17 maintenance release record"
-    ) < readme_operator_docs.index(
-        "v0.1.16 final release record"
-    )
-    assert readme_operator_docs.index("v0.1.16 final release record") < readme_operator_docs.index(
-        "v0.1.16 final-release plan"
-    )
-    assert readme_operator_docs.index("v0.1.16 final-release plan") < readme_operator_docs.index(
-        "Post-v0.1.15 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.15 maintenance plan") < readme_operator_docs.index(
-        "v0.1.16-rc.0 release candidate record"
-    )
-    assert readme_operator_docs.index("v0.1.16-rc.0 release candidate record") < readme_operator_docs.index(
-        "Post-v0.1.14 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.14 maintenance plan") < readme_operator_docs.index(
-        "v0.1.15 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.15 maintenance release record") < readme_operator_docs.index(
-        "v0.1.14 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.14 maintenance release record") < readme_operator_docs.index(
-        "Public metadata audit after v0.1.15"
-    )
-    assert readme_operator_docs.index("Public metadata audit after v0.1.15") < readme_operator_docs.index(
-        "Helper and watcher diagnostics sweep after v0.1.15"
-    )
-    assert readme_operator_docs.index("Helper and watcher diagnostics sweep after v0.1.15") < readme_operator_docs.index(
-        "MCP and memory contract sweep after v0.1.15"
-    )
-    assert readme_operator_docs.index("MCP and memory contract sweep after v0.1.15") < readme_operator_docs.index(
-        "Compatibility guardrail sweep after v0.1.15"
-    )
-    assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.15") < readme_operator_docs.index(
-        "Public metadata audit after v0.1.14"
-    )
-    assert readme_operator_docs.index("Public metadata audit after v0.1.14") < readme_operator_docs.index(
-        "Helper and watcher diagnostics sweep after v0.1.14"
-    )
-    assert readme_operator_docs.index("Helper and watcher diagnostics sweep after v0.1.14") < readme_operator_docs.index(
-        "MCP and memory contract sweep after v0.1.14"
-    )
-    assert readme_operator_docs.index("MCP and memory contract sweep after v0.1.14") < readme_operator_docs.index(
-        "Compatibility guardrail sweep after v0.1.14"
-    )
-    assert readme_operator_docs.index("Compatibility guardrail sweep after v0.1.14") < readme_operator_docs.index(
-        "Public metadata audit after v0.1.13"
-    )
-    assert readme_operator_docs.index("Public metadata audit after v0.1.13") < readme_operator_docs.index(
-        "Post-v0.1.13 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.13 maintenance plan") < readme_operator_docs.index(
-        "v0.1.13 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.13 maintenance release record") < readme_operator_docs.index(
-        "v0.1.12 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.12 maintenance release record") < readme_operator_docs.index(
-        "Post-v0.1.12 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.12 maintenance plan") < readme_operator_docs.index(
-        "Post-v0.1.11 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.11 maintenance plan") < readme_operator_docs.index(
-        "v0.1.11 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.11 maintenance release record") < readme_operator_docs.index(
-        "v0.1.10 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.10 maintenance release record") < readme_operator_docs.index(
-        "Post-v0.1.10 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.10 maintenance plan") < readme_operator_docs.index(
-        "v0.1.9 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.9 maintenance release record") < readme_operator_docs.index(
-        "Post-v0.1.9 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.9 maintenance plan") < readme_operator_docs.index(
-        "v0.1.8 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.8 maintenance release record") < readme_operator_docs.index(
-        "Post-v0.1.8 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.8 maintenance plan") < readme_operator_docs.index(
-        "Post-v0.1.7 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.7 maintenance plan") < readme_operator_docs.index(
-        "v0.1.7 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.7 maintenance release record") < readme_operator_docs.index(
-        "Post-v0.1.6 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.6 maintenance plan") < readme_operator_docs.index(
-        "v0.1.6 maintenance release record"
-    )
-    assert "next-round-plan-post-v0.1.18.md" in current_section
-    assert "public-metadata-audit-post-v0.1.18.md" in current_section
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.18.md" in current_section
-    assert "mcp-memory-contract-sweep-post-v0.1.18.md" in current_section
-    assert "compatibility-guardrail-sweep-post-v0.1.18.md" in current_section
-    assert "release-readiness-decision-post-v0.1.18.md" in current_section
-    assert "next-blueprint-lane-selection-post-v0.1.18.md" in current_section
-    assert "watcher-privacy-fixture-parity-post-v0.1.18.md" in current_section
-    assert "fixture-helper-privacy-index-parity-post-v0.1.18.md" in current_section
-    assert "privacy-fixture-parity-matrix-post-v0.1.18.md" in current_section
-    assert "privacy-residual-gap-audit-post-v0.1.18.md" in current_section
-    assert "privacy-output-release-readiness-decision-post-v0.1.18.md" in current_section
-    assert "release-v0.1.19.md" in current_section
-    assert "next-round-plan-post-v0.1.17.md" in current_section
-    assert "public-metadata-audit-post-v0.1.17.md" in current_section
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in current_section
-    assert "mcp-memory-contract-sweep-post-v0.1.17.md" in current_section
-    assert "compatibility-guardrail-sweep-post-v0.1.17.md" in current_section
-    assert "release-readiness-decision-post-v0.1.17.md" in current_section
-    assert "phase6-privacy-contract-preflight-post-v0.1.17.md" in current_section
-    assert "phase6-privacy-contract-fixture-expansion-post-v0.1.17.md" in current_section
-    assert "phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md" in current_section
-    assert "phase6-privacy-contract-coverage-audit-post-v0.1.17.md" in current_section
-    assert "phase6-privacy-contract-gap-fixtures-post-v0.1.17.md" in current_section
-    assert "phase6-privacy-contract-residual-schema-coverage-audit-post-v0.1.17.md" in current_section
-    assert "phase6-privacy-contract-residual-policy-fixtures-post-v0.1.17.md" in current_section
-    assert "phase6-privacy-contract-deferred-fixture-closure-post-v0.1.17.md" in current_section
-    assert "phase6-contract-closure-release-readiness-decision-post-v0.1.17.md" in current_section
-    assert "next-blueprint-lane-selection-post-v0.1.17.md" in current_section
-    assert "privacy-policy-contract-parity-audit-post-v0.1.17.md" in current_section
-    assert "privacy-check-release-readiness-decision-post-v0.1.17.md" in current_section
-    assert "release-v0.1.18.md" in current_section
-    assert "next-round-plan-post-v0.1.16.md" in current_section
-    assert "public-metadata-audit-post-v0.1.16.md" in current_section
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in current_section
-    assert "mcp-memory-contract-sweep-post-v0.1.16.md" in current_section
-    assert "compatibility-guardrail-sweep-post-v0.1.16.md" in current_section
-    assert "release-readiness-decision-post-v0.1.16.md" in current_section
-    assert "release-v0.1.17.md" in current_section
-    assert "release-v0.1.16.md" in current_section
-    assert "next-round-plan-v0.1.16-final-release.md" in current_section
-    assert "next-round-plan-post-v0.1.15.md" in current_section
-    assert "release-candidate-v0.1.16-rc.0.md" in current_section
-    assert "next-round-plan-post-v0.1.14.md" in current_section
-    assert "public-metadata-audit-post-v0.1.15.md" in current_section
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.15.md" in current_section
-    assert "mcp-memory-contract-sweep-post-v0.1.15.md" in current_section
-    assert "compatibility-guardrail-sweep-post-v0.1.15.md" in current_section
-    assert "public-metadata-audit-post-v0.1.14.md" in current_section
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.14.md" in current_section
-    assert "mcp-memory-contract-sweep-post-v0.1.14.md" in current_section
-    assert "compatibility-guardrail-sweep-post-v0.1.14.md" in current_section
-    assert "public-metadata-audit-post-v0.1.13.md" in current_section
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.13.md" in current_section
-    assert "mcp-memory-contract-sweep-post-v0.1.13.md" in current_section
-    assert "compatibility-guardrail-sweep-post-v0.1.13.md" in current_section
-    assert "release-v0.1.15.md" in current_section
-    assert "release-v0.1.14.md" in current_section
-    assert "release-v0.1.13.md" in current_section
-    assert "release-v0.1.12.md" in current_section
-    assert "next-round-plan-post-v0.1.13.md" not in current_section
-    assert "next-round-plan-post-v0.1.13.md" in historical_section
-    assert "next-round-plan-post-v0.1.12.md" not in current_section
-    assert "next-round-plan-post-v0.1.12.md" in historical_section
-    assert "next-round-plan-post-v0.1.11.md" not in current_section
-    assert "release-v0.1.11.md" not in current_section
-    assert "next-round-plan-post-v0.1.11.md" in historical_section
-    assert "release-v0.1.11.md" in historical_section
-    assert "release-v0.1.10.md" not in current_section
-    assert "next-round-plan-post-v0.1.10.md" not in current_section
-    assert "release-v0.1.10.md" in historical_section
-    assert "next-round-plan-post-v0.1.10.md" in historical_section
-    assert "release-v0.1.9.md" not in current_section
-    assert "next-round-plan-post-v0.1.9.md" not in current_section
-    assert "release-v0.1.9.md" in historical_section
-    assert "next-round-plan-post-v0.1.9.md" in historical_section
-    assert "release-v0.1.8.md" not in current_section
-    assert "next-round-plan-post-v0.1.8.md" not in current_section
-    assert "release-v0.1.8.md" in historical_section
-    assert "next-round-plan-post-v0.1.8.md" in historical_section
-    assert "release-v0.1.7.md" in historical_section
-    assert "next-round-plan-post-v0.1.7.md" in historical_section
-    assert "next-round-plan-post-v0.1.6.md" not in current_section
-    assert "release-v0.1.6.md" not in current_section
-    assert "next-round-plan-post-v0.1.6.md" in historical_section
-    assert "release-v0.1.6.md" in historical_section
-    assert readme_operator_docs.index("v0.1.6 maintenance release record") < readme_operator_docs.index(
-        "Post-v0.1.5 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.5 maintenance plan") < readme_operator_docs.index(
-        "v0.1.5 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.5 maintenance release record") < readme_operator_docs.index(
-        "Post-v0.1.4 maintenance plan"
-    )
-    assert readme_operator_docs.index("Post-v0.1.4 maintenance plan") < readme_operator_docs.index(
-        "v0.1.4 maintenance release record"
-    )
-    assert readme_operator_docs.index("v0.1.4 maintenance release record") < readme_operator_docs.index(
-        "v0.1.3 maintenance release record"
-    )
-    assert "next-round-plan-post-v0.1.5.md" not in current_section
-    assert "release-v0.1.5.md" not in current_section
-    assert "next-round-plan-post-v0.1.5.md" in historical_section
-    assert "release-v0.1.5.md" in historical_section
-    assert "next-round-plan-post-v0.1.4.md" not in current_section
-    assert "release-v0.1.4.md" not in current_section
-    assert "next-round-plan-post-v0.1.4.md" in historical_section
-    assert "release-v0.1.4.md" in historical_section
-    assert "next-round-plan-post-v0.1.3.md" not in current_section
-    assert "release-v0.1.3.md" not in current_section
-    assert "next-round-plan-post-v0.1.2.md" not in current_section
-    assert "release-v0.1.2.md" not in current_section
-    assert "next-round-plan-post-v0.1.1.md" not in current_section
-    assert "next-round-plan-v0.1.0-final.md" not in current_section
-    assert "next-round-plan-post-v0.1.3.md" in historical_section
-    assert "release-v0.1.3.md" in historical_section
-    assert "next-round-plan-post-v0.1.2.md" in historical_section
-    assert "release-v0.1.2.md" in historical_section
-    assert "next-round-plan-post-v0.1.1.md" in historical_section
-    assert "release-v0.1.1.md" in historical_section
-    assert "next-round-plan-v0.1.0-final.md" in historical_section
-    assert "release-v0.1.13.md" not in checklist
-    assert "release-v0.1.13.md" not in evidence
+    for forbidden_readme_phrase in (
+        "active post-v0.1.18 maintenance plan",
+        "completed post-v0.1.18 public metadata audit",
+        "completed post-v0.1.17 maintenance plan",
+        "older completed maintenance plans",
+    ):
+        assert forbidden_readme_phrase not in readme
+
+    for historical_doc in (
+        "next-round-plan-post-v0.1.18.md",
+        "public-metadata-audit-post-v0.1.18.md",
+        "helper-watcher-diagnostics-sweep-post-v0.1.18.md",
+        "mcp-memory-contract-sweep-post-v0.1.18.md",
+        "compatibility-guardrail-sweep-post-v0.1.18.md",
+        "release-readiness-decision-post-v0.1.18.md",
+        "privacy-output-release-readiness-decision-post-v0.1.18.md",
+        "release-v0.1.19.md",
+        "release-v0.1.18.md",
+        "release-v0.1.17.md",
+        "release-v0.1.16.md",
+        "release-candidate-v0.1.16-rc.0.md",
+        "release-candidate-v0.1.0-beta.0.md",
+        "release-candidate-v0.1.0-beta.1.md",
+        "release-candidate-v0.1.0-rc.0.md",
+        "release-candidate-v0.1.0-rc.1.md",
+    ):
+        assert historical_doc in maintenance_index
+
     assert "release-v0.1.15.md" in checklist
     assert "release-v0.1.15.md" in evidence
     assert "release-v0.1.16.md" in checklist
@@ -947,369 +150,10 @@ def test_operator_entry_points_distinguish_current_cursor_from_history():
     assert "release-v0.1.17.md" in evidence
     assert "release-v0.1.18.md" in checklist
     assert "release-v0.1.18.md" in evidence
-    assert "next-round-plan-post-v0.1.18.md" in checklist
-    assert "next-round-plan-post-v0.1.18.md" in evidence
-    assert "public-metadata-audit-post-v0.1.18.md" in checklist
-    assert "public-metadata-audit-post-v0.1.18.md" in evidence
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.18.md" in checklist
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.18.md" in evidence
-    assert "mcp-memory-contract-sweep-post-v0.1.18.md" in checklist
-    assert "mcp-memory-contract-sweep-post-v0.1.18.md" in evidence
-    assert "compatibility-guardrail-sweep-post-v0.1.18.md" in checklist
-    assert "compatibility-guardrail-sweep-post-v0.1.18.md" in evidence
-    assert "release-readiness-decision-post-v0.1.18.md" in checklist
-    assert "release-readiness-decision-post-v0.1.18.md" in evidence
-    assert "next-blueprint-lane-selection-post-v0.1.18.md" in checklist
-    assert "next-blueprint-lane-selection-post-v0.1.18.md" in evidence
-    assert "watcher-privacy-fixture-parity-post-v0.1.18.md" in checklist
-    assert "watcher-privacy-fixture-parity-post-v0.1.18.md" in evidence
-    assert "privacy-output-release-readiness-decision-post-v0.1.18.md" in checklist
-    assert "privacy-output-release-readiness-decision-post-v0.1.18.md" in evidence
     assert "release-v0.1.19.md" in checklist
     assert "release-v0.1.19.md" in evidence
-    assert "release-candidate-v0.1.16-rc.0.md" in checklist
-    assert "release-candidate-v0.1.16-rc.0.md" in evidence
-    assert "next-round-plan-post-v0.1.17.md" in checklist
-    assert "next-round-plan-post-v0.1.17.md" in evidence
-    assert "public-metadata-audit-post-v0.1.17.md" in checklist
-    assert "public-metadata-audit-post-v0.1.17.md" in evidence
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in checklist
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.17.md" in evidence
-    assert "mcp-memory-contract-sweep-post-v0.1.17.md" in checklist
-    assert "mcp-memory-contract-sweep-post-v0.1.17.md" in evidence
-    assert "compatibility-guardrail-sweep-post-v0.1.17.md" in checklist
-    assert "compatibility-guardrail-sweep-post-v0.1.17.md" in evidence
-    assert "release-readiness-decision-post-v0.1.17.md" in checklist
-    assert "release-readiness-decision-post-v0.1.17.md" in evidence
-    assert "phase6-privacy-contract-preflight-post-v0.1.17.md" in checklist
-    assert "phase6-privacy-contract-preflight-post-v0.1.17.md" in evidence
-    assert "phase6-privacy-contract-fixture-expansion-post-v0.1.17.md" in checklist
-    assert "phase6-privacy-contract-fixture-expansion-post-v0.1.17.md" in evidence
-    assert "phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md" in checklist
-    assert "phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md" in evidence
-    assert "phase6-privacy-contract-coverage-audit-post-v0.1.17.md" in checklist
-    assert "phase6-privacy-contract-coverage-audit-post-v0.1.17.md" in evidence
-    assert "phase6-privacy-contract-gap-fixtures-post-v0.1.17.md" in checklist
-    assert "phase6-privacy-contract-gap-fixtures-post-v0.1.17.md" in evidence
-    assert "phase6-privacy-contract-residual-schema-coverage-audit-post-v0.1.17.md" in checklist
-    assert "phase6-privacy-contract-residual-schema-coverage-audit-post-v0.1.17.md" in evidence
-    assert "phase6-privacy-contract-residual-policy-fixtures-post-v0.1.17.md" in checklist
-    assert "phase6-privacy-contract-residual-policy-fixtures-post-v0.1.17.md" in evidence
-    assert "phase6-privacy-contract-deferred-fixture-closure-post-v0.1.17.md" in checklist
-    assert "phase6-privacy-contract-deferred-fixture-closure-post-v0.1.17.md" in evidence
-    assert "phase6-contract-closure-release-readiness-decision-post-v0.1.17.md" in checklist
-    assert "phase6-contract-closure-release-readiness-decision-post-v0.1.17.md" in evidence
-    assert "next-blueprint-lane-selection-post-v0.1.17.md" in checklist
-    assert "next-blueprint-lane-selection-post-v0.1.17.md" in evidence
-    assert "next-round-plan-post-v0.1.16.md" in checklist
-    assert "next-round-plan-post-v0.1.16.md" in evidence
-    assert "public-metadata-audit-post-v0.1.16.md" in checklist
-    assert "public-metadata-audit-post-v0.1.16.md" in evidence
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in checklist
-    assert "helper-watcher-diagnostics-sweep-post-v0.1.16.md" in evidence
-    assert "mcp-memory-contract-sweep-post-v0.1.16.md" in checklist
-    assert "mcp-memory-contract-sweep-post-v0.1.16.md" in evidence
-    assert "compatibility-guardrail-sweep-post-v0.1.16.md" in checklist
-    assert "compatibility-guardrail-sweep-post-v0.1.16.md" in evidence
-    assert "release-readiness-decision-post-v0.1.16.md" in checklist
-    assert "release-readiness-decision-post-v0.1.16.md" in evidence
-    assert "next-round-plan-v0.1.16-final-release.md" in checklist
-    assert "next-round-plan-v0.1.16-final-release.md" in evidence
-    assert "next-round-plan-post-v0.1.15.md" in checklist
-    assert "next-round-plan-post-v0.1.15.md" in evidence
-    assert "next-round-plan-post-v0.1.14.md" in checklist
-    assert "next-round-plan-post-v0.1.14.md" in evidence
-    assert "next-round-plan-post-v0.1.13.md" in checklist
-    assert "next-round-plan-post-v0.1.13.md" in evidence
-    assert "v0.1.19` is the latest published release" in checklist
-    assert "v0.1.19` is the latest published release" in evidence
-    assert "v0.1.18` is the previous stable release" in checklist
-    assert "v0.1.18` is the previous stable release" in evidence
-    assert "current `v0.1.17` maintenance release record" not in checklist
-    assert "current `v0.1.17` maintenance release record" not in evidence
-    assert "v0.1.16-rc.0` is historical prerelease evidence" in checklist
-    assert "v0.1.16-rc.0` is historical prerelease evidence" in evidence
-    assert "active post-v0.1.18 execution cursor records" in checklist
-    assert "active post-v0.1.18 execution cursor records" in evidence
-    assert "completed post-v0.1.18 public metadata/evidence freshness audit" in checklist
-    assert "completed post-v0.1.18 public metadata/evidence freshness audit" in evidence
-    assert "completed post-v0.1.18 helper/watcher diagnostics review" in checklist
-    assert "completed post-v0.1.18 helper/watcher diagnostics review" in evidence
-    assert "completed post-v0.1.18 MCP/memory contract review" in checklist
-    assert "completed post-v0.1.18 MCP/memory contract review" in evidence
-    assert "completed post-v0.1.18 compatibility guardrail review" in checklist
-    assert "completed post-v0.1.18 compatibility guardrail review" in evidence
-    assert "completed post-v0.1.18 release-readiness decision" in checklist
-    assert "completed post-v0.1.18 release-readiness decision" in evidence
-    assert "completed post-v0.1.18 next blueprint lane selection" in checklist
-    assert "completed post-v0.1.18 next blueprint lane selection" in evidence
-    assert "completed post-v0.1.18 fixture/helper privacy index parity record" in checklist
-    assert "completed post-v0.1.18 fixture/helper privacy index parity record" in evidence
-    assert "completed post-v0.1.18 fixture/privacy parity matrix record" in checklist
-    assert "completed post-v0.1.18 fixture/privacy parity matrix record" in evidence
-    assert "completed post-v0.1.18 fixture/privacy residual gap audit" in checklist
-    assert "completed post-v0.1.18 fixture/privacy residual gap audit" in evidence
-    assert "do\n  not warrant a new release-readiness or publication path" in checklist
-    assert "do\n  not warrant a new release-readiness or publication path" in evidence
-    assert "`v0.1.18` must not\n  be retagged" in checklist
-    assert "`v0.1.18` must not\n  be retagged" in evidence
-    assert "watcher privacy fixture parity completed in AH8" in checklist
-    assert "watcher privacy fixture parity completed in AH8" in evidence
-    assert "fixture/helper privacy index parity completed in AH10" in checklist
-    assert "fixture/helper privacy index parity completed in AH10" in evidence
-    assert "matrix consolidation completed in AH12" in checklist
-    assert "matrix consolidation completed in AH12" in evidence
-    assert "residual gap audit\n  completed in AH14" in checklist
-    assert "residual gap audit\n  completed in AH14" in evidence
-    assert "current Fixture/privacy follow-up is the\n  privacy-output release-readiness decision" in checklist
-    assert "current Fixture/privacy follow-up is the\n  privacy-output release-readiness decision" in evidence
-    assert "helper-only denylist evidence gap" in checklist
-    assert "helper-only denylist evidence gap" in evidence
-    assert "secret-like MCP search query\n  echoes" in checklist
-    assert "secret-like MCP search query\n  echoes" in evidence
-    assert "PR #203 merged at `2026-05-10T02:48:11Z`" in checklist
-    assert "PR #203 merged at `2026-05-10T02:48:11Z`" in evidence
-    assert "PR Windows Harness run\n  `25617962810` succeeded" in checklist
-    assert "PR Windows Harness run\n  `25617962810` succeeded" in evidence
-    assert "post-merge `main` Windows Harness run `25618020212` succeeded" in checklist
-    assert "post-merge `main` Windows Harness run `25618020212` succeeded" in evidence
-    assert "completed post-v0.1.18 privacy-output release-readiness decision" in checklist
-    assert "completed post-v0.1.18 privacy-output release-readiness decision" in evidence
-    assert "narrow `v0.1.19` release-readiness path" in checklist
-    assert "narrow `v0.1.19` release-readiness path" in evidence
-    assert "does not warrant immediate\n  publication" in checklist
-    assert "does not warrant immediate\n  publication" in evidence
-    assert "AH15\n  PR #204 merged at `2026-05-10T03:03:06Z`" in checklist
-    assert "AH15\n  PR #204 merged at `2026-05-10T03:03:06Z`" in evidence
-    assert "PR Windows Harness run\n  `25618201016` succeeded" in checklist
-    assert "PR Windows Harness run\n  `25618201016` succeeded" in evidence
-    assert "post-merge `main` Windows Harness run `25618271963` succeeded" in checklist
-    assert "post-merge `main` Windows Harness run `25618271963` succeeded" in evidence
-    assert "published `v0.1.19` maintenance release record" in checklist
-    assert "published `v0.1.19` maintenance release record" in evidence
-    assert "version identity to `0.1.19`" in checklist
-    assert "version identity to `0.1.19`" in evidence
-    assert "records fresh Notepad, Edge, and VS Code\n  metadata manual UIA smoke" in checklist
-    assert "records fresh Notepad, Edge, and VS Code\n  metadata manual UIA smoke" in evidence
-    assert "records\n  local deterministic validation passed" in checklist
-    assert "records\n  local deterministic validation passed" in evidence
-    assert "PR #206 Windows Harness run\n  `25896736903`" in checklist
-    assert "PR #206 Windows Harness run\n  `25896736903`" in evidence
-    assert "post-merge `main` Windows Harness run `25896975136`" in checklist
-    assert "post-merge `main` Windows Harness run `25896975136`" in evidence
-    assert "PR #197 merged at `2026-05-10T00:58:38Z`" in checklist
-    assert "PR #197 merged at `2026-05-10T00:58:38Z`" in evidence
-    assert "PR Windows Harness run\n  `25616023224` succeeded" in checklist
-    assert "PR Windows Harness run\n  `25616023224` succeeded" in evidence
-    assert "post-merge `main` Windows Harness run `25616063920` succeeded" in checklist
-    assert "post-merge `main` Windows Harness run `25616063920` succeeded" in evidence
-    assert "direct fixture and synthesized\n  UIA helper captures" in checklist
-    assert "direct fixture and synthesized\n  UIA helper captures" in evidence
-    assert "capture\n  files, memory files, SQLite search tables, capture search, memory search, and\n  MCP memory search" in checklist
-    assert "capture\n  files, memory files, SQLite search tables, capture search, memory search, and\n  MCP memory search" in evidence
-    assert "PR\n  #199 merged at `2026-05-10T01:33:45Z`" in checklist
-    assert "PR\n  #199 merged at `2026-05-10T01:33:45Z`" in evidence
-    assert "PR Windows Harness run\n  `25616618385` succeeded" in checklist
-    assert "PR Windows Harness run\n  `25616618385` succeeded" in evidence
-    assert "post-merge `main` Windows Harness run `25616673782` succeeded" in checklist
-    assert "post-merge `main` Windows Harness run `25616673782` succeeded" in evidence
-    assert "direct\n  fixture, synthesized UIA helper, and watcher-dispatched privacy evidence" in checklist
-    assert "direct\n  fixture, synthesized UIA helper, and watcher-dispatched privacy evidence" in evidence
-    assert "PR #201 merged at\n  `2026-05-10T02:10:33Z`" in checklist
-    assert "PR #201 merged at\n  `2026-05-10T02:10:33Z`" in evidence
-    assert "PR Windows Harness run\n  `25617277557` succeeded" in checklist
-    assert "PR Windows Harness run\n  `25617277557` succeeded" in evidence
-    assert "post-merge `main` Windows Harness run `25617330198` succeeded" in checklist
-    assert "post-merge `main` Windows Harness run `25617330198` succeeded" in evidence
-    assert "completed post-v0.1.17 execution cursor records" in checklist
-    assert "completed post-v0.1.17 execution cursor records" in evidence
-    assert "PR #188" in checklist
-    assert "PR #188" in evidence
-    assert "AH0 baseline PR #189" in checklist
-    assert "AH0 baseline PR #189" in evidence
-    assert "PR Windows Harness run `25613203047`" in checklist
-    assert "PR Windows Harness run `25613203047`" in evidence
-    assert "post-AH0\n  `main` Windows Harness run `25613244560`" in checklist
-    assert "post-AH0\n  `main` Windows Harness run `25613244560`" in evidence
-    assert "post-merge Windows Harness runs\n  `25612391276` and `25612977738`" in checklist
-    assert "post-merge Windows Harness runs\n  `25612391276` and `25612977738`" in evidence
-    assert "AG2 helper/watcher diagnostics review PR #163" in checklist
-    assert "AG2 helper/watcher diagnostics review PR #163" in evidence
-    assert "AG3 MCP/memory contract\n  review PR #164" in checklist
-    assert "AG3 MCP/memory contract\n  review PR #164" in evidence
-    assert "AG4 compatibility guardrail review PR #165" in checklist
-    assert "AG4 compatibility guardrail review PR #165" in evidence
-    assert "AG5 release-readiness decision PR #166" in checklist
-    assert "AG5 release-readiness decision PR #166" in evidence
-    assert "post-AG5\n  `main` Windows Harness run `25604682902`" in checklist
-    assert "post-AG5\n  `main` Windows Harness run `25604682902`" in evidence
-    assert "AG6 post-AG5 cursor\n  reconciliation PR #167" in checklist
-    assert "AG6 post-AG5 cursor\n  reconciliation PR #167" in evidence
-    assert "post-AG6 `main` Windows Harness run\n  `25605064828`" in checklist
-    assert "post-AG6 `main` Windows Harness run\n  `25605064828`" in evidence
-    assert "Phase 6 privacy-enrichment contract preflight PR #168" in checklist
-    assert "Phase 6 privacy-enrichment contract preflight PR #168" in evidence
-    assert "post-preflight `main` Windows Harness run `25605600008`" in checklist
-    assert "post-preflight `main` Windows Harness run `25605600008`" in evidence
-    assert "Phase 6 preflight\n  reconciliation PR #169" in checklist
-    assert "Phase 6 preflight\n  reconciliation PR #169" in evidence
-    assert "post-reconciliation `main` Windows Harness run\n  `25605945162`" in checklist
-    assert "post-reconciliation `main` Windows Harness run\n  `25605945162`" in evidence
-    assert "Phase 6 committed negative contract fixture expansion PR\n  #170" in checklist
-    assert "Phase 6 committed negative contract fixture expansion PR\n  #170" in evidence
-    assert "post-fixture-expansion `main` Windows Harness run `25606329451`" in checklist
-    assert "post-fixture-expansion `main` Windows Harness run `25606329451`" in evidence
-    assert "Phase 6 fixture expansion reconciliation PR #171" in checklist
-    assert "Phase 6 fixture expansion reconciliation PR #171" in evidence
-    assert "post-reconciliation\n  `main` Windows Harness run `25606591806`" in checklist
-    assert "post-reconciliation\n  `main` Windows Harness run `25606591806`" in evidence
-    assert "Phase 6 remaining negative fixture\n  expansion PR #172" in checklist
-    assert "Phase 6 remaining negative fixture\n  expansion PR #172" in evidence
-    assert "post-remaining-fixtures `main` Windows Harness run\n  `25606999596`" in checklist
-    assert "post-remaining-fixtures `main` Windows Harness run\n  `25606999596`" in evidence
-    assert "Phase 6\n  contract coverage audit PR #174" in checklist
-    assert "Phase 6\n  contract coverage audit PR #174" in evidence
-    assert "post-coverage-audit `main` Windows\n  Harness run `25607748205`" in checklist
-    assert "post-coverage-audit `main` Windows\n  Harness run `25607748205`" in evidence
-    assert "Phase 6 coverage audit reconciliation PR #175" in checklist
-    assert "Phase 6 coverage audit reconciliation PR #175" in evidence
-    assert "post-reconciliation `main` Windows Harness run `25608072563`" in checklist
-    assert "post-reconciliation `main` Windows Harness run `25608072563`" in evidence
-    assert "Phase 6 contract gap fixture expansion PR #176" in checklist
-    assert "Phase 6 contract gap fixture expansion PR #176" in evidence
-    assert "post-gap-fixtures `main`\n  Windows Harness run `25608403951`" in checklist
-    assert "post-gap-fixtures `main`\n  Windows Harness run `25608403951`" in evidence
-    assert "Phase 6 gap fixture reconciliation PR\n  #177" in checklist
-    assert "Phase 6 gap fixture reconciliation PR\n  #177" in evidence
-    assert "post-reconciliation `main` Windows Harness run `25608660366`" in checklist
-    assert "post-reconciliation `main` Windows Harness run `25608660366`" in evidence
-    assert "Phase 6 residual schema coverage audit PR #178" in checklist
-    assert "Phase 6 residual schema coverage audit PR #178" in evidence
-    assert "post-residual-audit\n  `main` Windows Harness run `25609004391`" in checklist
-    assert "post-residual-audit\n  `main` Windows Harness run `25609004391`" in evidence
-    assert "Phase 6 residual policy fixture\n  expansion PR #179" in checklist
-    assert "Phase 6 residual policy fixture\n  expansion PR #179" in evidence
-    assert "post-residual-policy-fixtures `main` Windows Harness\n  run `25609341275`" in checklist
-    assert "post-residual-policy-fixtures `main` Windows Harness\n  run `25609341275`" in evidence
-    assert "Phase 6 residual policy evidence reconciliation PR #180" in checklist
-    assert "Phase 6 residual policy evidence reconciliation PR #180" in evidence
-    assert "post-reconciliation `main` Windows Harness run `25609534616`" in checklist
-    assert "post-reconciliation `main` Windows Harness run `25609534616`" in evidence
-    assert "Phase 6 deferred fixture closure PR #181" in checklist
-    assert "Phase 6 deferred fixture closure PR #181" in evidence
-    assert "post-deferred-fixture-closure `main` Windows Harness run `25609934759`" in checklist
-    assert "post-deferred-fixture-closure `main` Windows Harness run `25609934759`" in evidence
-    assert "Phase 6 deferred fixture closure reconciliation PR #182" in checklist
-    assert "Phase 6 deferred fixture closure reconciliation PR #182" in evidence
-    assert "post-reconciliation `main` Windows Harness run `25610156997`" in checklist
-    assert "post-reconciliation `main` Windows Harness run `25610156997`" in evidence
-    assert "Phase 6 contract closure release-readiness decision PR #183" in checklist
-    assert "Phase 6 contract closure release-readiness decision PR #183" in evidence
-    assert "post-PR\n  #183 `main` Windows Harness run `25610538811`" in checklist
-    assert "post-PR\n  #183 `main` Windows Harness run `25610538811`" in evidence
-    assert "next blueprint lane selection\n  PR #184" in checklist
-    assert "next blueprint lane selection\n  PR #184" in evidence
-    assert "post-PR #184 `main` Windows Harness run `25610880531`" in checklist
-    assert "post-PR #184 `main` Windows Harness run `25610880531`" in evidence
-    assert "privacy-policy contract parity audit PR #185" in checklist
-    assert "privacy-policy contract parity audit PR #185" in evidence
-    assert "post-PR #185 `main`\n  Windows Harness run `25611363701`" in checklist
-    assert "post-PR #185 `main`\n  Windows Harness run `25611363701`" in evidence
-    assert "privacy-check release-readiness\n  decision PR #186" in checklist
-    assert "privacy-check release-readiness\n  decision PR #186" in evidence
-    assert "post-PR #186 `main` Windows Harness run\n  `25611836358`" in checklist
-    assert "post-PR #186 `main` Windows Harness run\n  `25611836358`" in evidence
-    assert "`v0.1.18` release-readiness PR #187" in checklist
-    assert "`v0.1.18` release-readiness PR #187" in evidence
-    assert "post-PR #187 `main` Windows Harness run" in checklist
-    assert "post-PR #187 `main` Windows Harness run" in evidence
-    assert "published `v0.1.18` maintenance release record targets" in checklist
-    assert "published `v0.1.18` maintenance release record targets" in evidence
-    assert "completed post-v0.1.17 public metadata/evidence freshness audit" in checklist
-    assert "completed post-v0.1.17 public metadata/evidence freshness audit" in evidence
-    assert "does not treat empty GitHub metadata as a product-code\n  blocker" in checklist
-    assert "does not treat empty GitHub metadata as a product-code\n  blocker" in evidence
-    assert "completed post-v0.1.17 helper/watcher diagnostics review" in checklist
-    assert "completed post-v0.1.17 helper/watcher diagnostics review" in evidence
-    assert "raw watcher JSONL non-persistence" in checklist
-    assert "raw watcher JSONL non-persistence" in evidence
-    assert "no new product-code drift" in checklist
-    assert "no new product-code drift" in evidence
-    assert "completed post-v0.1.17 MCP/memory contract review" in checklist
-    assert "completed post-v0.1.17 MCP/memory contract review" in evidence
-    assert "no new MCP/memory contract drift" in checklist
-    assert "no new MCP/memory\n  contract drift" in evidence
-    assert "completed post-v0.1.17 compatibility guardrail review" in checklist
-    assert "completed post-v0.1.17 compatibility guardrail review" in evidence
-    assert "no\n  new compatibility drift" in checklist
-    assert "no\n  new compatibility drift" in evidence
-    assert "completed post-v0.1.17 release-readiness decision" in checklist
-    assert "completed post-v0.1.17 release-readiness decision" in evidence
-    assert "does not warrant a new release-readiness or\n  publication path" in checklist
-    assert "does not warrant a new release-readiness or\n  publication path" in evidence
-    assert "no runtime, helper/watcher, CLI/MCP\n  output" in checklist
-    assert "no runtime, helper/watcher, CLI/MCP\n  output" in evidence
-    assert "completed post-v0.1.16 execution cursor records" in checklist
-    assert "completed post-v0.1.16 execution cursor records" in evidence
-    assert "Public metadata audit after v0.1.16" in checklist
-    assert "Public metadata audit after v0.1.16" in evidence
-    assert "public metadata and evidence-freshness checks" in checklist
-    assert "public metadata evidence should record" in evidence
-    assert "Helper and watcher diagnostics sweep after v0.1.16" in checklist
-    assert "Helper and watcher diagnostics sweep after v0.1.16" in evidence
-    assert "helper/watcher diagnostics sweeps record timeout" in checklist
-    assert "helper/watcher diagnostics evidence should record only stable diagnostics" in evidence
-    assert "MCP and memory contract sweep after v0.1.16" in checklist
-    assert "MCP and memory contract sweep after v0.1.16" in evidence
-    assert "MCP/memory contract sweeps record the exact read-only MCP tool list" in checklist
-    assert "MCP/memory contract evidence should record exact read-only tools" in evidence
-    assert "Compatibility guardrail sweep after v0.1.16" in checklist
-    assert "Compatibility guardrail sweep after v0.1.16" in evidence
-    assert "compatibility guardrail sweeps record version identity" in checklist
-    assert "compatibility guardrail evidence should record version identity" in evidence
-    assert "Release-readiness decision after v0.1.16" in checklist
-    assert "Release-readiness decision after v0.1.16" in evidence
-    assert "release-readiness decisions record whether current maintenance changes" in checklist
-    assert "warrant a release-readiness path" in checklist
-    assert "release-readiness decision evidence should record whether current maintenance" in evidence
-    assert "distinguish release plans from\n  immediate publication" in evidence
-    assert "next-round-plan-post-v0.1.12.md" in checklist
-    assert "next-round-plan-post-v0.1.12.md" in evidence
-    assert "release-v0.1.10.md" not in checklist
-    assert "release-v0.1.10.md" not in evidence
-    assert "next-round-plan-post-v0.1.10.md" not in checklist
-    assert "next-round-plan-post-v0.1.10.md" not in evidence
-    assert "release-v0.1.9.md" not in checklist
-    assert "release-v0.1.9.md" not in evidence
-    assert "next-round-plan-post-v0.1.9.md" not in checklist
-    assert "next-round-plan-post-v0.1.9.md" not in evidence
-    assert "release-v0.1.8.md" not in checklist
-    assert "release-v0.1.8.md" not in evidence
-    assert "next-round-plan-post-v0.1.8.md" not in checklist
-    assert "next-round-plan-post-v0.1.8.md" not in evidence
-    assert "next-round-plan-post-v0.1.7.md" not in checklist
-    assert "next-round-plan-post-v0.1.7.md" not in evidence
-    assert "release-v0.1.7.md" not in checklist
-    assert "release-v0.1.7.md" not in evidence
-    assert "next-round-plan-post-v0.1.6.md" not in checklist
-    assert "next-round-plan-post-v0.1.6.md" not in evidence
-    assert "next-round-plan-post-v0.1.5.md" not in checklist
-    assert "next-round-plan-post-v0.1.5.md" not in evidence
-    assert "release-v0.1.6.md" not in checklist
-    assert "release-v0.1.6.md" not in evidence
-    assert "next-round-plan-post-v0.1.4.md" not in checklist
-    assert "next-round-plan-post-v0.1.4.md" not in evidence
-    assert "release-v0.1.5.md" not in checklist
-    assert "release-v0.1.5.md" not in evidence
-    assert "release-v0.1.4.md" not in checklist
-    assert "release-v0.1.4.md" not in evidence
-    assert "post-v0.1.10 plan is completed historical evidence" in checklist
-    assert "post-v0.1.10 cursor is completed historical evidence" in evidence
-    assert "Before a compatible `v0.1.1` maintenance release" not in matrix
-    assert "For compatible maintenance releases after `v0.1.9`" in matrix
-    assert "Historical\nmaintenance records from `v0.1.4` onward" in matrix
-    assert "current\n`v0.1.3` readiness round" not in matrix
-
+    assert "Targeted capture requires both `--harness` and `WINCHRONICLE_HARNESS=1`" in matrix
+    assert "product CLI and MCP expose no targeted HWND/PID/title capture" in matrix
 
 def test_post_v014_plan_is_historical_without_expanding_scope():
     plan = (ROOT / "docs" / "next-round-plan-post-v0.1.4.md").read_text(
@@ -3464,25 +2308,24 @@ def test_roadmap_contribution_and_issue_templates_keep_harness_first_scope():
     )
 
     for expected in (
-        "without\nauthorizing new capture surfaces",
-        "current selected lane is Fixture and privacy baseline",
-        "Watcher privacy fixture\nparity and fixture/helper privacy index parity are complete",
-        "fixture/privacy parity matrix consolidation and fixture/privacy residual gap\naudit are complete",
-        "`v0.1.19` is now the published maintenance release\nfor the privacy-output hardening path",
-        "privacy-output hardening path",
-        "privacy baseline privacy-policy contract parity audit is complete\nhistorical work",
+        "does\nnot authorize new capture surfaces",
+        "The current stable baseline is the `v0.1` harness-first baseline",
+        "fixture/privacy maintenance loop that followed `v0.1.18` is\nclosed for now",
+        "Do not turn\nthose records into another autonomous maintenance loop.",
+        "needs explicit human product approval",
+        "These are options for human review, not an automatically authorized backlog.",
         "Fixture and privacy baseline",
         "UIA helper hardening",
         "Watcher preview",
         "Read-only MCP",
         "Durable memory",
-        "Docs and deterministic demo",
-        "Phase 6 privacy enrichment",
-        "Do not add product `--hwnd`, `--pid`, or title-targeted capture",
-        "Do not add daemon/service install, default background capture, or polling capture loops",
-        "Do not add LLM reducer/classifier calls or network upload",
-        "Do not implement screenshot capture or OCR in v0.1 maintenance",
-        "Do not commit generated state or memory artifacts",
+        "Screenshot/OCR enrichment",
+        "Product targeted capture flags",
+        "Daemon/service install, default background capture, polling loops",
+        "MCP write tools, arbitrary file reads, desktop control",
+        "LLM reducer/classifier calls, network upload",
+        "Any screenshot or OCR implementation",
+        "Do not commit generated state, captures, memory artifacts",
     ):
         assert expected in roadmap
 

@@ -1,8 +1,7 @@
 # Operator Quickstart
 
-This guide is the v0.1 operator entry point for local validation and release
-readiness. It keeps WinChronicle local-first, UIA-first, harness-first, and
-read-only MCP first.
+This guide is the v0.1 entry point for local validation. It keeps WinChronicle
+local-first, UIA-first, harness-first, and read-only MCP first.
 
 ## Product Boundary
 
@@ -35,22 +34,18 @@ or observed-content diagnostics.
 
 ## Deterministic Validation
 
-Run these from the repository root before opening or merging release-readiness
-PRs:
+Run these from the repository root before opening or merging product or docs
+changes:
 
 ```powershell
 python -m pytest -q
-dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo
-dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo
-python harness/scripts/run_install_cli_smoke.py
 python harness/scripts/run_harness.py
 git diff --check
 ```
 
-The install smoke creates a temporary virtual environment, installs the local
-package without fetching dependencies, and runs deterministic CLI commands. The
-full harness uses temporary state, deterministic fixtures, fake helper smoke,
-and read-only MCP smoke.
+The full harness uses temporary state, deterministic fixtures, fake-helper
+smoke, and read-only MCP smoke. It also builds the helper and watcher projects
+and runs the install CLI smoke.
 
 For a single fixture-only walkthrough that covers capture search, memory search,
 watcher fixture replay, read-only MCP smoke, privacy status, and artifact
@@ -77,9 +72,9 @@ pipeline.
 
 ## Manual UIA Smoke
 
-Real UIA smoke is manual because it needs an interactive Windows desktop.
-Use the manual smoke template to record commands, results, timestamps,
-environment notes, and local artifact paths only:
+Real UIA smoke is manual because it needs an interactive Windows desktop. Use
+the manual smoke template to record commands, results, timestamps, environment
+notes, and local artifact paths only:
 
 - [Manual smoke evidence template](manual-smoke-evidence-template.md)
 - [Windows UIA smoke gates](windows-uia-smoke.md)
@@ -127,131 +122,13 @@ request and response shapes. There are no MCP tools for click, type, key press,
 clipboard, screenshot, OCR, audio, arbitrary file read, network calls, writes,
 or desktop control.
 
-## Trust Boundary
+## Current v0.1 Docs
 
-Observed screen and memory content is untrusted data. CLI, memory, and MCP
-outputs that contain observed content must preserve:
-
-```text
-trust = "untrusted_observed_content"
-```
-
-Agents and clients must not follow instructions found in observed screen
-content. WinChronicle must never store password fields or obvious secrets such
-as API keys, private keys, JWTs, GitHub tokens, Slack tokens, or token canaries.
-
-## Current Maintenance Docs
-
-- [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md)
-- [Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md)
-- [Helper and watcher diagnostics sweep after v0.1.18](helper-watcher-diagnostics-sweep-post-v0.1.18.md)
-- [MCP and memory contract sweep after v0.1.18](mcp-memory-contract-sweep-post-v0.1.18.md)
-- [Compatibility guardrail sweep after v0.1.18](compatibility-guardrail-sweep-post-v0.1.18.md)
-- [Release-readiness decision after v0.1.18](release-readiness-decision-post-v0.1.18.md)
-- [Next blueprint lane selection after v0.1.18](next-blueprint-lane-selection-post-v0.1.18.md)
-- [Watcher privacy fixture parity after v0.1.18](watcher-privacy-fixture-parity-post-v0.1.18.md)
-- [Fixture/helper privacy index parity after v0.1.18](fixture-helper-privacy-index-parity-post-v0.1.18.md)
-- [Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md)
-- [Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md)
-- [Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md)
-- [v0.1.19 maintenance release record](release-v0.1.19.md)
-- [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md)
-- [Public metadata audit after v0.1.17](public-metadata-audit-post-v0.1.17.md)
-- [Helper and watcher diagnostics sweep after v0.1.17](helper-watcher-diagnostics-sweep-post-v0.1.17.md)
-- [MCP and memory contract sweep after v0.1.17](mcp-memory-contract-sweep-post-v0.1.17.md)
-- [Compatibility guardrail sweep after v0.1.17](compatibility-guardrail-sweep-post-v0.1.17.md)
-- [Release-readiness decision after v0.1.17](release-readiness-decision-post-v0.1.17.md)
-- [Phase 6 privacy contract preflight after v0.1.17](phase6-privacy-contract-preflight-post-v0.1.17.md)
-- [Phase 6 privacy contract fixture expansion after v0.1.17](phase6-privacy-contract-fixture-expansion-post-v0.1.17.md)
-- [Phase 6 privacy contract remaining fixtures after v0.1.17](phase6-privacy-contract-remaining-fixtures-post-v0.1.17.md)
-- [Phase 6 privacy contract coverage audit after v0.1.17](phase6-privacy-contract-coverage-audit-post-v0.1.17.md)
-- [Phase 6 privacy contract gap fixtures after v0.1.17](phase6-privacy-contract-gap-fixtures-post-v0.1.17.md)
-- [Phase 6 privacy contract residual schema coverage audit after v0.1.17](phase6-privacy-contract-residual-schema-coverage-audit-post-v0.1.17.md)
-- [Phase 6 privacy contract residual policy fixtures after v0.1.17](phase6-privacy-contract-residual-policy-fixtures-post-v0.1.17.md)
-- [Phase 6 privacy contract deferred fixture closure after v0.1.17](phase6-privacy-contract-deferred-fixture-closure-post-v0.1.17.md)
-- [Phase 6 contract closure release-readiness decision after v0.1.17](phase6-contract-closure-release-readiness-decision-post-v0.1.17.md)
-- [Next blueprint lane selection after v0.1.17](next-blueprint-lane-selection-post-v0.1.17.md)
-- [Privacy-policy contract parity audit after v0.1.17](privacy-policy-contract-parity-audit-post-v0.1.17.md)
-- [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md)
-- [v0.1.18 maintenance release record](release-v0.1.18.md)
-- [Post-v0.1.16 maintenance plan](next-round-plan-post-v0.1.16.md)
-- [Public metadata audit after v0.1.16](public-metadata-audit-post-v0.1.16.md)
-- [Helper and watcher diagnostics sweep after v0.1.16](helper-watcher-diagnostics-sweep-post-v0.1.16.md)
-- [MCP and memory contract sweep after v0.1.16](mcp-memory-contract-sweep-post-v0.1.16.md)
-- [Compatibility guardrail sweep after v0.1.16](compatibility-guardrail-sweep-post-v0.1.16.md)
-- [Release-readiness decision after v0.1.16](release-readiness-decision-post-v0.1.16.md)
-- [v0.1.17 maintenance release record](release-v0.1.17.md)
-- [v0.1.16 final release record](release-v0.1.16.md)
-- [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md)
-- [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md)
-- [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md)
-- [Post-v0.1.14 maintenance plan](next-round-plan-post-v0.1.14.md)
-- [v0.1.15 maintenance release record](release-v0.1.15.md)
-- [v0.1.14 maintenance release record](release-v0.1.14.md)
+- [v0.1 closure note](goal-closure-v0.1.md)
+- [Roadmap](roadmap.md)
+- [Known limitations](known-limitations.md)
+- [Maintenance and release history index](maintenance-index.md)
 - [Release checklist](release-checklist.md)
 - [Release evidence guide](release-evidence.md)
-- [Manual smoke evidence template](manual-smoke-evidence-template.md)
 - [Manual smoke evidence ledger](manual-smoke-evidence-ledger.md)
-- [Deterministic demo](deterministic-demo.md)
-- [Windows UIA smoke gates](windows-uia-smoke.md)
-- [UIA helper quality matrix](uia-helper-quality-matrix.md)
-- [Operator diagnostics](operator-diagnostics.md)
-- [Public metadata audit after v0.1.15](public-metadata-audit-post-v0.1.15.md)
-- [Helper and watcher diagnostics sweep after v0.1.15](helper-watcher-diagnostics-sweep-post-v0.1.15.md)
-- [MCP and memory contract sweep after v0.1.15](mcp-memory-contract-sweep-post-v0.1.15.md)
-- [Compatibility guardrail sweep after v0.1.15](compatibility-guardrail-sweep-post-v0.1.15.md)
-- [Public metadata audit after v0.1.14](public-metadata-audit-post-v0.1.14.md)
-- [Helper and watcher diagnostics sweep after v0.1.14](helper-watcher-diagnostics-sweep-post-v0.1.14.md)
-- [MCP and memory contract sweep after v0.1.14](mcp-memory-contract-sweep-post-v0.1.14.md)
-- [Compatibility guardrail sweep after v0.1.14](compatibility-guardrail-sweep-post-v0.1.14.md)
-- [Public metadata audit after v0.1.13](public-metadata-audit-post-v0.1.13.md)
-- [Helper and watcher diagnostics sweep after v0.1.13](helper-watcher-diagnostics-sweep-post-v0.1.13.md)
-- [MCP and memory contract sweep after v0.1.13](mcp-memory-contract-sweep-post-v0.1.13.md)
-- [Compatibility guardrail sweep after v0.1.13](compatibility-guardrail-sweep-post-v0.1.13.md)
-- [Blueprint gap audit after v0.1.12](blueprint-gap-audit-post-v0.1.12.md)
-- [Compatibility guardrail sweep after v0.1.12](compatibility-guardrail-sweep-post-v0.1.12.md)
-- [Watcher preview](watcher-preview.md)
-- [Read-only MCP compatibility examples](mcp-readonly-examples.md)
-- [Known limitations](known-limitations.md)
-- [Roadmap](roadmap.md)
 - [Contributing](../CONTRIBUTING.md)
-- [v0.1.13 maintenance release record](release-v0.1.13.md)
-- [v0.1.12 maintenance release record](release-v0.1.12.md)
-
-## Historical Release Records
-
-- [Post-v0.1.13 maintenance plan](next-round-plan-post-v0.1.13.md)
-- [Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md)
-
-- [Post-v0.1.11 maintenance plan](next-round-plan-post-v0.1.11.md)
-- [v0.1.11 maintenance release record](release-v0.1.11.md)
-
-- [v0.1.10 maintenance release record](release-v0.1.10.md)
-- [Post-v0.1.10 maintenance plan](next-round-plan-post-v0.1.10.md)
-
-- [v0.1.9 maintenance release record](release-v0.1.9.md)
-- [Post-v0.1.9 maintenance plan](next-round-plan-post-v0.1.9.md)
-
-- [v0.1.8 maintenance release record](release-v0.1.8.md)
-- [Post-v0.1.8 maintenance plan](next-round-plan-post-v0.1.8.md)
-- [Post-v0.1.7 maintenance plan](next-round-plan-post-v0.1.7.md)
-- [v0.1.7 maintenance release record](release-v0.1.7.md)
-
-- [Post-v0.1.6 maintenance plan](next-round-plan-post-v0.1.6.md)
-- [v0.1.6 maintenance release record](release-v0.1.6.md)
-
-- [Post-v0.1.5 maintenance plan](next-round-plan-post-v0.1.5.md)
-- [v0.1.5 maintenance release record](release-v0.1.5.md)
-- [Post-v0.1.4 maintenance plan](next-round-plan-post-v0.1.4.md)
-- [v0.1.4 maintenance release record](release-v0.1.4.md)
-- [Post-v0.1.3 maintenance plan](next-round-plan-post-v0.1.3.md)
-- [v0.1.3 maintenance release record](release-v0.1.3.md)
-- [Post-v0.1.2 maintenance plan](next-round-plan-post-v0.1.2.md)
-- [v0.1.2 maintenance release record](release-v0.1.2.md)
-- [Post-v0.1.1 maintenance plan](next-round-plan-post-v0.1.1.md)
-- [v0.1.1 maintenance release record](release-v0.1.1.md)
-- [v0.1.0 final-readiness plan](next-round-plan-v0.1.0-final.md)
-- [v0.1.0 final-release plan](next-round-plan-v0.1.0-final-release.md)
-- [v0.1.0 final release readiness record](release-v0.1.0.md)
-- [Post-v0.1.0 maintenance plan](next-round-plan-post-v0.1.0.md)
-- [v0.1.0-rc.0 release record](release-candidate-v0.1.0-rc.0.md)

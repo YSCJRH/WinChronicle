@@ -15,11 +15,11 @@ The `v0.1.18` publication reconciliation landed on `main` as
 `25612920731` passed, and post-merge `main` Windows Harness run `25612977738`
 passed on that SHA.
 
-The post-v0.1.18 baseline should continue blueprint-aligned maintenance without
-expanding the v0.1 product boundary. The next round starts with this
-post-publication baseline cursor, then continues with public metadata/evidence
-freshness, helper/watcher diagnostics, MCP/memory contracts, compatibility
-guardrails, and any small drift discovered by those checks.
+The post-v0.1.18 baseline reached a closure point at the published `v0.1.19`
+baseline. The historical public metadata, helper/watcher diagnostics,
+MCP/memory contract, compatibility, fixture/privacy, release-readiness,
+publication, and reconciliation work remains preserved here as evidence, but it
+should not continue automatically as another maintenance loop.
 
 Keep the v0.1 product boundary unchanged: local-first, UIA-first,
 harness-first, read-only MCP first, no screenshot/OCR implementation, no audio
@@ -29,31 +29,37 @@ service install, no polling capture loop, and no default background capture.
 
 ## Execution Cursor
 
-- Current stage: AH18 - v0.1.19 Publication Reconciliation.
-- Stage status: `v0.1.19` is published and AH18 records the publication
-  evidence baseline. This record captures the release URL, published timestamp,
-  final tag target, PR Windows Harness, post-merge `main` Windows Harness,
-  release/tag verification, and publication reconciliation PR Windows Harness.
+- Current stage: Closed v0.1 baseline after `v0.1.19`.
+- Stage status: `v0.1.19` is published, AH18 publication evidence is recorded,
+  and the previous maintenance loop is closed for human product review.
 - Last completed evidence: AH17 `v0.1.19` release-readiness PR #206 merged as
   `c087f9e5daaf9e48b5529b5f7188d047714f3552`, PR Windows Harness run
   `25896736903` passed on
   `666f31d80e533c5a3fcdaa2fc3f0ce2626fe6755`, post-merge `main` Windows
   Harness run `25896975136` passed on
-  `c087f9e5daaf9e48b5529b5f7188d047714f3552`, and GitHub release `v0.1.19`
-  was published at `2026-05-15T02:31:50Z`.
+  `c087f9e5daaf9e48b5529b5f7188d047714f3552`, GitHub release `v0.1.19`
+  was published at `2026-05-15T02:31:50Z`, and AH18 publication
+  reconciliation PR #207 merged as
+  `6b7fe8a6026c2cfa3d9339541ecd4aa13a2f43f7`.
 - Last validation: `gh run view 25896975136 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
   verified the post-AH17 `main` Windows Harness concluded `success` on the
   final tag target. `gh run view 25897590925 --json
   databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
   verified the AH18 publication reconciliation PR Windows Harness concluded
-  `success` on `0fd5d3bbe0f933acad28fe436c447a7b9ca69f2a`.
-- Next atomic task: start a post-v0.1.19 maintenance cursor from the published
-  baseline.
+  `success` on `0fd5d3bbe0f933acad28fe436c447a7b9ca69f2a`. `gh run view
+  25897794793 --json
+  databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt`
+  verified the post-AH18 `main` Windows Harness concluded `success` on
+  `6b7fe8a6026c2cfa3d9339541ecd4aa13a2f43f7`.
+- Next atomic task: human product review of the closed v0.1 baseline.
 - Known blockers: none for product code. Live UIA smoke remains manual and
   outside default CI.
 
-## Phased Work
+## Historical Phased Work
+
+These stages are preserved as history. They are not an automatically authorized
+backlog.
 
 ### Stage AH0 - Post-v0.1.18 Baseline Cursor
 
@@ -262,7 +268,8 @@ service install, no polling capture loop, and no default background capture.
   verification.
 - Keep the `v0.1.19` tag immutable after publication.
 - Do not retag `v0.1.19` or `v0.1.18`.
-- After this reconciliation lands, start a post-v0.1.19 maintenance cursor.
+- After this reconciliation lands, stop automatic maintenance continuation and
+  hand the closed v0.1 baseline to human product review.
 
 ## Public Interfaces And Non-goals
 
