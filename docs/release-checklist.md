@@ -6,8 +6,8 @@ releases.
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest published release record is
-[v0.1.18 maintenance release record](release-v0.1.18.md). The previous stable
-release record is [v0.1.17 maintenance release record](release-v0.1.17.md). The
+[v0.1.19 maintenance release record](release-v0.1.19.md). The previous stable
+release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
 active post-v0.1.18 execution cursor lives in
 [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md), and the
 completed post-v0.1.18 public metadata/evidence freshness audit is
@@ -32,8 +32,8 @@ completed post-v0.1.18 fixture/privacy residual gap audit is
 [Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md). The
 completed post-v0.1.18 privacy-output release-readiness decision is
 [Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md). The
-current `v0.1.19` release-readiness record is
-[v0.1.19 release-readiness record](release-v0.1.19.md). The
+published `v0.1.19` maintenance release record is
+[v0.1.19 maintenance release record](release-v0.1.19.md). The
 completed post-v0.1.17 execution cursor is recorded in
 [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md). The
 completed post-v0.1.17 public metadata/evidence freshness audit is
@@ -121,12 +121,15 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.18` until a later plan explicitly prepares
+- the stable baseline is `v0.1.19` until a later plan explicitly prepares
   another version;
-- `v0.1.18` is the latest published release; its release URL, tag target,
+- `v0.1.19` is the latest published release; its release URL, tag target,
   published timestamp, and Windows Harness evidence are recorded in the release
   record;
-- `v0.1.17` is the previous stable release; its release URL, tag target,
+- `v0.1.18` is the previous stable release; its release URL, tag target,
+  published timestamp, and Windows Harness evidence are recorded in the release
+  record;
+- `v0.1.17` is historical stable release evidence; its release URL, tag target,
   published timestamp, and Windows Harness evidence are recorded in the release
   record;
 - `v0.1.16` is historical stable release evidence; its release URL, tag target, and
@@ -219,13 +222,15 @@ inherited historical evidence:
   `25618201016` succeeded on `48715b92447630765bbb03bd459acdf71e466a72`, and
   post-merge `main` Windows Harness run `25618271963` succeeded on
   `5bb6408ee7a8f674bb60c8d04b2dac16f1697aeb`;
-- the current `v0.1.19` release-readiness record bumps package/runtime/MCP
+- the published `v0.1.19` maintenance release record bumps package/runtime/MCP
   version identity to `0.1.19`, records fresh Notepad, Edge, and VS Code
   metadata manual UIA smoke, keeps VS Code strict Monaco capture diagnostic
   and non-blocking, records heartbeat-only live watcher diagnostics, records
-  local deterministic validation passed, keeps GitHub release publication
-  pending until PR Windows Harness, post-merge `main` Windows Harness, release metadata verification, remote tag
-  verification, and publication reconciliation complete;
+  local deterministic validation passed, records PR #206 Windows Harness run
+  `25896736903`, post-merge `main` Windows Harness run `25896975136`, release
+  URL https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.19, published
+  timestamp `2026-05-15T02:31:50Z`, and final tag target
+  `c087f9e5daaf9e48b5529b5f7188d047714f3552`;
 - the completed post-v0.1.17 execution cursor records `v0.1.17` publication, AF7
   publication reconciliation, PR #160, PR Windows Harness run `25601966464`,
   post-merge Windows Harness run `25602018700`, the post-v0.1.17 baseline, AG0
