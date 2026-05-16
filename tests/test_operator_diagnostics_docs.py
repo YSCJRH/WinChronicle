@@ -2827,7 +2827,9 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "stable baseline is `v0.1.19`",
+        "current candidate baseline is `v0.2.0`",
+        "fresh Notepad and Edge manual\n  UIA smoke",
+        "fake-helper monitor watcher smoke",
         "`v0.1.19` is the latest published release",
         "`v0.1.18` is the previous stable release",
         "`v0.1.16` is historical stable release evidence",
@@ -2905,7 +2907,8 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "`v0.1.19` is the stable baseline",
+        "`v0.2.0` is the current candidate baseline",
+        "fake-helper monitor watcher smoke",
         "`v0.1.19` is the latest published release",
         "`v0.1.18` is the previous stable release",
         "`v0.1.16` is historical stable release evidence",
@@ -3007,7 +3010,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         assert gate in ledger
 
     for expected in (
-        "Stable release baseline | `v0.1.19`",
+        "Stable release baseline | `v0.2.0` candidate pending GitHub publication",
         "Current maintenance plan | [Post-v0.1.18 maintenance plan]",
         "Current public metadata audit | [Public metadata audit after v0.1.18]",
         "Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.18]",
@@ -3020,7 +3023,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Completed fixture/privacy parity matrix | [Fixture/privacy parity matrix after v0.1.18]",
         "Completed fixture/privacy residual gap audit | [Fixture/privacy residual gap audit after v0.1.18]",
         "Current privacy-output release-readiness decision | [Privacy-output release-readiness decision after v0.1.18]",
-        "Current release record | [v0.1.19 maintenance release record]",
+        "Current release record | [v0.2.0 release record]",
         "Previous release-readiness decision | [v0.1.18 maintenance release record]",
         "Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.17 maintenance plan]",
@@ -3034,9 +3037,9 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Published release record | [v0.1.19 maintenance release record]",
         "Latest published release record | [v0.1.19 maintenance release record]",
         "Previous stable release record | [v0.1.18 maintenance release record]",
-        "Latest full manual UIA smoke source | [v0.1.19 maintenance release record]",
-        "Last freshness decision | For the published `v0.1.19` maintenance release",
-        "fresh hard-gate manual UIA smoke was rerun because privacy-output and read-only MCP response behavior changed after `v0.1.18`",
+        "Latest full manual UIA smoke source | [v0.2.0 release record]",
+        "Last freshness decision | For the `v0.2.0` monitor-session candidate",
+        "fresh hard-gate manual UIA smoke was rerun because product CLI/MCP shape and monitor-session output changed after `v0.1.19`",
         "Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning",
         "VS Code strict remains a diagnostic non-blocking failure",
         "Previous freshness decision | For the published `v0.1.18` maintenance release",
@@ -3046,11 +3049,13 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "then is explicitly accepted by the U4",
         "manual smoke is explicitly accepted by the W4",
         "manual smoke is accepted by the X1 freshness decision as",
-        "Last freshness decision | For the published `v0.1.19` maintenance release",
         "Fresh for the published `v0.1.18` maintenance release; previous fresh source was published `v0.1.17` maintenance in AF6",
         "Fresh diagnostic for the published `v0.1.18` maintenance release",
         "Heartbeat-only liveness diagnostic; `captures_written: 0`, `heartbeats: 9`, `duplicates_skipped: 0`, `denylisted_skipped: 0`",
         "Fresh for the published `v0.1.19` maintenance release",
+        "Fresh for the `v0.2.0` monitor-session candidate",
+        "Fake-helper monitor watcher",
+        "`captures_written: 1`, `heartbeats: 3`",
         "Heartbeat-only liveness diagnostic; `captures_written: 0`, `heartbeats: 10`, `duplicates_skipped: 0`, `denylisted_skipped: 0`",
         "manual smoke is explicitly accepted by the T4 release-readiness\n  record",
         "For the completed post-v0.1.7 compatible maintenance path toward `v0.1.8`",
@@ -3095,6 +3100,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "published `v0.1.19` maintenance release record\n  resolves that question",
         "The `v0.1.19` maintenance release record reran fresh hard-gate manual UIA",
         "privacy-output and read-only MCP response behavior changed",
+        "The `v0.2.0` release record reran fresh hard-gate manual UIA",
+        "product CLI/MCP shape and monitor-session output changed",
         "VS Code strict remains diagnostic and\n  non-blocking",
         "Deterministic harness smoke changes require fresh deterministic gate",
     ):

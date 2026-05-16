@@ -5,7 +5,9 @@ releases.
 
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
-The latest published release record is
+The current v0.2 candidate release record is
+[v0.2.0 release record](release-v0.2.0.md). Until `v0.2.0` is published, the
+latest published release record is
 [v0.1.19 maintenance release record](release-v0.1.19.md). The previous stable
 release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
 active post-v0.1.18 execution cursor lives in
@@ -121,8 +123,13 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the stable baseline is `v0.1.19` until a later plan explicitly prepares
-  another version;
+- the current candidate baseline is `v0.2.0`, recorded in
+  [v0.2.0 release record](release-v0.2.0.md);
+- `v0.2.0` records fresh deterministic gates, fresh Notepad and Edge manual
+  UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
+  diagnostic failure, and fake-helper monitor watcher smoke;
+- until `v0.2.0` publication is verified, the latest published release remains
+  `v0.1.19`;
 - `v0.1.19` is the latest published release; its release URL, tag target,
   published timestamp, and Windows Harness evidence are recorded in the release
   record;

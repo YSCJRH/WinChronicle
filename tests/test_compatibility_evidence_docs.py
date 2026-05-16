@@ -28,6 +28,7 @@ V0116_RELEASE = ROOT / "docs" / "release-v0.1.16.md"
 V0117_RELEASE = ROOT / "docs" / "release-v0.1.17.md"
 V0118_RELEASE = ROOT / "docs" / "release-v0.1.18.md"
 V0119_RELEASE = ROOT / "docs" / "release-v0.1.19.md"
+V020_RELEASE = ROOT / "docs" / "release-v0.2.0.md"
 POST_V0118_PLAN = ROOT / "docs" / "next-round-plan-post-v0.1.18.md"
 PUBLIC_METADATA_V0118 = ROOT / "docs" / "public-metadata-audit-post-v0.1.18.md"
 HELPER_WATCHER_V0118 = ROOT / "docs" / "helper-watcher-diagnostics-sweep-post-v0.1.18.md"
@@ -114,6 +115,7 @@ def test_release_checklist_requires_compatibility_evidence():
         "Fixture/privacy parity matrix after v0.1.18",
         "Fixture/privacy residual gap audit after v0.1.18",
         "Privacy-output release-readiness decision after v0.1.18",
+        "v0.2.0 release record",
         "v0.1.19 maintenance release record",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
@@ -169,6 +171,7 @@ def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
         "Fixture/privacy parity matrix after v0.1.18",
         "Fixture/privacy residual gap audit after v0.1.18",
         "Privacy-output release-readiness decision after v0.1.18",
+        "v0.2.0 release record",
         "v0.1.19 maintenance release record",
         "Post-v0.1.16 maintenance plan",
         "Public metadata audit after v0.1.16",
@@ -1109,6 +1112,46 @@ def test_v0119_release_record_is_published_and_scoped():
 
     for tool_name in TOOL_NAMES:
         assert f"`{tool_name}`" in text
+
+
+def test_v020_release_record_is_monitor_session_candidate_and_scoped():
+    text = V020_RELEASE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "`v0.2.0` promotes WinChronicle from the closed `v0.1` harness-first baseline",
+        "Publication status: pending final GitHub release publication.",
+        "Release | `v0.2.0`",
+        "Stage | `v0.2.0` monitor-session baseline",
+        "Candidate branch | `codex/v0.2-monitor-session`",
+        "Previous stable release | `v0.1.19`",
+        "`python -m pytest -q` | Pass | `236 passed`",
+        "`git diff --check` | Pass | no whitespace errors",
+        "`python harness/scripts/run_harness.py` | Pass | full harness passed",
+        "printed `0.2.0` twice",
+        "Notepad targeted UIA smoke | Pass",
+        "Edge targeted UIA smoke | Pass",
+        "VS Code metadata smoke | Pass with diagnostic warning",
+        "VS Code strict Monaco marker | Diagnostic failure, non-blocking",
+        "Fake-helper monitor watcher | Pass",
+        "Adds `monitor --events` and `monitor --watcher`",
+        "Adds `summarize-session` for reading saved local session summaries by session id",
+        "Keeps raw watcher JSONL out of the product monitor-session storage path.",
+        "the MCP tool list remains unchanged",
+        "Aligns package, runtime, and MCP server version identity to `0.2.0`",
+        "Screenshots, OCR, audio recording, keyboard capture, clipboard capture",
+        "daemon/service installation, polling capture loops, default background capture",
+        "`summarize-session` reads saved session ids under the local state directory",
+    ):
+        assert phrase in normalized
+
+    for forbidden in (
+        "screenshot capture code",
+        "OCR engine integration",
+        "MCP write tools are enabled",
+        "daemon is installed",
+    ):
+        assert forbidden not in normalized
 
 
 def test_post_v0118_plan_is_active_without_expanding_scope():

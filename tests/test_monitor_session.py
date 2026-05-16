@@ -3,8 +3,10 @@ import sys
 from pathlib import Path
 
 from winchronicle.cli import main
+from winchronicle.mcp.server import recent_activity
 from winchronicle.schema import validate_session_report, validate_watcher_event
 from winchronicle.session import monitor_events, read_session
+from test_watcher_events import _assert_raw_terms_not_indexed, _write_privacy_parity_events
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -93,6 +95,63 @@ def test_monitor_cli_exclude_app_skips_operator_excluded_observed_content(
     assert list((home / "capture-buffer").glob("*.json")) == []
     assert "Some windows were intentionally skipped" in " ".join(output["suggestions"])
     assert list(home.rglob("*.jsonl")) == []
+
+
+def test_monitor_privacy_fixture_does_not_leak_to_session_report_or_mcp(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    event_path = _write_privacy_parity_events(tmp_path)
+
+    result = monitor_events(event_path, home, session_id="privacy-session")
+    serialized_captures = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in sorted((home / "capture-buffer").glob("*.json"))
+    )
+    session_text = result.path.read_text(encoding="utf-8")
+    report_text = result.report_path.read_text(encoding="utf-8")
+    activity_text = json.dumps(recent_activity(home=home, limit=5), sort_keys=True)
+
+    assert result.session["captures_written"] == 3
+    assert result.session["denylisted_skipped"] == 2
+    assert result.session["heartbeats"] == 1
+    assert result.session["trust"] == "untrusted_observed_content"
+    assert result.session["untrusted_observed_content"] is True
+    assert "[REDACTED:password_field]" in serialized_captures
+    assert "[REDACTED:api_key]" in serialized_captures
+    assert "[REDACTED:github_token]" in serialized_captures
+    assert "Some windows were intentionally skipped" in " ".join(result.session["suggestions"])
+    assert list(home.rglob("*.jsonl")) == []
+
+    for raw_term in (
+        "CorrectHorseBatteryStaple!",
+        "sk-winchronicle-test-canary-1234567890abcdef",
+        "ghp_winchroniclecanary1234567890ABCD",
+        "xoxb-winchronicle-canary-token",
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3aW5jaHJvbmljbGUifQ.signature12345",
+        "-----BEGIN PRIVATE KEY-----",
+        "super secret value",
+        "title-denylisted observed text",
+    ):
+        assert raw_term not in serialized_captures
+        assert raw_term not in session_text
+        assert raw_term not in report_text
+        assert raw_term not in activity_text
+
+    _assert_raw_terms_not_indexed(
+        home,
+        (
+            "CorrectHorseBatteryStaple!",
+            "sk-winchronicle-test-canary-1234567890abcdef",
+            "ghp_winchroniclecanary1234567890ABCD",
+            "xoxb-winchronicle-canary-token",
+            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3aW5jaHJvbmljbGUifQ.signature12345",
+            "-----BEGIN PRIVATE KEY-----",
+            "super secret value",
+            "title-denylisted observed text",
+        ),
+    )
 
 
 def test_monitor_cli_watcher_command_creates_session_without_raw_jsonl(

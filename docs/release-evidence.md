@@ -3,7 +3,9 @@
 Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
-artifacts. The latest published release record is
+artifacts. The current v0.2 candidate release record is
+[v0.2.0 release record](release-v0.2.0.md). Until `v0.2.0` is published, the
+latest published release record is
 [v0.1.19 maintenance release record](release-v0.1.19.md). The previous stable
 release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
 active post-v0.1.18 maintenance cursor is recorded in
@@ -122,10 +124,15 @@ Record only:
 ## Evidence Freshness
 
 Release evidence must name which facts are current and which are inherited from
-historical records. After the `v0.1.19` maintenance publication:
+historical records. For the `v0.2.0` monitor-session candidate:
 
-- `v0.1.19` is the stable baseline until a later plan explicitly prepares
-  another version;
+- `v0.2.0` is the current candidate baseline, recorded in
+  [v0.2.0 release record](release-v0.2.0.md);
+- `v0.2.0` records fresh deterministic gates, fresh Notepad and Edge manual
+  UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
+  diagnostic failure, and fake-helper monitor watcher smoke;
+- until `v0.2.0` publication is verified, the latest published release remains
+  `v0.1.19`;
 - `v0.1.19` is the latest published release; its release URL, tag target,
   published timestamp, and Windows Harness evidence are recorded in the release
   record;
