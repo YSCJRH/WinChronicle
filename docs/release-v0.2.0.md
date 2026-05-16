@@ -11,7 +11,7 @@ the first product-facing monitor-session baseline. The release is warranted by
 an explicit, finite, local UIA/watcher session path that turns watcher events
 into local session JSON, deterministic suggestions, and a local HTML report.
 
-Publication status: pending final GitHub release publication.
+Publication status: published final release.
 
 ## Candidate Metadata
 
@@ -21,8 +21,13 @@ Publication status: pending final GitHub release publication.
 | Stage | `v0.2.0` monitor-session baseline |
 | Evidence date | 2026-05-16, Asia/Shanghai |
 | Candidate branch | `codex/v0.2-monitor-session` |
+| Publication status | Published final release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.0 |
+| Published at | `2026-05-16T00:06:56Z` |
+| Final tag target | `76005d7b3f115df36ce024ba69b02da28e239ff8` |
 | Previous stable release | `v0.1.19` |
 | Previous stable release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.1.19 |
+| `v0.1.19` tag target | `c087f9e5daaf9e48b5529b5f7188d047714f3552` |
 
 Environment:
 
@@ -37,11 +42,23 @@ Environment:
 | Gate | Result | Evidence |
 | --- | --- | --- |
 | `python -m pytest tests/test_monitor_session.py tests/test_mcp_tools.py tests/test_compatibility_contracts.py -q` | Pass | `24 passed` |
+| `python -m pytest tests/test_monitor_session.py tests/test_watcher_events.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` | Pass | `126 passed` |
 | `python harness/scripts/run_mcp_smoke.py` | Pass | MCP stdio smoke passed |
-| `python -m pytest -q` | Pass | `236 passed` |
+| `python -m pytest -q` | Pass | `238 passed` |
 | `git diff --check` | Pass | no whitespace errors |
-| `python harness/scripts/run_harness.py` | Pass | full harness passed: 236 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke |
+| `python harness/scripts/run_harness.py` | Pass | full harness passed: 238 pytest tests, helper/watcher builds with 0 warnings and 0 errors, watcher smoke, MCP smoke, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and watcher fake-helper smoke |
 | `python -c "import winchronicle, winchronicle.mcp.server as server; print(winchronicle.__version__); print(server.__version__)"` | Pass | printed `0.2.0` twice |
+
+## Publication Checks
+
+| Gate | Result | Evidence |
+| --- | --- | --- |
+| `gh release view v0.2.0 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` before publication | Pass | release not found, confirming no existing `v0.2.0` release to retag |
+| `git tag --list "v0.2.0*"` before publication | Pass | no local tags returned |
+| `git ls-remote --tags origin v0.2.0 v0.2.0-rc.0` before publication | Pass | no remote tags returned |
+| `gh release create v0.2.0 --target 76005d7b3f115df36ce024ba69b02da28e239ff8` | Pass | release created at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.0 |
+| `gh release view v0.2.0 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` | Pass | `v0.2.0` is published, not a draft, not a prerelease, published at `2026-05-16T00:06:56Z`, and targets `76005d7b3f115df36ce024ba69b02da28e239ff8` |
+| `git ls-remote --tags origin v0.2.0` | Pass | `76005d7b3f115df36ce024ba69b02da28e239ff8` |
 
 ## Manual UIA Smoke Gates
 

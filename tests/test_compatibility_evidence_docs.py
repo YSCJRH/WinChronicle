@@ -1114,21 +1114,31 @@ def test_v0119_release_record_is_published_and_scoped():
         assert f"`{tool_name}`" in text
 
 
-def test_v020_release_record_is_monitor_session_candidate_and_scoped():
+def test_v020_release_record_is_published_monitor_session_release_and_scoped():
     text = V020_RELEASE.read_text(encoding="utf-8")
     normalized = _normalized(text)
 
     for phrase in (
         "`v0.2.0` promotes WinChronicle from the closed `v0.1` harness-first baseline",
-        "Publication status: pending final GitHub release publication.",
+        "Publication status: published final release.",
         "Release | `v0.2.0`",
         "Stage | `v0.2.0` monitor-session baseline",
         "Candidate branch | `codex/v0.2-monitor-session`",
+        "Publication status | Published final release",
+        "Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.0",
+        "Published at | `2026-05-16T00:06:56Z`",
+        "Final tag target | `76005d7b3f115df36ce024ba69b02da28e239ff8`",
         "Previous stable release | `v0.1.19`",
-        "`python -m pytest -q` | Pass | `236 passed`",
+        "`v0.1.19` tag target | `c087f9e5daaf9e48b5529b5f7188d047714f3552`",
+        "`python -m pytest tests/test_monitor_session.py tests/test_watcher_events.py tests/test_operator_diagnostics_docs.py tests/test_compatibility_evidence_docs.py -q` | Pass | `126 passed`",
+        "`python -m pytest -q` | Pass | `238 passed`",
         "`git diff --check` | Pass | no whitespace errors",
         "`python harness/scripts/run_harness.py` | Pass | full harness passed",
         "printed `0.2.0` twice",
+        "`gh release view v0.2.0 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` before publication | Pass | release not found",
+        "`gh release create v0.2.0 --target 76005d7b3f115df36ce024ba69b02da28e239ff8` | Pass",
+        "`gh release view v0.2.0 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` | Pass | `v0.2.0` is published",
+        "`git ls-remote --tags origin v0.2.0` | Pass | `76005d7b3f115df36ce024ba69b02da28e239ff8`",
         "Notepad targeted UIA smoke | Pass",
         "Edge targeted UIA smoke | Pass",
         "VS Code metadata smoke | Pass with diagnostic warning",
@@ -1144,6 +1154,13 @@ def test_v020_release_record_is_monitor_session_candidate_and_scoped():
         "`summarize-session` reads saved session ids under the local state directory",
     ):
         assert phrase in normalized
+
+    for stale_phrase in (
+        "Publication status: pending final GitHub release publication.",
+        "GitHub release publication: pending.",
+        "Final tag target: pending",
+    ):
+        assert stale_phrase not in normalized
 
     for forbidden in (
         "screenshot capture code",

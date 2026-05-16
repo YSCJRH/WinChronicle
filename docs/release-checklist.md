@@ -5,10 +5,9 @@ releases.
 
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
-The current v0.2 candidate release record is
-[v0.2.0 release record](release-v0.2.0.md). Until `v0.2.0` is published, the
-latest published release record is
-[v0.1.19 maintenance release record](release-v0.1.19.md). The previous stable
+The current published v0.2 release record is
+[v0.2.0 release record](release-v0.2.0.md). The previous stable release record is
+[v0.1.19 maintenance release record](release-v0.1.19.md). The earlier stable
 release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
 active post-v0.1.18 execution cursor lives in
 [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md), and the
@@ -123,17 +122,19 @@ These gates must pass on Windows CI and should be rerun locally before release.
 Before release, confirm the evidence record distinguishes current evidence from
 inherited historical evidence:
 
-- the current candidate baseline is `v0.2.0`, recorded in
+- the current published baseline is `v0.2.0`, recorded in
   [v0.2.0 release record](release-v0.2.0.md);
 - `v0.2.0` records fresh deterministic gates, fresh Notepad and Edge manual
   UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke;
-- until `v0.2.0` publication is verified, the latest published release remains
-  `v0.1.19`;
-- `v0.1.19` is the latest published release; its release URL, tag target,
+- `v0.2.0` is the latest published release; its release URL, tag target
+  `76005d7b3f115df36ce024ba69b02da28e239ff8`, published timestamp
+  `2026-05-16T00:06:56Z`, and Windows Harness evidence are recorded in the
+  release record;
+- `v0.1.19` is the previous stable release; its release URL, tag target,
   published timestamp, and Windows Harness evidence are recorded in the release
   record;
-- `v0.1.18` is the previous stable release; its release URL, tag target,
+- `v0.1.18` is historical stable release evidence; its release URL, tag target,
   published timestamp, and Windows Harness evidence are recorded in the release
   record;
 - `v0.1.17` is historical stable release evidence; its release URL, tag target,
