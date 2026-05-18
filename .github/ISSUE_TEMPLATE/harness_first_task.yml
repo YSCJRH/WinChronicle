@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this template for work that stays inside the v0.1 maintenance boundary.
+        Use this template for work that stays inside the current v0.2 baseline.
         Do not attach or paste observed-content artifacts.
   - type: dropdown
     id: lane
@@ -16,6 +16,7 @@ body:
         - Fixture and privacy baseline
         - UIA helper hardening
         - Watcher preview
+        - Monitor sessions
         - Read-only MCP
         - Durable memory
         - Docs and deterministic demo

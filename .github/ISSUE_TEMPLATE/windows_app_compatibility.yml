@@ -1,0 +1,47 @@
+name: Windows app compatibility
+description: Report how a Windows app behaves with WinChronicle's UIA-first path.
+title: "[compat] "
+labels: ["windows", "compatibility"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use sanitized metadata only. Do not paste observed app content,
+        screenshots, OCR output, raw helper JSON, raw watcher JSONL, secrets,
+        passwords, or local page contents.
+  - type: input
+    id: app_name
+    attributes:
+      label: App name
+      placeholder: "Example: Windows Terminal"
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Observed behavior
+      description: Describe the compatibility behavior without observed content.
+      placeholder: "Example: title metadata is available, but editor text is not exposed through UIA TextPattern."
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Windows version, app version, Python/.NET versions, WinChronicle version or commit.
+    validations:
+      required: true
+  - type: textarea
+    id: deterministic_followup
+    attributes:
+      label: Possible deterministic follow-up
+      description: Suggest a fixture, docs note, or smoke check that would capture this behavior safely.
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Boundary confirmation
+      options:
+        - label: This report does not include observed-content artifacts or secrets.
+          required: true
+        - label: This report does not request screenshots, OCR, keyboard capture, clipboard capture, desktop control, or product targeted capture.
+          required: true

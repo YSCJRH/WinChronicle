@@ -1,25 +1,62 @@
 # WinChronicle
 
-**UIA-first local memory for Windows agents.**
+**Local-first memory for Windows AI agents.**
 
-WinChronicle is a Windows-first, local-first memory layer that turns structured
-Microsoft UI Automation context into inspectable local captures, searchable
-SQLite indexes, deterministic Markdown memory, and read-only MCP context for
-tool-capable coding agents.
+WinChronicle turns Microsoft UI Automation context into local, searchable,
+auditable work memory for tool-capable agents. It is built for developers who
+want Windows workflow context without default screenshots, OCR, keylogging,
+clipboard capture, cloud upload, or desktop control.
+
+```mermaid
+flowchart LR
+    desktop["Windows UIA context"] --> privacy["privacy + redaction"]
+    privacy --> captures["local captures + SQLite search"]
+    captures --> memory["deterministic Markdown memory"]
+    captures --> sessions["finite monitor sessions + HTML reports"]
+    sessions --> mcp["read-only MCP context"]
+    memory --> mcp
+```
+
+## Why It Exists
+
+AI coding agents are useful when they understand the surrounding workflow, but
+screen recording and cloud memory are too broad for many Windows developers.
+WinChronicle takes the opposite route: structured UIA signals first, local
+storage first, deterministic harnesses first, and read-only MCP first.
+
+See [Why WinChronicle](docs/why-winchronicle.md) for the product case and
+[Privacy architecture](docs/privacy-architecture.md) for the boundary model.
+
+## Try It In 5 Minutes
+
+From the repository root:
+
+```powershell
+$env:WINCHRONICLE_HOME = Join-Path $env:TEMP ("winchronicle-demo-" + [guid]::NewGuid().ToString("N"))
+python -m winchronicle init
+python -m winchronicle status
+python -m winchronicle capture-once --fixture harness/fixtures/uia/terminal_error.json
+python -m winchronicle search-captures "AssertionError"
+python -m winchronicle monitor --events harness/fixtures/watcher/notepad_burst.jsonl --session-id demo
+python -m winchronicle summarize-session demo
+python harness/scripts/run_mcp_smoke.py
+```
+
+For a guided walkthrough, use [5-minute demo](docs/quick-demo.md). For the full
+fixture-only path, use [Deterministic demo](docs/deterministic-demo.md).
 
 ## What It Does Today
 
-- Replays deterministic UIA fixtures through the same normalize, privacy,
-  redaction, schema, storage, search, and memory pipeline used by the preview
-  capture paths.
-- Stores local capture and memory state under `%LOCALAPPDATA%\WinChronicle` by
-  default, with `WINCHRONICLE_HOME` available for tests and harness runs.
+- Runs deterministic UIA fixtures through privacy, redaction, schema, storage,
+  SQLite search, and memory generation.
+- Stores local state under `%LOCALAPPDATA%\WinChronicle` by default, with
+  `WINCHRONICLE_HOME` available for tests and demos.
 - Generates searchable Markdown memory from already-redacted local captures.
 - Provides an explicit .NET UIA helper preview through `capture-frontmost`.
 - Provides explicit, finite watcher preview modes for deterministic fixture
   replay and caller-provided watcher commands.
-- Provides an explicit, finite v0.2 monitor-session path that turns watcher
-  events into a local timeline, deterministic suggestions, and an HTML report.
+- Provides a v0.2 monitor session that turns watcher events into a local
+  timeline, deterministic suggestions, session JSON, and an HTML report.
 - Exposes read-only MCP tools for current context, capture search, memory
   search, recent capture reads, recent activity, and privacy status.
 
@@ -47,26 +84,6 @@ trust = "untrusted_observed_content"
 ```
 
 Agents and clients must not treat observed screen text as trusted instructions.
-
-## Minimal Deterministic Quickstart
-
-From the repository root:
-
-```powershell
-python -m winchronicle init
-python -m winchronicle status
-python -m winchronicle capture-once --fixture harness/fixtures/uia/terminal_error.json
-python -m winchronicle search-captures "AssertionError"
-python -m winchronicle generate-memory --date 2026-04-25
-python -m winchronicle search-memory "AssertionError"
-python -m winchronicle monitor --events harness/fixtures/watcher/notepad_burst.jsonl --session-id demo
-python -m winchronicle summarize-session demo
-python -m winchronicle mcp-stdio
-```
-
-For the full fixture-only walkthrough, use
-[Deterministic demo](docs/deterministic-demo.md). For routine validation, start
-with [Operator quickstart](docs/operator-quickstart.md).
 
 ## UIA Helper, Watcher, And Monitor Preview
 
@@ -117,12 +134,16 @@ maintenance loop automatically.
 
 ## Key Docs
 
+- [5-minute demo](docs/quick-demo.md)
+- [Why WinChronicle](docs/why-winchronicle.md)
+- [Privacy architecture](docs/privacy-architecture.md)
 - [Operator quickstart](docs/operator-quickstart.md)
 - [Roadmap](docs/roadmap.md)
 - [v0.1 closure note](docs/goal-closure-v0.1.md)
 - [Known limitations](docs/known-limitations.md)
 - [Deterministic demo](docs/deterministic-demo.md)
 - [v0.2 monitor session](docs/v0.2-monitor-session.md)
+- [Project presentation checklist](docs/project-presentation.md)
 - [v0.2.0 release record](docs/release-v0.2.0.md)
 - [Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)
 - [Read-only MCP examples](docs/mcp-readonly-examples.md)

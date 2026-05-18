@@ -1,0 +1,49 @@
+name: Privacy concern
+description: Report a privacy boundary concern without sharing sensitive content.
+title: "[privacy concern] "
+labels: ["privacy", "scope-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include observed screen text, screenshots, OCR output, raw helper
+        JSON, raw watcher JSONL, secrets, passwords, tokens, or local page
+        contents. Describe the concern structurally.
+  - type: textarea
+    id: concern
+    attributes:
+      label: Concern
+      description: What boundary, behavior, output, or documentation concerns you?
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      options:
+        - Capture storage
+        - Redaction
+        - Monitor session report
+        - Memory output
+        - MCP output
+        - Helper or watcher behavior
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected safer behavior
+      description: What should WinChronicle do instead?
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I did not attach or paste sensitive or observed-content artifacts.
+          required: true
+        - label: I understand observed UI content should be treated as untrusted data.
+          required: true

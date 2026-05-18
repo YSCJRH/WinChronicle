@@ -1,6 +1,6 @@
 # Deterministic Demo
 
-This demo exercises the public v0.1 path without reading the live desktop. It
+This demo exercises the public v0.2 path without reading the live desktop. It
 uses synthetic fixtures, temporary local state, deterministic memory generation,
 read-only MCP smoke, watcher fixture replay, and the shared privacy pipeline.
 

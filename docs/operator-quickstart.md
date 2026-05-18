@@ -1,11 +1,11 @@
 # Operator Quickstart
 
-This guide is the v0.1 entry point for local validation. It keeps WinChronicle
+This guide is the v0.2 entry point for local validation. It keeps WinChronicle
 local-first, UIA-first, harness-first, and read-only MCP first.
 
 ## Product Boundary
 
-WinChronicle v0.1 does not include screenshot capture, OCR, audio recording,
+WinChronicle v0.2 does not include screenshot capture, OCR, audio recording,
 keyboard capture, clipboard capture, network upload, LLM calls, MCP write
 tools, arbitrary file reads, service or daemon installation, polling capture
 loops, default background capture, or desktop control.
@@ -143,8 +143,11 @@ request and response shapes. There are no MCP tools for click, type, key press,
 clipboard, screenshot, OCR, audio, arbitrary file read, network calls, writes,
 or desktop control.
 
-## Current v0.1 Docs
+## Current Docs
 
+- [5-minute demo](quick-demo.md)
+- [Why WinChronicle](why-winchronicle.md)
+- [Privacy architecture](privacy-architecture.md)
 - [v0.1 closure note](goal-closure-v0.1.md)
 - [Roadmap](roadmap.md)
 - [Known limitations](known-limitations.md)

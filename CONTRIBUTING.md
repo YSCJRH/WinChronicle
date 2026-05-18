@@ -4,6 +4,24 @@ WinChronicle is a harness-first Windows memory project. Start by reading
 `AGENTS.md`, `docs/operator-quickstart.md`, `docs/deterministic-demo.md`, and
 `docs/roadmap.md`.
 
+For the product-facing entry path, also read `docs/quick-demo.md`,
+`docs/why-winchronicle.md`, and `docs/privacy-architecture.md`.
+
+## Good First Contributions
+
+Good first contributions are small, deterministic, and easy to review:
+
+- improve the 5-minute demo or README onboarding;
+- add deterministic UIA fixtures with redaction coverage;
+- document Windows app compatibility without committing observed content;
+- improve read-only MCP examples;
+- add privacy regression tests for secret canaries;
+- clarify monitor session reports and timeline examples.
+
+Use the GitHub issue templates for bug reports, privacy concerns, Windows app
+compatibility notes, feature proposals, harness-first tasks, and privacy
+boundary reviews.
+
 ## Safe Contribution Shape
 
 Prefer small changes that fit one roadmap lane:
