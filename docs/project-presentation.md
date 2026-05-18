@@ -8,7 +8,7 @@ community descriptions. It is not a release checklist.
 Suggested short description:
 
 ```text
-Local-first memory for Windows AI agents, built on Microsoft UI Automation with read-only MCP context.
+Local-first Windows UI Automation memory for AI agents
 ```
 
 ## Topics
@@ -19,12 +19,12 @@ Suggested GitHub topics:
 windows
 uia
 mcp
-local-first
 ai-agents
-developer-tools
-workflow-memory
+local-first
 privacy
 sqlite
+developer-tools
+workflow-memory
 python
 dotnet
 ```

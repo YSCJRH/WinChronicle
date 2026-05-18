@@ -56,14 +56,22 @@ def main() -> int:
                 env=env,
             )
 
-            help_text = _run([str(python), "-m", "winchronicle", "--help"], env=env)
-            _require("capture-once" in help_text, "CLI help did not include capture-once")
-            _require("search-memory" in help_text, "CLI help did not include search-memory")
+            winchronicle = _venv_script(venv_dir, "winchronicle")
+            _require(winchronicle.exists(), "editable install did not create winchronicle")
 
-            init_home = _run([str(python), "-m", "winchronicle", "init"], env=env).strip()
+            module_help = _run([str(python), "-m", "winchronicle", "--help"], env=env)
+            _require("capture-once" in module_help, "module CLI help did not include capture-once")
+            _require("search-memory" in module_help, "module CLI help did not include search-memory")
+
+            help_text = _run([str(winchronicle), "--help"], env=env)
+            _require("capture-once" in help_text, "console CLI help did not include capture-once")
+            _require("doctor" in help_text, "console CLI help did not include doctor")
+            _require("search-memory" in help_text, "console CLI help did not include search-memory")
+
+            init_home = _run([str(winchronicle), "init"], env=env).strip()
             _require(Path(init_home).resolve() == state_home.resolve(), "init used the wrong state home")
 
-            status = json.loads(_run([str(python), "-m", "winchronicle", "status"], env=env))
+            status = json.loads(_run([str(winchronicle), "status"], env=env))
             _require(status["db_exists"] is True, "status did not initialize SQLite")
             for key in DISABLED_SURFACE_KEYS:
                 _require(status[key] is False, f"status reported enabled prohibited surface: {key}")
@@ -72,12 +80,18 @@ def main() -> int:
                 "status did not report the observed-content trust boundary",
             )
 
+            doctor = json.loads(_run([str(winchronicle), "doctor"], env=env))
+            _require(doctor["command"] == "doctor", "doctor did not report its command name")
+            _require(doctor["db_exists"] is True, "doctor did not initialize SQLite")
+            _require(
+                any(check["name"] == "privacy_surfaces" and check["ok"] for check in doctor["checks"]),
+                "doctor did not report disabled privacy surfaces",
+            )
+
             capture_path = Path(
                 _run(
                     [
-                        str(python),
-                        "-m",
-                        "winchronicle",
+                        str(winchronicle),
                         "capture-once",
                         "--fixture",
                         str(ROOT / "harness" / "fixtures" / "uia" / "terminal_error.json"),
@@ -92,7 +106,7 @@ def main() -> int:
             )
 
             capture_matches = json.loads(
-                _run([str(python), "-m", "winchronicle", "search-captures", "AssertionError"], env=env)
+                _run([str(winchronicle), "search-captures", "AssertionError"], env=env)
             )
             _require(capture_matches, "search-captures did not find the fixture capture")
             _require(set(capture_matches[0]) == SEARCH_RESULT_KEYS, "search-captures JSON shape changed")
@@ -107,7 +121,7 @@ def main() -> int:
 
             generated = json.loads(
                 _run(
-                    [str(python), "-m", "winchronicle", "generate-memory", "--date", "2026-04-25"],
+                    [str(winchronicle), "generate-memory", "--date", "2026-04-25"],
                     env=env,
                 )
             )
@@ -137,7 +151,7 @@ def main() -> int:
                 )
 
             memory_matches = json.loads(
-                _run([str(python), "-m", "winchronicle", "search-memory", "AssertionError"], env=env)
+                _run([str(winchronicle), "search-memory", "AssertionError"], env=env)
             )
             _require(memory_matches, "search-memory did not find generated memory")
             _require(
@@ -161,6 +175,18 @@ def _venv_python(venv_dir: Path) -> Path:
     if os.name == "nt":
         return venv_dir / "Scripts" / "python.exe"
     return venv_dir / "bin" / "python"
+
+
+def _venv_script(venv_dir: Path, name: str) -> Path:
+    if os.name == "nt":
+        scripts = venv_dir / "Scripts"
+        candidates = [scripts / f"{name}.exe", scripts / f"{name}.cmd", scripts / name]
+    else:
+        candidates = [venv_dir / "bin" / name]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return candidates[0]
 
 
 def _run(command: list[str], *, env: dict[str, str]) -> str:

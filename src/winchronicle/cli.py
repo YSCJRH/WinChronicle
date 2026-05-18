@@ -2,14 +2,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import platform
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
+from ._version import __version__
 from .capture import capture_frontmost_with_helper, capture_once_from_fixture, privacy_check_path
 from .events import dispatch_watcher_events, run_watcher_command
 from .memory import generate_memory_entries
 from .mcp.server import run_stdio
 from .paths import ensure_state, state_paths
-from .privacy import privacy_contract_payload
+from .privacy import DISABLED_SURFACE_STATUS, privacy_contract_payload
 from .session import monitor_events, read_session, run_monitor_watcher_command, session_count
 from .storage import capture_count, init_db, memory_entry_count, search_captures, search_memory_entries
 
@@ -35,6 +40,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     subparsers.add_parser("init", help="Initialize the local WinChronicle state directory.")
     subparsers.add_parser("status", help="Print local state and privacy feature status as JSON.")
+    subparsers.add_parser(
+        "doctor",
+        help="Check local install, state, helper build outputs, and disabled privacy surfaces.",
+    )
 
     capture = subparsers.add_parser("capture-once", help="Capture a deterministic fixture once.")
     capture.add_argument("--fixture", required=True, type=Path)
@@ -156,6 +165,11 @@ def main(argv: list[str] | None = None) -> int:
             "session_count": session_count(paths["home"]),
             **privacy_contract_payload(),
         }
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "doctor":
+        payload = _doctor_payload()
         print(json.dumps(payload, indent=2, sort_keys=True))
         return 0
 
@@ -315,6 +329,109 @@ def main(argv: list[str] | None = None) -> int:
 
     parser.error(f"unknown command: {args.command}")
     return 2
+
+
+def _doctor_payload() -> dict[str, object]:
+    paths = ensure_state()
+    checks: list[dict[str, object]] = []
+
+    checks.append(
+        {
+            "name": "python",
+            "ok": sys.version_info >= (3, 11),
+            "detail": platform.python_version(),
+        }
+    )
+
+    try:
+        init_db(paths["db"])
+        sqlite_ok = paths["db"].exists()
+        sqlite_detail = "initialized" if sqlite_ok else "database file missing"
+    except Exception:
+        sqlite_ok = False
+        sqlite_detail = "sqlite initialization failed"
+    checks.append({"name": "sqlite", "ok": sqlite_ok, "detail": sqlite_detail})
+
+    checks.append(_dotnet_check())
+
+    root = Path(__file__).resolve().parents[2]
+    helper_dll = (
+        root
+        / "resources"
+        / "win-uia-helper"
+        / "bin"
+        / "Debug"
+        / "net8.0-windows"
+        / "win-uia-helper.dll"
+    )
+    watcher_dll = (
+        root
+        / "resources"
+        / "win-uia-watcher"
+        / "bin"
+        / "Debug"
+        / "net8.0-windows"
+        / "win-uia-watcher.dll"
+    )
+    checks.append(
+        {
+            "name": "uia_helper_dll",
+            "ok": helper_dll.exists(),
+            "path": str(helper_dll),
+        }
+    )
+    checks.append(
+        {
+            "name": "uia_watcher_dll",
+            "ok": watcher_dll.exists(),
+            "path": str(watcher_dll),
+        }
+    )
+
+    privacy = privacy_contract_payload()
+    disabled_ok = all(privacy[key] is False for key in DISABLED_SURFACE_STATUS)
+    checks.append(
+        {
+            "name": "privacy_surfaces",
+            "ok": disabled_ok,
+            "detail": "disabled surfaces remain off",
+        }
+    )
+
+    return {
+        "command": "doctor",
+        "version": __version__,
+        "python_version": platform.python_version(),
+        "home": str(paths["home"]),
+        "capture_buffer": str(paths["capture_buffer"]),
+        "db_exists": paths["db"].exists(),
+        "checks": checks,
+        **privacy,
+    }
+
+
+def _dotnet_check() -> dict[str, object]:
+    executable = shutil.which("dotnet")
+    if executable is None:
+        return {"name": "dotnet", "ok": False, "detail": "dotnet not found"}
+
+    try:
+        result = subprocess.run(
+            [executable, "--version"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+    except Exception:
+        return {"name": "dotnet", "ok": False, "detail": "dotnet --version failed"}
+
+    version = result.stdout.strip().splitlines()[0] if result.stdout.strip() else ""
+    return {
+        "name": "dotnet",
+        "ok": result.returncode == 0,
+        "detail": version if result.returncode == 0 and version else "dotnet --version failed",
+    }
 
 
 def _reject_forbidden_passthrough(

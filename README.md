@@ -27,18 +27,36 @@ storage first, deterministic harnesses first, and read-only MCP first.
 See [Why WinChronicle](docs/why-winchronicle.md) for the product case and
 [Privacy architecture](docs/privacy-architecture.md) for the boundary model.
 
+## Install And Run
+
+From a fresh checkout on Windows with Python 3.11+:
+
+```powershell
+python -m pip install -e ".[dev]"
+winchronicle --help
+winchronicle doctor
+dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo
+dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo
+python harness/scripts/run_quick_demo.py
+```
+
+`winchronicle doctor` prints local install, state, helper build-output, and
+privacy-surface checks as JSON. It does not start UIA capture, read the
+desktop, run the watcher, or store observed content. Source checkouts can still
+use `python -m winchronicle ...` for every command.
+
 ## Try It In 5 Minutes
 
-From the repository root:
+After installing the editable package, use the console command:
 
 ```powershell
 $env:WINCHRONICLE_HOME = Join-Path $env:TEMP ("winchronicle-demo-" + [guid]::NewGuid().ToString("N"))
-python -m winchronicle init
-python -m winchronicle status
-python -m winchronicle capture-once --fixture harness/fixtures/uia/terminal_error.json
-python -m winchronicle search-captures "AssertionError"
-python -m winchronicle monitor --events harness/fixtures/watcher/notepad_burst.jsonl --session-id demo
-python -m winchronicle summarize-session demo
+winchronicle init
+winchronicle status
+winchronicle capture-once --fixture harness/fixtures/uia/terminal_error.json
+winchronicle search-captures "AssertionError"
+winchronicle monitor --events harness/fixtures/watcher/notepad_burst.jsonl --session-id demo
+winchronicle summarize-session demo
 python harness/scripts/run_mcp_smoke.py
 ```
 
@@ -132,6 +150,16 @@ write tools out of scope. Future capture-surface expansion still requires
 explicit human product authorization. Do not continue the historical
 maintenance loop automatically.
 
+## Good First Contributions
+
+- Add app compatibility notes for Windows developer tools without committing
+  observed content.
+- Add deterministic UIA fixtures with privacy and redaction coverage.
+- Improve MCP client setup examples while keeping the tool list read-only.
+- Add redaction tests for new token canaries.
+- Improve local report readability without adding screenshots, OCR, upload, or
+  desktop-control behavior.
+
 ## Key Docs
 
 - [5-minute demo](docs/quick-demo.md)
@@ -146,7 +174,9 @@ maintenance loop automatically.
 - [Project presentation checklist](docs/project-presentation.md)
 - [v0.2.0 release record](docs/release-v0.2.0.md)
 - [Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)
+- [MCP client setup](docs/mcp-client-setup.md)
 - [Read-only MCP examples](docs/mcp-readonly-examples.md)
+- [Windows app compatibility](docs/windows-app-compatibility.md)
 - [Watcher preview](docs/watcher-preview.md)
 - [Maintenance and release history index](docs/maintenance-index.md)
 - [Contributing](CONTRIBUTING.md)

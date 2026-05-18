@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_CLI_COMMANDS = [
     "capture-frontmost",
     "capture-once",
+    "doctor",
     "generate-memory",
     "init",
     "mcp-stdio",

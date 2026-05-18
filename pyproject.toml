@@ -12,6 +12,9 @@ dependencies = [
   "jsonschema>=4.0",
 ]
 
+[project.scripts]
+winchronicle = "winchronicle.cli:main"
+
 [project.optional-dependencies]
 dev = [
   "pytest>=8.0",

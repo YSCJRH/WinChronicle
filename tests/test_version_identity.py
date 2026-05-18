@@ -19,6 +19,12 @@ def test_project_runtime_and_mcp_versions_match(tmp_path):
     assert _mcp_server_version(tmp_path / "state") == project_version
 
 
+def test_project_declares_winchronicle_console_script():
+    pyproject = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+
+    assert pyproject["project"]["scripts"]["winchronicle"] == "winchronicle.cli:main"
+
+
 def _mcp_server_version(home: Path) -> str:
     stdin = BytesIO(
         _encode(
