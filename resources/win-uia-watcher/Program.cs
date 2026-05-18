@@ -9,7 +9,7 @@ static int Run(string[] args)
 {
     if (args.Length == 0 || args[0] != "watch")
     {
-        Console.Error.WriteLine("usage: win-uia-watcher watch [--depth 80] [--debounce-ms 750] [--duration-ms 0] [--helper path] [--capture-on-start]");
+        Console.Error.WriteLine("usage: win-uia-watcher watch [--depth 80] [--debounce-ms 750] [--duration-ms 0] [--heartbeat-ms 5000] [--helper-timeout-ms 5000] [--helper path] [--capture-on-start]");
         return 2;
     }
 
@@ -57,7 +57,7 @@ sealed class WinEventWatcher : IDisposable
 
         while (!_cancelled)
         {
-            if (_options.DurationMs > 0 && _clock.ElapsedMilliseconds >= _options.DurationMs)
+            if (DurationElapsed())
             {
                 break;
             }
@@ -65,8 +65,17 @@ sealed class WinEventWatcher : IDisposable
             NativeMessage message;
             while (NativeMethods.PeekMessage(out message, IntPtr.Zero, 0, 0, 1))
             {
+                if (DurationElapsed())
+                {
+                    _cancelled = true;
+                    break;
+                }
                 NativeMethods.TranslateMessage(ref message);
                 NativeMethods.DispatchMessage(ref message);
+            }
+            if (_cancelled || DurationElapsed())
+            {
+                break;
             }
 
             if (_clock.ElapsedMilliseconds - _lastHeartbeatMs >= _options.HeartbeatMs)
@@ -116,6 +125,11 @@ sealed class WinEventWatcher : IDisposable
         int eventThread,
         int eventTime)
     {
+        if (DurationElapsed())
+        {
+            return;
+        }
+
         lock (_gate)
         {
             if (_clock.ElapsedMilliseconds - _lastCaptureMs < _options.DebounceMs)
@@ -137,8 +151,34 @@ sealed class WinEventWatcher : IDisposable
         WriteCaptureEvent(eventName);
     }
 
+    private bool DurationElapsed()
+    {
+        return _options.DurationMs > 0 && _clock.ElapsedMilliseconds >= _options.DurationMs;
+    }
+
+    private int RemainingHelperTimeoutMs()
+    {
+        if (_options.DurationMs <= 0)
+        {
+            return _options.HelperTimeoutMs;
+        }
+
+        long remaining = _options.DurationMs - _clock.ElapsedMilliseconds;
+        if (remaining <= 0)
+        {
+            return 0;
+        }
+        return Math.Min(_options.HelperTimeoutMs, Math.Max(250, (int)remaining));
+    }
+
     private JsonElement? CaptureForeground()
     {
+        int helperTimeoutMs = RemainingHelperTimeoutMs();
+        if (helperTimeoutMs <= 0)
+        {
+            return null;
+        }
+
         var startInfo = new ProcessStartInfo
         {
             FileName = _options.HelperCommand,
@@ -161,9 +201,16 @@ sealed class WinEventWatcher : IDisposable
             return null;
         }
 
-        string stdout = process.StandardOutput.ReadToEnd();
-        _ = process.StandardError.ReadToEnd();
-        process.WaitForExit();
+        Task<string> stdoutTask = process.StandardOutput.ReadToEndAsync();
+        Task<string> stderrTask = process.StandardError.ReadToEndAsync();
+        if (!process.WaitForExit(helperTimeoutMs))
+        {
+            TryKill(process);
+            return null;
+        }
+
+        string stdout = stdoutTask.GetAwaiter().GetResult();
+        _ = stderrTask.GetAwaiter().GetResult();
         if (process.ExitCode != 0 || string.IsNullOrWhiteSpace(stdout))
         {
             return null;
@@ -173,8 +220,30 @@ sealed class WinEventWatcher : IDisposable
         return document.RootElement.Clone();
     }
 
+    private static void TryKill(Process process)
+    {
+        try
+        {
+            if (!process.HasExited)
+            {
+                process.Kill(entireProcessTree: true);
+            }
+        }
+        catch (InvalidOperationException)
+        {
+        }
+        catch (System.ComponentModel.Win32Exception)
+        {
+        }
+    }
+
     private void WriteCaptureEvent(string eventName)
     {
+        if (DurationElapsed())
+        {
+            return;
+        }
+
         JsonElement? capture = CaptureForeground();
         if (capture is null)
         {
@@ -223,6 +292,7 @@ sealed record WatchOptions(
     int DebounceMs,
     int DurationMs,
     int HeartbeatMs,
+    int HelperTimeoutMs,
     bool CaptureOnStart,
     string HelperCommand,
     IReadOnlyList<string> HelperArgs)
@@ -233,6 +303,7 @@ sealed record WatchOptions(
         int debounceMs = 750;
         int durationMs = 0;
         int heartbeatMs = 5000;
+        int helperTimeoutMs = 5000;
         bool captureOnStart = false;
         string? helper = null;
         var helperArgs = new List<string>();
@@ -253,6 +324,9 @@ sealed record WatchOptions(
                 case "--heartbeat-ms" when index + 1 < args.Length:
                     heartbeatMs = int.Parse(args[++index]);
                     break;
+                case "--helper-timeout-ms" when index + 1 < args.Length:
+                    helperTimeoutMs = int.Parse(args[++index]);
+                    break;
                 case "--capture-on-start":
                     captureOnStart = true;
                     break;
@@ -271,6 +345,7 @@ sealed record WatchOptions(
             DebounceMs: Math.Max(0, debounceMs),
             DurationMs: Math.Max(0, durationMs),
             HeartbeatMs: Math.Max(250, heartbeatMs),
+            HelperTimeoutMs: Math.Max(250, helperTimeoutMs),
             CaptureOnStart: captureOnStart,
             HelperCommand: helper,
             HelperArgs: helperArgs);

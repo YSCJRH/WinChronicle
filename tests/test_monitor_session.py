@@ -2,6 +2,8 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
 from winchronicle.cli import main
 from winchronicle.mcp.server import recent_activity
 from winchronicle.schema import validate_session_report, validate_watcher_event
@@ -227,6 +229,74 @@ def test_monitor_cli_watcher_failure_does_not_echo_raw_output(
     assert "ERROR:" in output
     assert "api_key" not in output
     assert "WINCHRONICLE_SECRET_CANARY" not in output
+
+
+def test_monitor_cli_real_watcher_slow_helper_writes_session_without_leak(
+    tmp_path, monkeypatch, capsys
+):
+    watcher_dll = (
+        ROOT
+        / "resources"
+        / "win-uia-watcher"
+        / "bin"
+        / "Debug"
+        / "net8.0-windows"
+        / "win-uia-watcher.dll"
+    )
+    if not watcher_dll.exists():
+        pytest.skip("watcher DLL does not exist; run dotnet build first")
+
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    canary = "SLOW_HELPER_OBSERVED_CONTENT_MUST_NOT_ECHO"
+    slow_helper = tmp_path / "slow_helper.py"
+    slow_helper.write_text(
+        "import sys, time\n"
+        "time.sleep(10)\n"
+        f"print({canary!r})\n"
+        f"print({canary!r}, file=sys.stderr)\n",
+        encoding="utf-8",
+    )
+
+    assert (
+        main(
+            [
+                "monitor",
+                "--watcher",
+                "dotnet",
+                "--watcher-arg",
+                str(watcher_dll),
+                "--helper",
+                sys.executable,
+                "--helper-arg",
+                str(slow_helper),
+                "--duration",
+                "1",
+                "--heartbeat-ms",
+                "250",
+                "--capture-on-start",
+                "--session-id",
+                "slow-helper",
+            ]
+        )
+        == 0
+    )
+    output_text = capsys.readouterr().out
+    output = json.loads(output_text)
+    session_text = Path(output["path"]).read_text(encoding="utf-8")
+    report_text = Path(output["report_path"]).read_text(encoding="utf-8")
+
+    assert output["session_id"] == "slow-helper"
+    assert output["mode"] == "watcher"
+    assert output["captures_written"] == 0
+    assert output["source_capture_paths"] == []
+    assert Path(output["path"]).is_file()
+    assert Path(output["report_path"]).is_file()
+    assert list(home.rglob("*.jsonl")) == []
+    assert canary not in output_text
+    assert canary not in session_text
+    assert canary not in report_text
+    assert list((home / "capture-buffer").glob("*.json")) == []
 
 
 def test_read_session_accepts_session_id_only(tmp_path, monkeypatch):
