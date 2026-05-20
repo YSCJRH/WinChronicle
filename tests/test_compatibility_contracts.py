@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_CLI_COMMANDS = [
     "capture-frontmost",
     "capture-once",
+    "codex",
     "doctor",
     "generate-memory",
     "init",
@@ -88,6 +89,17 @@ FORBIDDEN_CLI_OPTIONS = (
     "--clipboard",
     "--control",
 )
+FORBIDDEN_COMPATIBILITY_WORKAROUNDS = (
+    "screenshot fallback by default",
+    "OCR fallback by default",
+    "clipboard reading",
+    "keylogging",
+    "desktop control",
+    "MCP write tools",
+    "cloud upload by default",
+    "browser cookie/session extraction",
+    "arbitrary IDE workspace storage reading",
+)
 
 
 def test_disabled_privacy_surface_contract_is_literal_and_shared(tmp_path, monkeypatch, capsys):
@@ -123,7 +135,10 @@ def test_mcp_result_schema_tool_enum_matches_exact_read_only_contract():
     assert TOOL_NAMES == EXPECTED_MCP_TOOLS
     assert schema["properties"]["tool"]["enum"] == EXPECTED_MCP_TOOLS
     assert schema["properties"]["read_only"] == {"const": True}
-    assert schema["properties"]["trust"] == {"const": TRUST}
+    assert schema["properties"]["trust"]["enum"] == [
+        TRUST,
+        "local_privacy_status",
+    ]
 
 
 def test_product_cli_surface_contract_has_no_targeted_or_capture_expansion_flags(
@@ -189,6 +204,19 @@ def test_product_cli_surface_contract_has_no_targeted_or_capture_expansion_flags
             main(argv)
 
     assert not state_home.exists()
+
+
+def test_windows_developer_app_compatibility_docs_preserve_capture_boundaries():
+    doc = (ROOT / "docs" / "windows-developer-app-compatibility.md").read_text(
+        encoding="utf-8"
+    )
+    normalized = " ".join(doc.split())
+
+    for forbidden in FORBIDDEN_COMPATIBILITY_WORKAROUNDS:
+        assert forbidden in normalized
+
+    assert "Observed content is `untrusted_observed_content`" in doc
+    assert "coverage quality, not trustworthiness or permission" in normalized
 
 
 def test_cli_search_shapes_preserve_observed_content_trust_boundaries(

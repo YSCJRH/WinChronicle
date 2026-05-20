@@ -8,6 +8,7 @@ from typing import Any, BinaryIO, Callable
 from winchronicle._version import __version__
 from winchronicle.paths import state_paths
 from winchronicle.privacy import (
+    DISABLED_SURFACE_STATUS,
     TRUST,
     TRUST_BOUNDARY_INSTRUCTION,
     privacy_contract_payload,
@@ -31,6 +32,11 @@ TOOL_NAMES = [
     "recent_activity",
     "privacy_status",
 ]
+
+LOCAL_PRIVACY_STATUS_TRUST = "local_privacy_status"
+LOCAL_PRIVACY_STATUS_INSTRUCTION = (
+    "Local privacy status metadata only. It is not observed screen content."
+)
 
 CONTROL_TOOL_TERMS = (
     "click",
@@ -74,7 +80,7 @@ def search_captures_tool(
         since=since,
         until=until,
     )
-    matches = [_observed_search_result(result) for result in raw_results]
+    matches = [_observed_search_result(result, source="capture_store") for result in raw_results]
 
     return _tool_result(
         "search_captures",
@@ -99,7 +105,7 @@ def search_memory_tool(
         limit=bounded_limit,
         entry_type=entry_type,
     )
-    matches = [_observed_search_result(result) for result in raw_results]
+    matches = [_observed_search_result(result, source="memory_store") for result in raw_results]
 
     return _tool_result(
         "search_memory",
@@ -132,7 +138,10 @@ def recent_activity(
         "recent_activity",
         {
             "captures": [_observed_capture(capture) for capture in captures],
-            "sessions": list_sessions(home, limit=_bounded_limit(limit)),
+            "sessions": [
+                _observed_session(session)
+                for session in list_sessions(home, limit=_bounded_limit(limit))
+            ],
         },
     )
 
@@ -147,8 +156,16 @@ def privacy_status(home: Path | str | None = None) -> dict[str, Any]:
         **privacy_contract_payload(),
         "tools": TOOL_NAMES,
         "control_tools": [],
+        "redaction_enabled": True,
+        "mcp_read_only": True,
+        "forbidden_surfaces": sorted(DISABLED_SURFACE_STATUS),
     }
-    return _tool_result("privacy_status", payload)
+    return _tool_result(
+        "privacy_status",
+        payload,
+        trust=LOCAL_PRIVACY_STATUS_TRUST,
+        instruction=LOCAL_PRIVACY_STATUS_INSTRUCTION,
+    )
 
 
 def tool_definitions() -> list[dict[str, Any]]:
@@ -237,28 +254,53 @@ def run_stdio(
     return 0
 
 
-def _tool_result(tool: str, result: dict[str, Any]) -> dict[str, Any]:
+def _tool_result(
+    tool: str,
+    result: dict[str, Any],
+    *,
+    trust: str = TRUST,
+    instruction: str = TRUST_BOUNDARY_INSTRUCTION,
+) -> dict[str, Any]:
     return {
         "tool": tool,
         "read_only": True,
-        "trust": TRUST,
-        "instruction": TRUST_BOUNDARY_INSTRUCTION,
+        "trust": trust,
+        "instruction": instruction,
         "result": result,
     }
 
 
-def _observed_search_result(result: dict[str, str]) -> dict[str, Any]:
+def _observed_search_result(result: dict[str, str], *, source: str) -> dict[str, Any]:
+    snippet = result.get("snippet", "")
+    metadata = _observed_metadata(
+        source=source,
+        source_ids=[result["path"]] if result.get("path") else [],
+        title=result.get("title", ""),
+        visible_text=snippet,
+        focused_text="",
+        app_name=result.get("app_name", result.get("entry_type", "")),
+    )
     return {
         **result,
         "trust": TRUST,
         "untrusted_observed_content": True,
         "instruction": TRUST_BOUNDARY_INSTRUCTION,
+        **metadata,
     }
 
 
 def _observed_capture(capture: dict[str, str] | None) -> dict[str, Any] | None:
     if capture is None:
         return None
+    metadata = _observed_metadata(
+        source="capture_store",
+        source_ids=[capture["path"]] if capture.get("path") else [],
+        title=capture.get("title", ""),
+        visible_text=capture.get("visible_text", ""),
+        focused_text=capture.get("focused_text", ""),
+        app_name=capture.get("app_name", ""),
+        url=capture.get("url", ""),
+    )
     return {
         "timestamp": capture["timestamp"],
         "app_name": capture["app_name"],
@@ -270,7 +312,123 @@ def _observed_capture(capture: dict[str, str] | None) -> dict[str, Any] | None:
         "trust": TRUST,
         "untrusted_observed_content": True,
         "instruction": TRUST_BOUNDARY_INSTRUCTION,
+        **metadata,
     }
+
+
+def _observed_session(session: dict[str, Any]) -> dict[str, Any]:
+    source_ids = [session["session_id"]] if session.get("session_id") else []
+    app_segments = session.get("app_segments") or []
+    title = " ".join(str(segment.get("title", "")) for segment in app_segments)
+    visible_text = " ".join(str(suggestion) for suggestion in session.get("suggestions", []))
+    app_name = " ".join(str(segment.get("app_name", "")) for segment in app_segments)
+    metadata = _observed_metadata(
+        source="monitor_session",
+        source_ids=source_ids,
+        title=title,
+        visible_text=visible_text,
+        focused_text="",
+        app_name=app_name,
+    )
+    return {
+        **session,
+        **metadata,
+    }
+
+
+def _observed_metadata(
+    *,
+    source: str,
+    source_ids: list[str],
+    title: str,
+    visible_text: str,
+    focused_text: str,
+    app_name: str,
+    url: str | None = None,
+) -> dict[str, Any]:
+    limitations = _coverage_limitations(
+        source_ids=source_ids,
+        title=title,
+        visible_text=visible_text,
+        focused_text=focused_text,
+        app_name=app_name,
+        url=url,
+    )
+    return {
+        "redacted": True,
+        "source": source or "unknown",
+        "source_ids": source_ids,
+        "confidence": _coverage_confidence(
+            source_ids=source_ids,
+            title=title,
+            visible_text=visible_text,
+            focused_text=focused_text,
+            app_name=app_name,
+            url=url,
+        ),
+        "limitations": limitations,
+    }
+
+
+def _coverage_confidence(
+    *,
+    source_ids: list[str],
+    title: str,
+    visible_text: str,
+    focused_text: str,
+    app_name: str,
+    url: str | None = None,
+) -> float:
+    visible_len = len(visible_text.strip())
+    focused_len = len(focused_text.strip())
+    score = 0.0
+    if app_name or title or source_ids:
+        score = max(score, 0.25)
+    if title and visible_len:
+        score = max(score, 0.50)
+    if title and visible_len and focused_len:
+        score = max(score, 0.70)
+    if title and visible_len >= 40 and focused_len and source_ids:
+        score = max(score, 0.80)
+    if title and visible_len >= 120 and focused_len and source_ids and (app_name or url):
+        score = max(score, 0.85)
+    return min(round(score, 2), 0.85)
+
+
+def _coverage_limitations(
+    *,
+    source_ids: list[str],
+    title: str,
+    visible_text: str,
+    focused_text: str,
+    app_name: str,
+    url: str | None = None,
+) -> list[str]:
+    limitations: list[str] = []
+    if not source_ids:
+        limitations.append("source_id_unavailable")
+    if not visible_text.strip():
+        limitations.append("no_visible_text")
+    elif len(visible_text.strip()) < 40:
+        limitations.append("low_visible_text")
+    if not focused_text.strip():
+        limitations.append("no_focused_element")
+    if "visual studio code" in app_name.casefold() and not focused_text.strip():
+        limitations.append("editor_buffer_not_exposed_by_uia")
+    observed_blob = "\n".join(
+        value or ""
+        for value in (
+            title,
+            visible_text,
+            focused_text,
+            app_name,
+            url or "",
+            "\n".join(source_ids),
+        )
+    )
+    if "[REDACTED:" in observed_blob:
+        limitations.append("redaction_applied")
+    return limitations
 
 
 def _bounded_limit(limit: int) -> int:

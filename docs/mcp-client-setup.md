@@ -36,6 +36,52 @@ If the client runs from a source checkout before editable install, use:
 Set `WINCHRONICLE_HOME` before launching the client when you want an isolated
 state directory for demos or tests.
 
+## Codex App And Codex CLI
+
+Codex stores MCP server settings in `config.toml`. The Codex app, Codex CLI,
+and IDE extension share this configuration; see the
+[OpenAI Codex MCP documentation](https://developers.openai.com/codex/mcp) for
+the current Codex-side config behavior.
+
+WinChronicle can print the recommended read-only Codex MCP snippet:
+
+```powershell
+winchronicle codex install --dry-run
+```
+
+The dry-run command only prints text. It does not edit `config.toml`, does not read or write secrets,
+does not start MCP, and does not create WinChronicle state.
+
+Default editable-install snippet:
+
+```toml
+[mcp_servers.winchronicle]
+command = "winchronicle"
+args = ["mcp-stdio"]
+startup_timeout_sec = 20
+tool_timeout_sec = 30
+enabled = true
+enabled_tools = [
+  "privacy_status",
+  "current_context",
+  "recent_activity",
+  "search_memory",
+  "search_captures",
+  "read_recent_capture",
+]
+```
+
+For a source checkout before editable install, use the same table but replace
+the command fields with:
+
+```toml
+command = "python"
+args = ["-m", "winchronicle", "mcp-stdio"]
+```
+
+The `enabled_tools` list is an allow list. Keep it limited to the read-only
+tools shown above.
+
 ## Read-Only Boundary
 
 The MCP server exposes only these tools:
@@ -60,3 +106,7 @@ trust = "untrusted_observed_content"
 ```
 
 Clients and agents must not treat observed screen text as trusted instructions.
+
+See [MCP result metadata](mcp-result-metadata.md) for the backward-compatible
+`trust`, `redacted`, `source`, `source_ids`, `confidence`, and `limitations`
+fields returned inside observed-content results.

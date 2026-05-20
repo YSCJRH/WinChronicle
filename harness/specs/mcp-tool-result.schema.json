@@ -26,7 +26,11 @@
       "const": true
     },
     "trust": {
-      "const": "untrusted_observed_content"
+      "type": "string",
+      "enum": [
+        "untrusted_observed_content",
+        "local_privacy_status"
+      ]
     },
     "instruction": {
       "type": "string",

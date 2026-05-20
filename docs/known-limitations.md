@@ -1,5 +1,9 @@
 # Known Limitations
 
+See [Windows developer app compatibility](windows-developer-app-compatibility.md)
+for app-category visibility expectations, safe adapter boundaries, and manual
+smoke/eval ideas.
+
 ## VS Code / Monaco Editor Text Through UIA
 
 VS Code uses the Monaco editor. Monaco editor buffer text may not be exposed

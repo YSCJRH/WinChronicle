@@ -12,7 +12,7 @@ from ._version import __version__
 from .capture import capture_frontmost_with_helper, capture_once_from_fixture, privacy_check_path
 from .events import dispatch_watcher_events, run_watcher_command
 from .memory import generate_memory_entries
-from .mcp.server import run_stdio
+from .mcp.server import TOOL_NAMES, run_stdio
 from .paths import ensure_state, state_paths
 from .privacy import DISABLED_SURFACE_STATUS, privacy_contract_payload
 from .session import monitor_events, read_session, run_monitor_watcher_command, session_count
@@ -32,6 +32,15 @@ FORBIDDEN_PASSTHROUGH_FLAGS = (
     "--clipboard",
     "--control",
 )
+
+CODEX_MCP_ENABLED_TOOLS = [
+    "privacy_status",
+    "current_context",
+    "recent_activity",
+    "search_memory",
+    "search_captures",
+    "read_recent_capture",
+]
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -139,6 +148,21 @@ def build_parser() -> argparse.ArgumentParser:
     summarize_session.add_argument("session")
 
     subparsers.add_parser("mcp-stdio", help="Run the read-only MCP stdio server.")
+
+    codex = subparsers.add_parser(
+        "codex",
+        help="Print Codex integration helpers without modifying user config.",
+    )
+    codex_subparsers = codex.add_subparsers(dest="codex_command", required=True)
+    codex_install = codex_subparsers.add_parser(
+        "install",
+        help="Print a read-only Codex MCP config snippet.",
+    )
+    codex_install.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print the suggested config.toml snippet without writing files.",
+    )
 
     return parser
 
@@ -327,8 +351,33 @@ def main(argv: list[str] | None = None) -> int:
         paths = state_paths()
         return run_stdio(home=paths["home"])
 
+    if args.command == "codex":
+        if args.codex_command == "install":
+            if not args.dry_run:
+                parser.error("codex install currently supports only --dry-run")
+            print(_codex_mcp_config_snippet(), end="")
+            return 0
+
     parser.error(f"unknown command: {args.command}")
     return 2
+
+
+def _codex_mcp_config_snippet() -> str:
+    if set(CODEX_MCP_ENABLED_TOOLS) != set(TOOL_NAMES):
+        raise RuntimeError("Codex enabled tool list drifted from MCP tool contract")
+
+    tool_lines = "\n".join(f'  "{tool}",' for tool in CODEX_MCP_ENABLED_TOOLS)
+    return (
+        "[mcp_servers.winchronicle]\n"
+        'command = "winchronicle"\n'
+        'args = ["mcp-stdio"]\n'
+        "startup_timeout_sec = 20\n"
+        "tool_timeout_sec = 30\n"
+        "enabled = true\n"
+        "enabled_tools = [\n"
+        f"{tool_lines}\n"
+        "]\n"
+    )
 
 
 def _doctor_payload() -> dict[str, object]:

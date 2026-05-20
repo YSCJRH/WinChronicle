@@ -1,16 +1,40 @@
 import json
 import sys
+import tomllib
 from pathlib import Path
 
 from winchronicle.capture import load_json, normalize_fixture
 from winchronicle.cli import main
-from winchronicle.mcp.server import privacy_status
+from winchronicle.mcp.server import TOOL_NAMES, privacy_status
 from winchronicle.privacy import DISABLED_SURFACE_STATUS, TRUST
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 SEARCH_RESULT_KEYS = {"timestamp", "app_name", "title", "snippet", "path", "trust"}
+CODEX_ENABLED_TOOL_ORDER = [
+    "privacy_status",
+    "current_context",
+    "recent_activity",
+    "search_memory",
+    "search_captures",
+    "read_recent_capture",
+]
+FORBIDDEN_CODEX_TOOL_NAMES = {
+    "click",
+    "type",
+    "press_key",
+    "keyboard",
+    "clipboard",
+    "screenshot",
+    "ocr",
+    "audio",
+    "network_upload",
+    "cloud_upload",
+    "desktop_control",
+    "write_memory",
+    "read_file",
+}
 
 
 def test_status_cli_matches_mcp_privacy_contract(tmp_path, monkeypatch, capsys):
@@ -72,6 +96,32 @@ def test_doctor_cli_reports_safe_empty_state_without_capture(tmp_path, monkeypat
     serialized = json.dumps(payload, sort_keys=True)
     assert "visible_text" not in serialized
     assert "focused_text" not in serialized
+
+
+def test_codex_install_dry_run_prints_read_only_mcp_config_without_state_write(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["codex", "install", "--dry-run"]) == 0
+    output = capsys.readouterr().out
+    config = tomllib.loads(output)
+    server = config["mcp_servers"]["winchronicle"]
+
+    assert server["command"] == "winchronicle"
+    assert server["args"] == ["mcp-stdio"]
+    assert server["startup_timeout_sec"] == 20
+    assert server["tool_timeout_sec"] == 30
+    assert server["enabled"] is True
+    assert server["enabled_tools"] == CODEX_ENABLED_TOOL_ORDER
+    assert set(server["enabled_tools"]) == set(TOOL_NAMES)
+    assert not (set(server["enabled_tools"]) & FORBIDDEN_CODEX_TOOL_NAMES)
+
+    assert not home.exists()
+    assert "visible_text" not in output
+    assert "focused_text" not in output
+    assert "password" not in output.lower()
 
 
 def test_init_status_and_empty_search_memory_are_stable(tmp_path, monkeypatch, capsys):
