@@ -1,0 +1,23 @@
+{
+  "trust": "untrusted_observed_content",
+  "redaction_required": false,
+  "redacted": true,
+  "must_not_leak": [],
+  "must_include_limitations": [
+    "fixture_only",
+    "summary_only"
+  ],
+  "confidence_band": [
+    0.5,
+    0.85
+  ],
+  "should_help_agent_recover": true,
+  "forbidden_behaviors": [
+    "background_daemon",
+    "infinite_capture_loop",
+    "real_system_state_inference"
+  ],
+  "safe_exposed_summary": "Synthetic finite monitor session combines three stable fixture source ids into a bounded work-context summary.",
+  "expected_agent_recovery": "The agent can recover that a bounded local session moved across terminal debugging, editor metadata, and browser research without assuming live state.",
+  "metadata_notes": "Confidence can be medium-high because multiple stable synthetic source ids exist, but the result remains fixture-only and summary-only."
+}

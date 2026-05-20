@@ -19,6 +19,9 @@ not approval to add new capture surfaces.
 - Manual smoke notes should record commands, local artifact paths, environment
   notes, timestamps, and pass/fail outcomes without committing observed text.
 
+Synthetic scenarios for these boundaries live in the
+[agent context eval scaffold](../benchmarks/evals/README.md).
+
 ## VS Code / Cursor / Monaco-based editors
 
 ### Expected UIA signals

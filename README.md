@@ -222,6 +222,7 @@ maintenance loop automatically.
 - [Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)
 - [MCP client setup](docs/mcp-client-setup.md)
 - [Read-only MCP examples](docs/mcp-readonly-examples.md)
+- [Agent context eval scaffold](benchmarks/evals/README.md)
 - [Windows app compatibility](docs/windows-app-compatibility.md)
 - [Windows developer app compatibility](docs/windows-developer-app-compatibility.md)
 - [Watcher preview](docs/watcher-preview.md)
