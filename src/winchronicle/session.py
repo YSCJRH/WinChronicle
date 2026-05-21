@@ -327,8 +327,8 @@ def _write_session(paths: dict[str, Path], session: dict[str, Any]) -> MonitorSe
         session["storage_usage"]["session_json_bytes"] = size
     json_text = json.dumps(session, indent=2, sort_keys=True) + "\n"
     validate_session_report(session)
-    session_path.write_text(json_text, encoding="utf-8")
-    report_path.write_text(html_text, encoding="utf-8")
+    session_path.write_bytes(json_text.encode("utf-8"))
+    report_path.write_bytes(html_text.encode("utf-8"))
     return MonitorSessionResult(session_path, report_path, session)
 
 

@@ -50,6 +50,8 @@ def test_monitor_events_creates_session_summary_and_html_report(tmp_path, monkey
     assert summary["storage_policy"]["max_app_segments"] >= len(summary["app_segments"])
     assert summary["storage_usage"]["html_report_bytes"] > 0
     assert summary["storage_usage"]["session_json_bytes"] > 0
+    assert summary["storage_usage"]["html_report_bytes"] == Path(summary["report_path"]).stat().st_size
+    assert summary["storage_usage"]["session_json_bytes"] == Path(summary["path"]).stat().st_size
     assert "Watcher burst should write one deterministic capture" not in Path(
         summary["report_path"]
     ).read_text(encoding="utf-8")
