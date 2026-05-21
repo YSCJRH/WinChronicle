@@ -10,6 +10,7 @@ In CLI terms, that maps to:
 ```powershell
 winchronicle workday start
 winchronicle workday status
+winchronicle workday doctor
 winchronicle workday stop
 winchronicle workday summarize <session-id>
 ```
@@ -33,6 +34,21 @@ a partial summary is already available before the evening stop. Status output
 also includes `summary_source`, `checkpoint_updated_at`, and
 `checkpoint_age_seconds` so an operator can tell whether the visible summary is
 from a checkpoint, final result, or saved session file.
+
+`winchronicle workday doctor` is a read-only health check for the same workflow.
+It does not start the watcher, helper, UIA capture, or desktop reading. It only
+inspects local session metadata and reports:
+
+- whether an active workday session exists
+- whether the recorded runner process is still active
+- whether the session is bounded
+- whether a checkpoint exists and is fresh
+- whether a summary is already available
+- whether the privacy-disabled surfaces remain off
+
+Use `--checkpoint-stale-seconds` to adjust the freshness window. The default is
+twice the checkpoint interval, so a normally running session should not be
+marked stale because of a single delayed write.
 
 The default command uses built helper/watcher outputs when they are present. A
 caller can still pass explicit `--watcher`, `--watcher-arg`, `--helper`, and
@@ -62,6 +78,7 @@ The workday layer is designed to keep reports bounded:
 - session reports include `storage_usage`
 - active sessions write periodic checkpoint summaries instead of holding all
   reporting work until the end
+- `workday doctor` reports `checkpoint_fresh` without reading desktop content
 - stop can recover a summary from persisted redacted captures if the final
   runner result is missing
 - stop reports whether the returned summary came from `final_result`,

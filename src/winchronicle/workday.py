@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from .paths import ensure_state, state_paths
+from .privacy import DISABLED_SURFACE_STATUS, privacy_contract_payload
 from .session import (
     MonitorSessionState,
     append_monitor_records,
@@ -310,6 +311,56 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
     }
 
 
+def doctor_workday(
+    home: Path | str | None = None,
+    *,
+    checkpoint_stale_seconds: int = DEFAULT_CHECKPOINT_SECONDS * 2,
+) -> dict[str, Any]:
+    status = status_workday(home)
+    privacy = privacy_contract_payload()
+    disabled_surfaces = {key: privacy[key] for key in DISABLED_SURFACE_STATUS}
+    active = bool(status.get("active", False))
+    running = bool(status.get("running", False))
+    checkpoint_available = bool(status.get("checkpoint_available", False))
+    checkpoint_age = status.get("checkpoint_age_seconds")
+    checkpoint_fresh = _checkpoint_fresh(
+        checkpoint_available=checkpoint_available,
+        checkpoint_age_seconds=checkpoint_age,
+        stale_after_seconds=checkpoint_stale_seconds,
+    )
+    summary_available = bool(status.get("summary_available", False))
+    checks = _doctor_checks(
+        active=active,
+        running=running,
+        bounded=bool(status.get("bounded", False)),
+        checkpoint_available=checkpoint_available,
+        checkpoint_fresh=checkpoint_fresh,
+        summary_available=summary_available,
+        disabled_surfaces=disabled_surfaces,
+    )
+
+    return {
+        "command": "workday doctor",
+        "active": active,
+        "running": running,
+        "session_id": str(status.get("session_id", "")),
+        "started_at": str(status.get("started_at", "")),
+        "duration_seconds": int(status.get("duration_seconds", 0)),
+        "bounded": bool(status.get("bounded", False)),
+        "summary_available": summary_available,
+        "summary_source": status.get("summary_source"),
+        "checkpoint_available": checkpoint_available,
+        "checkpoint_updated_at": str(status.get("checkpoint_updated_at", "")),
+        "checkpoint_age_seconds": checkpoint_age,
+        "checkpoint_fresh": checkpoint_fresh,
+        "checkpoint_stale_seconds": max(0, checkpoint_stale_seconds),
+        "trust": ACTIVE_TRUST,
+        "capture_surface": CAPTURE_SURFACE,
+        "checks": checks,
+        **disabled_surfaces,
+    }
+
+
 def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> dict[str, Any]:
     paths = state_paths(home)
     active_path = paths["workday_active"]
@@ -525,6 +576,90 @@ def _read_session_or_none(session_id: str, home: Path) -> dict[str, Any] | None:
         return read_session(session_id, home)
     except Exception:
         return None
+
+
+def _checkpoint_fresh(
+    *,
+    checkpoint_available: bool,
+    checkpoint_age_seconds: Any,
+    stale_after_seconds: int,
+) -> bool | None:
+    if not checkpoint_available:
+        return None
+    if not isinstance(checkpoint_age_seconds, int):
+        return False
+    return checkpoint_age_seconds <= max(0, stale_after_seconds)
+
+
+def _doctor_checks(
+    *,
+    active: bool,
+    running: bool,
+    bounded: bool,
+    checkpoint_available: bool,
+    checkpoint_fresh: bool | None,
+    summary_available: bool,
+    disabled_surfaces: dict[str, bool],
+) -> list[dict[str, Any]]:
+    privacy_ok = all(value is False for value in disabled_surfaces.values())
+    checks = [
+        {
+            "name": "active_session",
+            "ok": True,
+            "detail": "active workday session found" if active else "no active workday session",
+        },
+        {
+            "name": "capture_surface",
+            "ok": True,
+            "detail": CAPTURE_SURFACE,
+        },
+        {
+            "name": "privacy_surfaces",
+            "ok": privacy_ok,
+            "detail": "disabled surfaces remain off" if privacy_ok else "disabled surface drift detected",
+        },
+    ]
+    if active:
+        checks.extend(
+            [
+                {
+                    "name": "bounded_session",
+                    "ok": bounded,
+                    "detail": "session has a configured duration cap"
+                    if bounded
+                    else "active session is missing a duration cap",
+                },
+                {
+                    "name": "runner_process",
+                    "ok": running,
+                    "detail": "recorded runner process is active"
+                    if running
+                    else "recorded runner process is not active",
+                },
+                {
+                    "name": "checkpoint_available",
+                    "ok": checkpoint_available,
+                    "detail": "checkpoint summary is available"
+                    if checkpoint_available
+                    else "checkpoint summary is not available yet",
+                },
+                {
+                    "name": "checkpoint_fresh",
+                    "ok": checkpoint_fresh is True,
+                    "detail": "checkpoint is within the freshness window"
+                    if checkpoint_fresh is True
+                    else "checkpoint is missing or stale",
+                },
+                {
+                    "name": "summary_available",
+                    "ok": summary_available,
+                    "detail": "summary metadata is available"
+                    if summary_available
+                    else "summary metadata is not available yet",
+                },
+            ]
+        )
+    return checks
 
 
 def _checkpoint_updated_at(path: Path) -> str:

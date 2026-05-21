@@ -130,6 +130,36 @@ def test_workday_summarize_reads_named_session(tmp_path, monkeypatch, capsys):
     assert summary["captures_written"] == 1
 
 
+def test_workday_doctor_reports_no_active_session_without_capture_artifacts(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["workday", "doctor"]) == 0
+    payload = json.loads(capsys.readouterr().out)
+
+    assert payload["command"] == "workday doctor"
+    assert payload["active"] is False
+    assert payload["running"] is False
+    assert payload["summary_available"] is False
+    assert payload["summary_source"] is None
+    assert payload["checkpoint_available"] is False
+    assert payload["checkpoint_fresh"] is None
+    assert payload["capture_surface"] == "explicit_finite_monitor_session"
+    assert payload["screenshots_enabled"] is False
+    assert payload["ocr_enabled"] is False
+    assert payload["clipboard_capture_enabled"] is False
+    assert payload["desktop_control_enabled"] is False
+    assert {check["name"] for check in payload["checks"]} >= {
+        "active_session",
+        "privacy_surfaces",
+        "capture_surface",
+    }
+    assert "observed" not in json.dumps(payload).lower()
+    assert list(home.rglob("*.json")) == []
+
+
 def test_workday_status_reports_checkpoint_summary_while_runner_is_active(
     tmp_path, monkeypatch, capsys
 ):
@@ -178,6 +208,19 @@ def test_workday_status_reports_checkpoint_summary_while_runner_is_active(
     assert status["summary"]["captures_written"] >= 1
     assert (home / "sessions" / "checkpoint-day.json").is_file()
     assert (home / "reports" / "checkpoint-day.html").is_file()
+
+    assert main(["workday", "doctor", "--checkpoint-stale-seconds", "30"]) == 0
+    doctor = json.loads(capsys.readouterr().out)
+    assert doctor["active"] is True
+    assert doctor["running"] is True
+    assert doctor["summary_available"] is True
+    assert doctor["summary_source"] == "checkpoint"
+    assert doctor["checkpoint_available"] is True
+    assert doctor["checkpoint_fresh"] is True
+    assert doctor["checkpoint_age_seconds"] >= 0
+    assert _check(doctor, "checkpoint_fresh")["ok"] is True
+    assert _check(doctor, "runner_process")["ok"] is True
+    assert "Watcher burst should write one deterministic capture" not in json.dumps(doctor)
 
     assert main(["workday", "stop", "--wait-seconds", "15"]) == 0
     capsys.readouterr()
@@ -279,3 +322,10 @@ def _sleep(seconds: float) -> None:
     import time
 
     time.sleep(seconds)
+
+
+def _check(payload: dict[str, object], name: str) -> dict[str, object]:
+    for check in payload["checks"]:
+        if check["name"] == name:
+            return check
+    raise AssertionError(f"missing check: {name}")

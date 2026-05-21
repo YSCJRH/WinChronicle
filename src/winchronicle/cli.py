@@ -24,6 +24,7 @@ from .workday import (
     WorkdayError,
     default_helper_command,
     default_watcher_command,
+    doctor_workday,
     run_workday,
     start_workday,
     status_workday,
@@ -169,7 +170,7 @@ def build_parser() -> argparse.ArgumentParser:
     workday_subparsers = workday.add_subparsers(
         dest="workday_command",
         required=True,
-        metavar="{start,status,stop,summarize}",
+        metavar="{start,status,doctor,stop,summarize}",
     )
     workday_start = workday_subparsers.add_parser(
         "start",
@@ -204,6 +205,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     workday_subparsers.add_parser("status", help="Print active workday session state as JSON.")
+
+    workday_doctor = workday_subparsers.add_parser(
+        "doctor",
+        help="Diagnose active workday session health without capturing content.",
+    )
+    workday_doctor.add_argument(
+        "--checkpoint-stale-seconds",
+        type=int,
+        default=DEFAULT_CHECKPOINT_SECONDS * 2,
+        help="Treat an active checkpoint older than this many seconds as stale.",
+    )
 
     workday_stop = workday_subparsers.add_parser(
         "stop",
@@ -618,6 +630,11 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
 
     if args.workday_command == "status":
         print(json.dumps(status_workday(), indent=2, sort_keys=True))
+        return 0
+
+    if args.workday_command == "doctor":
+        payload = doctor_workday(checkpoint_stale_seconds=args.checkpoint_stale_seconds)
+        print(json.dumps(payload, indent=2, sort_keys=True))
         return 0
 
     if args.workday_command == "stop":

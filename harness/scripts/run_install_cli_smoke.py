@@ -88,6 +88,21 @@ def main() -> int:
                 "doctor did not report disabled privacy surfaces",
             )
 
+            workday_doctor = json.loads(_run([str(winchronicle), "workday", "doctor"], env=env))
+            _require(
+                workday_doctor["command"] == "workday doctor",
+                "workday doctor did not report its command name",
+            )
+            _require(workday_doctor["active"] is False, "workday doctor found unexpected active state")
+            _require(
+                workday_doctor["capture_surface"] == "explicit_finite_monitor_session",
+                "workday doctor reported the wrong capture surface",
+            )
+            _require(
+                any(check["name"] == "privacy_surfaces" and check["ok"] for check in workday_doctor["checks"]),
+                "workday doctor did not report disabled privacy surfaces",
+            )
+
             capture_path = Path(
                 _run(
                     [
