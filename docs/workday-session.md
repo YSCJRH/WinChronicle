@@ -29,7 +29,10 @@ stop command does not turn into unlimited background capture.
 While the runner is active, it writes a compact checkpoint summary every 5
 minutes by default. The checkpoint uses the same session JSON and HTML report
 shape as the final summary, so `winchronicle workday status` can report whether
-a partial summary is already available before the evening stop.
+a partial summary is already available before the evening stop. Status output
+also includes `summary_source`, `checkpoint_updated_at`, and
+`checkpoint_age_seconds` so an operator can tell whether the visible summary is
+from a checkpoint, final result, or saved session file.
 
 The default command uses built helper/watcher outputs when they are present. A
 caller can still pass explicit `--watcher`, `--watcher-arg`, `--helper`, and
@@ -46,7 +49,8 @@ a session summary. If the runner cannot finish within the wait window, stop
 falls back to terminating only the recorded runner process tree. If the final
 runner result is unavailable, stop rebuilds a bounded summary from persisted,
 already-redacted capture-buffer JSON for the active session window and reports
-`recovered_from_capture_buffer`.
+`summary_source: "capture_buffer_recovery"` plus
+`recovered_from_capture_buffer: true`.
 
 ## Storage And Performance Boundaries
 
@@ -60,6 +64,8 @@ The workday layer is designed to keep reports bounded:
   reporting work until the end
 - stop can recover a summary from persisted redacted captures if the final
   runner result is missing
+- stop reports whether the returned summary came from `final_result`,
+  `checkpoint`, `session_file`, or `capture_buffer_recovery`
 - app segments are capped
 - long app titles are clipped before report storage
 - source capture paths are bounded in the session summary

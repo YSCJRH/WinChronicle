@@ -263,6 +263,8 @@ def run_workday(
         "active": False,
         "stopped": stop_requested,
         "summary_available": True,
+        "summary_source": "final_result",
+        "recovered_from_capture_buffer": False,
         "summary": result.session,
         "path": str(result.path),
         "report_path": str(result.report_path),
@@ -287,10 +289,13 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
         return {"active": False, "trust": ACTIVE_TRUST, "capture_surface": CAPTURE_SURFACE}
     running = _is_process_running(int(active.get("pid", 0)))
     result = _read_json(Path(active.get("result_file", "")))
-    checkpoint = _read_json(Path(active.get("checkpoint_file", "")))
-    summary = _summary_from_payload(result) or _summary_from_payload(checkpoint) or _read_session_or_none(
-        active.get("session_id", ""),
-        paths["home"],
+    checkpoint_path = Path(active.get("checkpoint_file", ""))
+    checkpoint = _read_json(checkpoint_path)
+    summary, summary_source = _active_summary_details(
+        result=result,
+        checkpoint=checkpoint,
+        session_id=active.get("session_id", ""),
+        home=paths["home"],
     )
     return {
         **active,
@@ -298,6 +303,9 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
         "running": running,
         "summary_available": summary is not None,
         "checkpoint_available": bool(checkpoint or (summary and not result)),
+        "checkpoint_updated_at": _checkpoint_updated_at(checkpoint_path),
+        "checkpoint_age_seconds": _checkpoint_age_seconds(checkpoint_path),
+        "summary_source": summary_source,
         "summary": summary,
     }
 
@@ -334,10 +342,21 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
 
     active_path.unlink(missing_ok=True)
     if result:
-        return {**result, "active": False, "stopped": True}
+        return {
+            **result,
+            "active": False,
+            "stopped": True,
+            "summary_source": "final_result",
+            "recovered_from_capture_buffer": False,
+        }
+    summary_source = None
     checkpoint_summary = _summary_from_payload(_read_json(Path(active.get("checkpoint_file", ""))))
+    if checkpoint_summary is not None:
+        summary_source = "checkpoint"
     if checkpoint_summary is None:
         checkpoint_summary = _read_session_or_none(active["session_id"], paths["home"])
+        if checkpoint_summary is not None:
+            summary_source = "session_file"
     minimum_captures = int(checkpoint_summary.get("captures_written", 0)) if checkpoint_summary else 0
     summary = checkpoint_summary
     recovered = False
@@ -351,12 +370,14 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
         )
         summary = recovered_result.session
         recovered = True
+        summary_source = "capture_buffer_recovery"
     except Exception:
         pass
     return {
         "active": False,
         "stopped": True,
         "summary_available": summary is not None,
+        "summary_source": summary_source,
         "summary": summary,
         "recovered_from_capture_buffer": recovered,
         "trust": ACTIVE_TRUST,
@@ -468,8 +489,28 @@ def _write_checkpoint(
             "trust": ACTIVE_TRUST,
             "capture_surface": CAPTURE_SURFACE,
             "checkpoint": True,
+            "summary_source": "checkpoint",
         }
     _write_json(checkpoint_file, payload)
+
+
+def _active_summary_details(
+    *,
+    result: dict[str, Any] | None,
+    checkpoint: dict[str, Any] | None,
+    session_id: str,
+    home: Path,
+) -> tuple[dict[str, Any] | None, str | None]:
+    summary = _summary_from_payload(result)
+    if summary is not None:
+        return summary, "final_result"
+    summary = _summary_from_payload(checkpoint)
+    if summary is not None:
+        return summary, "checkpoint"
+    summary = _read_session_or_none(session_id, home)
+    if summary is not None:
+        return summary, "session_file"
+    return None, None
 
 
 def _summary_from_payload(payload: dict[str, Any] | None) -> dict[str, Any] | None:
@@ -482,6 +523,28 @@ def _summary_from_payload(payload: dict[str, Any] | None) -> dict[str, Any] | No
 def _read_session_or_none(session_id: str, home: Path) -> dict[str, Any] | None:
     try:
         return read_session(session_id, home)
+    except Exception:
+        return None
+
+
+def _checkpoint_updated_at(path: Path) -> str:
+    try:
+        if not path.exists() or not path.is_file():
+            return ""
+        return (
+            datetime.fromtimestamp(path.stat().st_mtime)
+            .astimezone()
+            .isoformat(timespec="seconds")
+        )
+    except Exception:
+        return ""
+
+
+def _checkpoint_age_seconds(path: Path) -> int | None:
+    try:
+        if not path.exists() or not path.is_file():
+            return None
+        return max(0, int(time.time() - path.stat().st_mtime))
     except Exception:
         return None
 

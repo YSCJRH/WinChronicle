@@ -50,6 +50,8 @@ def test_workday_start_stop_writes_summary_without_raw_jsonl(tmp_path, monkeypat
     assert stopped["active"] is False
     assert stopped["stopped"] is True
     assert stopped["summary_available"] is True
+    assert stopped["summary_source"] == "final_result"
+    assert stopped["recovered_from_capture_buffer"] is False
     assert stopped["summary"]["session_id"] == "today"
     assert stopped["summary"]["captures_written"] == 1
     assert stopped["summary"]["mode"] == "workday"
@@ -169,6 +171,9 @@ def test_workday_status_reports_checkpoint_summary_while_runner_is_active(
     assert status["active"] is True
     assert status["summary_available"] is True
     assert status["checkpoint_available"] is True
+    assert status["summary_source"] == "checkpoint"
+    assert status["checkpoint_updated_at"]
+    assert status["checkpoint_age_seconds"] >= 0
     assert status["summary"]["session_id"] == "checkpoint-day"
     assert status["summary"]["captures_written"] >= 1
     assert (home / "sessions" / "checkpoint-day.json").is_file()
@@ -218,6 +223,7 @@ def test_workday_stop_recovers_summary_from_capture_buffer_when_result_is_missin
     assert stopped["active"] is False
     assert stopped["stopped"] is True
     assert stopped["summary_available"] is True
+    assert stopped["summary_source"] == "capture_buffer_recovery"
     assert stopped["recovered_from_capture_buffer"] is True
     assert stopped["summary"]["session_id"] == "fallback-day"
     assert stopped["summary"]["mode"] == "workday"
