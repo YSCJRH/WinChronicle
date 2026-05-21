@@ -121,6 +121,8 @@ fixture-only path, use [Deterministic demo](docs/deterministic-demo.md).
   replay and caller-provided watcher commands.
 - Provides a v0.2 monitor session that turns watcher events into a local
   timeline, deterministic suggestions, session JSON, and an HTML report.
+- Provides an explicit `workday start/status/stop/summarize` wrapper for bounded
+  daily local sessions and evening summaries.
 - Exposes read-only MCP tools for current context, capture search, memory
   search, recent capture reads, recent activity, and privacy status.
 
@@ -217,6 +219,7 @@ maintenance loop automatically.
 - [Known limitations](docs/known-limitations.md)
 - [Deterministic demo](docs/deterministic-demo.md)
 - [v0.2 monitor session](docs/v0.2-monitor-session.md)
+- [Workday session](docs/workday-session.md)
 - [Project presentation checklist](docs/project-presentation.md)
 - [v0.2.0 release record](docs/release-v0.2.0.md)
 - [Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)

@@ -45,6 +45,11 @@ def test_monitor_events_creates_session_summary_and_html_report(tmp_path, monkey
     assert "Repeated UI state was observed" in " ".join(summary["suggestions"])
     assert Path(summary["path"]).is_file()
     assert Path(summary["report_path"]).is_file()
+    assert summary["storage_policy"]["raw_watcher_jsonl_saved"] is False
+    assert summary["storage_policy"]["html_report_contains_visible_text"] is False
+    assert summary["storage_policy"]["max_app_segments"] >= len(summary["app_segments"])
+    assert summary["storage_usage"]["html_report_bytes"] > 0
+    assert summary["storage_usage"]["session_json_bytes"] > 0
     assert "Watcher burst should write one deterministic capture" not in Path(
         summary["report_path"]
     ).read_text(encoding="utf-8")

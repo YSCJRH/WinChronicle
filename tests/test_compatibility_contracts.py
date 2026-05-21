@@ -33,6 +33,7 @@ EXPECTED_CLI_COMMANDS = [
     "status",
     "summarize-session",
     "watch",
+    "workday",
 ]
 EXPECTED_MCP_TOOLS = [
     "current_context",

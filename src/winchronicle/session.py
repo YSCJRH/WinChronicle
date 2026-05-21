@@ -19,6 +19,9 @@ from .storage import capture_fingerprint_exists
 
 
 CAPTURE_EVENT_TYPES = {"foreground_changed", "name_changed", "value_changed"}
+MAX_APP_SEGMENTS = 500
+MAX_TITLE_CHARS = 240
+SOURCE_CAPTURE_PATHS_LIMIT = 1000
 
 
 @dataclass(frozen=True)
@@ -292,18 +295,40 @@ def _build_session_report(
         **counts,
         "app_segments": _app_segments(timeline),
         "suggestions": _suggestions(timeline, counts),
-        "source_capture_paths": [item["path"] for item in timeline],
+        "source_capture_paths": [item["path"] for item in timeline][:SOURCE_CAPTURE_PATHS_LIMIT],
+        "storage_policy": {
+            "raw_watcher_jsonl_saved": False,
+            "html_report_contains_visible_text": False,
+            "max_app_segments": MAX_APP_SEGMENTS,
+            "max_title_chars": MAX_TITLE_CHARS,
+            "source_capture_paths_limit": SOURCE_CAPTURE_PATHS_LIMIT,
+        },
+        "storage_usage": {
+            "session_json_bytes": 0,
+            "html_report_bytes": 0,
+        },
         "report_path": str(report_path),
     }
-    validate_session_report(session)
     return session
 
 
 def _write_session(paths: dict[str, Path], session: dict[str, Any]) -> MonitorSessionResult:
     session_path = paths["sessions"] / f"{session['session_id']}.json"
     report_path = Path(session["report_path"])
-    session_path.write_text(json.dumps(session, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    report_path.write_text(_render_html_report(session) + "\n", encoding="utf-8")
+    html_text = _render_html_report(session) + "\n"
+    session["storage_usage"]["html_report_bytes"] = len(html_text.encode("utf-8"))
+    session["storage_usage"]["session_json_bytes"] = 0
+    json_text = ""
+    for _ in range(5):
+        json_text = json.dumps(session, indent=2, sort_keys=True) + "\n"
+        size = len(json_text.encode("utf-8"))
+        if session["storage_usage"]["session_json_bytes"] == size:
+            break
+        session["storage_usage"]["session_json_bytes"] = size
+    json_text = json.dumps(session, indent=2, sort_keys=True) + "\n"
+    validate_session_report(session)
+    session_path.write_text(json_text, encoding="utf-8")
+    report_path.write_text(html_text, encoding="utf-8")
     return MonitorSessionResult(session_path, report_path, session)
 
 
@@ -314,10 +339,14 @@ def _app_segments(timeline: list[dict[str, str]]) -> list[dict[str, Any]]:
             segments[-1]["end_timestamp"] = item["timestamp"]
             segments[-1]["capture_count"] += 1
             continue
+        if len(segments) >= MAX_APP_SEGMENTS:
+            segments[-1]["end_timestamp"] = item["timestamp"]
+            segments[-1]["capture_count"] += 1
+            continue
         segments.append(
             {
-                "app_name": item["app_name"],
-                "title": item["title"],
+                "app_name": _clip_text(item["app_name"], MAX_TITLE_CHARS),
+                "title": _clip_text(item["title"], MAX_TITLE_CHARS),
                 "start_timestamp": item["timestamp"],
                 "end_timestamp": item["timestamp"],
                 "capture_count": 1,
@@ -406,3 +435,9 @@ def _duration_seconds(started_at: str, ended_at: str) -> int:
 def _slug(value: str) -> str:
     slug = re.sub(r"[^A-Za-z0-9]+", "-", value).strip("-").lower()
     return slug or "session"
+
+
+def _clip_text(value: str, limit: int) -> str:
+    if len(value) <= limit:
+        return value
+    return value[: max(0, limit - 3)] + "..."

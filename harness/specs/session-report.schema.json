@@ -22,12 +22,14 @@
     "app_segments",
     "suggestions",
     "source_capture_paths",
+    "storage_policy",
+    "storage_usage",
     "report_path"
   ],
   "properties": {
     "session_schema_version": { "const": 1 },
     "session_id": { "type": "string", "minLength": 1 },
-    "mode": { "enum": ["events", "watcher"] },
+    "mode": { "enum": ["events", "watcher", "workday"] },
     "started_at": { "type": "string" },
     "ended_at": { "type": "string" },
     "duration_seconds": { "type": "integer", "minimum": 0 },
@@ -61,6 +63,33 @@
     "source_capture_paths": {
       "type": "array",
       "items": { "type": "string" }
+    },
+    "storage_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_watcher_jsonl_saved",
+        "html_report_contains_visible_text",
+        "max_app_segments",
+        "max_title_chars",
+        "source_capture_paths_limit"
+      ],
+      "properties": {
+        "raw_watcher_jsonl_saved": { "const": false },
+        "html_report_contains_visible_text": { "const": false },
+        "max_app_segments": { "type": "integer", "minimum": 1 },
+        "max_title_chars": { "type": "integer", "minimum": 1 },
+        "source_capture_paths_limit": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "storage_usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["session_json_bytes", "html_report_bytes"],
+      "properties": {
+        "session_json_bytes": { "type": "integer", "minimum": 0 },
+        "html_report_bytes": { "type": "integer", "minimum": 0 }
+      }
     },
     "report_path": { "type": "string" }
   }

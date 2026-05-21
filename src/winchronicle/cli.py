@@ -17,6 +17,18 @@ from .paths import ensure_state, state_paths
 from .privacy import DISABLED_SURFACE_STATUS, privacy_contract_payload
 from .session import monitor_events, read_session, run_monitor_watcher_command, session_count
 from .storage import capture_count, init_db, memory_entry_count, search_captures, search_memory_entries
+from .workday import (
+    DEFAULT_DURATION_SECONDS,
+    MAX_DURATION_SECONDS,
+    WorkdayError,
+    default_helper_command,
+    default_watcher_command,
+    run_workday,
+    start_workday,
+    status_workday,
+    stop_workday,
+    summarize_workday,
+)
 
 
 FORBIDDEN_PASSTHROUGH_FLAGS = (
@@ -148,6 +160,76 @@ def build_parser() -> argparse.ArgumentParser:
     summarize_session.add_argument("session")
 
     subparsers.add_parser("mcp-stdio", help="Run the read-only MCP stdio server.")
+
+    workday = subparsers.add_parser(
+        "workday",
+        help="Manage an explicit finite local workday recording session.",
+    )
+    workday_subparsers = workday.add_subparsers(
+        dest="workday_command",
+        required=True,
+        metavar="{start,status,stop,summarize}",
+    )
+    workday_start = workday_subparsers.add_parser(
+        "start",
+        help="Start an explicit bounded workday monitor session.",
+    )
+    workday_start.add_argument("--watcher", help="Path or command for win-uia-watcher.")
+    workday_start.add_argument(
+        "--watcher-arg",
+        action="append",
+        default=[],
+        help="Extra argument passed to the watcher command before watch.",
+    )
+    workday_start.add_argument("--helper", help="Path or command for win-uia-helper.")
+    workday_start.add_argument(
+        "--helper-arg",
+        action="append",
+        default=[],
+        help="Extra argument passed to the helper command before capture-frontmost.",
+    )
+    workday_start.add_argument("--depth", type=int, default=80)
+    workday_start.add_argument("--duration", type=int, default=DEFAULT_DURATION_SECONDS)
+    workday_start.add_argument("--debounce-ms", type=int, default=750)
+    workday_start.add_argument("--heartbeat-ms", type=int, default=5000)
+    workday_start.add_argument("--capture-on-start", action="store_true", default=True)
+    workday_start.add_argument("--session-id")
+    workday_start.add_argument(
+        "--exclude-app",
+        action="append",
+        default=[],
+        help="Skip exact app names in this workday session.",
+    )
+
+    workday_subparsers.add_parser("status", help="Print active workday session state as JSON.")
+
+    workday_stop = workday_subparsers.add_parser(
+        "stop",
+        help="Stop the active workday session and print a summary when available.",
+    )
+    workday_stop.add_argument("--wait-seconds", type=int, default=30)
+
+    workday_summarize = workday_subparsers.add_parser(
+        "summarize",
+        help="Print a saved workday session summary as JSON.",
+    )
+    workday_summarize.add_argument("session")
+
+    workday_run = workday_subparsers.add_parser("run", help=argparse.SUPPRESS)
+    workday_subparsers._choices_actions = [  # type: ignore[attr-defined]
+        action for action in workday_subparsers._choices_actions if action.dest != "run"
+    ]
+    workday_run.add_argument("--session-id", required=True)
+    workday_run.add_argument("--stop-file", required=True, type=Path)
+    workday_run.add_argument("--result-file", required=True, type=Path)
+    workday_run.add_argument("--watcher-arg", action="append", default=[])
+    workday_run.add_argument("--helper-arg", action="append", default=[])
+    workday_run.add_argument("--duration", type=int, required=True)
+    workday_run.add_argument("--depth", type=int, default=80)
+    workday_run.add_argument("--debounce-ms", type=int, default=750)
+    workday_run.add_argument("--heartbeat-ms", type=int, default=5000)
+    workday_run.add_argument("--capture-on-start", action="store_true")
+    workday_run.add_argument("--exclude-app", action="append", default=[])
 
     codex = subparsers.add_parser(
         "codex",
@@ -351,6 +433,9 @@ def main(argv: list[str] | None = None) -> int:
         paths = state_paths()
         return run_stdio(home=paths["home"])
 
+    if args.command == "workday":
+        return _handle_workday(parser, args)
+
     if args.command == "codex":
         if args.codex_command == "install":
             if not args.dry_run:
@@ -494,3 +579,82 @@ def _reject_forbidden_passthrough(
                 parser.error(
                     f"{option_name} cannot pass disabled WinChronicle surface flag {forbidden}"
                 )
+
+
+def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -> int:
+    if args.workday_command == "start":
+        _reject_forbidden_passthrough(parser, args.watcher_arg, "--watcher-arg")
+        _reject_forbidden_passthrough(parser, args.helper_arg, "--helper-arg")
+        if not 0 <= args.depth <= 80:
+            parser.error("--depth must be between 0 and 80")
+        if args.duration < 0 or args.duration > MAX_DURATION_SECONDS:
+            parser.error(f"--duration must be between 0 and {MAX_DURATION_SECONDS}")
+        watcher_command = [args.watcher, *args.watcher_arg] if args.watcher else default_watcher_command()
+        helper_command = [args.helper, *args.helper_arg] if args.helper else None
+        if args.helper is None and not args.watcher:
+            helper_command = default_helper_command()
+        try:
+            payload = start_workday(
+                watcher_command=watcher_command,
+                helper_command=helper_command,
+                session_id=args.session_id,
+                duration_seconds=args.duration,
+                depth=args.depth,
+                debounce_ms=args.debounce_ms,
+                heartbeat_ms=args.heartbeat_ms,
+                capture_on_start=args.capture_on_start,
+                exclude_apps=args.exclude_app,
+            )
+        except WorkdayError as exc:
+            print(json.dumps({"active": False, "error": str(exc)}, indent=2, sort_keys=True))
+            return 1
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 1 if payload.get("error") else 0
+
+    if args.workday_command == "status":
+        print(json.dumps(status_workday(), indent=2, sort_keys=True))
+        return 0
+
+    if args.workday_command == "stop":
+        payload = stop_workday(wait_seconds=args.wait_seconds)
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    if args.workday_command == "summarize":
+        try:
+            payload = summarize_workday(args.session)
+        except Exception:
+            print("ERROR: session summary could not be read safely")
+            return 1
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    if args.workday_command == "run":
+        _reject_forbidden_passthrough(parser, args.watcher_arg, "--watcher-arg")
+        _reject_forbidden_passthrough(parser, args.helper_arg, "--helper-arg")
+        if not args.watcher_arg:
+            parser.error("workday run requires --watcher-arg")
+        if args.duration < 0 or args.duration > MAX_DURATION_SECONDS:
+            parser.error(f"--duration must be between 0 and {MAX_DURATION_SECONDS}")
+        try:
+            payload = run_workday(
+                watcher_command=args.watcher_arg,
+                helper_command=args.helper_arg or None,
+                stop_file=args.stop_file,
+                result_file=args.result_file,
+                session_id=args.session_id,
+                duration_seconds=args.duration,
+                depth=args.depth,
+                debounce_ms=args.debounce_ms,
+                heartbeat_ms=args.heartbeat_ms,
+                capture_on_start=args.capture_on_start,
+                exclude_apps=args.exclude_app,
+            )
+        except Exception:
+            print("ERROR: workday runner could not write a safe session summary")
+            return 1
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    parser.error(f"unknown workday command: {args.workday_command}")
+    return 2
