@@ -25,6 +25,7 @@ from .workday import (
     default_helper_command,
     default_watcher_command,
     doctor_workday,
+    format_workday_text_summary,
     run_workday,
     start_workday,
     status_workday,
@@ -222,6 +223,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="Stop the active workday session and print a summary when available.",
     )
     workday_stop.add_argument("--wait-seconds", type=int, default=30)
+    workday_stop.add_argument(
+        "--format",
+        choices=("json", "text"),
+        default="json",
+        help="Output JSON by default, or a deterministic operator-facing text summary when available.",
+    )
+    workday_stop.add_argument(
+        "--language",
+        choices=("zh-CN",),
+        default="zh-CN",
+        help="Language for --format text output.",
+    )
 
     workday_summarize = workday_subparsers.add_parser(
         "summarize",
@@ -651,6 +664,13 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
 
     if args.workday_command == "stop":
         payload = stop_workday(wait_seconds=args.wait_seconds)
+        if (
+            args.format == "text"
+            and payload.get("summary_available")
+            and isinstance(payload.get("summary"), dict)
+        ):
+            print(format_workday_text_summary(payload["summary"]), end="")
+            return 0
         print(json.dumps(payload, indent=2, sort_keys=True))
         return 0
 

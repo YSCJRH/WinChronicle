@@ -17,6 +17,7 @@ def test_workday_session_docs_define_natural_language_and_storage_boundaries():
         "winchronicle workday status",
         "winchronicle workday doctor",
         "winchronicle workday summarize",
+        "winchronicle workday stop --format text --language zh-CN",
         "--format text",
         "--language zh-CN",
         "工作概览",

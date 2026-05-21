@@ -63,6 +63,53 @@ def test_workday_start_stop_writes_summary_without_raw_jsonl(tmp_path, monkeypat
     assert list(home.rglob("*.jsonl")) == []
 
 
+def test_workday_stop_can_print_chinese_text_summary(tmp_path, monkeypatch, capsys):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    fake_watcher = _write_sleeping_watcher(tmp_path)
+
+    assert (
+        main(
+            [
+                "workday",
+                "start",
+                "--watcher",
+                sys.executable,
+                "--watcher-arg",
+                str(fake_watcher),
+                "--duration",
+                "60",
+                "--heartbeat-ms",
+                "250",
+                "--session-id",
+                "text-stop-day",
+            ]
+        )
+        == 0
+    )
+    capsys.readouterr()
+
+    assert (
+        main(["workday", "stop", "--wait-seconds", "15", "--format", "text", "--language", "zh-CN"])
+        == 0
+    )
+    text_summary = capsys.readouterr().out
+
+    assert "工作概览" in text_summary
+    assert "text-stop-day" in text_summary
+    assert "时间范围" in text_summary
+    assert "应用活动" in text_summary
+    assert "效率建议" in text_summary
+    assert "隐私边界" in text_summary
+    assert "untrusted_observed_content" in text_summary
+    assert "未调用 LLM" in text_summary
+    assert "Watcher burst should write one deterministic capture" not in text_summary
+    assert "visible_text" not in text_summary
+    assert not (home / "workday-active.json").exists()
+    assert (home / "sessions" / "text-stop-day.json").is_file()
+    assert list(home.rglob("*.jsonl")) == []
+
+
 def test_workday_duplicate_start_is_rejected_until_stopped(tmp_path, monkeypatch, capsys):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
