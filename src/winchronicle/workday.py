@@ -14,11 +14,19 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from .paths import ensure_state, state_paths
-from .session import monitor_event_lines, read_session
+from .session import (
+    MonitorSessionState,
+    append_monitor_records,
+    create_monitor_session_state,
+    read_session,
+    recover_session_from_capture_buffer,
+    write_monitor_session_state,
+)
 
 
 DEFAULT_DURATION_SECONDS = 12 * 60 * 60
 MAX_DURATION_SECONDS = 12 * 60 * 60
+DEFAULT_CHECKPOINT_SECONDS = 5 * 60
 CAPTURE_SURFACE = "explicit_finite_monitor_session"
 ACTIVE_TRUST = "local_workday_session_status"
 
@@ -51,6 +59,7 @@ def start_workday(
     depth: int = 80,
     debounce_ms: int = 750,
     heartbeat_ms: int = 5000,
+    checkpoint_seconds: int = DEFAULT_CHECKPOINT_SECONDS,
     capture_on_start: bool = True,
     exclude_apps: Sequence[str] = (),
 ) -> dict[str, Any]:
@@ -74,9 +83,10 @@ def start_workday(
     session = _slug(session_id or f"workday-{_local_timestamp()}")
     stop_file = paths["logs"] / f"{session}.stop"
     result_file = paths["logs"] / f"{session}.workday-result.json"
+    checkpoint_file = paths["logs"] / f"{session}.workday-checkpoint.json"
     stdout_path = paths["logs"] / f"{session}.workday-stdout.json"
     stderr_path = paths["logs"] / f"{session}.workday-stderr.txt"
-    for path in (stop_file, result_file):
+    for path in (stop_file, result_file, checkpoint_file):
         path.unlink(missing_ok=True)
 
     runner_args = [
@@ -99,6 +109,10 @@ def start_workday(
         str(debounce_ms),
         "--heartbeat-ms",
         str(heartbeat_ms),
+        "--checkpoint-seconds",
+        str(checkpoint_seconds),
+        "--checkpoint-file",
+        str(checkpoint_file),
     ]
     for part in watcher_command:
         runner_args.extend(["--watcher-arg", str(part)])
@@ -137,6 +151,7 @@ def start_workday(
         "state_home": str(paths["home"]),
         "stop_file": str(stop_file),
         "result_file": str(result_file),
+        "checkpoint_file": str(checkpoint_file),
         "stdout_path": str(stdout_path),
         "stderr_path": str(stderr_path),
         "trust": ACTIVE_TRUST,
@@ -153,15 +168,18 @@ def run_workday(
     helper_command: Sequence[str] | None,
     stop_file: Path,
     result_file: Path,
+    checkpoint_file: Path | None = None,
     home: Path | str | None = None,
     session_id: str,
     duration_seconds: int,
     depth: int,
     debounce_ms: int,
     heartbeat_ms: int,
+    checkpoint_seconds: int,
     capture_on_start: bool,
     exclude_apps: Sequence[str],
 ) -> dict[str, Any]:
+    paths = ensure_state(home)
     command = _watcher_command(
         watcher_command,
         helper_command,
@@ -186,10 +204,29 @@ def run_workday(
     _start_reader(process.stdout, stdout_queue)
     _start_reader(process.stderr, stderr_queue)
     deadline = time.monotonic() + max(0, duration_seconds)
+    checkpoint_interval = max(1, checkpoint_seconds)
+    last_checkpoint = time.monotonic()
+    state = create_monitor_session_state()
     stop_requested = False
 
     while process.poll() is None:
+        lines.clear()
         _drain(stdout_queue, lines)
+        if lines:
+            append_monitor_records(
+                _parse_event_lines(lines),
+                paths["home"],
+                state=state,
+                exclude_apps=exclude_apps,
+            )
+        if time.monotonic() - last_checkpoint >= checkpoint_interval:
+            _write_checkpoint(
+                paths["home"],
+                session_id=session_id,
+                state=state,
+                checkpoint_file=checkpoint_file,
+            )
+            last_checkpoint = time.monotonic()
         _drain(stderr_queue, [])
         if stop_file.exists():
             stop_requested = True
@@ -205,15 +242,22 @@ def run_workday(
     except subprocess.TimeoutExpired:
         _terminate_process_tree(process.pid)
         process.wait(timeout=5)
+    lines.clear()
     _drain(stdout_queue, lines)
+    if lines:
+        append_monitor_records(
+            _parse_event_lines(lines),
+            paths["home"],
+            state=state,
+            exclude_apps=exclude_apps,
+        )
     _drain(stderr_queue, [])
 
-    result = monitor_event_lines(
-        lines,
-        home,
+    result = write_monitor_session_state(
+        paths["home"],
         session_id=session_id,
         mode="workday",
-        exclude_apps=exclude_apps,
+        state=state,
     )
     payload = {
         "active": False,
@@ -226,6 +270,13 @@ def run_workday(
         "capture_surface": CAPTURE_SURFACE,
     }
     _write_json(result_file, payload)
+    _write_checkpoint(
+        paths["home"],
+        session_id=session_id,
+        state=state,
+        checkpoint_file=checkpoint_file,
+        payload=payload,
+    )
     return payload
 
 
@@ -236,11 +287,18 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
         return {"active": False, "trust": ACTIVE_TRUST, "capture_surface": CAPTURE_SURFACE}
     running = _is_process_running(int(active.get("pid", 0)))
     result = _read_json(Path(active.get("result_file", "")))
+    checkpoint = _read_json(Path(active.get("checkpoint_file", "")))
+    summary = _summary_from_payload(result) or _summary_from_payload(checkpoint) or _read_session_or_none(
+        active.get("session_id", ""),
+        paths["home"],
+    )
     return {
         **active,
         "active": running,
         "running": running,
-        "summary_available": bool(result and result.get("summary_available")),
+        "summary_available": summary is not None,
+        "checkpoint_available": bool(checkpoint or (summary and not result)),
+        "summary": summary,
     }
 
 
@@ -277,15 +335,30 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
     active_path.unlink(missing_ok=True)
     if result:
         return {**result, "active": False, "stopped": True}
+    checkpoint_summary = _summary_from_payload(_read_json(Path(active.get("checkpoint_file", ""))))
+    if checkpoint_summary is None:
+        checkpoint_summary = _read_session_or_none(active["session_id"], paths["home"])
+    minimum_captures = int(checkpoint_summary.get("captures_written", 0)) if checkpoint_summary else 0
+    summary = checkpoint_summary
+    recovered = False
     try:
-        summary = read_session(active["session_id"], paths["home"])
+        recovered_result = recover_session_from_capture_buffer(
+            paths["home"],
+            session_id=active["session_id"],
+            started_at=str(active.get("started_at", "")),
+            ended_at=datetime.now().astimezone().isoformat(timespec="seconds"),
+            minimum_captures=minimum_captures,
+        )
+        summary = recovered_result.session
+        recovered = True
     except Exception:
-        summary = None
+        pass
     return {
         "active": False,
         "stopped": True,
         "summary_available": summary is not None,
         "summary": summary,
+        "recovered_from_capture_buffer": recovered,
         "trust": ACTIVE_TRUST,
         "capture_surface": CAPTURE_SURFACE,
     }
@@ -354,6 +427,63 @@ def _drain(source: queue.Queue[str], destination: list[str]) -> None:
         except queue.Empty:
             return
         destination.append(item)
+
+
+def _parse_event_lines(lines: Sequence[str]) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for line_number, line in enumerate(lines, start=1):
+        if not line.strip():
+            continue
+        try:
+            records.append(json.loads(line))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"watcher JSONL line {line_number} is malformed") from exc
+    return records
+
+
+def _write_checkpoint(
+    home: Path,
+    *,
+    session_id: str,
+    state: MonitorSessionState,
+    checkpoint_file: Path | None,
+    payload: dict[str, Any] | None = None,
+) -> None:
+    if checkpoint_file is None or not state.timestamps:
+        return
+    if payload is None:
+        result = write_monitor_session_state(
+            home,
+            session_id=session_id,
+            mode="workday",
+            state=state,
+        )
+        payload = {
+            "active": True,
+            "stopped": False,
+            "summary_available": True,
+            "summary": result.session,
+            "path": str(result.path),
+            "report_path": str(result.report_path),
+            "trust": ACTIVE_TRUST,
+            "capture_surface": CAPTURE_SURFACE,
+            "checkpoint": True,
+        }
+    _write_json(checkpoint_file, payload)
+
+
+def _summary_from_payload(payload: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not payload:
+        return None
+    summary = payload.get("summary")
+    return summary if isinstance(summary, dict) else None
+
+
+def _read_session_or_none(session_id: str, home: Path) -> dict[str, Any] | None:
+    try:
+        return read_session(session_id, home)
+    except Exception:
+        return None
 
 
 def _read_json(path: Path) -> dict[str, Any] | None:

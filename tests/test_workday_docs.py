@@ -19,9 +19,12 @@ def test_workday_session_docs_define_natural_language_and_storage_boundaries():
         "explicit finite local monitor session",
         "not a daemon, service, startup task, hidden recorder, or infinite polling loop",
         "12 hours",
+        "checkpoint summary every 5",
+        "recovered_from_capture_buffer",
         "raw watcher JSONL is not saved",
         "HTML report does not include raw visible text",
         "storage_usage",
+        "rebuilds a bounded summary from persisted",
         "screenshots, OCR, clipboard capture, keylogging, audio recording, cloud upload, desktop control, or MCP write tools",
         "untrusted_observed_content",
     ):

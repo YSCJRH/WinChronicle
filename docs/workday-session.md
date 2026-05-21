@@ -26,6 +26,11 @@ and result path.
 By default, a workday session is capped at 12 hours. The cap exists so a missed
 stop command does not turn into unlimited background capture.
 
+While the runner is active, it writes a compact checkpoint summary every 5
+minutes by default. The checkpoint uses the same session JSON and HTML report
+shape as the final summary, so `winchronicle workday status` can report whether
+a partial summary is already available before the evening stop.
+
 The default command uses built helper/watcher outputs when they are present. A
 caller can still pass explicit `--watcher`, `--watcher-arg`, `--helper`, and
 `--helper-arg` values for deterministic tests or custom local builds.
@@ -33,13 +38,15 @@ caller can still pass explicit `--watcher`, `--watcher-arg`, `--helper`, and
 ## What Stop Does
 
 `winchronicle workday stop` writes the stop file for the active runner and waits
-for it to finish. The runner then converts already-collected watcher events into
-a normal monitor session JSON and HTML report.
+for it to finish. The runner incrementally converts already-collected watcher
+events into redacted captures, session JSON, and a local HTML report.
 
 This avoids the unsafe pattern of killing the monitor process before it can write
 a session summary. If the runner cannot finish within the wait window, stop
-falls back to terminating only the recorded runner process tree and reports
-whether a summary is available.
+falls back to terminating only the recorded runner process tree. If the final
+runner result is unavailable, stop rebuilds a bounded summary from persisted,
+already-redacted capture-buffer JSON for the active session window and reports
+`recovered_from_capture_buffer`.
 
 ## Storage And Performance Boundaries
 
@@ -49,6 +56,10 @@ The workday layer is designed to keep reports bounded:
 - HTML report does not include raw visible text
 - session reports include `storage_policy`
 - session reports include `storage_usage`
+- active sessions write periodic checkpoint summaries instead of holding all
+  reporting work until the end
+- stop can recover a summary from persisted redacted captures if the final
+  runner result is missing
 - app segments are capped
 - long app titles are clipped before report storage
 - source capture paths are bounded in the session summary

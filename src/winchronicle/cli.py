@@ -18,6 +18,7 @@ from .privacy import DISABLED_SURFACE_STATUS, privacy_contract_payload
 from .session import monitor_events, read_session, run_monitor_watcher_command, session_count
 from .storage import capture_count, init_db, memory_entry_count, search_captures, search_memory_entries
 from .workday import (
+    DEFAULT_CHECKPOINT_SECONDS,
     DEFAULT_DURATION_SECONDS,
     MAX_DURATION_SECONDS,
     WorkdayError,
@@ -192,6 +193,7 @@ def build_parser() -> argparse.ArgumentParser:
     workday_start.add_argument("--duration", type=int, default=DEFAULT_DURATION_SECONDS)
     workday_start.add_argument("--debounce-ms", type=int, default=750)
     workday_start.add_argument("--heartbeat-ms", type=int, default=5000)
+    workday_start.add_argument("--checkpoint-seconds", type=int, default=DEFAULT_CHECKPOINT_SECONDS)
     workday_start.add_argument("--capture-on-start", action="store_true", default=True)
     workday_start.add_argument("--session-id")
     workday_start.add_argument(
@@ -222,12 +224,14 @@ def build_parser() -> argparse.ArgumentParser:
     workday_run.add_argument("--session-id", required=True)
     workday_run.add_argument("--stop-file", required=True, type=Path)
     workday_run.add_argument("--result-file", required=True, type=Path)
+    workday_run.add_argument("--checkpoint-file", type=Path)
     workday_run.add_argument("--watcher-arg", action="append", default=[])
     workday_run.add_argument("--helper-arg", action="append", default=[])
     workday_run.add_argument("--duration", type=int, required=True)
     workday_run.add_argument("--depth", type=int, default=80)
     workday_run.add_argument("--debounce-ms", type=int, default=750)
     workday_run.add_argument("--heartbeat-ms", type=int, default=5000)
+    workday_run.add_argument("--checkpoint-seconds", type=int, default=DEFAULT_CHECKPOINT_SECONDS)
     workday_run.add_argument("--capture-on-start", action="store_true")
     workday_run.add_argument("--exclude-app", action="append", default=[])
 
@@ -602,6 +606,7 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
                 depth=args.depth,
                 debounce_ms=args.debounce_ms,
                 heartbeat_ms=args.heartbeat_ms,
+                checkpoint_seconds=args.checkpoint_seconds,
                 capture_on_start=args.capture_on_start,
                 exclude_apps=args.exclude_app,
             )
@@ -642,11 +647,13 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
                 helper_command=args.helper_arg or None,
                 stop_file=args.stop_file,
                 result_file=args.result_file,
+                checkpoint_file=args.checkpoint_file,
                 session_id=args.session_id,
                 duration_seconds=args.duration,
                 depth=args.depth,
                 debounce_ms=args.debounce_ms,
                 heartbeat_ms=args.heartbeat_ms,
+                checkpoint_seconds=args.checkpoint_seconds,
                 capture_on_start=args.capture_on_start,
                 exclude_apps=args.exclude_app,
             )

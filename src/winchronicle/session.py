@@ -14,7 +14,7 @@ from .capture import normalize_uia_helper_output, persist_capture
 from .memory import TRUST, TRUST_BOUNDARY_INSTRUCTION
 from .paths import ensure_state, state_paths
 from .privacy import denylist_reason
-from .schema import validate_session_report, validate_uia_helper_output, validate_watcher_event
+from .schema import validate_capture, validate_session_report, validate_uia_helper_output, validate_watcher_event
 from .storage import capture_fingerprint_exists
 
 
@@ -36,6 +36,14 @@ class MonitorSessionResult:
             "path": str(self.path),
             "report_path": str(self.report_path),
         }
+
+
+@dataclass
+class MonitorSessionState:
+    counts: dict[str, int]
+    seen_fingerprints: set[str]
+    timeline: list[dict[str, str]]
+    timestamps: list[str]
 
 
 def monitor_events(
@@ -88,24 +96,47 @@ def monitor_records(
     exclude_apps: Sequence[str] = (),
 ) -> MonitorSessionResult:
     paths = ensure_state(home)
-    counts = {
-        "captures_written": 0,
-        "duplicates_skipped": 0,
-        "denylisted_skipped": 0,
-        "excluded_skipped": 0,
-        "heartbeats": 0,
-    }
-    seen_fingerprints: set[str] = set()
-    timeline: list[dict[str, str]] = []
-    timestamps: list[str] = []
+    state = create_monitor_session_state()
+    append_monitor_records(records, paths["home"], state=state, exclude_apps=exclude_apps)
+    return write_monitor_session_state(
+        paths["home"],
+        session_id=_slug(session_id) if session_id else _session_id(state.timestamps, state.timeline),
+        mode=mode,
+        state=state,
+    )
+
+
+def create_monitor_session_state() -> MonitorSessionState:
+    return MonitorSessionState(
+        counts={
+            "captures_written": 0,
+            "duplicates_skipped": 0,
+            "denylisted_skipped": 0,
+            "excluded_skipped": 0,
+            "heartbeats": 0,
+        },
+        seen_fingerprints=set(),
+        timeline=[],
+        timestamps=[],
+    )
+
+
+def append_monitor_records(
+    records: Iterable[dict[str, Any]],
+    home: Path | str | None = None,
+    *,
+    state: MonitorSessionState,
+    exclude_apps: Sequence[str] = (),
+) -> None:
+    paths = ensure_state(home)
     excluded = {app.casefold() for app in exclude_apps}
 
     for record in records:
         validate_watcher_event(record)
-        timestamps.append(record["timestamp"])
+        state.timestamps.append(record["timestamp"])
         event_type = record["event_type"]
         if event_type == "heartbeat":
-            counts["heartbeats"] += 1
+            state.counts["heartbeats"] += 1
             continue
         if event_type not in CAPTURE_EVENT_TYPES:
             continue
@@ -117,32 +148,96 @@ def monitor_records(
 
         app_name = str(output.get("window", {}).get("app_name", ""))
         if app_name.casefold() in excluded:
-            counts["excluded_skipped"] += 1
+            state.counts["excluded_skipped"] += 1
             continue
         if denylist_reason(output):
-            counts["denylisted_skipped"] += 1
+            state.counts["denylisted_skipped"] += 1
             continue
 
         capture = normalize_uia_helper_output(output)
         fingerprint = capture["content_fingerprint"]
-        if fingerprint in seen_fingerprints or capture_fingerprint_exists(fingerprint, paths["home"]):
-            counts["duplicates_skipped"] += 1
+        if fingerprint in state.seen_fingerprints or capture_fingerprint_exists(fingerprint, paths["home"]):
+            state.counts["duplicates_skipped"] += 1
             continue
 
-        seen_fingerprints.add(fingerprint)
+        state.seen_fingerprints.add(fingerprint)
         result = persist_capture(capture, str(record.get("event_id") or event_type), paths["home"])
         if result.path is None or result.capture is None:
             continue
-        counts["captures_written"] += 1
-        timeline.append(_timeline_capture(result.capture, result.path))
+        state.counts["captures_written"] += 1
+        state.timeline.append(_timeline_capture(result.capture, result.path))
 
+
+def write_monitor_session_state(
+    home: Path | str | None,
+    *,
+    session_id: str,
+    mode: str,
+    state: MonitorSessionState,
+    extra_suggestions: Sequence[str] = (),
+) -> MonitorSessionResult:
+    paths = ensure_state(home)
     session = _build_session_report(
         paths,
-        session_id=_slug(session_id) if session_id else _session_id(timestamps, timeline),
+        session_id=_slug(session_id),
+        mode=mode,
+        timestamps=list(state.timestamps),
+        timeline=list(state.timeline),
+        counts=dict(state.counts),
+    )
+    for suggestion in extra_suggestions:
+        if suggestion not in session["suggestions"]:
+            session["suggestions"].append(suggestion)
+    return _write_session(paths, session)
+
+
+def recover_session_from_capture_buffer(
+    home: Path | str | None,
+    *,
+    session_id: str,
+    started_at: str,
+    ended_at: str | None = None,
+    mode: str = "workday",
+    minimum_captures: int = 0,
+) -> MonitorSessionResult:
+    paths = ensure_state(home)
+    timeline: list[dict[str, str]] = []
+    for path in sorted(paths["capture_buffer"].glob("*.json")):
+        try:
+            capture = json.loads(path.read_text(encoding="utf-8"))
+            validate_capture(capture)
+        except Exception:
+            continue
+        timestamp = str(capture.get("timestamp", ""))
+        if not _timestamp_in_range(timestamp, started_at, ended_at):
+            continue
+        timeline.append(_timeline_capture(capture, path))
+
+    timeline.sort(key=lambda item: (item["timestamp"], item["path"]))
+    if len(timeline) < minimum_captures:
+        raise ValueError("recovered capture count is lower than the existing checkpoint")
+    timestamps = [item["timestamp"] for item in timeline]
+    if started_at:
+        timestamps.append(started_at)
+    if ended_at:
+        timestamps.append(ended_at)
+    counts = {
+        "captures_written": len(timeline),
+        "duplicates_skipped": 0,
+        "denylisted_skipped": 0,
+        "excluded_skipped": 0,
+        "heartbeats": 0,
+    }
+    session = _build_session_report(
+        paths,
+        session_id=_slug(session_id),
         mode=mode,
         timestamps=timestamps,
         timeline=timeline,
         counts=counts,
+    )
+    session["suggestions"].append(
+        "Session summary was recovered from persisted redacted captures after the final workday result was unavailable; skipped-event and heartbeat counts may be incomplete."
     )
     return _write_session(paths, session)
 
@@ -430,6 +525,23 @@ def _duration_seconds(started_at: str, ended_at: str) -> int:
     except ValueError:
         return 0
     return max(0, int((end - start).total_seconds()))
+
+
+def _timestamp_in_range(timestamp: str, started_at: str, ended_at: str | None) -> bool:
+    try:
+        current = datetime.fromisoformat(timestamp)
+        start = datetime.fromisoformat(started_at) if started_at else None
+        end = datetime.fromisoformat(ended_at) if ended_at else None
+    except ValueError:
+        after_start = not started_at or timestamp >= started_at
+        before_end = not ended_at or timestamp <= ended_at
+        return after_start and before_end
+
+    if start is not None and current < start:
+        return False
+    if end is not None and current > end:
+        return False
+    return True
 
 
 def _slug(value: str) -> str:
