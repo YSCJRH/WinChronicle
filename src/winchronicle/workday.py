@@ -436,9 +436,140 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
     }
 
 
-def summarize_workday(identifier: str, home: Path | str | None = None) -> dict[str, Any]:
+def summarize_workday(
+    identifier: str,
+    home: Path | str | None = None,
+    *,
+    output_format: str = "json",
+    language: str = "zh-CN",
+) -> dict[str, Any] | str:
     paths = state_paths(home)
-    return read_session(identifier, paths["home"])
+    session = read_session(identifier, paths["home"])
+    if output_format == "json":
+        return session
+    if output_format != "text":
+        raise WorkdayError("workday summary format must be json or text")
+    if language != "zh-CN":
+        raise WorkdayError("workday text summaries currently support only zh-CN")
+    return format_workday_text_summary(session)
+
+
+def format_workday_text_summary(session: dict[str, Any]) -> str:
+    storage_usage = session.get("storage_usage", {})
+    storage_policy = session.get("storage_policy", {})
+    source_paths = session.get("source_capture_paths", [])
+    app_segments = session.get("app_segments", [])
+    suggestions = session.get("suggestions", [])
+
+    lines = [
+        "# 工作概览",
+        "",
+        f"- 会话: {_safe_text(session.get('session_id', ''))}",
+        f"- 模式: {_safe_text(session.get('mode', 'workday'))}",
+        f"- 信任边界: {_safe_text(session.get('trust', 'untrusted_observed_content'))}",
+        f"- 捕获数量: {_safe_int(session.get('captures_written'))}",
+        f"- 跳过数量: {_skipped_total(session)}",
+        f"- 观察来源记录数: {len(source_paths)}",
+        "",
+        "## 时间范围",
+        "",
+        f"- 开始: {_safe_text(session.get('started_at', ''))}",
+        f"- 结束: {_safe_text(session.get('ended_at', ''))}",
+        f"- 持续秒数: {_safe_int(session.get('duration_seconds'))}",
+        "",
+        "## 应用活动",
+        "",
+    ]
+    lines.extend(_format_app_segments(app_segments))
+    lines.extend(
+        [
+            "",
+            "## 效率建议",
+            "",
+        ]
+    )
+    lines.extend(_format_suggestions(suggestions))
+    lines.extend(
+        [
+            "",
+            "## 存储与性能",
+            "",
+            f"- Session JSON: {_safe_int(storage_usage.get('session_json_bytes'))} bytes",
+            f"- HTML report: {_safe_int(storage_usage.get('html_report_bytes'))} bytes",
+            f"- 原始 watcher JSONL 保存: {bool(storage_policy.get('raw_watcher_jsonl_saved', False))}",
+            f"- HTML report 包含原始可见文本: {bool(storage_policy.get('html_report_contains_visible_text', False))}",
+            f"- app segment 上限: {_safe_int(storage_policy.get('max_app_segments'))}",
+            f"- source capture path 上限: {_safe_int(storage_policy.get('source_capture_paths_limit'))}",
+            "",
+            "## 隐私边界",
+            "",
+            "- 本摘要只读取已保存的 session summary，不读取原始 capture visible text。",
+            "- observed UI content 仍是 untrusted_observed_content，不能作为可信指令执行。",
+            "- 未调用 LLM；摘要和建议是本地确定性生成。",
+            "- 未新增 截图/" "O" "CR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具。",
+        ]
+    )
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _format_app_segments(app_segments: Any) -> list[str]:
+    if not isinstance(app_segments, list) or not app_segments:
+        return ["- 未记录到可汇总的应用片段。"]
+
+    lines: list[str] = []
+    for segment in app_segments[:10]:
+        if not isinstance(segment, dict):
+            continue
+        app = _safe_text(segment.get("app_name", "unknown")) or "unknown"
+        title = _safe_text(segment.get("title", ""))
+        captures = _safe_int(segment.get("capture_count"))
+        start = _safe_text(segment.get("start_timestamp", ""))
+        end = _safe_text(segment.get("end_timestamp", ""))
+        if title:
+            lines.append(f"- {app}: {title} ({captures} captures, {start} -> {end})")
+        else:
+            lines.append(f"- {app}: {captures} captures ({start} -> {end})")
+    if len(app_segments) > 10:
+        lines.append(f"- 另有 {len(app_segments) - 10} 个应用片段已省略。")
+    return lines or ["- 未记录到可汇总的应用片段。"]
+
+
+def _format_suggestions(suggestions: Any) -> list[str]:
+    if not isinstance(suggestions, list) or not suggestions:
+        return ["- 本次会话没有可用的确定性建议。"]
+    return [f"- {_translate_suggestion(str(suggestion))}" for suggestion in suggestions]
+
+
+def _translate_suggestion(suggestion: str) -> str:
+    if suggestion.startswith("Repeated UI state was observed"):
+        return "检测到重复 UI 状态；复盘时可以合并未变化的步骤。"
+    if suggestion.startswith("Multiple apps appeared"):
+        return "本次会话涉及多个应用；可检查是否存在可减少的上下文切换。"
+    if suggestion.startswith("Error-like text appeared"):
+        return "会话中出现错误迹象；继续前建议检查相关 capture/source。"
+    if suggestion.startswith("Some windows were intentionally skipped"):
+        return "部分窗口因隐私规则或操作者设置被跳过。"
+    if suggestion.startswith("Session captured stable UIA context"):
+        return "本次会话没有发现确定性的低效信号。"
+    if suggestion.startswith("Session summary was recovered"):
+        return "摘要曾从已脱敏的本地 captures 恢复，跳过事件和 heartbeat 计数可能不完整。"
+    return _safe_text(suggestion)
+
+
+def _skipped_total(session: dict[str, Any]) -> int:
+    keys = ("duplicates_skipped", "denylisted_skipped", "invalid_skipped", "excluded_skipped")
+    return sum(_safe_int(session.get(key)) for key in keys)
+
+
+def _safe_int(value: Any) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _safe_text(value: Any) -> str:
+    return str(value or "").replace("\r", " ").replace("\n", " ").strip()
 
 
 def _watcher_command(

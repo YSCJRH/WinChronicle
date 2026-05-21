@@ -129,6 +129,23 @@ def test_workday_summarize_reads_named_session(tmp_path, monkeypatch, capsys):
     assert summary["trust"] == "untrusted_observed_content"
     assert summary["captures_written"] == 1
 
+    assert (
+        main(["workday", "summarize", "summary-check", "--format", "text", "--language", "zh-CN"])
+        == 0
+    )
+    text_summary = capsys.readouterr().out
+    assert "工作概览" in text_summary
+    assert "summary-check" in text_summary
+    assert "时间范围" in text_summary
+    assert "应用活动" in text_summary
+    assert "效率建议" in text_summary
+    assert "隐私边界" in text_summary
+    assert "untrusted_observed_content" in text_summary
+    assert "未调用 LLM" in text_summary
+    assert "截图/OCR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具" in text_summary
+    assert "Watcher burst should write one deterministic capture" not in text_summary
+    assert "visible_text" not in text_summary
+
 
 def test_workday_doctor_reports_no_active_session_without_capture_artifacts(
     tmp_path, monkeypatch, capsys

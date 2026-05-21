@@ -225,9 +225,21 @@ def build_parser() -> argparse.ArgumentParser:
 
     workday_summarize = workday_subparsers.add_parser(
         "summarize",
-        help="Print a saved workday session summary as JSON.",
+        help="Print a saved workday session summary.",
     )
     workday_summarize.add_argument("session")
+    workday_summarize.add_argument(
+        "--format",
+        choices=("json", "text"),
+        default="json",
+        help="Output JSON by default, or a deterministic operator-facing text summary.",
+    )
+    workday_summarize.add_argument(
+        "--language",
+        choices=("zh-CN",),
+        default="zh-CN",
+        help="Language for --format text output.",
+    )
 
     workday_run = workday_subparsers.add_parser("run", help=argparse.SUPPRESS)
     workday_subparsers._choices_actions = [  # type: ignore[attr-defined]
@@ -644,10 +656,17 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
 
     if args.workday_command == "summarize":
         try:
-            payload = summarize_workday(args.session)
+            payload = summarize_workday(
+                args.session,
+                output_format=args.format,
+                language=args.language,
+            )
         except Exception:
             print("ERROR: session summary could not be read safely")
             return 1
+        if isinstance(payload, str):
+            print(payload, end="")
+            return 0
         print(json.dumps(payload, indent=2, sort_keys=True))
         return 0
 

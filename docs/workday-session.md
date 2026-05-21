@@ -13,6 +13,7 @@ winchronicle workday status
 winchronicle workday doctor
 winchronicle workday stop
 winchronicle workday summarize <session-id>
+winchronicle workday summarize <session-id> --format text --language zh-CN
 ```
 
 This is an explicit finite local monitor session. It is not a daemon, service, startup task, hidden recorder, or infinite polling loop.
@@ -67,6 +68,14 @@ runner result is unavailable, stop rebuilds a bounded summary from persisted,
 already-redacted capture-buffer JSON for the active session window and reports
 `summary_source: "capture_buffer_recovery"` plus
 `recovered_from_capture_buffer: true`.
+
+`winchronicle workday summarize <session-id>` keeps the existing JSON output for
+tools and scripts. Add `--format text --language zh-CN` to print a deterministic
+Chinese operator summary headed `工作概览`. The text summary is intended for the
+natural-language "停止工作并总结" workflow: it uses the saved session summary,
+app segments, storage metadata, and deterministic suggestions. It does not read
+raw capture contents. It does not read raw capture visible text and does not
+call external models. It does not call an LLM.
 
 ## Storage And Performance Boundaries
 
