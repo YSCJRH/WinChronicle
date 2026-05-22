@@ -11,6 +11,7 @@ In CLI terms, that maps to:
 winchronicle workday start
 winchronicle workday intent "开始记录工作"
 winchronicle workday status
+winchronicle workday status --format text --language zh-CN
 winchronicle workday doctor
 winchronicle workday stop
 winchronicle workday intent "停止工作并总结" --execute
@@ -60,6 +61,11 @@ inspects local session metadata and reports:
 Use `--checkpoint-stale-seconds` to adjust the freshness window. The default is
 twice the checkpoint interval, so a normally running session should not be
 marked stale because of a single delayed write.
+
+`winchronicle workday status --format text --language zh-CN` prints a compact
+operator view headed `工作记录状态`. The status text view is read-only: it only
+uses local session metadata and does not start the watcher, helper, UIA capture,
+or desktop reading.
 
 The default command uses built helper/watcher outputs when they are present. A
 caller can still pass explicit `--watcher`, `--watcher-arg`, `--helper`, and

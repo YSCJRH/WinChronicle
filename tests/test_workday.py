@@ -45,6 +45,17 @@ def test_workday_start_stop_writes_summary_without_raw_jsonl(tmp_path, monkeypat
     assert status["active"] is True
     assert status["session_id"] == "today"
 
+    assert main(["workday", "status", "--format", "text", "--language", "zh-CN"]) == 0
+    text_status = capsys.readouterr().out
+    assert "工作记录状态" in text_status
+    assert "today" in text_status
+    assert "运行中" in text_status
+    assert "local_workday_session_status" in text_status
+    assert "explicit_finite_monitor_session" in text_status
+    assert "只读取本地 session metadata" in text_status
+    assert "Watcher burst should write one deterministic capture" not in text_status
+    assert "visible_text" not in text_status
+
     assert main(["workday", "stop", "--wait-seconds", "15"]) == 0
     stopped = json.loads(capsys.readouterr().out)
     assert stopped["active"] is False

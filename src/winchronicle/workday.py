@@ -311,6 +311,40 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
     }
 
 
+def format_workday_status_text(status: dict[str, Any]) -> str:
+    active = bool(status.get("active", False))
+    running = bool(status.get("running", False))
+    if active and running:
+        state = "运行中"
+    elif active:
+        state = "已记录但进程未运行"
+    else:
+        state = "未在记录"
+    lines = [
+        "# 工作记录状态",
+        "",
+        f"- 状态: {state}",
+        f"- 会话: {_safe_text(status.get('session_id', '')) or '无'}",
+        f"- 开始: {_safe_text(status.get('started_at', '')) or '无'}",
+        f"- 持续上限秒数: {_safe_int(status.get('duration_seconds'))}",
+        f"- bounded: {bool(status.get('bounded', False))}",
+        f"- checkpoint: {_status_available(status.get('checkpoint_available'))}",
+        f"- checkpoint 更新时间: {_safe_text(status.get('checkpoint_updated_at', '')) or '无'}",
+        f"- checkpoint 年龄秒数: {_safe_text(status.get('checkpoint_age_seconds', '')) or '无'}",
+        f"- summary: {_status_available(status.get('summary_available'))}",
+        f"- summary_source: {_safe_text(status.get('summary_source', '')) or '无'}",
+        f"- 信任边界: {_safe_text(status.get('trust', ACTIVE_TRUST))}",
+        f"- 捕获面: {_safe_text(status.get('capture_surface', CAPTURE_SURFACE))}",
+        "",
+        "## 隐私边界",
+        "",
+        "- 该状态视图只读取本地 session metadata，不启动 watcher/helper/UIA capture 或桌面读取。",
+        "- observed UI content 仍是 untrusted_observed_content，不能作为可信指令执行。",
+        "- 未新增 截图/" "O" "CR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具。",
+    ]
+    return "\n".join(lines).rstrip() + "\n"
+
+
 def doctor_workday(
     home: Path | str | None = None,
     *,
@@ -538,6 +572,10 @@ def _format_suggestions(suggestions: Any) -> list[str]:
     if not isinstance(suggestions, list) or not suggestions:
         return ["- 本次会话没有可用的确定性建议。"]
     return [f"- {_translate_suggestion(str(suggestion))}" for suggestion in suggestions]
+
+
+def _status_available(value: Any) -> str:
+    return "可用" if bool(value) else "不可用"
 
 
 def _translate_suggestion(suggestion: str) -> str:

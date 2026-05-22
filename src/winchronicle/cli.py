@@ -26,6 +26,7 @@ from .workday import (
     default_helper_command,
     default_watcher_command,
     doctor_workday,
+    format_workday_status_text,
     format_workday_text_summary,
     run_workday,
     start_workday,
@@ -210,7 +211,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Skip exact app names in this workday session.",
     )
 
-    workday_subparsers.add_parser("status", help="Print active workday session state as JSON.")
+    workday_status = workday_subparsers.add_parser(
+        "status",
+        help="Print active workday session state.",
+    )
+    workday_status.add_argument(
+        "--format",
+        choices=("json", "text"),
+        default="json",
+        help="Output JSON by default, or a deterministic operator-facing text status.",
+    )
+    workday_status.add_argument(
+        "--language",
+        choices=("zh-CN",),
+        default="zh-CN",
+        help="Language for --format text output.",
+    )
 
     workday_doctor = workday_subparsers.add_parser(
         "doctor",
@@ -671,7 +687,11 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
         return _execute_workday_start(parser, args)
 
     if args.workday_command == "status":
-        print(json.dumps(status_workday(), indent=2, sort_keys=True))
+        payload = status_workday()
+        if args.format == "text":
+            print(format_workday_status_text(payload), end="")
+            return 0
+        print(json.dumps(payload, indent=2, sort_keys=True))
         return 0
 
     if args.workday_command == "doctor":
