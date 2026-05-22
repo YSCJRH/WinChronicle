@@ -103,6 +103,28 @@ def main() -> int:
                 "workday doctor did not report disabled privacy surfaces",
             )
 
+            workday_intent = json.loads(
+                _run([str(winchronicle), "workday", "intent", "开始记录工作"], env=env)
+            )
+            _require(workday_intent["matched"] is True, "workday intent did not match start phrase")
+            _require(workday_intent["execute"] is False, "workday intent dry-run should not execute")
+            _require(
+                workday_intent["intent"] == "start_workday",
+                "workday intent returned the wrong intent",
+            )
+            _require(
+                workday_intent["trust"] == "local_workday_intent_mapping",
+                "workday intent did not report its local trust boundary",
+            )
+            _require(
+                workday_intent["dry_run_by_default"] is True,
+                "workday intent did not report dry-run by default",
+            )
+            _require(
+                not (state_home / "workday-active.json").exists(),
+                "workday intent dry-run created an active session marker",
+            )
+
             capture_path = Path(
                 _run(
                     [

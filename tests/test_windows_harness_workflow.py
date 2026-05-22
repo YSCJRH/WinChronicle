@@ -3,6 +3,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "windows-harness.yml"
+INSTALL_CLI_SMOKE = ROOT / "harness" / "scripts" / "run_install_cli_smoke.py"
 
 
 def test_windows_harness_uses_current_windows_runner_without_gate_drift():
@@ -40,3 +41,12 @@ def test_windows_harness_uses_current_windows_runner_without_gate_drift():
     )
     assert "run: python harness/scripts/run_harness.py" in text
     assert "run: git diff --check" in text
+
+
+def test_install_cli_smoke_covers_workday_intent_dry_run():
+    text = INSTALL_CLI_SMOKE.read_text(encoding="utf-8")
+
+    assert '"workday", "intent", "开始记录工作"' in text
+    assert '"dry_run_by_default"' in text
+    assert '"local_workday_intent_mapping"' in text
+    assert '"workday-active.json"' in text
