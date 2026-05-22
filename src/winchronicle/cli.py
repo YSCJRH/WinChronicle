@@ -18,6 +18,7 @@ from .privacy import DISABLED_SURFACE_STATUS, privacy_contract_payload
 from .session import monitor_events, read_session, run_monitor_watcher_command, session_count
 from .storage import capture_count, init_db, memory_entry_count, search_captures, search_memory_entries
 from .workday import (
+    CAPTURE_SURFACE,
     DEFAULT_CHECKPOINT_SECONDS,
     DEFAULT_DURATION_SECONDS,
     MAX_DURATION_SECONDS,
@@ -56,6 +57,10 @@ CODEX_MCP_ENABLED_TOOLS = [
     "search_captures",
     "read_recent_capture",
 ]
+
+WORKDAY_INTENT_TRUST = "local_workday_intent_mapping"
+WORKDAY_START_PHRASES = ("开始记录工作",)
+WORKDAY_STOP_SUMMARY_PHRASES = ("停止工作并总结",)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -171,7 +176,7 @@ def build_parser() -> argparse.ArgumentParser:
     workday_subparsers = workday.add_subparsers(
         dest="workday_command",
         required=True,
-        metavar="{start,status,doctor,stop,summarize}",
+        metavar="{start,status,doctor,stop,summarize,intent}",
     )
     workday_start = workday_subparsers.add_parser(
         "start",
@@ -252,6 +257,45 @@ def build_parser() -> argparse.ArgumentParser:
         choices=("zh-CN",),
         default="zh-CN",
         help="Language for --format text output.",
+    )
+
+    workday_intent = workday_subparsers.add_parser(
+        "intent",
+        help="Map allowlisted natural-language workday phrases to bounded commands.",
+    )
+    workday_intent.add_argument("phrase")
+    workday_intent.add_argument(
+        "--execute",
+        action="store_true",
+        help="Run the mapped command. Without this flag, only print the JSON plan.",
+    )
+    workday_intent.add_argument("--watcher", help="Path or command for win-uia-watcher.")
+    workday_intent.add_argument(
+        "--watcher-arg",
+        action="append",
+        default=[],
+        help="Extra argument passed to the watcher command before watch.",
+    )
+    workday_intent.add_argument("--helper", help="Path or command for win-uia-helper.")
+    workday_intent.add_argument(
+        "--helper-arg",
+        action="append",
+        default=[],
+        help="Extra argument passed to the helper command before capture-frontmost.",
+    )
+    workday_intent.add_argument("--depth", type=int, default=80)
+    workday_intent.add_argument("--duration", type=int, default=DEFAULT_DURATION_SECONDS)
+    workday_intent.add_argument("--debounce-ms", type=int, default=750)
+    workday_intent.add_argument("--heartbeat-ms", type=int, default=5000)
+    workday_intent.add_argument("--checkpoint-seconds", type=int, default=DEFAULT_CHECKPOINT_SECONDS)
+    workday_intent.add_argument("--capture-on-start", action="store_true", default=True)
+    workday_intent.add_argument("--session-id")
+    workday_intent.add_argument("--wait-seconds", type=int, default=30)
+    workday_intent.add_argument(
+        "--exclude-app",
+        action="append",
+        default=[],
+        help="Skip exact app names in a started workday session.",
     )
 
     workday_run = workday_subparsers.add_parser("run", help=argparse.SUPPRESS)
@@ -624,34 +668,7 @@ def _reject_forbidden_passthrough(
 
 def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -> int:
     if args.workday_command == "start":
-        _reject_forbidden_passthrough(parser, args.watcher_arg, "--watcher-arg")
-        _reject_forbidden_passthrough(parser, args.helper_arg, "--helper-arg")
-        if not 0 <= args.depth <= 80:
-            parser.error("--depth must be between 0 and 80")
-        if args.duration < 0 or args.duration > MAX_DURATION_SECONDS:
-            parser.error(f"--duration must be between 0 and {MAX_DURATION_SECONDS}")
-        watcher_command = [args.watcher, *args.watcher_arg] if args.watcher else default_watcher_command()
-        helper_command = [args.helper, *args.helper_arg] if args.helper else None
-        if args.helper is None and not args.watcher:
-            helper_command = default_helper_command()
-        try:
-            payload = start_workday(
-                watcher_command=watcher_command,
-                helper_command=helper_command,
-                session_id=args.session_id,
-                duration_seconds=args.duration,
-                depth=args.depth,
-                debounce_ms=args.debounce_ms,
-                heartbeat_ms=args.heartbeat_ms,
-                checkpoint_seconds=args.checkpoint_seconds,
-                capture_on_start=args.capture_on_start,
-                exclude_apps=args.exclude_app,
-            )
-        except WorkdayError as exc:
-            print(json.dumps({"active": False, "error": str(exc)}, indent=2, sort_keys=True))
-            return 1
-        print(json.dumps(payload, indent=2, sort_keys=True))
-        return 1 if payload.get("error") else 0
+        return _execute_workday_start(parser, args)
 
     if args.workday_command == "status":
         print(json.dumps(status_workday(), indent=2, sort_keys=True))
@@ -663,16 +680,7 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
         return 0
 
     if args.workday_command == "stop":
-        payload = stop_workday(wait_seconds=args.wait_seconds)
-        if (
-            args.format == "text"
-            and payload.get("summary_available")
-            and isinstance(payload.get("summary"), dict)
-        ):
-            print(format_workday_text_summary(payload["summary"]), end="")
-            return 0
-        print(json.dumps(payload, indent=2, sort_keys=True))
-        return 0
+        return _execute_workday_stop(args, output_format=args.format)
 
     if args.workday_command == "summarize":
         try:
@@ -689,6 +697,21 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
             return 0
         print(json.dumps(payload, indent=2, sort_keys=True))
         return 0
+
+    if args.workday_command == "intent":
+        plan = _workday_intent_plan(args.phrase)
+        if not plan["matched"]:
+            print(json.dumps(plan, indent=2, sort_keys=True, ensure_ascii=False))
+            return 1
+        if not args.execute:
+            print(json.dumps(plan, indent=2, sort_keys=True, ensure_ascii=False))
+            return 0
+        if plan["intent"] == "start_workday":
+            return _execute_workday_start(parser, args)
+        if plan["intent"] == "stop_and_summarize_workday":
+            return _execute_workday_stop(args, output_format="text")
+        print(json.dumps(plan, indent=2, sort_keys=True, ensure_ascii=False))
+        return 1
 
     if args.workday_command == "run":
         _reject_forbidden_passthrough(parser, args.watcher_arg, "--watcher-arg")
@@ -721,3 +744,93 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
 
     parser.error(f"unknown workday command: {args.workday_command}")
     return 2
+
+
+def _execute_workday_start(parser: argparse.ArgumentParser, args: argparse.Namespace) -> int:
+    _reject_forbidden_passthrough(parser, args.watcher_arg, "--watcher-arg")
+    _reject_forbidden_passthrough(parser, args.helper_arg, "--helper-arg")
+    if not 0 <= args.depth <= 80:
+        parser.error("--depth must be between 0 and 80")
+    if args.duration < 0 or args.duration > MAX_DURATION_SECONDS:
+        parser.error(f"--duration must be between 0 and {MAX_DURATION_SECONDS}")
+    watcher_command = [args.watcher, *args.watcher_arg] if args.watcher else default_watcher_command()
+    helper_command = [args.helper, *args.helper_arg] if args.helper else None
+    if args.helper is None and not args.watcher:
+        helper_command = default_helper_command()
+    try:
+        payload = start_workday(
+            watcher_command=watcher_command,
+            helper_command=helper_command,
+            session_id=args.session_id,
+            duration_seconds=args.duration,
+            depth=args.depth,
+            debounce_ms=args.debounce_ms,
+            heartbeat_ms=args.heartbeat_ms,
+            checkpoint_seconds=args.checkpoint_seconds,
+            capture_on_start=args.capture_on_start,
+            exclude_apps=args.exclude_app,
+        )
+    except WorkdayError as exc:
+        print(json.dumps({"active": False, "error": str(exc)}, indent=2, sort_keys=True))
+        return 1
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 1 if payload.get("error") else 0
+
+
+def _execute_workday_stop(args: argparse.Namespace, *, output_format: str) -> int:
+    payload = stop_workday(wait_seconds=args.wait_seconds)
+    if (
+        output_format == "text"
+        and payload.get("summary_available")
+        and isinstance(payload.get("summary"), dict)
+    ):
+        print(format_workday_text_summary(payload["summary"]), end="")
+        return 0
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _workday_intent_plan(phrase: str) -> dict[str, object]:
+    normalized = " ".join(str(phrase).split())
+    supported_phrases = [*WORKDAY_START_PHRASES, *WORKDAY_STOP_SUMMARY_PHRASES]
+    if normalized in WORKDAY_START_PHRASES:
+        return {
+            "matched": True,
+            "execute": False,
+            "intent": "start_workday",
+            "phrase": phrase,
+            "command": ["winchronicle", "workday", "start"],
+            "bounded": True,
+            "capture_surface": CAPTURE_SURFACE,
+            "trust": WORKDAY_INTENT_TRUST,
+            "dry_run_by_default": True,
+        }
+    if normalized in WORKDAY_STOP_SUMMARY_PHRASES:
+        return {
+            "matched": True,
+            "execute": False,
+            "intent": "stop_and_summarize_workday",
+            "phrase": phrase,
+            "command": [
+                "winchronicle",
+                "workday",
+                "stop",
+                "--format",
+                "text",
+                "--language",
+                "zh-CN",
+            ],
+            "bounded": True,
+            "capture_surface": CAPTURE_SURFACE,
+            "trust": WORKDAY_INTENT_TRUST,
+            "dry_run_by_default": True,
+        }
+    return {
+        "matched": False,
+        "execute": False,
+        "error": "unsupported_workday_intent",
+        "phrase": phrase,
+        "supported_phrases": supported_phrases,
+        "trust": WORKDAY_INTENT_TRUST,
+        "dry_run_by_default": True,
+    }

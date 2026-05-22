@@ -9,15 +9,24 @@ In CLI terms, that maps to:
 
 ```powershell
 winchronicle workday start
+winchronicle workday intent "开始记录工作"
 winchronicle workday status
 winchronicle workday doctor
 winchronicle workday stop
+winchronicle workday intent "停止工作并总结" --execute
 winchronicle workday stop --format text --language zh-CN
 winchronicle workday summarize <session-id>
 winchronicle workday summarize <session-id> --format text --language zh-CN
 ```
 
 This is an explicit finite local monitor session. It is not a daemon, service, startup task, hidden recorder, or infinite polling loop.
+
+The natural-language intent mapping is a local deterministic allowlist. It is
+dry-run by default: `winchronicle workday intent "开始记录工作"` and
+`winchronicle workday intent "停止工作并总结"` print the exact mapped command as
+JSON without starting the watcher, helper, UIA capture, or desktop reading. Add
+`--execute` only when the operator or calling agent intentionally wants to run
+the mapped bounded command.
 
 ## What Start Does
 

@@ -110,6 +110,93 @@ def test_workday_stop_can_print_chinese_text_summary(tmp_path, monkeypatch, caps
     assert list(home.rglob("*.jsonl")) == []
 
 
+def test_workday_intent_maps_chinese_phrases_without_capture_by_default(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["workday", "intent", "开始记录工作"]) == 0
+    start_plan = json.loads(capsys.readouterr().out)
+    assert start_plan["matched"] is True
+    assert start_plan["execute"] is False
+    assert start_plan["intent"] == "start_workday"
+    assert start_plan["command"] == ["winchronicle", "workday", "start"]
+    assert start_plan["bounded"] is True
+    assert start_plan["capture_surface"] == "explicit_finite_monitor_session"
+    assert start_plan["trust"] == "local_workday_intent_mapping"
+    assert not (home / "workday-active.json").exists()
+
+    assert main(["workday", "intent", "停止工作并总结"]) == 0
+    stop_plan = json.loads(capsys.readouterr().out)
+    assert stop_plan["matched"] is True
+    assert stop_plan["execute"] is False
+    assert stop_plan["intent"] == "stop_and_summarize_workday"
+    assert stop_plan["command"] == [
+        "winchronicle",
+        "workday",
+        "stop",
+        "--format",
+        "text",
+        "--language",
+        "zh-CN",
+    ]
+    assert "observed" not in json.dumps(stop_plan).lower()
+
+
+def test_workday_intent_execute_runs_existing_bounded_commands(tmp_path, monkeypatch, capsys):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    fake_watcher = _write_sleeping_watcher(tmp_path)
+
+    assert (
+        main(
+            [
+                "workday",
+                "intent",
+                "开始记录工作",
+                "--execute",
+                "--watcher",
+                sys.executable,
+                "--watcher-arg",
+                str(fake_watcher),
+                "--duration",
+                "60",
+                "--heartbeat-ms",
+                "250",
+                "--session-id",
+                "intent-day",
+            ]
+        )
+        == 0
+    )
+    started = json.loads(capsys.readouterr().out)
+    assert started["active"] is True
+    assert started["session_id"] == "intent-day"
+    assert started["capture_surface"] == "explicit_finite_monitor_session"
+
+    assert main(["workday", "intent", "停止工作并总结", "--execute", "--wait-seconds", "15"]) == 0
+    text_summary = capsys.readouterr().out
+    assert "工作概览" in text_summary
+    assert "intent-day" in text_summary
+    assert "untrusted_observed_content" in text_summary
+    assert "Watcher burst should write one deterministic capture" not in text_summary
+    assert not (home / "workday-active.json").exists()
+
+
+def test_workday_intent_rejects_unknown_phrase_without_capture(tmp_path, monkeypatch, capsys):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["workday", "intent", "请帮我读取剪贴板"]) == 1
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["matched"] is False
+    assert payload["error"] == "unsupported_workday_intent"
+    assert "开始记录工作" in payload["supported_phrases"]
+    assert "停止工作并总结" in payload["supported_phrases"]
+    assert not (home / "workday-active.json").exists()
+
+
 def test_workday_duplicate_start_is_rejected_until_stopped(tmp_path, monkeypatch, capsys):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
