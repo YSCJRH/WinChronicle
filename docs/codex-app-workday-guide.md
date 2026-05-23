@@ -5,7 +5,17 @@ daily work recorder. It is separate from developing the WinChronicle repository.
 
 ## Setup
 
-Install WinChronicle and print the read-only Codex MCP snippet:
+Install WinChronicle and print the combined Codex readiness report:
+
+```powershell
+winchronicle codex setup --dry-run
+```
+
+The setup dry-run prints local checks, the read-only Codex MCP snippet, and the
+Workday plugin source path. It does not edit Codex config or create
+WinChronicle state.
+
+To print only the MCP snippet:
 
 ```powershell
 winchronicle codex install --dry-run

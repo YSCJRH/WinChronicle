@@ -34,7 +34,13 @@ with the Codex conversation service.
 
 ## Install From This Repository
 
-Print the local plugin source path and safety boundary:
+For first-run setup, print the combined Codex readiness report:
+
+```powershell
+winchronicle codex setup --dry-run
+```
+
+To print only the local plugin source path and safety boundary:
 
 ```powershell
 winchronicle codex plugin --dry-run

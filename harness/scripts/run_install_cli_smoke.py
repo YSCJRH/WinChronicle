@@ -57,6 +57,12 @@ def main() -> int:
 
             winchronicle = _venv_script(venv_dir, "winchronicle")
             _require(winchronicle.exists(), "non-editable install did not create winchronicle")
+            _require_codex_setup_dry_run(
+                winchronicle,
+                env,
+                expect_state_absent=True,
+                state_home=state_home,
+            )
             _require_codex_plugin_dry_run(winchronicle, env)
 
             _run([str(python), "-m", "pip", "uninstall", "-y", "winchronicle"], env=env)
@@ -123,6 +129,12 @@ def main() -> int:
             )
 
             _require_codex_plugin_dry_run(winchronicle, env)
+            _require_codex_setup_dry_run(
+                winchronicle,
+                env,
+                expect_state_absent=False,
+                state_home=state_home,
+            )
 
             workday_intent = json.loads(
                 _run([str(winchronicle), "workday", "intent", "开始记录工作"], env=env)
@@ -321,6 +333,66 @@ def _require_codex_plugin_dry_run(winchronicle: Path, env: dict[str, str]) -> No
         "screenshots" in plugin_dry_run["disabled_surfaces"],
         "codex plugin dry-run did not report disabled screenshot surface",
     )
+
+
+def _require_codex_setup_dry_run(
+    winchronicle: Path,
+    env: dict[str, str],
+    *,
+    expect_state_absent: bool,
+    state_home: Path,
+) -> None:
+    setup_dry_run = json.loads(
+        _run([str(winchronicle), "codex", "setup", "--dry-run"], env=env)
+    )
+    _require(
+        setup_dry_run["command"] == "codex setup",
+        "codex setup dry-run reported the wrong command name",
+    )
+    _require(setup_dry_run["dry_run"] is True, "codex setup dry-run did not report dry_run")
+    _require(
+        setup_dry_run["writes_config"] is False,
+        "codex setup dry-run should not write Codex config",
+    )
+    _require(
+        setup_dry_run["writes_state"] is False,
+        "codex setup dry-run should not write WinChronicle state",
+    )
+    _require(
+        setup_dry_run["starts_capture"] is False,
+        "codex setup dry-run should not start capture",
+    )
+    check_names = {check["name"] for check in setup_dry_run["checks"]}
+    _require(
+        {"python", "dotnet", "privacy_surfaces", "mcp_tool_allowlist", "workday_plugin"}
+        <= check_names,
+        "codex setup dry-run omitted readiness checks",
+    )
+    _require(
+        setup_dry_run["mcp"]["enabled_tools"]
+        == [
+            "privacy_status",
+            "current_context",
+            "recent_activity",
+            "search_memory",
+            "search_captures",
+            "read_recent_capture",
+        ],
+        "codex setup dry-run reported the wrong MCP tool allowlist",
+    )
+    _require(
+        setup_dry_run["plugin"]["plugin_available"] is True,
+        "codex setup dry-run did not find the installed plugin source",
+    )
+    _require(
+        setup_dry_run["plugin"]["adds_mcp_tools"] is False,
+        "codex setup dry-run should not add MCP tools",
+    )
+    if expect_state_absent:
+        _require(
+            not state_home.exists(),
+            "codex setup dry-run created WinChronicle state before init",
+        )
 
 
 class SmokeFailure(RuntimeError):

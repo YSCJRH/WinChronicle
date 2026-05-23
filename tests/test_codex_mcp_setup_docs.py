@@ -20,6 +20,7 @@ def test_mcp_client_setup_documents_codex_dry_run_config_shape():
 
     for expected in (
         "## Codex App And Codex CLI",
+        "winchronicle codex setup --dry-run",
         "winchronicle codex install --dry-run",
         "[mcp_servers.winchronicle]",
         'command = "winchronicle"',

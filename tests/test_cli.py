@@ -153,6 +153,57 @@ def test_codex_plugin_dry_run_prints_local_plugin_source_without_state_write(
     assert "password" not in output.lower()
 
 
+def test_codex_setup_dry_run_prints_readiness_report_without_state_write(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["codex", "setup", "--dry-run"]) == 0
+    output = capsys.readouterr().out
+    payload = json.loads(output)
+
+    assert payload["command"] == "codex setup"
+    assert payload["dry_run"] is True
+    assert payload["writes_config"] is False
+    assert payload["writes_state"] is False
+    assert payload["starts_capture"] is False
+    assert payload["observed_content_trust"] == TRUST
+
+    check_names = {check["name"] for check in payload["checks"]}
+    assert {"python", "dotnet", "privacy_surfaces", "mcp_tool_allowlist", "workday_plugin"} <= check_names
+    assert next(check for check in payload["checks"] if check["name"] == "python")[
+        "ok"
+    ] is True
+    assert next(check for check in payload["checks"] if check["name"] == "privacy_surfaces")[
+        "ok"
+    ] is True
+    assert next(check for check in payload["checks"] if check["name"] == "mcp_tool_allowlist")[
+        "ok"
+    ] is True
+
+    mcp_config = tomllib.loads(payload["mcp"]["config_toml"])
+    server = mcp_config["mcp_servers"]["winchronicle"]
+    assert server["enabled_tools"] == CODEX_ENABLED_TOOL_ORDER
+    assert set(server["enabled_tools"]) == set(TOOL_NAMES)
+    assert payload["mcp"]["writes_config"] is False
+
+    assert payload["plugin"]["plugin_name"] == "winchronicle-workday"
+    assert payload["plugin"]["plugin_available"] is True
+    assert Path(payload["plugin"]["plugin_path"]).is_dir()
+    assert payload["plugin"]["writes_config"] is False
+    assert payload["plugin"]["adds_mcp_tools"] is False
+
+    assert payload["next_commands"] == [
+        "winchronicle codex install --dry-run",
+        "winchronicle codex plugin --dry-run",
+        "winchronicle workday status --format text --language zh-CN",
+    ]
+    assert not home.exists()
+    assert "visible_text" not in output
+    assert "focused_text" not in output
+
+
 def test_init_status_and_empty_search_memory_are_stable(tmp_path, monkeypatch, capsys):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))

@@ -337,6 +337,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print Codex integration helpers without modifying user config.",
     )
     codex_subparsers = codex.add_subparsers(dest="codex_command", required=True)
+    codex_setup = codex_subparsers.add_parser(
+        "setup",
+        help="Print a combined Codex readiness report without writing files.",
+    )
+    codex_setup.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print local readiness, MCP config, and plugin guidance without writing files.",
+    )
     codex_install = codex_subparsers.add_parser(
         "install",
         help="Print a read-only Codex MCP config snippet.",
@@ -547,6 +556,18 @@ def main(argv: list[str] | None = None) -> int:
         return _handle_workday(parser, args)
 
     if args.command == "codex":
+        if args.codex_command == "setup":
+            if not args.dry_run:
+                parser.error("codex setup currently supports only --dry-run")
+            print(
+                json.dumps(
+                    _codex_setup_dry_run_payload(),
+                    ensure_ascii=False,
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 0
         if args.codex_command == "install":
             if not args.dry_run:
                 parser.error("codex install currently supports only --dry-run")
@@ -585,6 +606,63 @@ def _codex_mcp_config_snippet() -> str:
         f"{tool_lines}\n"
         "]\n"
     )
+
+
+def _codex_setup_dry_run_payload() -> dict[str, object]:
+    privacy = privacy_contract_payload()
+    disabled_ok = all(privacy[key] is False for key in DISABLED_SURFACE_STATUS)
+    plugin = _codex_plugin_dry_run_payload()
+
+    checks: list[dict[str, object]] = [
+        {
+            "name": "python",
+            "ok": sys.version_info >= (3, 11),
+            "detail": platform.python_version(),
+        },
+        _dotnet_check(),
+        {
+            "name": "privacy_surfaces",
+            "ok": disabled_ok,
+            "detail": "disabled surfaces remain off",
+        },
+        {
+            "name": "mcp_tool_allowlist",
+            "ok": set(CODEX_MCP_ENABLED_TOOLS) == set(TOOL_NAMES),
+            "detail": CODEX_MCP_ENABLED_TOOLS,
+        },
+        {
+            "name": "workday_plugin",
+            "ok": bool(plugin["plugin_available"]),
+            "detail": plugin["plugin_path"],
+        },
+    ]
+
+    return {
+        "command": "codex setup",
+        "dry_run": True,
+        "version": __version__,
+        "writes_config": False,
+        "writes_state": False,
+        "starts_capture": False,
+        "observed_content_trust": TRUST,
+        "checks": checks,
+        "mcp": {
+            "config_toml": _codex_mcp_config_snippet(),
+            "enabled_tools": CODEX_MCP_ENABLED_TOOLS,
+            "writes_config": False,
+        },
+        "plugin": plugin,
+        "disabled_surfaces": _codex_plugin_disabled_surface_names(),
+        "next_commands": [
+            "winchronicle codex install --dry-run",
+            "winchronicle codex plugin --dry-run",
+            "winchronicle workday status --format text --language zh-CN",
+        ],
+        "chat_output_warning": (
+            "Only paste local setup output into chat when the user explicitly asks "
+            "to share local paths or session metadata."
+        ),
+    }
 
 
 def _codex_plugin_dry_run_payload() -> dict[str, object]:

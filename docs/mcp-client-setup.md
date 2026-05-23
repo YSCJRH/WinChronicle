@@ -46,11 +46,22 @@ the current Codex-side config behavior.
 WinChronicle can print the recommended read-only Codex MCP snippet:
 
 ```powershell
+winchronicle codex setup --dry-run
+```
+
+Use `setup --dry-run` for the first check: it runs local readiness probes, then
+prints the MCP snippet and the Workday plugin source path without editing files.
+
+To print only the MCP snippet, run:
+
+```powershell
 winchronicle codex install --dry-run
 ```
 
-The dry-run command only prints text. It does not edit `config.toml`, does not read or write secrets,
-does not start MCP, and does not create WinChronicle state.
+The setup dry-run does not edit `config.toml`, does not read or write secrets,
+does not start MCP, and does not create WinChronicle state. It may invoke local
+readiness probes such as `dotnet --version`; `install --dry-run` and
+`plugin --dry-run` only print their suggested configuration/plugin source data.
 
 Default editable-install snippet:
 
