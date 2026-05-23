@@ -126,6 +126,8 @@ winchronicle codex daily --dry-run --format text
 The prompt maps daily Chinese phrases to local Workday commands and tells Codex:
 `Do not inspect, scan, review, edit, test, commit, push, or release repository files.`
 Use this mode when you want Codex to record work, not develop the repository.
+For the exact local plugin-source field and expected Codex App steps, see
+[Codex App local plugin install](docs/codex-app-plugin-install.md).
 
 ## Try It In 5 Minutes
 
@@ -259,6 +261,7 @@ maintenance loop automatically.
 - [Deterministic demo](docs/deterministic-demo.md)
 - [v0.2 monitor session](docs/v0.2-monitor-session.md)
 - [Workday session](docs/workday-session.md)
+- [Codex App local plugin install](docs/codex-app-plugin-install.md)
 - [Codex App workday guide](docs/codex-app-workday-guide.md)
 - [Codex workday plugin](docs/codex-workday-plugin.md)
 - [Project presentation checklist](docs/project-presentation.md)

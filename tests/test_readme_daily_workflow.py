@@ -29,5 +29,34 @@ def test_readmes_surface_codex_daily_workflow_first_run_path():
 
     assert "[Codex App workday guide](docs/codex-app-workday-guide.md)" in english
     assert "[Codex workday plugin](docs/codex-workday-plugin.md)" in english
+    assert "[Codex App local plugin install](docs/codex-app-plugin-install.md)" in english
     assert "[Codex App 工作日指南](docs/codex-app-workday-guide.md)" in chinese
     assert "[Codex 工作日插件](docs/codex-workday-plugin.md)" in chinese
+    assert "[Codex App 本地插件安装](docs/codex-app-plugin-install.md)" in chinese
+
+
+def test_codex_app_plugin_install_guide_is_plain_user_path():
+    guide = (ROOT / "docs" / "codex-app-plugin-install.md").read_text(encoding="utf-8")
+
+    required = [
+        "# Codex App Local Plugin Install",
+        "winchronicle codex setup --dry-run --format text",
+        "winchronicle codex plugin --dry-run --format text",
+        "Add local plugin source",
+        "src\\winchronicle\\codex_plugins\\winchronicle-workday",
+        "plugins\\winchronicle-workday",
+        "开始记录工作",
+        "查看工作记录状态",
+        "停止工作并总结",
+        "does not write Codex config",
+        "does not write WinChronicle state",
+        "does not start capture",
+        "does not add screenshots",
+        "does not add OCR",
+        "does not add clipboard capture",
+        "does not add desktop control",
+        "does not add MCP write tools",
+        "untrusted_observed_content",
+    ]
+    for text in required:
+        assert text in guide
