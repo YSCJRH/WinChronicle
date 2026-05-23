@@ -111,6 +111,7 @@ def test_codex_workday_plugin_doc_warns_before_chat_output():
     assert "winchronicle codex daily --dry-run" in text
     assert "winchronicle codex setup --dry-run" in text
     assert "winchronicle codex plugin --dry-run" in text
+    assert "winchronicle codex plugin --dry-run --format text" in text
 
 
 def test_codex_workday_plugin_does_not_expand_capture_or_mcp_surface():

@@ -174,6 +174,37 @@ def test_codex_plugin_dry_run_prints_local_plugin_source_without_state_write(
     assert "password" not in output.lower()
 
 
+def test_codex_plugin_dry_run_text_format_prints_copyable_source_without_state_write(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["codex", "plugin", "--dry-run", "--format", "text"]) == 0
+    output = capsys.readouterr().out
+
+    assert output.startswith("WinChronicle Codex plugin dry-run")
+    assert "Dry run only: yes" in output
+    assert "Writes config: no" in output
+    assert "Adds MCP tools: no" in output
+    assert "Observed content trust: untrusted_observed_content" in output
+    assert "Plugin source:" in output
+    assert "Codex App -> Plugins -> Add local plugin source ->" in output
+    assert "Starter prompts:" in output
+    assert "- 开始记录工作" in output
+    assert "- 停止工作并总结" in output
+    assert "- 查看工作记录状态" in output
+    assert "Disabled surfaces remain off:" in output
+    assert "- screenshots" in output
+    assert "- ocr" in output
+    assert "- mcp_write_tools" in output
+
+    assert not home.exists()
+    assert "visible_text" not in output
+    assert "focused_text" not in output
+    assert '"command":' not in output
+
+
 def test_codex_setup_dry_run_prints_readiness_report_without_state_write(
     tmp_path, monkeypatch, capsys
 ):
@@ -217,7 +248,7 @@ def test_codex_setup_dry_run_prints_readiness_report_without_state_write(
 
     assert payload["next_commands"] == [
         "winchronicle codex install --dry-run",
-        "winchronicle codex plugin --dry-run",
+        "winchronicle codex plugin --dry-run --format text",
         "winchronicle workday status --format text --language zh-CN",
     ]
     assert not home.exists()
@@ -299,7 +330,7 @@ def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
 
     assert payload["setup_commands"] == [
         "winchronicle codex setup --dry-run",
-        "winchronicle codex plugin --dry-run",
+        "winchronicle codex plugin --dry-run --format text",
     ]
     assert payload["plugin"]["plugin_name"] == "winchronicle-workday"
     assert payload["plugin"]["plugin_available"] is True

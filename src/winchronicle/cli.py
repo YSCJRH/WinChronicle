@@ -404,6 +404,12 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print the local plugin source path and safety boundary without writing files.",
     )
+    codex_plugin.add_argument(
+        "--format",
+        choices=("json", "text"),
+        default="json",
+        help="Print JSON by default, or a compact user-facing plugin guide.",
+    )
     codex_daily = codex_subparsers.add_parser(
         "daily",
         help="Print daily workday setup and record-only prompt without writing files.",
@@ -635,14 +641,11 @@ def main(argv: list[str] | None = None) -> int:
         if args.codex_command == "plugin":
             if not args.dry_run:
                 parser.error("codex plugin currently supports only --dry-run")
-            print(
-                json.dumps(
-                    _codex_plugin_dry_run_payload(),
-                    ensure_ascii=False,
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
+            payload = _codex_plugin_dry_run_payload()
+            if args.format == "text":
+                print(_format_codex_plugin_dry_run_text(payload), end="")
+                return 0
+            print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
             return 0
         if args.codex_command == "daily":
             if not args.dry_run:
@@ -730,7 +733,7 @@ def _codex_setup_dry_run_payload() -> dict[str, object]:
         "disabled_surfaces": _codex_plugin_disabled_surface_names(),
         "next_commands": [
             "winchronicle codex install --dry-run",
-            "winchronicle codex plugin --dry-run",
+            "winchronicle codex plugin --dry-run --format text",
             "winchronicle workday status --format text --language zh-CN",
         ],
         "chat_output_warning": (
@@ -803,7 +806,7 @@ def _codex_daily_dry_run_payload() -> dict[str, object]:
         "observed_content_trust": TRUST,
         "setup_commands": [
             "winchronicle codex setup --dry-run",
-            "winchronicle codex plugin --dry-run",
+            "winchronicle codex plugin --dry-run --format text",
         ],
         "plugin": _codex_plugin_dry_run_payload(),
         "daily_phrases": CODEX_WORKDAY_ACCEPTED_PHRASES,
@@ -854,6 +857,35 @@ def _format_codex_daily_dry_run_text(payload: dict[str, object]) -> str:
         str(payload["recording_mode_boundary"]),
         "",
         "No new capture, upload, control, or MCP write surfaces are added.",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def _format_codex_plugin_dry_run_text(payload: dict[str, object]) -> str:
+    starter_phrases = payload["starter_phrases"]
+    prompts = starter_phrases if isinstance(starter_phrases, list) else []
+    disabled_surfaces = payload["disabled_surfaces"]
+    disabled_surface_names = disabled_surfaces if isinstance(disabled_surfaces, list) else []
+
+    lines = [
+        "WinChronicle Codex plugin dry-run",
+        "",
+        f"Dry run only: {_yes_no(payload['dry_run'])}",
+        f"Writes config: {_yes_no(payload['writes_config'])}",
+        f"Adds MCP tools: {_yes_no(payload['adds_mcp_tools'])}",
+        f"Observed content trust: {payload['observed_content_trust']}",
+        "",
+        f"Plugin available: {_yes_no(payload['plugin_available'])}",
+        f"Plugin source: {payload['codex_app_plugin_source_path']}",
+        str(payload["copyable_plugin_source_instruction"]),
+        "",
+        "Starter prompts:",
+        *[f"- {prompt}" for prompt in prompts],
+        "",
+        "Disabled surfaces remain off:",
+        *[f"- {surface}" for surface in disabled_surface_names],
+        "",
+        str(payload["install_hint"]),
     ]
     return "\n".join(lines) + "\n"
 

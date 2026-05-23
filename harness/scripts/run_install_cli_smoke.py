@@ -346,6 +346,29 @@ def _require_codex_plugin_dry_run(winchronicle: Path, env: dict[str, str]) -> No
         "codex plugin dry-run did not report disabled screenshot surface",
     )
 
+    plugin_text = _run(
+        [str(winchronicle), "codex", "plugin", "--dry-run", "--format", "text"],
+        env=env,
+    )
+    _require(
+        "WinChronicle Codex plugin dry-run" in plugin_text,
+        "codex plugin text dry-run did not print its heading",
+    )
+    _require(
+        "Codex App -> Plugins -> Add local plugin source ->" in plugin_text,
+        "codex plugin text dry-run did not print the copyable source instruction",
+    )
+    _require(
+        "Starter prompts:" in plugin_text and "开始记录工作" in plugin_text,
+        "codex plugin text dry-run did not report starter prompts",
+    )
+    _require(
+        "Disabled surfaces remain off:" in plugin_text,
+        "codex plugin text dry-run did not report disabled surfaces",
+    )
+    _require("visible_text" not in plugin_text, "codex plugin text dry-run exposed visible text")
+    _require("focused_text" not in plugin_text, "codex plugin text dry-run exposed focused text")
+
 
 def _require_codex_setup_dry_run(
     winchronicle: Path,

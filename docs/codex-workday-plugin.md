@@ -78,6 +78,12 @@ To print only the local plugin source path and safety boundary:
 winchronicle codex plugin --dry-run
 ```
 
+For a shorter user-facing guide with the same dry-run boundary:
+
+```powershell
+winchronicle codex plugin --dry-run --format text
+```
+
 The dry-run JSON includes a copyable plugin-source instruction:
 
 ```text
