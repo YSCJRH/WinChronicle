@@ -446,6 +446,14 @@ def _require_codex_setup_dry_run(
         "codex setup text dry-run did not report read-only MCP tools",
     )
     _require(
+        "First-run checklist:" in setup_text
+        and "Say in Codex App: 开始记录工作" in setup_text
+        and "Check status: winchronicle workday status --format text --language zh-CN"
+        in setup_text
+        and "End and summarize: 停止工作并总结" in setup_text,
+        "codex setup text dry-run did not report the first-run user checklist",
+    )
+    _require(
         "Disabled surfaces remain off:" in setup_text,
         "codex setup text dry-run did not report disabled surfaces",
     )

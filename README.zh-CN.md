@@ -111,7 +111,8 @@ winchronicle codex setup --dry-run --format text
 winchronicle codex plugin --dry-run --format text
 ```
 
-第二条命令会打印类似下面的可复制指令：
+第一条命令会打印紧凑的首次使用清单，包含插件源、第一句提示、状态命令和
+总结边界。第二条命令会打印类似下面的可复制指令：
 
 ```text
 Codex App -> Plugins -> Add local plugin source -> <plugin_path>

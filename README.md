@@ -121,7 +121,9 @@ winchronicle codex setup --dry-run --format text
 winchronicle codex plugin --dry-run --format text
 ```
 
-The second command prints a copyable instruction like:
+The first command prints a compact first-run checklist with the plugin source,
+first prompt, status command, and summary boundary. The second command prints a
+copyable instruction like:
 
 ```text
 Codex App -> Plugins -> Add local plugin source -> <plugin_path>

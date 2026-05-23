@@ -21,6 +21,9 @@ For a shorter readiness check, use:
 winchronicle codex setup --dry-run --format text
 ```
 
+The text output includes a first-run checklist with the plugin source, first
+prompt, status command, and summary boundary.
+
 To print only the MCP snippet:
 
 ```powershell

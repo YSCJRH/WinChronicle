@@ -61,5 +61,7 @@ def test_install_cli_smoke_covers_codex_text_format_entrypoints():
     assert '"WinChronicle Codex setup dry-run"' in text
     assert '"WinChronicle Codex plugin dry-run"' in text
     assert '"WinChronicle Codex daily dry-run"' in text
+    assert '"First-run checklist:"' in text
+    assert '"Say in Codex App: 开始记录工作"' in text
     assert '"Disabled surfaces remain off:"' in text
     assert '"First prompt to try: 开始记录工作"' in text

@@ -280,6 +280,12 @@ def test_codex_setup_dry_run_text_format_prints_readiness_without_state_write(
     assert "- current_context" in output
     assert "- read_recent_capture" in output
     assert "Add local plugin source:" in output
+    assert "First-run checklist:" in output
+    assert "1. Add local plugin source:" in output
+    assert "2. Say in Codex App: 开始记录工作" in output
+    assert "3. Check status: winchronicle workday status --format text --language zh-CN" in output
+    assert "4. End and summarize: 停止工作并总结" in output
+    assert "5. Keep summaries local unless you explicitly ask Codex to paste them into chat." in output
     assert "Next commands:" in output
     assert "- winchronicle codex install --dry-run" in output
     assert "- winchronicle codex plugin --dry-run" in output
