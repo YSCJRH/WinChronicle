@@ -8,6 +8,15 @@ def test_readmes_surface_codex_daily_workflow_first_run_path():
     english = (ROOT / "README.md").read_text(encoding="utf-8")
     chinese = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
 
+    assert "## If You Only Want Codex App To Record Work" in english
+    assert english.index("## If You Only Want Codex App To Record Work") < english.index(
+        "## Try It In 5 Minutes"
+    )
+    assert "the fastest path is the local Workday plugin" in english
+    assert "## 如果你只想让 Codex App 记录工作" in chinese
+    assert chinese.index("## 如果你只想让 Codex App 记录工作") < chinese.index("## 5 分钟试用")
+    assert "最快路径是本地 Workday 插件" in chinese
+
     for text in (english, chinese):
         assert "winchronicle codex daily --dry-run" in text
         assert "winchronicle codex setup --dry-run --format text" in text

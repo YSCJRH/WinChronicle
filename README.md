@@ -91,30 +91,10 @@ privacy-surface checks as JSON. It does not start UIA capture, read the
 desktop, run the watcher, or store observed content. Source checkouts can still
 use `python -m winchronicle ...` for every command.
 
-## Try It In 5 Minutes
+## If You Only Want Codex App To Record Work
 
-After installing the editable package, use the console command:
-
-```powershell
-$env:WINCHRONICLE_HOME = Join-Path $env:TEMP ("winchronicle-demo-" + [guid]::NewGuid().ToString("N"))
-winchronicle init
-winchronicle status
-winchronicle capture-once --fixture harness/fixtures/uia/terminal_error.json
-winchronicle search-captures "AssertionError"
-winchronicle monitor --events harness/fixtures/watcher/notepad_burst.jsonl --session-id demo
-winchronicle summarize-session demo
-python harness/scripts/run_mcp_smoke.py
-```
-
-For a guided walkthrough, use [5-minute demo](docs/quick-demo.md). For the full
-fixture-only path, use [Deterministic demo](docs/deterministic-demo.md).
-For using Codex app as a daily work recorder, use the
-[Codex App workday guide](docs/codex-app-workday-guide.md) or the
-[Codex workday plugin](docs/codex-workday-plugin.md).
-
-## Daily Work Recording With Codex
-
-For ordinary Codex App users, start with the text dry-runs:
+If you only want Codex App to start recording, check status, then stop and
+summarize your day, the fastest path is the local Workday plugin:
 
 ```powershell
 winchronicle codex setup --dry-run --format text
@@ -146,6 +126,27 @@ winchronicle codex daily --dry-run --format text
 The prompt maps daily Chinese phrases to local Workday commands and tells Codex:
 `Do not inspect, scan, review, edit, test, commit, push, or release repository files.`
 Use this mode when you want Codex to record work, not develop the repository.
+
+## Try It In 5 Minutes
+
+After installing the editable package, use the console command:
+
+```powershell
+$env:WINCHRONICLE_HOME = Join-Path $env:TEMP ("winchronicle-demo-" + [guid]::NewGuid().ToString("N"))
+winchronicle init
+winchronicle status
+winchronicle capture-once --fixture harness/fixtures/uia/terminal_error.json
+winchronicle search-captures "AssertionError"
+winchronicle monitor --events harness/fixtures/watcher/notepad_burst.jsonl --session-id demo
+winchronicle summarize-session demo
+python harness/scripts/run_mcp_smoke.py
+```
+
+For a guided walkthrough, use [5-minute demo](docs/quick-demo.md). For the full
+fixture-only path, use [Deterministic demo](docs/deterministic-demo.md).
+For using Codex app as a daily work recorder, use the
+[Codex App workday guide](docs/codex-app-workday-guide.md) or the
+[Codex workday plugin](docs/codex-workday-plugin.md).
 
 ## What It Does Today
 

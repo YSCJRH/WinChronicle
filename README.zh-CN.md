@@ -81,30 +81,10 @@ python harness/scripts/run_quick_demo.py
 也不会保存 observed content。源码 checkout 仍然可以对所有命令使用
 `python -m winchronicle ...`。
 
-## 5 分钟试用
+## 如果你只想让 Codex App 记录工作
 
-安装 editable package 后，使用 console command：
-
-```powershell
-$env:WINCHRONICLE_HOME = Join-Path $env:TEMP ("winchronicle-demo-" + [guid]::NewGuid().ToString("N"))
-winchronicle init
-winchronicle status
-winchronicle capture-once --fixture harness/fixtures/uia/terminal_error.json
-winchronicle search-captures "AssertionError"
-winchronicle monitor --events harness/fixtures/watcher/notepad_burst.jsonl --session-id demo
-winchronicle summarize-session demo
-python harness/scripts/run_mcp_smoke.py
-```
-
-引导式 walkthrough 见 [5-minute demo](docs/quick-demo.md)。完整 fixture-only
-路径见 [Deterministic demo](docs/deterministic-demo.md)。
-如果要把 Codex app 当作每日工作记录入口，请使用
-[Codex App 工作日指南](docs/codex-app-workday-guide.md) 或
-[Codex 工作日插件](docs/codex-workday-plugin.md)。
-
-## 用 Codex 记录每日工作
-
-普通 Codex App 用户建议先使用文本 dry-run：
+如果你只想让 Codex App 开始记录、查看状态，然后停止并总结一天工作，
+最快路径是本地 Workday 插件：
 
 ```powershell
 winchronicle codex setup --dry-run --format text
@@ -135,6 +115,27 @@ winchronicle codex daily --dry-run --format text
 该 prompt 会把每日中文短语映射到本地 Workday 命令，并明确告诉 Codex：
 `Do not inspect, scan, review, edit, test, commit, push, or release repository files.`
 当你只想让 Codex 记录工作、而不是开发仓库时，使用这个只记录模式。
+
+## 5 分钟试用
+
+安装 editable package 后，使用 console command：
+
+```powershell
+$env:WINCHRONICLE_HOME = Join-Path $env:TEMP ("winchronicle-demo-" + [guid]::NewGuid().ToString("N"))
+winchronicle init
+winchronicle status
+winchronicle capture-once --fixture harness/fixtures/uia/terminal_error.json
+winchronicle search-captures "AssertionError"
+winchronicle monitor --events harness/fixtures/watcher/notepad_burst.jsonl --session-id demo
+winchronicle summarize-session demo
+python harness/scripts/run_mcp_smoke.py
+```
+
+引导式 walkthrough 见 [5-minute demo](docs/quick-demo.md)。完整 fixture-only
+路径见 [Deterministic demo](docs/deterministic-demo.md)。
+如果要把 Codex app 当作每日工作记录入口，请使用
+[Codex App 工作日指南](docs/codex-app-workday-guide.md) 或
+[Codex 工作日插件](docs/codex-workday-plugin.md)。
 
 ## 当前能做什么
 
