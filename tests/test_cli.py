@@ -273,6 +273,15 @@ def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
     assert "结束工作并总结" in payload["plugin"]["accepted_phrases"]
     assert payload["plugin"]["codex_app_plugin_source_path"] == payload["plugin"]["plugin_path"]
     assert "Add local plugin source" in payload["plugin"]["copyable_plugin_source_instruction"]
+    assert payload["what_to_say_next"] == [
+        "开始记录工作",
+        "查看工作记录状态",
+        "停止工作并总结",
+    ]
+    assert payload["first_prompt_to_try"] == "开始记录工作"
+    assert payload["after_plugin_setup"] == (
+        "After adding the local plugin source, try these prompts in Codex App."
+    )
     assert "git status" in payload["recording_mode_boundary"]
     assert "rg" in payload["recording_mode_boundary"]
     assert "Get-Content" in payload["recording_mode_boundary"]

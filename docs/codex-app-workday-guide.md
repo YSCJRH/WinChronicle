@@ -37,6 +37,16 @@ one place:
 winchronicle codex daily --dry-run
 ```
 
+The daily dry-run also prints `what_to_say_next` and `first_prompt_to_try` so
+you can use the plugin without reading the full JSON. After adding the local
+plugin source, try:
+
+```text
+开始记录工作
+查看工作记录状态
+停止工作并总结
+```
+
 For a simpler Codex entry point, use the repo-scoped
 [`winchronicle-workday` plugin](codex-workday-plugin.md). Print its local plugin
 source path with:
@@ -55,10 +65,12 @@ WinChronicle accepts these local deterministic phrases:
 
 - `开始工作`
 - `开始记录工作`
+- `查看工作记录状态`
 - `结束工作并总结`
 - `停止工作并总结`
 
 `开始工作` and `开始记录工作` map to a bounded `workday start` session.
+`查看工作记录状态` maps to `workday status --format text --language zh-CN`.
 `结束工作并总结` and `停止工作并总结` map to `workday stop --format text
 --language zh-CN`.
 
@@ -88,7 +100,7 @@ If you are running from a source checkout before editable install, replace
 ## Record-only mode
 
 When you are using the `winchronicle-workday` plugin, the phrases `开始工作`,
-`开始记录工作`, `结束工作并总结`, and `停止工作并总结` are recording commands.
+`开始记录工作`, `查看工作记录状态`, `结束工作并总结`, and `停止工作并总结` are recording commands.
 Codex should execute the matching Workday command first; do not run repository preflight commands such as `git status`, `rg`, `Get-ChildItem`, `Get-Content`, or `ls` just to start or stop recording.
 
 Only ask Codex to inspect files, run tests, commit, push, or release when you

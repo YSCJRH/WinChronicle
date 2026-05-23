@@ -70,6 +70,11 @@ CODEX_WORKDAY_DEFAULT_PROMPTS = [
     "停止工作并总结",
     "查看工作记录状态",
 ]
+CODEX_WORKDAY_NEXT_PROMPTS = [
+    "开始记录工作",
+    "查看工作记录状态",
+    "停止工作并总结",
+]
 CODEX_RECORD_ONLY_THREAD_PROMPT = (
     "Only call WinChronicle workday commands for this thread.\n"
     "Do not inspect, scan, review, edit, test, commit, push, or release repository files.\n"
@@ -731,6 +736,11 @@ def _codex_daily_dry_run_payload() -> dict[str, object]:
         ],
         "plugin": _codex_plugin_dry_run_payload(),
         "daily_phrases": CODEX_WORKDAY_ACCEPTED_PHRASES,
+        "what_to_say_next": CODEX_WORKDAY_NEXT_PROMPTS,
+        "first_prompt_to_try": CODEX_WORKDAY_NEXT_PROMPTS[0],
+        "after_plugin_setup": (
+            "After adding the local plugin source, try these prompts in Codex App."
+        ),
         "record_only_thread_prompt": CODEX_RECORD_ONLY_THREAD_PROMPT,
         "recording_mode_boundary": CODEX_RECORDING_MODE_BOUNDARY,
         "chat_output_warning": (
