@@ -76,6 +76,15 @@ asks to see the summary in chat.
 If you are running from a source checkout before editable install, replace
 `winchronicle` with `python -m winchronicle`.
 
+## Record-only mode
+
+When you are using the `winchronicle-workday` plugin, the phrases `开始工作`,
+`开始记录工作`, `结束工作并总结`, and `停止工作并总结` are recording commands.
+Codex should execute the matching Workday command first; do not run repository preflight commands such as `git status`, `rg`, `Get-ChildItem`, `Get-Content`, or `ls` just to start or stop recording.
+
+Only ask Codex to inspect files, run tests, commit, push, or release when you
+intend to do project development work in that same thread.
+
 ## Boundary
 
 The workday flow is an explicit finite local monitor session. It is not a daemon, service, startup task, hidden recorder, or infinite polling loop.

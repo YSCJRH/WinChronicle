@@ -1,6 +1,6 @@
 {
   "name": "winchronicle-workday",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Thin Codex entry point for explicit WinChronicle workday recording.",
   "author": {
     "name": "YSCJRH",
@@ -33,7 +33,9 @@
     "privacyPolicyURL": "https://github.com/YSCJRH/WinChronicle/blob/main/docs/privacy-architecture.md",
     "defaultPrompt": [
       "开始工作",
+      "开始记录工作",
       "结束工作并总结",
+      "停止工作并总结",
       "查看工作记录状态"
     ],
     "brandColor": "#2563EB"

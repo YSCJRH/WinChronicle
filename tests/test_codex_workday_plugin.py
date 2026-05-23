@@ -24,6 +24,8 @@ def test_codex_workday_plugin_manifest_is_repo_scoped_and_versioned():
     assert "hooks" not in manifest
     assert manifest["interface"]["displayName"] == "WinChronicle Workday"
     assert "工作" in "\n".join(manifest["interface"]["defaultPrompt"])
+    assert "开始记录工作" in manifest["interface"]["defaultPrompt"]
+    assert "停止工作并总结" in manifest["interface"]["defaultPrompt"]
     assert "Read-only MCP" not in manifest["interface"]["capabilities"]
 
 
@@ -55,9 +57,26 @@ def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
     assert "Do not inspect, scan, review, edit, test, commit, push, or release repository files." in text
 
 
+def test_codex_workday_plugin_recording_mode_blocks_repo_preflight():
+    text = SKILL.read_text(encoding="utf-8")
+    doc_text = (ROOT / "docs" / "codex-app-workday-guide.md").read_text(encoding="utf-8")
+
+    assert "## Recording Mode" in text
+    assert "Do not run preliminary repository discovery commands" in text
+    for command_name in ["git status", "rg", "Get-ChildItem", "Get-Content", "ls"]:
+        assert command_name in text
+    assert "Do not read AGENTS.md only to start recording" in text
+    assert "If the user only says a workday recording phrase, execute the matching command first" in text
+
+    assert "Record-only mode" in doc_text
+    assert "do not run repository preflight commands" in doc_text
+
+
 def test_codex_workday_plugin_doc_warns_before_chat_output():
     text = (ROOT / "docs" / "codex-workday-plugin.md").read_text(encoding="utf-8")
 
+    for phrase in ["开始工作", "开始记录工作", "结束工作并总结", "停止工作并总结"]:
+        assert phrase in text
     assert "Codex chat" in text
     assert "conversation service" in text
     assert "only paste" in text.lower()

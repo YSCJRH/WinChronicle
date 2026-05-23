@@ -142,7 +142,13 @@ def test_codex_plugin_dry_run_prints_local_plugin_source_without_state_write(
     assert Path(payload["plugin_path"]).is_dir()
     assert Path(payload["manifest_path"]).is_file()
     assert Path(payload["skill_path"]).is_file()
-    assert payload["starter_phrases"] == ["开始工作", "结束工作并总结", "查看工作记录状态"]
+    assert payload["starter_phrases"] == [
+        "开始工作",
+        "开始记录工作",
+        "结束工作并总结",
+        "停止工作并总结",
+        "查看工作记录状态",
+    ]
     assert "add this local plugin source path" in payload["install_hint"].lower()
     assert "screenshots" in payload["disabled_surfaces"]
     assert "mcp_write_tools" in payload["disabled_surfaces"]

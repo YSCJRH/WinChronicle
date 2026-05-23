@@ -685,7 +685,13 @@ def _codex_plugin_dry_run_payload() -> dict[str, object]:
             "plugin source settings; do not paste summaries into chat unless the "
             "user explicitly asks for chat output."
         ),
-        "starter_phrases": ["开始工作", "结束工作并总结", "查看工作记录状态"],
+        "starter_phrases": [
+            "开始工作",
+            "开始记录工作",
+            "结束工作并总结",
+            "停止工作并总结",
+            "查看工作记录状态",
+        ],
         "disabled_surfaces": _codex_plugin_disabled_surface_names(),
         "observed_content_trust": TRUST,
         "adds_mcp_tools": False,

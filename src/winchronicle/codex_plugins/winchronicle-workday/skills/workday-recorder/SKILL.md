@@ -31,6 +31,19 @@ winchronicle workday status --format text --language zh-CN
 If WinChronicle is being used from a source checkout before an editable install,
 replace `winchronicle` with `python -m winchronicle`.
 
+## Recording Mode
+
+If the user only says a workday recording phrase, execute the matching command first.
+Do not run preliminary repository discovery commands such as `git status`, `rg`,
+`Get-ChildItem`, `Get-Content`, or `ls`.
+Do not read AGENTS.md only to start recording.
+
+Stay in recording mode after starting a session. A recording-mode turn may report
+that recording started, show recording status, stop recording, or summarize a
+finished workday session. It must not become a repository audit or coding task
+unless the user explicitly asks to inspect, modify, test, commit, push, release,
+or otherwise work on source files.
+
 ## Operating Boundary
 
 This plugin is a thin wrapper around existing WinChronicle CLI behavior. The

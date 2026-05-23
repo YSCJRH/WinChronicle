@@ -4,7 +4,9 @@ The `winchronicle-workday` plugin is a thin Codex entry point for ordinary users
 who want the natural-language flow:
 
 - `开始工作`
+- `开始记录工作`
 - `结束工作并总结`
+- `停止工作并总结`
 - `查看工作记录状态`
 
 The plugin does not implement capture logic. It routes those phrases to the
@@ -18,6 +20,17 @@ winchronicle workday status --format text --language zh-CN
 
 If you are using WinChronicle from a source checkout before editable install,
 use `python -m winchronicle` instead of `winchronicle`.
+
+## Recording Mode
+
+For the workday phrases above, the plugin is meant to run the matching
+WinChronicle command before doing anything else. It should not run repository
+preflight commands such as `git status`, `rg`, `Get-ChildItem`, `Get-Content`,
+or `ls`, and it should not read repository files only to begin or end a
+recording session.
+
+Switch to development behavior only when the user explicitly asks to inspect,
+modify, test, commit, push, release, or otherwise work on project files.
 
 ## Boundary
 
