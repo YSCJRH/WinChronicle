@@ -50,6 +50,25 @@ def main() -> int:
                     "--disable-pip-version-check",
                     "--no-build-isolation",
                     "--no-deps",
+                    str(ROOT),
+                ],
+                env=env,
+            )
+
+            winchronicle = _venv_script(venv_dir, "winchronicle")
+            _require(winchronicle.exists(), "non-editable install did not create winchronicle")
+            _require_codex_plugin_dry_run(winchronicle, env)
+
+            _run([str(python), "-m", "pip", "uninstall", "-y", "winchronicle"], env=env)
+            _run(
+                [
+                    str(python),
+                    "-m",
+                    "pip",
+                    "install",
+                    "--disable-pip-version-check",
+                    "--no-build-isolation",
+                    "--no-deps",
                     "-e",
                     str(ROOT),
                 ],
@@ -102,6 +121,8 @@ def main() -> int:
                 any(check["name"] == "privacy_surfaces" and check["ok"] for check in workday_doctor["checks"]),
                 "workday doctor did not report disabled privacy surfaces",
             )
+
+            _require_codex_plugin_dry_run(winchronicle, env)
 
             workday_intent = json.loads(
                 _run([str(winchronicle), "workday", "intent", "开始记录工作"], env=env)
@@ -262,6 +283,44 @@ def _run(command: list[str], *, env: dict[str, str]) -> str:
 def _require(condition: bool, message: str) -> None:
     if not condition:
         raise SmokeFailure(message)
+
+
+def _require_codex_plugin_dry_run(winchronicle: Path, env: dict[str, str]) -> None:
+    plugin_dry_run = json.loads(
+        _run([str(winchronicle), "codex", "plugin", "--dry-run"], env=env)
+    )
+    _require(
+        plugin_dry_run["plugin_name"] == "winchronicle-workday",
+        "codex plugin dry-run reported the wrong plugin name",
+    )
+    _require(
+        plugin_dry_run["plugin_available"] is True,
+        "codex plugin dry-run did not find the installed plugin source",
+    )
+    _require(
+        Path(plugin_dry_run["plugin_path"]).is_dir(),
+        "codex plugin dry-run returned a missing plugin path",
+    )
+    _require(
+        Path(plugin_dry_run["manifest_path"]).is_file(),
+        "codex plugin dry-run returned a missing manifest path",
+    )
+    _require(
+        Path(plugin_dry_run["skill_path"]).is_file(),
+        "codex plugin dry-run returned a missing skill path",
+    )
+    _require(
+        plugin_dry_run["writes_config"] is False,
+        "codex plugin dry-run should not write Codex config",
+    )
+    _require(
+        plugin_dry_run["adds_mcp_tools"] is False,
+        "codex plugin dry-run should not add MCP tools",
+    )
+    _require(
+        "screenshots" in plugin_dry_run["disabled_surfaces"],
+        "codex plugin dry-run did not report disabled screenshot surface",
+    )
 
 
 class SmokeFailure(RuntimeError):

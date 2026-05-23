@@ -14,7 +14,7 @@ from .events import dispatch_watcher_events, run_watcher_command
 from .memory import generate_memory_entries
 from .mcp.server import TOOL_NAMES, run_stdio
 from .paths import ensure_state, state_paths
-from .privacy import DISABLED_SURFACE_STATUS, privacy_contract_payload
+from .privacy import DISABLED_SURFACE_STATUS, TRUST, privacy_contract_payload
 from .session import monitor_events, read_session, run_monitor_watcher_command, session_count
 from .storage import capture_count, init_db, memory_entry_count, search_captures, search_memory_entries
 from .workday import (
@@ -346,6 +346,15 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print the suggested config.toml snippet without writing files.",
     )
+    codex_plugin = codex_subparsers.add_parser(
+        "plugin",
+        help="Print local Codex Workday plugin source guidance without writing files.",
+    )
+    codex_plugin.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print the local plugin source path and safety boundary without writing files.",
+    )
 
     return parser
 
@@ -543,6 +552,18 @@ def main(argv: list[str] | None = None) -> int:
                 parser.error("codex install currently supports only --dry-run")
             print(_codex_mcp_config_snippet(), end="")
             return 0
+        if args.codex_command == "plugin":
+            if not args.dry_run:
+                parser.error("codex plugin currently supports only --dry-run")
+            print(
+                json.dumps(
+                    _codex_plugin_dry_run_payload(),
+                    ensure_ascii=False,
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 0
 
     parser.error(f"unknown command: {args.command}")
     return 2
@@ -564,6 +585,53 @@ def _codex_mcp_config_snippet() -> str:
         f"{tool_lines}\n"
         "]\n"
     )
+
+
+def _codex_plugin_dry_run_payload() -> dict[str, object]:
+    plugin_path = _codex_workday_plugin_path()
+    manifest_path = plugin_path / ".codex-plugin" / "plugin.json"
+    skill_path = plugin_path / "skills" / "workday-recorder" / "SKILL.md"
+    plugin_available = plugin_path.is_dir() and manifest_path.is_file() and skill_path.is_file()
+
+    return {
+        "command": "codex plugin",
+        "dry_run": True,
+        "writes_config": False,
+        "plugin_name": "winchronicle-workday",
+        "plugin_available": plugin_available,
+        "plugin_path": str(plugin_path),
+        "manifest_path": str(manifest_path),
+        "skill_path": str(skill_path),
+        "install_hint": (
+            "Add this local plugin source path in the Codex app plugin UI or local "
+            "plugin source settings; do not paste summaries into chat unless the "
+            "user explicitly asks for chat output."
+        ),
+        "starter_phrases": ["开始工作", "结束工作并总结", "查看工作记录状态"],
+        "disabled_surfaces": _codex_plugin_disabled_surface_names(),
+        "observed_content_trust": TRUST,
+        "adds_mcp_tools": False,
+        "writes_codex_config": False,
+    }
+
+
+def _codex_workday_plugin_path() -> Path:
+    packaged_plugin = Path(__file__).resolve().parent / "codex_plugins" / "winchronicle-workday"
+    if packaged_plugin.is_dir():
+        return packaged_plugin
+    return Path(__file__).resolve().parents[2] / "plugins" / "winchronicle-workday"
+
+
+def _codex_plugin_disabled_surface_names() -> list[str]:
+    names: list[str] = []
+    for key in DISABLED_SURFACE_STATUS:
+        name = key
+        if name in {"keyboard_capture_enabled", "clipboard_capture_enabled"}:
+            name = name[: -len("_capture_enabled")]
+        elif name.endswith("_enabled"):
+            name = name[: -len("_enabled")]
+        names.append(name)
+    return names
 
 
 def _doctor_payload() -> dict[str, object]:

@@ -34,6 +34,12 @@ with the Codex conversation service.
 
 ## Install From This Repository
 
+Print the local plugin source path and safety boundary:
+
+```powershell
+winchronicle codex plugin --dry-run
+```
+
 The repo-scoped plugin lives at:
 
 ```text

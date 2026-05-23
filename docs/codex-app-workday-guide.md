@@ -21,8 +21,16 @@ winchronicle workday status --format text --language zh-CN
 ```
 
 For a simpler Codex entry point, use the repo-scoped
-[`winchronicle-workday` plugin](codex-workday-plugin.md). The plugin is a thin
-wrapper around the same commands and does not add capture behavior.
+[`winchronicle-workday` plugin](codex-workday-plugin.md). Print its local plugin
+source path with:
+
+```powershell
+winchronicle codex plugin --dry-run
+```
+
+The plugin is a thin wrapper around the same commands and does not add capture
+behavior. The dry-run output contains local filesystem paths; only paste it into
+chat when you explicitly want to share that metadata.
 
 ## Daily Phrases
 

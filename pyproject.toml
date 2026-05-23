@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "winchronicle"
-version = "0.2.2"
+version = "0.2.3"
 description = "UIA-first local memory for Windows agents."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -24,6 +24,12 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+winchronicle = [
+  "codex_plugins/winchronicle-workday/.codex-plugin/plugin.json",
+  "codex_plugins/winchronicle-workday/skills/workday-recorder/SKILL.md",
+]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

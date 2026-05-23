@@ -124,6 +124,35 @@ def test_codex_install_dry_run_prints_read_only_mcp_config_without_state_write(
     assert "password" not in output.lower()
 
 
+def test_codex_plugin_dry_run_prints_local_plugin_source_without_state_write(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["codex", "plugin", "--dry-run"]) == 0
+    output = capsys.readouterr().out
+    payload = json.loads(output)
+
+    assert payload["command"] == "codex plugin"
+    assert payload["dry_run"] is True
+    assert payload["writes_config"] is False
+    assert payload["plugin_name"] == "winchronicle-workday"
+    assert payload["plugin_available"] is True
+    assert Path(payload["plugin_path"]).is_dir()
+    assert Path(payload["manifest_path"]).is_file()
+    assert Path(payload["skill_path"]).is_file()
+    assert payload["starter_phrases"] == ["开始工作", "结束工作并总结", "查看工作记录状态"]
+    assert "add this local plugin source path" in payload["install_hint"].lower()
+    assert "screenshots" in payload["disabled_surfaces"]
+    assert "mcp_write_tools" in payload["disabled_surfaces"]
+
+    assert not home.exists()
+    assert "visible_text" not in output
+    assert "focused_text" not in output
+    assert "password" not in output.lower()
+
+
 def test_init_status_and_empty_search_memory_are_stable(tmp_path, monkeypatch, capsys):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
