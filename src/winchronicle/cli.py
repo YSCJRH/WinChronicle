@@ -380,6 +380,12 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print local readiness, MCP config, and plugin guidance without writing files.",
     )
+    codex_setup.add_argument(
+        "--format",
+        choices=("json", "text"),
+        default="json",
+        help="Print JSON by default, or a compact user-facing readiness guide.",
+    )
     codex_install = codex_subparsers.add_parser(
         "install",
         help="Print a read-only Codex MCP config snippet.",
@@ -608,14 +614,18 @@ def main(argv: list[str] | None = None) -> int:
         if args.codex_command == "setup":
             if not args.dry_run:
                 parser.error("codex setup currently supports only --dry-run")
-            print(
-                json.dumps(
-                    _codex_setup_dry_run_payload(),
-                    ensure_ascii=False,
-                    indent=2,
-                    sort_keys=True,
+            payload = _codex_setup_dry_run_payload()
+            if args.format == "text":
+                print(_format_codex_setup_dry_run_text(payload), end="")
+            else:
+                print(
+                    json.dumps(
+                        payload,
+                        ensure_ascii=False,
+                        indent=2,
+                        sort_keys=True,
+                    )
                 )
-            )
             return 0
         if args.codex_command == "install":
             if not args.dry_run:
@@ -728,6 +738,57 @@ def _codex_setup_dry_run_payload() -> dict[str, object]:
             "to share local paths or session metadata."
         ),
     }
+
+
+def _format_codex_setup_dry_run_text(payload: dict[str, object]) -> str:
+    plugin = payload["plugin"]
+    if not isinstance(plugin, dict):
+        plugin = {}
+    mcp = payload["mcp"]
+    if not isinstance(mcp, dict):
+        mcp = {}
+    checks = payload["checks"] if isinstance(payload["checks"], list) else []
+    enabled_tools = mcp.get("enabled_tools", [])
+    tools = enabled_tools if isinstance(enabled_tools, list) else []
+    next_commands = payload["next_commands"] if isinstance(payload["next_commands"], list) else []
+    disabled_surfaces = payload["disabled_surfaces"] if isinstance(payload["disabled_surfaces"], list) else []
+
+    lines = [
+        "WinChronicle Codex setup dry-run",
+        "",
+        f"Dry run only: {_yes_no(payload['dry_run'])}",
+        f"Writes config: {_yes_no(payload['writes_config'])}",
+        f"Writes state: {_yes_no(payload['writes_state'])}",
+        f"Starts capture: {_yes_no(payload['starts_capture'])}",
+        f"Observed content trust: {payload['observed_content_trust']}",
+        "",
+        "Local checks:",
+        *[_format_codex_check_line(check) for check in checks],
+        "",
+        "Read-only MCP tools:",
+        *[f"- {tool}" for tool in tools],
+        "",
+        f"Add local plugin source: {plugin.get('codex_app_plugin_source_path', '')}",
+        "Next commands:",
+        *[f"- {command}" for command in next_commands],
+        "",
+        "Disabled surfaces remain off:",
+        *[f"- {surface}" for surface in disabled_surfaces],
+        "",
+        str(payload["chat_output_warning"]),
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def _format_codex_check_line(check: object) -> str:
+    if not isinstance(check, dict):
+        return "- unknown: no"
+    name = check.get("name", "unknown")
+    status = "ok" if check.get("ok") is True else "not ok"
+    detail = check.get("detail")
+    if detail in (None, "", []):
+        return f"- {name}: {status}"
+    return f"- {name}: {status} ({detail})"
 
 
 def _codex_daily_dry_run_payload() -> dict[str, object]:

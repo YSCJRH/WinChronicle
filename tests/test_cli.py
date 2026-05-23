@@ -225,6 +225,46 @@ def test_codex_setup_dry_run_prints_readiness_report_without_state_write(
     assert "focused_text" not in output
 
 
+def test_codex_setup_dry_run_text_format_prints_readiness_without_state_write(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["codex", "setup", "--dry-run", "--format", "text"]) == 0
+    output = capsys.readouterr().out
+
+    assert output.startswith("WinChronicle Codex setup dry-run")
+    assert "Dry run only: yes" in output
+    assert "Writes config: no" in output
+    assert "Writes state: no" in output
+    assert "Starts capture: no" in output
+    assert "Observed content trust: untrusted_observed_content" in output
+    assert "Local checks:" in output
+    assert "- python: ok" in output
+    assert "- privacy_surfaces: ok" in output
+    assert "- mcp_tool_allowlist: ok" in output
+    assert "Read-only MCP tools:" in output
+    assert "- privacy_status" in output
+    assert "- current_context" in output
+    assert "- read_recent_capture" in output
+    assert "Add local plugin source:" in output
+    assert "Next commands:" in output
+    assert "- winchronicle codex install --dry-run" in output
+    assert "- winchronicle codex plugin --dry-run" in output
+    assert "- winchronicle workday status --format text --language zh-CN" in output
+    assert "Disabled surfaces remain off:" in output
+    assert "- screenshots" in output
+    assert "- ocr" in output
+    assert "- clipboard" in output
+    assert "- mcp_write_tools" in output
+
+    assert not home.exists()
+    assert "visible_text" not in output
+    assert "focused_text" not in output
+    assert '"command":' not in output
+
+
 def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
     tmp_path, monkeypatch, capsys
 ):

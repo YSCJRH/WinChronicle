@@ -75,6 +75,7 @@ def test_codex_app_workday_guide_keeps_user_flow_record_only():
         "查看工作记录状态",
         "停止工作并总结",
         "winchronicle codex install --dry-run",
+        "winchronicle codex setup --dry-run --format text",
         "winchronicle codex daily --dry-run --format text",
         "what_to_say_next",
         "first_prompt_to_try",

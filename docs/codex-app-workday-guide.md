@@ -15,6 +15,12 @@ The setup dry-run prints local checks, the read-only Codex MCP snippet, and the
 Workday plugin source path. It does not edit Codex config or create
 WinChronicle state.
 
+For a shorter readiness check, use:
+
+```powershell
+winchronicle codex setup --dry-run --format text
+```
+
 To print only the MCP snippet:
 
 ```powershell
