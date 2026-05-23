@@ -50,3 +50,14 @@ def test_install_cli_smoke_covers_workday_intent_dry_run():
     assert '"dry_run_by_default"' in text
     assert '"local_workday_intent_mapping"' in text
     assert '"workday-active.json"' in text
+
+
+def test_install_cli_smoke_covers_codex_text_format_entrypoints():
+    text = INSTALL_CLI_SMOKE.read_text(encoding="utf-8")
+
+    assert '"codex", "setup", "--dry-run", "--format", "text"' in text
+    assert '"codex", "daily", "--dry-run", "--format", "text"' in text
+    assert '"WinChronicle Codex setup dry-run"' in text
+    assert '"WinChronicle Codex daily dry-run"' in text
+    assert '"Disabled surfaces remain off:"' in text
+    assert '"First prompt to try: 开始记录工作"' in text

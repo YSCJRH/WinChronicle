@@ -406,6 +406,34 @@ def _require_codex_setup_dry_run(
             "codex setup dry-run created WinChronicle state before init",
         )
 
+    setup_text = _run(
+        [str(winchronicle), "codex", "setup", "--dry-run", "--format", "text"],
+        env=env,
+    )
+    _require(
+        "WinChronicle Codex setup dry-run" in setup_text,
+        "codex setup text dry-run did not print its heading",
+    )
+    _require(
+        "Writes config: no" in setup_text and "Writes state: no" in setup_text,
+        "codex setup text dry-run did not report write boundaries",
+    )
+    _require(
+        "Read-only MCP tools:" in setup_text and "privacy_status" in setup_text,
+        "codex setup text dry-run did not report read-only MCP tools",
+    )
+    _require(
+        "Disabled surfaces remain off:" in setup_text,
+        "codex setup text dry-run did not report disabled surfaces",
+    )
+    _require("visible_text" not in setup_text, "codex setup text dry-run exposed visible text")
+    _require("focused_text" not in setup_text, "codex setup text dry-run exposed focused text")
+    if expect_state_absent:
+        _require(
+            not state_home.exists(),
+            "codex setup text dry-run created WinChronicle state before init",
+        )
+
 
 def _require_codex_daily_dry_run(
     winchronicle: Path,
@@ -476,6 +504,35 @@ def _require_codex_daily_dry_run(
         _require(
             not state_home.exists(),
             "codex daily dry-run created WinChronicle state before init",
+        )
+
+    daily_text = _run(
+        [str(winchronicle), "codex", "daily", "--dry-run", "--format", "text"],
+        env=env,
+    )
+    _require(
+        "WinChronicle Codex daily dry-run" in daily_text,
+        "codex daily text dry-run did not print its heading",
+    )
+    _require(
+        "First prompt to try: 开始记录工作" in daily_text,
+        "codex daily text dry-run did not report the first prompt",
+    )
+    _require(
+        "Disabled surfaces remain off:" in daily_text,
+        "codex daily text dry-run did not report disabled surfaces",
+    )
+    _require(
+        "Do not inspect, scan, review, edit, test, commit, push, or release repository files."
+        in daily_text,
+        "codex daily text dry-run did not report the record-only boundary",
+    )
+    _require("visible_text" not in daily_text, "codex daily text dry-run exposed visible text")
+    _require("focused_text" not in daily_text, "codex daily text dry-run exposed focused text")
+    if expect_state_absent:
+        _require(
+            not state_home.exists(),
+            "codex daily text dry-run created WinChronicle state before init",
         )
 
 
