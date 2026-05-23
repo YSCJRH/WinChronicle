@@ -114,16 +114,36 @@ For using Codex app as a daily work recorder, use the
 
 ## Daily Work Recording With Codex
 
-For the simplest Codex app path, print the daily setup commands and copyable
-record-only thread prompt:
+For ordinary Codex App users, start with the text dry-runs:
 
 ```powershell
-winchronicle codex daily --dry-run
+winchronicle codex setup --dry-run --format text
+winchronicle codex plugin --dry-run --format text
 ```
 
-The printed prompt maps `开始记录工作`, `停止工作并总结`, and status checks to
-local Workday commands. It tells Codex: `Do not inspect, scan, review, edit, test, commit, push, or release repository files.` Use that mode when you want
-Codex to record work, not develop the repository.
+The second command prints a copyable instruction like:
+
+```text
+Codex App -> Plugins -> Add local plugin source -> <plugin_path>
+```
+
+After adding that local plugin source in Codex App, use:
+
+```text
+开始记录工作
+查看工作记录状态
+停止工作并总结
+```
+
+For a record-only thread prompt instead of the plugin path, run:
+
+```powershell
+winchronicle codex daily --dry-run --format text
+```
+
+The prompt maps daily Chinese phrases to local Workday commands and tells Codex:
+`Do not inspect, scan, review, edit, test, commit, push, or release repository files.`
+Use this mode when you want Codex to record work, not develop the repository.
 
 ## What It Does Today
 

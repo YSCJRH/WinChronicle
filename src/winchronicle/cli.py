@@ -856,6 +856,9 @@ def _format_codex_daily_dry_run_text(payload: dict[str, object]) -> str:
         "Do not inspect, scan, review, edit, test, commit, push, or release repository files.",
         str(payload["recording_mode_boundary"]),
         "",
+        "Record-only thread prompt:",
+        str(payload["record_only_thread_prompt"]).rstrip(),
+        "",
         "No new capture, upload, control, or MCP write surfaces are added.",
     ]
     return "\n".join(lines) + "\n"

@@ -10,7 +10,10 @@ def test_readmes_surface_codex_daily_workflow_first_run_path():
 
     for text in (english, chinese):
         assert "winchronicle codex daily --dry-run" in text
+        assert "winchronicle codex setup --dry-run --format text" in text
+        assert "winchronicle codex plugin --dry-run --format text" in text
         assert "record-only" in text.lower() or "只记录" in text
+        assert "Codex App -> Plugins -> Add local plugin source" in text
         assert "Do not inspect, scan, review, edit, test, commit, push, or release" in text
         assert "开始记录工作" in text
         assert "停止工作并总结" in text

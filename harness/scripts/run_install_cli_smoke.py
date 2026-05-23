@@ -550,6 +550,14 @@ def _require_codex_daily_dry_run(
         in daily_text,
         "codex daily text dry-run did not report the record-only boundary",
     )
+    _require(
+        "Record-only thread prompt:" in daily_text
+        and 'winchronicle workday intent "开始工作" --execute' in daily_text
+        and 'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60'
+        in daily_text
+        and "winchronicle workday status --format text --language zh-CN" in daily_text,
+        "codex daily text dry-run did not report the copyable record-only prompt",
+    )
     _require("visible_text" not in daily_text, "codex daily text dry-run exposed visible text")
     _require("focused_text" not in daily_text, "codex daily text dry-run exposed focused text")
     if expect_state_absent:

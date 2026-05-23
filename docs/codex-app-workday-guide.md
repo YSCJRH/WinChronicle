@@ -61,10 +61,10 @@ adding the local plugin source, try:
 
 For a simpler Codex entry point, use the repo-scoped
 [`winchronicle-workday` plugin](codex-workday-plugin.md). Print its local plugin
-source path with:
+source path as a short user-facing guide with:
 
 ```powershell
-winchronicle codex plugin --dry-run
+winchronicle codex plugin --dry-run --format text
 ```
 
 The plugin is a thin wrapper around the same commands and does not add capture

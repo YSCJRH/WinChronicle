@@ -104,15 +104,36 @@ python harness/scripts/run_mcp_smoke.py
 
 ## 用 Codex 记录每日工作
 
-最简单的 Codex app 路径是先打印每日 setup 命令和可复制的只记录线程 prompt：
+普通 Codex App 用户建议先使用文本 dry-run：
 
 ```powershell
-winchronicle codex daily --dry-run
+winchronicle codex setup --dry-run --format text
+winchronicle codex plugin --dry-run --format text
 ```
 
-输出的 prompt 会把 `开始记录工作`、`停止工作并总结` 和状态查询映射到本地
-Workday 命令。它会明确告诉 Codex：`Do not inspect, scan, review, edit, test, commit, push, or release repository files.` 当你只想让 Codex 记录工作、
-而不是开发仓库时，使用这个只记录模式。
+第二条命令会打印类似下面的可复制指令：
+
+```text
+Codex App -> Plugins -> Add local plugin source -> <plugin_path>
+```
+
+在 Codex App 里添加这个本地插件源后，直接说：
+
+```text
+开始记录工作
+查看工作记录状态
+停止工作并总结
+```
+
+如果你更想使用只记录线程 prompt，而不是插件源路径，可以运行：
+
+```powershell
+winchronicle codex daily --dry-run --format text
+```
+
+该 prompt 会把每日中文短语映射到本地 Workday 命令，并明确告诉 Codex：
+`Do not inspect, scan, review, edit, test, commit, push, or release repository files.`
+当你只想让 Codex 记录工作、而不是开发仓库时，使用这个只记录模式。
 
 ## 当前能做什么
 

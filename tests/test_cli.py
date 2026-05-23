@@ -390,7 +390,11 @@ def test_codex_daily_dry_run_text_format_prints_copyable_user_path_without_state
     assert "- ocr" in output
     assert "- clipboard" in output
     assert "- mcp_write_tools" in output
+    assert "Record-only thread prompt:" in output
     assert "Do not inspect, scan, review, edit, test, commit, push, or release repository files." in output
+    assert 'winchronicle workday intent "开始工作" --execute' in output
+    assert 'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60' in output
+    assert "winchronicle workday status --format text --language zh-CN" in output
 
     assert not home.exists()
     assert "visible_text" not in output
