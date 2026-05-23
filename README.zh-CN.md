@@ -102,6 +102,18 @@ python harness/scripts/run_mcp_smoke.py
 [Codex App 工作日指南](docs/codex-app-workday-guide.md) 或
 [Codex 工作日插件](docs/codex-workday-plugin.md)。
 
+## 用 Codex 记录每日工作
+
+最简单的 Codex app 路径是先打印每日 setup 命令和可复制的只记录线程 prompt：
+
+```powershell
+winchronicle codex daily --dry-run
+```
+
+输出的 prompt 会把 `开始记录工作`、`停止工作并总结` 和状态查询映射到本地
+Workday 命令。它会明确告诉 Codex：`Do not inspect, scan, review, edit, test, commit, push, or release repository files.` 当你只想让 Codex 记录工作、
+而不是开发仓库时，使用这个只记录模式。
+
 ## 当前能做什么
 
 - 将确定性 UIA fixtures 跑过隐私、脱敏、schema、storage、SQLite 搜索和记忆生成。

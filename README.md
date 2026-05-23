@@ -112,6 +112,19 @@ For using Codex app as a daily work recorder, use the
 [Codex App workday guide](docs/codex-app-workday-guide.md) or the
 [Codex workday plugin](docs/codex-workday-plugin.md).
 
+## Daily Work Recording With Codex
+
+For the simplest Codex app path, print the daily setup commands and copyable
+record-only thread prompt:
+
+```powershell
+winchronicle codex daily --dry-run
+```
+
+The printed prompt maps `开始记录工作`, `停止工作并总结`, and status checks to
+local Workday commands. It tells Codex: `Do not inspect, scan, review, edit, test, commit, push, or release repository files.` Use that mode when you want
+Codex to record work, not develop the repository.
+
 ## What It Does Today
 
 - Runs deterministic UIA fixtures through privacy, redaction, schema, storage,
