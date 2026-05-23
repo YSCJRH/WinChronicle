@@ -1,5 +1,6 @@
 import json
 import sys
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -7,7 +8,7 @@ import pytest
 from winchronicle.cli import main
 from winchronicle.mcp.server import recent_activity
 from winchronicle.schema import validate_session_report, validate_watcher_event
-from winchronicle.session import monitor_events, read_session
+from winchronicle.session import _error_signals, monitor_events, read_session
 from test_watcher_events import _assert_raw_terms_not_indexed, _write_privacy_parity_events
 
 
@@ -56,6 +57,134 @@ def test_monitor_events_creates_session_summary_and_html_report(tmp_path, monkey
         summary["report_path"]
     ).read_text(encoding="utf-8")
     assert list(home.rglob("*.jsonl")) == []
+
+
+def test_monitor_session_records_metadata_only_error_signals(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    base_event = json.loads(WATCHER_FIXTURE.read_text(encoding="utf-8").splitlines()[0])
+    event = deepcopy(base_event)
+    raw_observed = (
+        "pytest failed in test_payment_flow with AssertionError and "
+        "ghp_winchroniclecanary1234567890ABCD"
+    )
+    event["event_id"] = "signal-1"
+    event["timestamp"] = "2026-04-25T13:45:00+08:00"
+    event["capture"]["timestamp"] = "2026-04-25T13:45:00+08:00"
+    event["capture"]["visible_text"] = raw_observed
+    event["capture"]["focused_element"]["text"] = "Failure panel"
+    event["capture"]["uia_stats"]["chars_collected"] = len(raw_observed)
+    event["capture"]["capture_target"]["hwnd"] = "0x0000000000120666"
+
+    event_path = tmp_path / "error-events.jsonl"
+    event_path.write_text(json.dumps(event) + "\n", encoding="utf-8")
+
+    result = monitor_events(event_path, home, session_id="error-signal")
+    session_text = result.path.read_text(encoding="utf-8")
+    report_text = result.report_path.read_text(encoding="utf-8")
+
+    validate_session_report(result.session)
+    signals = result.session["error_signals"]
+    assert signals["trust"] == "untrusted_observed_content"
+    assert signals["contains_observed_text"] is False
+    assert signals["total_count"] == 1
+    assert signals["by_field"] == [
+        {"field": "visible_text", "count": 1},
+        {"field": "focused_text", "count": 1},
+    ]
+    assert {"keyword": "failed", "count": 1} in signals["by_keyword"]
+    assert {"keyword": "failure", "count": 1} in signals["by_keyword"]
+    assert signals["by_app"] == [{"app_name": "Notepad", "count": 1}]
+    assert signals["time_buckets"] == [
+        {"bucket_start": "2026-04-25T13:45+08:00", "count": 1}
+    ]
+    assert len(signals["samples"]) == 1
+    sample = signals["samples"][0]
+    assert sample["timestamp"] == "2026-04-25T13:45:00+08:00"
+    assert sample["time_bucket"] == "2026-04-25T13:45+08:00"
+    assert sample["app_name"] == "Notepad"
+    assert sample["fields"] == ["visible_text", "focused_text"]
+    assert sample["keywords"] == ["error", "failed", "failure"]
+    assert sample["source_id"].startswith("capture-")
+    assert "signal-1" not in sample["source_id"]
+    assert "\\" not in sample["source_id"]
+    assert "/" not in sample["source_id"]
+
+    serialized_signals = json.dumps(signals, sort_keys=True)
+    for raw_term in (
+        raw_observed,
+        "test_payment_flow",
+        "AssertionError",
+        "ghp_winchroniclecanary1234567890ABCD",
+    ):
+        assert raw_term not in serialized_signals
+        assert raw_term not in session_text
+        assert raw_term not in report_text
+
+
+def test_monitor_session_caps_error_signal_aggregate_rows(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    base_event = json.loads(WATCHER_FIXTURE.read_text(encoding="utf-8").splitlines()[0])
+    lines = []
+    for index in range(30):
+        event = deepcopy(base_event)
+        hour = 8 + (index // 4)
+        minute = (index % 4) * 15
+        timestamp = f"2026-04-25T{hour:02d}:{minute:02d}:00+08:00"
+        app_name = f"App{index:02d}"
+        event["event_id"] = f"signal-{index:02d}"
+        event["timestamp"] = timestamp
+        event["capture"]["timestamp"] = timestamp
+        event["capture"]["window"]["app_name"] = app_name
+        event["capture"]["window"]["process_name"] = f"{app_name}.exe"
+        event["capture"]["window"]["title"] = f"{app_name} build"
+        event["capture"]["visible_text"] = f"pytest failed with error marker {index:02d}"
+        event["capture"]["focused_element"]["text"] = ""
+        event["capture"]["uia_stats"]["chars_collected"] = len(event["capture"]["visible_text"])
+        event["capture"]["capture_target"]["hwnd"] = f"0x{index + 4096:016X}"
+        lines.append(json.dumps(event))
+
+    event_path = tmp_path / "many-error-events.jsonl"
+    event_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    result = monitor_events(event_path, home, session_id="many-error-signals")
+    signals = result.session["error_signals"]
+
+    assert signals["total_count"] == 30
+    assert len(signals["samples"]) == 25
+    assert len(signals["by_app"]) == 25
+    assert len(signals["time_buckets"]) == 25
+    assert signals["sample_limit"] == 25
+
+
+def test_error_signal_metadata_bounds_strings_without_raw_path_or_bad_timestamp():
+    long_app = "CustomerProject" * 40
+    long_timestamp = "not-a-timestamp-" + ("x" * 500)
+    raw_path = "C:/state/capture-buffer/" + ("secret-project-" * 40) + ".json"
+
+    signals = _error_signals(
+        [
+            {
+                "timestamp": long_timestamp,
+                "app_name": long_app,
+                "title": "",
+                "visible_text": "error while running test",
+                "focused_text": "",
+                "path": raw_path,
+            }
+        ]
+    )
+    serialized = json.dumps(signals, sort_keys=True)
+
+    assert signals["total_count"] == 1
+    assert len(signals["by_app"][0]["app_name"]) <= 120
+    assert signals["samples"][0]["timestamp"] == ""
+    assert signals["samples"][0]["time_bucket"] == ""
+    assert signals["samples"][0]["source_id"] == ""
+    assert long_app not in serialized
+    assert long_timestamp not in serialized
+    assert raw_path not in serialized
 
 
 def test_monitor_cli_and_summarize_session_round_trip(tmp_path, monkeypatch, capsys):

@@ -494,6 +494,7 @@ def format_workday_text_summary(session: dict[str, Any]) -> str:
     source_paths = session.get("source_capture_paths", [])
     app_segments = session.get("app_segments", [])
     suggestions = session.get("suggestions", [])
+    error_signals = session.get("error_signals", {})
 
     lines = [
         "# 工作概览",
@@ -523,6 +524,7 @@ def format_workday_text_summary(session: dict[str, Any]) -> str:
         ]
     )
     lines.extend(_format_suggestions(suggestions))
+    lines.extend(_format_error_signals(error_signals))
     lines.extend(
         [
             "",
@@ -572,6 +574,49 @@ def _format_suggestions(suggestions: Any) -> list[str]:
     if not isinstance(suggestions, list) or not suggestions:
         return ["- 本次会话没有可用的确定性建议。"]
     return [f"- {_translate_suggestion(str(suggestion))}" for suggestion in suggestions]
+
+
+def _format_error_signals(error_signals: Any) -> list[str]:
+    if not isinstance(error_signals, dict):
+        return []
+    total = _safe_int(error_signals.get("total_count"))
+    if total <= 0:
+        return []
+    lines = [
+        "",
+        "## 错误信号",
+        "",
+        f"- 命中次数: {total}",
+        f"- 主要应用: {_format_count_rows(error_signals.get('by_app'), 'app_name')}",
+        f"- 主要字段: {_format_count_rows(error_signals.get('by_field'), 'field')}",
+        f"- 主要关键词: {_format_count_rows(error_signals.get('by_keyword'), 'keyword')}",
+        f"- 主要时间段: {_format_count_rows(error_signals.get('time_buckets'), 'bucket_start')}",
+        "- 内容边界: 仅保存字段、关键词、时间段、应用和 source id；不保存原始可见文本。",
+    ]
+    samples = error_signals.get("samples", [])
+    if isinstance(samples, list) and samples:
+        source_ids = [
+            _safe_text(sample.get("source_id", ""))
+            for sample in samples
+            if isinstance(sample, dict) and _safe_text(sample.get("source_id", ""))
+        ][:3]
+        if source_ids:
+            lines.append(f"- 样本 source id: {', '.join(source_ids)}")
+    return lines
+
+
+def _format_count_rows(rows: Any, key: str) -> str:
+    if not isinstance(rows, list) or not rows:
+        return "无"
+    parts: list[str] = []
+    for row in rows[:3]:
+        if not isinstance(row, dict):
+            continue
+        name = _safe_text(row.get(key, ""))
+        count = _safe_int(row.get("count"))
+        if name:
+            parts.append(f"{name}: {count}")
+    return ", ".join(parts) if parts else "无"
 
 
 def _status_available(value: Any) -> str:

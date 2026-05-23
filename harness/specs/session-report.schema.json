@@ -60,6 +60,104 @@
       "type": "array",
       "items": { "type": "string" }
     },
+    "error_signals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "trust",
+        "contains_observed_text",
+        "total_count",
+        "sample_limit",
+        "by_app",
+        "by_field",
+        "by_keyword",
+        "time_buckets",
+        "samples"
+      ],
+      "properties": {
+        "schema_version": { "const": 1 },
+        "trust": { "const": "untrusted_observed_content" },
+        "contains_observed_text": { "const": false },
+        "total_count": { "type": "integer", "minimum": 0 },
+        "sample_limit": { "type": "integer", "minimum": 1 },
+        "by_app": {
+          "type": "array",
+          "maxItems": 25,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["app_name", "count"],
+            "properties": {
+              "app_name": { "type": "string", "maxLength": 120 },
+              "count": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "by_field": {
+          "type": "array",
+          "maxItems": 25,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["field", "count"],
+            "properties": {
+              "field": { "enum": ["title", "visible_text", "focused_text"] },
+              "count": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "by_keyword": {
+          "type": "array",
+          "maxItems": 25,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["keyword", "count"],
+            "properties": {
+              "keyword": { "enum": ["error", "exception", "failed", "failure", "traceback"] },
+              "count": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "time_buckets": {
+          "type": "array",
+          "maxItems": 25,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["bucket_start", "count"],
+            "properties": {
+              "bucket_start": { "type": "string", "maxLength": 32 },
+              "count": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "samples": {
+          "type": "array",
+          "maxItems": 25,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["timestamp", "time_bucket", "app_name", "fields", "keywords", "source_id"],
+            "properties": {
+              "timestamp": { "type": "string", "maxLength": 40 },
+              "time_bucket": { "type": "string", "maxLength": 32 },
+              "app_name": { "type": "string", "maxLength": 120 },
+              "fields": {
+                "type": "array",
+                "items": { "enum": ["title", "visible_text", "focused_text"] }
+              },
+              "keywords": {
+                "type": "array",
+                "items": { "enum": ["error", "exception", "failed", "failure", "traceback"] }
+              },
+              "source_id": { "type": "string", "maxLength": 32 }
+            }
+          }
+        }
+      }
+    },
     "source_capture_paths": {
       "type": "array",
       "items": { "type": "string" }

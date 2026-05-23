@@ -4,6 +4,7 @@ from pathlib import Path
 
 from winchronicle.capture import capture_once_from_fixture
 from winchronicle.cli import main
+from winchronicle.workday import format_workday_text_summary
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -155,6 +156,38 @@ def test_workday_intent_maps_chinese_phrases_without_capture_by_default(
     assert "observed" not in json.dumps(stop_plan).lower()
 
 
+def test_workday_intent_maps_short_user_phrases_without_capture_by_default(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["workday", "intent", "开始工作"]) == 0
+    start_plan = json.loads(capsys.readouterr().out)
+    assert start_plan["matched"] is True
+    assert start_plan["execute"] is False
+    assert start_plan["intent"] == "start_workday"
+    assert start_plan["command"] == ["winchronicle", "workday", "start"]
+    assert start_plan["capture_surface"] == "explicit_finite_monitor_session"
+    assert not (home / "workday-active.json").exists()
+
+    assert main(["workday", "intent", "结束工作并总结"]) == 0
+    stop_plan = json.loads(capsys.readouterr().out)
+    assert stop_plan["matched"] is True
+    assert stop_plan["execute"] is False
+    assert stop_plan["intent"] == "stop_and_summarize_workday"
+    assert stop_plan["command"] == [
+        "winchronicle",
+        "workday",
+        "stop",
+        "--format",
+        "text",
+        "--language",
+        "zh-CN",
+    ]
+    assert not (home / "workday-active.json").exists()
+
+
 def test_workday_intent_execute_runs_existing_bounded_commands(tmp_path, monkeypatch, capsys):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
@@ -204,7 +237,9 @@ def test_workday_intent_rejects_unknown_phrase_without_capture(tmp_path, monkeyp
     assert payload["matched"] is False
     assert payload["error"] == "unsupported_workday_intent"
     assert "开始记录工作" in payload["supported_phrases"]
+    assert "开始工作" in payload["supported_phrases"]
     assert "停止工作并总结" in payload["supported_phrases"]
+    assert "结束工作并总结" in payload["supported_phrases"]
     assert not (home / "workday-active.json").exists()
 
 
@@ -440,6 +475,63 @@ def test_workday_stop_recovers_summary_from_capture_buffer_when_result_is_missin
     assert (home / "reports" / "fallback-day.html").is_file()
     assert not (home / "workday-active.json").exists()
     assert list(home.rglob("*.jsonl")) == []
+
+
+def test_workday_text_summary_explains_error_signals_without_observed_text():
+    session = {
+        "session_id": "explain-errors",
+        "mode": "workday",
+        "trust": "untrusted_observed_content",
+        "captures_written": 3,
+        "duplicates_skipped": 0,
+        "denylisted_skipped": 0,
+        "excluded_skipped": 0,
+        "started_at": "2026-04-25T13:45:00+08:00",
+        "ended_at": "2026-04-25T14:00:00+08:00",
+        "duration_seconds": 900,
+        "source_capture_paths": [],
+        "app_segments": [],
+        "suggestions": ["Error-like text appeared in the session; inspect the related capture before continuing."],
+        "storage_policy": {
+            "raw_watcher_jsonl_saved": False,
+            "html_report_contains_visible_text": False,
+            "max_app_segments": 500,
+            "source_capture_paths_limit": 1000,
+        },
+        "storage_usage": {"session_json_bytes": 2048, "html_report_bytes": 1024},
+        "error_signals": {
+            "schema_version": 1,
+            "trust": "untrusted_observed_content",
+            "contains_observed_text": False,
+            "total_count": 2,
+            "sample_limit": 25,
+            "by_app": [{"app_name": "Codex", "count": 2}],
+            "by_field": [{"field": "visible_text", "count": 2}],
+            "by_keyword": [{"keyword": "failed", "count": 2}],
+            "time_buckets": [{"bucket_start": "2026-04-25T13:45+08:00", "count": 2}],
+            "samples": [
+                {
+                    "timestamp": "2026-04-25T13:45:00+08:00",
+                    "time_bucket": "2026-04-25T13:45+08:00",
+                    "app_name": "Codex",
+                    "fields": ["visible_text"],
+                    "keywords": ["failed"],
+                    "source_id": "capture-abc123def456",
+                }
+            ],
+        },
+    }
+
+    text = format_workday_text_summary(session)
+
+    assert "错误信号" in text
+    assert "命中次数: 2" in text
+    assert "Codex: 2" in text
+    assert "failed: 2" in text
+    assert "capture-abc123def456" in text
+    assert "observed text" not in text
+    assert "test_payment_flow" not in text
+    assert "ghp_winchroniclecanary1234567890ABCD" not in text
 
 
 def _write_sleeping_watcher(tmp_path: Path) -> Path:

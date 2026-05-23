@@ -60,8 +60,8 @@ CODEX_MCP_ENABLED_TOOLS = [
 ]
 
 WORKDAY_INTENT_TRUST = "local_workday_intent_mapping"
-WORKDAY_START_PHRASES = ("开始记录工作",)
-WORKDAY_STOP_SUMMARY_PHRASES = ("停止工作并总结",)
+WORKDAY_START_PHRASES = ("开始记录工作", "开始工作")
+WORKDAY_STOP_SUMMARY_PHRASES = ("停止工作并总结", "结束工作并总结")
 
 
 def build_parser() -> argparse.ArgumentParser:

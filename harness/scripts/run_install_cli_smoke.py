@@ -120,6 +120,20 @@ def main() -> int:
                 workday_intent["dry_run_by_default"] is True,
                 "workday intent did not report dry-run by default",
             )
+            workday_short_intent = json.loads(
+                _run([str(winchronicle), "workday", "intent", "开始工作"], env=env)
+            )
+            _require(
+                workday_short_intent["intent"] == "start_workday",
+                "workday intent did not match short start phrase",
+            )
+            workday_short_stop = json.loads(
+                _run([str(winchronicle), "workday", "intent", "结束工作并总结"], env=env)
+            )
+            _require(
+                workday_short_stop["intent"] == "stop_and_summarize_workday",
+                "workday intent did not match short stop phrase",
+            )
             _require(
                 not (state_home / "workday-active.json").exists(),
                 "workday intent dry-run created an active session marker",

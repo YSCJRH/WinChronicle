@@ -5,6 +5,7 @@ import html
 import json
 import re
 import subprocess
+from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -22,6 +23,10 @@ CAPTURE_EVENT_TYPES = {"foreground_changed", "name_changed", "value_changed"}
 MAX_APP_SEGMENTS = 500
 MAX_TITLE_CHARS = 240
 SOURCE_CAPTURE_PATHS_LIMIT = 1000
+ERROR_SIGNAL_SAMPLE_LIMIT = 25
+ERROR_SIGNAL_ROW_LIMIT = 25
+ERROR_SIGNAL_TEXT_LIMIT = 120
+ERROR_SIGNAL_TERMS = ("error", "exception", "failed", "failure", "traceback")
 
 
 @dataclass(frozen=True)
@@ -390,6 +395,7 @@ def _build_session_report(
         **counts,
         "app_segments": _app_segments(timeline),
         "suggestions": _suggestions(timeline, counts),
+        "error_signals": _error_signals(timeline),
         "source_capture_paths": [item["path"] for item in timeline][:SOURCE_CAPTURE_PATHS_LIMIT],
         "storage_policy": {
             "raw_watcher_jsonl_saved": False,
@@ -467,7 +473,129 @@ def _suggestions(timeline: list[dict[str, str]], counts: dict[str, int]) -> list
 
 def _looks_like_error(item: dict[str, str]) -> bool:
     haystack = f"{item['title']} {item['visible_text']} {item['focused_text']}".casefold()
-    return any(term in haystack for term in ("error", "exception", "failed", "failure", "traceback"))
+    return any(term in haystack for term in ERROR_SIGNAL_TERMS)
+
+
+def _error_signals(timeline: list[dict[str, str]]) -> dict[str, Any]:
+    app_counts: Counter[str] = Counter()
+    field_counts: Counter[str] = Counter()
+    keyword_counts: Counter[str] = Counter()
+    bucket_counts: Counter[str] = Counter()
+    samples: list[dict[str, Any]] = []
+    total = 0
+
+    for item in timeline:
+        field_hits = _error_field_hits(item)
+        if not field_hits:
+            continue
+        total += 1
+        app_name = _signal_text(item.get("app_name", "") or "unknown")
+        bucket = _error_time_bucket(item.get("timestamp", ""))
+        keywords = sorted({term for terms in field_hits.values() for term in terms})
+        app_counts[app_name] += 1
+        if bucket:
+            bucket_counts[bucket] += 1
+        for field, terms in field_hits.items():
+            field_counts[field] += 1
+            for term in terms:
+                keyword_counts[term] += 1
+        if len(samples) < ERROR_SIGNAL_SAMPLE_LIMIT:
+            samples.append(
+                {
+                    "timestamp": _error_signal_timestamp(item.get("timestamp", "")),
+                    "time_bucket": bucket,
+                    "app_name": app_name,
+                    "fields": _ordered_fields(field_hits),
+                    "keywords": keywords,
+                    "source_id": _source_id(item.get("path", "")),
+                }
+            )
+
+    return {
+        "schema_version": 1,
+        "trust": TRUST,
+        "contains_observed_text": False,
+        "total_count": total,
+        "sample_limit": ERROR_SIGNAL_SAMPLE_LIMIT,
+        "by_app": _counter_rows(app_counts, "app_name", limit=ERROR_SIGNAL_ROW_LIMIT),
+        "by_field": _counter_rows(
+            field_counts,
+            "field",
+            order=("visible_text", "focused_text", "title"),
+            limit=ERROR_SIGNAL_ROW_LIMIT,
+        ),
+        "by_keyword": _counter_rows(keyword_counts, "keyword", limit=ERROR_SIGNAL_ROW_LIMIT),
+        "time_buckets": _counter_rows(bucket_counts, "bucket_start", limit=ERROR_SIGNAL_ROW_LIMIT),
+        "samples": samples,
+    }
+
+
+def _error_field_hits(item: dict[str, str]) -> dict[str, list[str]]:
+    hits: dict[str, list[str]] = {}
+    fields = {
+        "title": item.get("title", ""),
+        "visible_text": item.get("visible_text", ""),
+        "focused_text": item.get("focused_text", ""),
+    }
+    for field, value in fields.items():
+        value_folded = value.casefold()
+        terms = [term for term in ERROR_SIGNAL_TERMS if term in value_folded]
+        if terms:
+            hits[field] = terms
+    return hits
+
+
+def _ordered_fields(field_hits: dict[str, list[str]]) -> list[str]:
+    preferred = ("visible_text", "focused_text", "title")
+    return [field for field in preferred if field in field_hits]
+
+
+def _error_time_bucket(timestamp: str) -> str:
+    try:
+        parsed = datetime.fromisoformat(timestamp)
+    except ValueError:
+        return ""
+    bucket_minute = (parsed.minute // 15) * 15
+    bucketed = parsed.replace(minute=bucket_minute, second=0, microsecond=0)
+    return bucketed.isoformat(timespec="minutes")
+
+
+def _error_signal_timestamp(timestamp: str) -> str:
+    try:
+        return datetime.fromisoformat(timestamp).isoformat(timespec="seconds")
+    except ValueError:
+        return ""
+
+
+def _source_id(path: str) -> str:
+    suffix = Path(path).stem.rsplit("-", 1)[-1]
+    if re.fullmatch(r"[0-9a-f]{12}", suffix):
+        return f"capture-{suffix}"
+    return ""
+
+
+def _signal_text(value: str) -> str:
+    return _clip_text(value, ERROR_SIGNAL_TEXT_LIMIT)
+
+
+def _counter_rows(
+    counter: Counter[str],
+    name_key: str,
+    *,
+    order: Sequence[str] = (),
+    limit: int | None = None,
+) -> list[dict[str, Any]]:
+    order_index = {key: index for index, key in enumerate(order)}
+    rows = [
+        {name_key: _signal_text(key), "count": count}
+        for key, count in sorted(
+            counter.items(),
+            key=lambda item: (-item[1], order_index.get(item[0], len(order_index)), item[0]),
+        )
+    ]
+    if limit is None:
+        return rows
+    return rows[: max(0, limit)]
 
 
 def _render_html_report(session: dict[str, Any]) -> str:

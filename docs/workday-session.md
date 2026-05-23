@@ -3,7 +3,9 @@
 The workday session is the product path for the natural-language workflow:
 
 - `开始记录工作`
+- `开始工作`
 - `停止工作并总结`
+- `结束工作并总结`
 
 In CLI terms, that maps to:
 
@@ -28,6 +30,11 @@ dry-run by default: `winchronicle workday intent "开始记录工作"` and
 JSON without starting the watcher, helper, UIA capture, or desktop reading. Add
 `--execute` only when the operator or calling agent intentionally wants to run
 the mapped bounded command.
+
+The shorter user-facing aliases `开始工作` and `结束工作并总结` map to the same
+bounded commands. They exist for ordinary Codex app conversations where the
+user wants the recording action only, not repository inspection or development
+workflow orchestration.
 
 ## What Start Does
 
@@ -95,6 +102,11 @@ segments, storage metadata, and deterministic suggestions. It does not read raw
 capture contents. It does not read raw capture visible text and does not call
 external models. It does not call an LLM.
 
+When deterministic error-like terms appear, the saved session may include an
+`error_signals` metadata block. That block is intentionally compact: it stores
+counts by app, field, keyword, time bucket, and bounded source ids. It does not
+store the raw visible text that triggered the signal.
+
 ## Storage And Performance Boundaries
 
 The workday layer is designed to keep reports bounded:
@@ -113,6 +125,7 @@ The workday layer is designed to keep reports bounded:
 - app segments are capped
 - long app titles are clipped before report storage
 - source capture paths are bounded in the session summary
+- error signal samples are capped and metadata-only
 
 The HTML report is intentionally a compact activity timeline: app names, window
 titles, capture counts, timestamps, and deterministic suggestions. Raw captures
