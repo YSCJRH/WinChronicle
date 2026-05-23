@@ -1,6 +1,6 @@
 ---
 name: workday-recorder
-description: Route explicit WinChronicle workday recording phrases to the existing local CLI without repository scanning or new capture surfaces.
+description: Route 开始记录工作, 停止工作并总结, 开始工作, 结束工作并总结, and 查看工作记录状态 to the local WinChronicle workday CLI without repository scanning or new capture surfaces.
 ---
 
 # WinChronicle Workday Recorder
@@ -37,6 +37,8 @@ If the user only says a workday recording phrase, execute the matching command f
 Do not run preliminary repository discovery commands such as `git status`, `rg`,
 `Get-ChildItem`, `Get-Content`, or `ls`.
 Do not read AGENTS.md only to start recording.
+Do not use the repository task report format for recording-only turns; a short
+confirmation, status, or requested summary is enough.
 
 Stay in recording mode after starting a session. A recording-mode turn may report
 that recording started, show recording status, stop recording, or summarize a

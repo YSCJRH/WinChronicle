@@ -21,6 +21,19 @@ winchronicle workday status --format text --language zh-CN
 If you are using WinChronicle from a source checkout before editable install,
 use `python -m winchronicle` instead of `winchronicle`.
 
+## Starter Prompts
+
+Codex plugin starter prompts usually surface the first three entries most
+prominently, so this plugin keeps them to the three daily actions ordinary users
+need:
+
+- `开始记录工作`
+- `停止工作并总结`
+- `查看工作记录状态`
+
+The shorter aliases `开始工作` and `结束工作并总结` still work through the same
+intent mapper, but the visible starters stay focused on record-only daily use.
+
 ## Recording Mode
 
 For the workday phrases above, the plugin is meant to run the matching

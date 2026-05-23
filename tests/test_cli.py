@@ -143,6 +143,16 @@ def test_codex_plugin_dry_run_prints_local_plugin_source_without_state_write(
     assert Path(payload["manifest_path"]).is_file()
     assert Path(payload["skill_path"]).is_file()
     assert payload["starter_phrases"] == [
+        "开始记录工作",
+        "停止工作并总结",
+        "查看工作记录状态",
+    ]
+    assert payload["default_prompts"] == [
+        "开始记录工作",
+        "停止工作并总结",
+        "查看工作记录状态",
+    ]
+    assert payload["accepted_phrases"] == [
         "开始工作",
         "开始记录工作",
         "结束工作并总结",
@@ -248,6 +258,14 @@ def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
     ]
     assert payload["plugin"]["plugin_name"] == "winchronicle-workday"
     assert payload["plugin"]["plugin_available"] is True
+    assert payload["plugin"]["default_prompts"] == [
+        "开始记录工作",
+        "停止工作并总结",
+        "查看工作记录状态",
+    ]
+    assert payload["plugin"]["starter_phrases"] == payload["plugin"]["default_prompts"]
+    assert "开始工作" in payload["plugin"]["accepted_phrases"]
+    assert "结束工作并总结" in payload["plugin"]["accepted_phrases"]
     assert "git status" in payload["recording_mode_boundary"]
     assert "rg" in payload["recording_mode_boundary"]
     assert "Get-Content" in payload["recording_mode_boundary"]

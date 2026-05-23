@@ -58,10 +58,15 @@ CODEX_MCP_ENABLED_TOOLS = [
     "search_captures",
     "read_recent_capture",
 ]
-CODEX_WORKDAY_STARTER_PHRASES = [
+CODEX_WORKDAY_ACCEPTED_PHRASES = [
     "开始工作",
     "开始记录工作",
     "结束工作并总结",
+    "停止工作并总结",
+    "查看工作记录状态",
+]
+CODEX_WORKDAY_DEFAULT_PROMPTS = [
+    "开始记录工作",
     "停止工作并总结",
     "查看工作记录状态",
 ]
@@ -725,7 +730,7 @@ def _codex_daily_dry_run_payload() -> dict[str, object]:
             "winchronicle codex plugin --dry-run",
         ],
         "plugin": _codex_plugin_dry_run_payload(),
-        "daily_phrases": CODEX_WORKDAY_STARTER_PHRASES,
+        "daily_phrases": CODEX_WORKDAY_ACCEPTED_PHRASES,
         "record_only_thread_prompt": CODEX_RECORD_ONLY_THREAD_PROMPT,
         "recording_mode_boundary": CODEX_RECORDING_MODE_BOUNDARY,
         "chat_output_warning": (
@@ -756,7 +761,9 @@ def _codex_plugin_dry_run_payload() -> dict[str, object]:
             "plugin source settings; do not paste summaries into chat unless the "
             "user explicitly asks for chat output."
         ),
-        "starter_phrases": CODEX_WORKDAY_STARTER_PHRASES,
+        "starter_phrases": CODEX_WORKDAY_DEFAULT_PROMPTS,
+        "accepted_phrases": CODEX_WORKDAY_ACCEPTED_PHRASES,
+        "default_prompts": CODEX_WORKDAY_DEFAULT_PROMPTS,
         "disabled_surfaces": _codex_plugin_disabled_surface_names(),
         "observed_content_trust": TRUST,
         "adds_mcp_tools": False,

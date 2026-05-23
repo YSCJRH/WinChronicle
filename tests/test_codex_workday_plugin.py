@@ -29,6 +29,19 @@ def test_codex_workday_plugin_manifest_is_repo_scoped_and_versioned():
     assert "Read-only MCP" not in manifest["interface"]["capabilities"]
 
 
+def test_codex_workday_plugin_default_prompts_are_daily_user_actions():
+    manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+
+    assert manifest["interface"]["defaultPrompt"] == [
+        "开始记录工作",
+        "停止工作并总结",
+        "查看工作记录状态",
+    ]
+    assert len(manifest["interface"]["defaultPrompt"]) <= 3
+    assert "record-only" in manifest["interface"]["longDescription"]
+    assert "repository scanning" in manifest["interface"]["longDescription"]
+
+
 def test_codex_workday_plugin_is_packaged_for_non_editable_installs():
     pyproject = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     package_data = pyproject["tool"]["setuptools"]["package-data"]["winchronicle"]
@@ -57,6 +70,16 @@ def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
     assert "Do not inspect, scan, review, edit, test, commit, push, or release repository files." in text
 
 
+def test_codex_workday_plugin_skill_frontmatter_names_recording_triggers():
+    text = SKILL.read_text(encoding="utf-8")
+    frontmatter = text.split("---", 2)[1]
+
+    for phrase in ["开始记录工作", "停止工作并总结", "开始工作", "结束工作并总结"]:
+        assert phrase in frontmatter
+    assert "查看工作记录状态" in frontmatter
+    assert "repository scanning" in frontmatter
+
+
 def test_codex_workday_plugin_recording_mode_blocks_repo_preflight():
     text = SKILL.read_text(encoding="utf-8")
     doc_text = (ROOT / "docs" / "codex-app-workday-guide.md").read_text(encoding="utf-8")
@@ -66,6 +89,7 @@ def test_codex_workday_plugin_recording_mode_blocks_repo_preflight():
     for command_name in ["git status", "rg", "Get-ChildItem", "Get-Content", "ls"]:
         assert command_name in text
     assert "Do not read AGENTS.md only to start recording" in text
+    assert "Do not use the repository task report format" in text
     assert "If the user only says a workday recording phrase, execute the matching command first" in text
 
     assert "Record-only mode" in doc_text
@@ -77,6 +101,8 @@ def test_codex_workday_plugin_doc_warns_before_chat_output():
 
     for phrase in ["开始工作", "开始记录工作", "结束工作并总结", "停止工作并总结"]:
         assert phrase in text
+    assert "Starter Prompts" in text
+    assert "first three" in text
     assert "Codex chat" in text
     assert "conversation service" in text
     assert "only paste" in text.lower()
