@@ -21,6 +21,32 @@ winchronicle workday status --format text --language zh-CN
 If you are using WinChronicle from a source checkout before editable install,
 use `python -m winchronicle` instead of `winchronicle`.
 
+## Fastest Codex App Setup
+
+Start with the one-command first-run checklist:
+
+```powershell
+winchronicle codex setup --dry-run --format text
+```
+
+It prints the local plugin source, first prompt, status command, and summary
+boundary. It does not write Codex config, does not write WinChronicle state,
+and does not start capture.
+
+To print only the plugin-source instruction:
+
+```powershell
+winchronicle codex plugin --dry-run --format text
+```
+
+After adding the plugin source in Codex App, use:
+
+```text
+开始记录工作
+查看工作记录状态
+停止工作并总结
+```
+
 ## Starter Prompts
 
 Codex plugin starter prompts usually surface the first three entries most
