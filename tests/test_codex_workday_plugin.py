@@ -80,6 +80,7 @@ def test_codex_workday_plugin_doc_warns_before_chat_output():
     assert "Codex chat" in text
     assert "conversation service" in text
     assert "only paste" in text.lower()
+    assert "winchronicle codex daily --dry-run" in text
     assert "winchronicle codex setup --dry-run" in text
     assert "winchronicle codex plugin --dry-run" in text
 

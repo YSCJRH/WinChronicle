@@ -63,6 +63,12 @@ def main() -> int:
                 expect_state_absent=True,
                 state_home=state_home,
             )
+            _require_codex_daily_dry_run(
+                winchronicle,
+                env,
+                expect_state_absent=True,
+                state_home=state_home,
+            )
             _require_codex_plugin_dry_run(winchronicle, env)
 
             _run([str(python), "-m", "pip", "uninstall", "-y", "winchronicle"], env=env)
@@ -130,6 +136,12 @@ def main() -> int:
 
             _require_codex_plugin_dry_run(winchronicle, env)
             _require_codex_setup_dry_run(
+                winchronicle,
+                env,
+                expect_state_absent=False,
+                state_home=state_home,
+            )
+            _require_codex_daily_dry_run(
                 winchronicle,
                 env,
                 expect_state_absent=False,
@@ -392,6 +404,78 @@ def _require_codex_setup_dry_run(
         _require(
             not state_home.exists(),
             "codex setup dry-run created WinChronicle state before init",
+        )
+
+
+def _require_codex_daily_dry_run(
+    winchronicle: Path,
+    env: dict[str, str],
+    *,
+    expect_state_absent: bool,
+    state_home: Path,
+) -> None:
+    daily_dry_run = json.loads(
+        _run([str(winchronicle), "codex", "daily", "--dry-run"], env=env)
+    )
+    _require(
+        daily_dry_run["command"] == "codex daily",
+        "codex daily dry-run reported the wrong command name",
+    )
+    _require(daily_dry_run["dry_run"] is True, "codex daily dry-run did not report dry_run")
+    _require(
+        daily_dry_run["writes_config"] is False,
+        "codex daily dry-run should not write Codex config",
+    )
+    _require(
+        daily_dry_run["writes_state"] is False,
+        "codex daily dry-run should not write WinChronicle state",
+    )
+    _require(
+        daily_dry_run["starts_capture"] is False,
+        "codex daily dry-run should not start capture",
+    )
+    _require(
+        daily_dry_run["adds_mcp_tools"] is False,
+        "codex daily dry-run should not add MCP tools",
+    )
+    _require(
+        "开始记录工作" in daily_dry_run["daily_phrases"],
+        "codex daily dry-run omitted the common start phrase",
+    )
+    _require(
+        "停止工作并总结" in daily_dry_run["daily_phrases"],
+        "codex daily dry-run omitted the common stop phrase",
+    )
+    _require(
+        "Do not inspect, scan, review, edit, test, commit, push, or release"
+        in daily_dry_run["record_only_thread_prompt"],
+        "codex daily dry-run omitted the record-only prompt boundary",
+    )
+    _require(
+        "winchronicle workday status --format text --language zh-CN"
+        in daily_dry_run["record_only_thread_prompt"],
+        "codex daily dry-run omitted the status phrase route",
+    )
+    _require(
+        daily_dry_run["plugin"]["plugin_available"] is True,
+        "codex daily dry-run did not find the installed plugin source",
+    )
+    _require(
+        "screenshots" in daily_dry_run["plugin"]["disabled_surfaces"],
+        "codex daily dry-run did not report the nested disabled screenshot surface",
+    )
+    _require(
+        "mcp_write_tools" in daily_dry_run["plugin"]["disabled_surfaces"],
+        "codex daily dry-run did not report the nested disabled MCP write surface",
+    )
+    serialized = json.dumps(daily_dry_run, ensure_ascii=False).lower()
+    _require("visible_text" not in serialized, "codex daily dry-run exposed visible text")
+    _require("focused_text" not in serialized, "codex daily dry-run exposed focused text")
+    _require("password" not in serialized, "codex daily dry-run exposed password text")
+    if expect_state_absent:
+        _require(
+            not state_home.exists(),
+            "codex daily dry-run created WinChronicle state before init",
         )
 
 

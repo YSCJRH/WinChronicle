@@ -58,6 +58,30 @@ CODEX_MCP_ENABLED_TOOLS = [
     "search_captures",
     "read_recent_capture",
 ]
+CODEX_WORKDAY_STARTER_PHRASES = [
+    "开始工作",
+    "开始记录工作",
+    "结束工作并总结",
+    "停止工作并总结",
+    "查看工作记录状态",
+]
+CODEX_RECORD_ONLY_THREAD_PROMPT = (
+    "Only call WinChronicle workday commands for this thread.\n"
+    "Do not inspect, scan, review, edit, test, commit, push, or release repository files.\n"
+    'When I say "开始工作" or "开始记录工作", run:\n'
+    'winchronicle workday intent "开始工作" --execute\n'
+    'When I say "结束工作并总结" or "停止工作并总结", run:\n'
+    'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60\n'
+    'When I say "查看工作记录状态", run:\n'
+    "winchronicle workday status --format text --language zh-CN\n"
+    "Only paste a summary into chat after the user explicitly asks for chat output.\n"
+)
+CODEX_RECORDING_MODE_BOUNDARY = (
+    "Recording phrases are not development requests. Execute the matching "
+    "WinChronicle workday command first; do not run repository preflight "
+    "commands such as git status, rg, Get-ChildItem, Get-Content, or ls "
+    "unless the user explicitly asks for project development work."
+)
 
 WORKDAY_INTENT_TRUST = "local_workday_intent_mapping"
 WORKDAY_START_PHRASES = ("开始记录工作", "开始工作")
@@ -364,6 +388,15 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print the local plugin source path and safety boundary without writing files.",
     )
+    codex_daily = codex_subparsers.add_parser(
+        "daily",
+        help="Print daily workday setup and record-only prompt without writing files.",
+    )
+    codex_daily.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print the daily Workday plugin workflow without writing files.",
+    )
 
     return parser
 
@@ -585,6 +618,18 @@ def main(argv: list[str] | None = None) -> int:
                 )
             )
             return 0
+        if args.codex_command == "daily":
+            if not args.dry_run:
+                parser.error("codex daily currently supports only --dry-run")
+            print(
+                json.dumps(
+                    _codex_daily_dry_run_payload(),
+                    ensure_ascii=False,
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 0
 
     parser.error(f"unknown command: {args.command}")
     return 2
@@ -665,6 +710,32 @@ def _codex_setup_dry_run_payload() -> dict[str, object]:
     }
 
 
+def _codex_daily_dry_run_payload() -> dict[str, object]:
+    return {
+        "command": "codex daily",
+        "dry_run": True,
+        "version": __version__,
+        "writes_config": False,
+        "writes_state": False,
+        "starts_capture": False,
+        "adds_mcp_tools": False,
+        "observed_content_trust": TRUST,
+        "setup_commands": [
+            "winchronicle codex setup --dry-run",
+            "winchronicle codex plugin --dry-run",
+        ],
+        "plugin": _codex_plugin_dry_run_payload(),
+        "daily_phrases": CODEX_WORKDAY_STARTER_PHRASES,
+        "record_only_thread_prompt": CODEX_RECORD_ONLY_THREAD_PROMPT,
+        "recording_mode_boundary": CODEX_RECORDING_MODE_BOUNDARY,
+        "chat_output_warning": (
+            "Only paste local setup output or work summaries into chat when the "
+            "user explicitly asks to share local paths, session metadata, or "
+            "summary text."
+        ),
+    }
+
+
 def _codex_plugin_dry_run_payload() -> dict[str, object]:
     plugin_path = _codex_workday_plugin_path()
     manifest_path = plugin_path / ".codex-plugin" / "plugin.json"
@@ -685,13 +756,7 @@ def _codex_plugin_dry_run_payload() -> dict[str, object]:
             "plugin source settings; do not paste summaries into chat unless the "
             "user explicitly asks for chat output."
         ),
-        "starter_phrases": [
-            "开始工作",
-            "开始记录工作",
-            "结束工作并总结",
-            "停止工作并总结",
-            "查看工作记录状态",
-        ],
+        "starter_phrases": CODEX_WORKDAY_STARTER_PHRASES,
         "disabled_surfaces": _codex_plugin_disabled_surface_names(),
         "observed_content_trust": TRUST,
         "adds_mcp_tools": False,

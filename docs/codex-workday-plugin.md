@@ -53,6 +53,12 @@ For first-run setup, print the combined Codex readiness report:
 winchronicle codex setup --dry-run
 ```
 
+To print the daily setup commands and record-only thread prompt in one place:
+
+```powershell
+winchronicle codex daily --dry-run
+```
+
 To print only the local plugin source path and safety boundary:
 
 ```powershell

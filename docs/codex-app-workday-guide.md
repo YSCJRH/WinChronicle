@@ -30,6 +30,13 @@ Check local workday status:
 winchronicle workday status --format text --language zh-CN
 ```
 
+To print the daily Codex plugin setup commands and record-only thread prompt in
+one place:
+
+```powershell
+winchronicle codex daily --dry-run
+```
+
 For a simpler Codex entry point, use the repo-scoped
 [`winchronicle-workday` plugin](codex-workday-plugin.md). Print its local plugin
 source path with:
@@ -66,6 +73,8 @@ When I say "开始工作", run:
 winchronicle workday intent "开始工作" --execute
 When I say "结束工作并总结", run:
 winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60
+When I say "查看工作记录状态", run:
+winchronicle workday status --format text --language zh-CN
 Only paste a summary into chat after the user explicitly asks for chat output.
 ```
 

@@ -210,6 +210,54 @@ def test_codex_setup_dry_run_prints_readiness_report_without_state_write(
     assert "focused_text" not in output
 
 
+def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["codex", "daily", "--dry-run"]) == 0
+    output = capsys.readouterr().out
+    payload = json.loads(output)
+
+    assert payload["command"] == "codex daily"
+    assert payload["dry_run"] is True
+    assert payload["writes_config"] is False
+    assert payload["writes_state"] is False
+    assert payload["starts_capture"] is False
+    assert payload["adds_mcp_tools"] is False
+    assert payload["observed_content_trust"] == TRUST
+
+    assert payload["daily_phrases"] == [
+        "开始工作",
+        "开始记录工作",
+        "结束工作并总结",
+        "停止工作并总结",
+        "查看工作记录状态",
+    ]
+    prompt = payload["record_only_thread_prompt"]
+    assert "Only call WinChronicle workday commands for this thread." in prompt
+    assert "Do not inspect, scan, review, edit, test, commit, push, or release repository files." in prompt
+    assert 'winchronicle workday intent "开始工作" --execute' in prompt
+    assert 'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60' in prompt
+    assert "winchronicle workday status --format text --language zh-CN" in prompt
+
+    assert payload["setup_commands"] == [
+        "winchronicle codex setup --dry-run",
+        "winchronicle codex plugin --dry-run",
+    ]
+    assert payload["plugin"]["plugin_name"] == "winchronicle-workday"
+    assert payload["plugin"]["plugin_available"] is True
+    assert "git status" in payload["recording_mode_boundary"]
+    assert "rg" in payload["recording_mode_boundary"]
+    assert "Get-Content" in payload["recording_mode_boundary"]
+
+    assert not home.exists()
+    assert "visible_text" not in output
+    assert "focused_text" not in output
+    assert "password" not in output.lower()
+
+
 def test_init_status_and_empty_search_memory_are_stable(tmp_path, monkeypatch, capsys):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))

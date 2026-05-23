@@ -52,6 +52,13 @@ winchronicle codex setup --dry-run
 Use `setup --dry-run` for the first check: it runs local readiness probes, then
 prints the MCP snippet and the Workday plugin source path without editing files.
 
+For daily Workday usage through the Codex app plugin, print the setup commands
+and record-only thread prompt in one place:
+
+```powershell
+winchronicle codex daily --dry-run
+```
+
 To print only the MCP snippet, run:
 
 ```powershell
