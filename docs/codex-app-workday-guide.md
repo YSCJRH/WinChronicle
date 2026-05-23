@@ -20,6 +20,10 @@ Check local workday status:
 winchronicle workday status --format text --language zh-CN
 ```
 
+For a simpler Codex entry point, use the repo-scoped
+[`winchronicle-workday` plugin](codex-workday-plugin.md). The plugin is a thin
+wrapper around the same commands and does not add capture behavior.
+
 ## Daily Phrases
 
 WinChronicle accepts these local deterministic phrases:
@@ -65,6 +69,6 @@ WinChronicle does not add screenshot fallback, OCR fallback, clipboard capture,
 keylogging, desktop control, MCP write tools, cloud upload, audio recording, or
 LLM summarization to this flow.
 
-Future Codex plugin wrappers should call the same read-only and workday CLI
-commands. A plugin wrapper should improve the user entry point, not expand the
-capture surface.
+The `winchronicle-workday` plugin calls the same read-only and workday CLI
+commands. It improves the user entry point without expanding the capture
+surface.

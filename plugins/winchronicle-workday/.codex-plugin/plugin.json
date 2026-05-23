@@ -1,0 +1,41 @@
+{
+  "name": "winchronicle-workday",
+  "version": "0.2.2",
+  "description": "Thin Codex entry point for explicit WinChronicle workday recording.",
+  "author": {
+    "name": "YSCJRH",
+    "url": "https://github.com/YSCJRH"
+  },
+  "homepage": "https://github.com/YSCJRH/WinChronicle/blob/main/docs/codex-app-workday-guide.md",
+  "repository": "https://github.com/YSCJRH/WinChronicle",
+  "license": "MIT",
+  "keywords": [
+    "winchronicle",
+    "windows",
+    "workday",
+    "local-first",
+    "privacy",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "WinChronicle Workday",
+    "shortDescription": "Start and stop explicit local workday recording from Codex.",
+    "longDescription": "A thin Codex wrapper for WinChronicle workday commands. It routes natural-language workday phrases to existing local CLI commands without adding screenshots, OCR, clipboard capture, desktop control, cloud upload, or MCP write tools.",
+    "developerName": "YSCJRH",
+    "category": "Productivity",
+    "capabilities": [
+      "Local",
+      "Explicit session",
+      "Workflow"
+    ],
+    "websiteURL": "https://github.com/YSCJRH/WinChronicle",
+    "privacyPolicyURL": "https://github.com/YSCJRH/WinChronicle/blob/main/docs/privacy-architecture.md",
+    "defaultPrompt": [
+      "开始工作",
+      "结束工作并总结",
+      "查看工作记录状态"
+    ],
+    "brandColor": "#2563EB"
+  }
+}

@@ -109,7 +109,8 @@ python harness/scripts/run_mcp_smoke.py
 For a guided walkthrough, use [5-minute demo](docs/quick-demo.md). For the full
 fixture-only path, use [Deterministic demo](docs/deterministic-demo.md).
 For using Codex app as a daily work recorder, use the
-[Codex App workday guide](docs/codex-app-workday-guide.md).
+[Codex App workday guide](docs/codex-app-workday-guide.md) or the
+[Codex workday plugin](docs/codex-workday-plugin.md).
 
 ## What It Does Today
 
@@ -223,6 +224,7 @@ maintenance loop automatically.
 - [v0.2 monitor session](docs/v0.2-monitor-session.md)
 - [Workday session](docs/workday-session.md)
 - [Codex App workday guide](docs/codex-app-workday-guide.md)
+- [Codex workday plugin](docs/codex-workday-plugin.md)
 - [Project presentation checklist](docs/project-presentation.md)
 - [v0.2.0 release record](docs/release-v0.2.0.md)
 - [Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)
