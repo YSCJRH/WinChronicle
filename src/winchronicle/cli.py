@@ -407,6 +407,12 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print the daily Workday plugin workflow without writing files.",
     )
+    codex_daily.add_argument(
+        "--format",
+        choices=("json", "text"),
+        default="json",
+        help="Print JSON by default, or a compact user-facing text guide.",
+    )
 
     return parser
 
@@ -631,14 +637,18 @@ def main(argv: list[str] | None = None) -> int:
         if args.codex_command == "daily":
             if not args.dry_run:
                 parser.error("codex daily currently supports only --dry-run")
-            print(
-                json.dumps(
-                    _codex_daily_dry_run_payload(),
-                    ensure_ascii=False,
-                    indent=2,
-                    sort_keys=True,
+            payload = _codex_daily_dry_run_payload()
+            if args.format == "text":
+                print(_format_codex_daily_dry_run_text(payload), end="")
+            else:
+                print(
+                    json.dumps(
+                        payload,
+                        ensure_ascii=False,
+                        indent=2,
+                        sort_keys=True,
+                    )
                 )
-            )
             return 0
 
     parser.error(f"unknown command: {args.command}")
@@ -749,6 +759,46 @@ def _codex_daily_dry_run_payload() -> dict[str, object]:
             "summary text."
         ),
     }
+
+
+def _format_codex_daily_dry_run_text(payload: dict[str, object]) -> str:
+    plugin = payload["plugin"]
+    if not isinstance(plugin, dict):
+        plugin = {}
+    what_to_say_next = payload["what_to_say_next"]
+    prompts = what_to_say_next if isinstance(what_to_say_next, list) else []
+    disabled_surfaces = plugin.get("disabled_surfaces", [])
+    disabled_surface_names = disabled_surfaces if isinstance(disabled_surfaces, list) else []
+
+    lines = [
+        "WinChronicle Codex daily dry-run",
+        "",
+        f"Dry run only: {_yes_no(payload['dry_run'])}",
+        f"Writes config: {_yes_no(payload['writes_config'])}",
+        f"Writes state: {_yes_no(payload['writes_state'])}",
+        f"Starts capture: {_yes_no(payload['starts_capture'])}",
+        f"Adds MCP tools: {_yes_no(payload['adds_mcp_tools'])}",
+        f"Observed content trust: {payload['observed_content_trust']}",
+        "",
+        f"Add local plugin source: {plugin.get('codex_app_plugin_source_path', '')}",
+        f"First prompt to try: {payload['first_prompt_to_try']}",
+        "What to say next:",
+        *[f"- {prompt}" for prompt in prompts],
+        "",
+        "Disabled surfaces remain off:",
+        *[f"- {surface}" for surface in disabled_surface_names],
+        "",
+        "Record-only boundary:",
+        "Do not inspect, scan, review, edit, test, commit, push, or release repository files.",
+        str(payload["recording_mode_boundary"]),
+        "",
+        "No new capture, upload, control, or MCP write surfaces are added.",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def _yes_no(value: object) -> str:
+    return "yes" if value is True else "no"
 
 
 def _codex_plugin_dry_run_payload() -> dict[str, object]:

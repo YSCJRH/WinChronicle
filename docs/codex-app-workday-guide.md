@@ -37,9 +37,15 @@ one place:
 winchronicle codex daily --dry-run
 ```
 
-The daily dry-run also prints `what_to_say_next` and `first_prompt_to_try` so
-you can use the plugin without reading the full JSON. After adding the local
-plugin source, try:
+For a shorter copyable guide, use:
+
+```powershell
+winchronicle codex daily --dry-run --format text
+```
+
+The daily dry-run prints `what_to_say_next` and `first_prompt_to_try` in JSON
+or text form so you can use the plugin without reading the full JSON. After
+adding the local plugin source, try:
 
 ```text
 开始记录工作

@@ -292,6 +292,41 @@ def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
     assert "password" not in output.lower()
 
 
+def test_codex_daily_dry_run_text_format_prints_copyable_user_path_without_state_write(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["codex", "daily", "--dry-run", "--format", "text"]) == 0
+    output = capsys.readouterr().out
+
+    assert output.startswith("WinChronicle Codex daily dry-run")
+    assert "Dry run only: yes" in output
+    assert "Writes config: no" in output
+    assert "Writes state: no" in output
+    assert "Starts capture: no" in output
+    assert "Adds MCP tools: no" in output
+    assert "Observed content trust: untrusted_observed_content" in output
+    assert "Add local plugin source:" in output
+    assert "First prompt to try: 开始记录工作" in output
+    assert "What to say next:" in output
+    assert "- 开始记录工作" in output
+    assert "- 查看工作记录状态" in output
+    assert "- 停止工作并总结" in output
+    assert "Disabled surfaces remain off:" in output
+    assert "- screenshots" in output
+    assert "- ocr" in output
+    assert "- clipboard" in output
+    assert "- mcp_write_tools" in output
+    assert "Do not inspect, scan, review, edit, test, commit, push, or release repository files." in output
+
+    assert not home.exists()
+    assert "visible_text" not in output
+    assert "focused_text" not in output
+    assert '"command":' not in output
+
+
 def test_init_status_and_empty_search_memory_are_stable(tmp_path, monkeypatch, capsys):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
