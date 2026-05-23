@@ -756,6 +756,10 @@ def _codex_plugin_dry_run_payload() -> dict[str, object]:
         "plugin_path": str(plugin_path),
         "manifest_path": str(manifest_path),
         "skill_path": str(skill_path),
+        "codex_app_plugin_source_path": str(plugin_path),
+        "copyable_plugin_source_instruction": (
+            f"Codex App -> Plugins -> Add local plugin source -> {plugin_path}"
+        ),
         "install_hint": (
             "Add this local plugin source path in the Codex app plugin UI or local "
             "plugin source settings; do not paste summaries into chat unless the "

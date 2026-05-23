@@ -78,6 +78,15 @@ To print only the local plugin source path and safety boundary:
 winchronicle codex plugin --dry-run
 ```
 
+The dry-run JSON includes a copyable plugin-source instruction:
+
+```text
+Codex App -> Plugins -> Add local plugin source -> <plugin_path>
+```
+
+It is only an instruction for the Codex App plugin UI. It does not write Codex
+config, install a background service, or start capture.
+
 The repo-scoped plugin lives at:
 
 ```text

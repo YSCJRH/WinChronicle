@@ -159,6 +159,11 @@ def test_codex_plugin_dry_run_prints_local_plugin_source_without_state_write(
         "停止工作并总结",
         "查看工作记录状态",
     ]
+    assert payload["codex_app_plugin_source_path"] == payload["plugin_path"]
+    assert payload["copyable_plugin_source_instruction"] == (
+        f"Codex App -> Plugins -> Add local plugin source -> {payload['plugin_path']}"
+    )
+    assert payload["copyable_plugin_source_instruction"].count(payload["plugin_path"]) == 1
     assert "add this local plugin source path" in payload["install_hint"].lower()
     assert "screenshots" in payload["disabled_surfaces"]
     assert "mcp_write_tools" in payload["disabled_surfaces"]
@@ -266,6 +271,8 @@ def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
     assert payload["plugin"]["starter_phrases"] == payload["plugin"]["default_prompts"]
     assert "开始工作" in payload["plugin"]["accepted_phrases"]
     assert "结束工作并总结" in payload["plugin"]["accepted_phrases"]
+    assert payload["plugin"]["codex_app_plugin_source_path"] == payload["plugin"]["plugin_path"]
+    assert "Add local plugin source" in payload["plugin"]["copyable_plugin_source_instruction"]
     assert "git status" in payload["recording_mode_boundary"]
     assert "rg" in payload["recording_mode_boundary"]
     assert "Get-Content" in payload["recording_mode_boundary"]

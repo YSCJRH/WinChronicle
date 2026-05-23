@@ -103,6 +103,8 @@ def test_codex_workday_plugin_doc_warns_before_chat_output():
         assert phrase in text
     assert "Starter Prompts" in text
     assert "first three" in text
+    assert "copyable plugin-source instruction" in text
+    assert "Codex App -> Plugins -> Add local plugin source" in text
     assert "Codex chat" in text
     assert "conversation service" in text
     assert "only paste" in text.lower()
