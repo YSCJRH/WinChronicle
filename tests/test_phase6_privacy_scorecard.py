@@ -260,6 +260,7 @@ ALLOWED_PHASE6_SOURCE_SENTINELS = {
     "src/winchronicle/cli.py": {
         '"--screenshot",',
         '"--ocr",',
+        '"- no screenshots, OCR, clipboard, desktop control, or MCP write tools",',
     },
     "resources/win-uia-helper/Program.cs": {
         '["screenshots"] = false,',

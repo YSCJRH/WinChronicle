@@ -747,45 +747,29 @@ def _format_codex_setup_dry_run_text(payload: dict[str, object]) -> str:
     plugin = payload["plugin"]
     if not isinstance(plugin, dict):
         plugin = {}
-    mcp = payload["mcp"]
-    if not isinstance(mcp, dict):
-        mcp = {}
-    checks = payload["checks"] if isinstance(payload["checks"], list) else []
-    enabled_tools = mcp.get("enabled_tools", [])
-    tools = enabled_tools if isinstance(enabled_tools, list) else []
-    next_commands = payload["next_commands"] if isinstance(payload["next_commands"], list) else []
-    disabled_surfaces = payload["disabled_surfaces"] if isinstance(payload["disabled_surfaces"], list) else []
 
     lines = [
         "WinChronicle Codex setup dry-run",
         "",
-        f"Dry run only: {_yes_no(payload['dry_run'])}",
-        f"Writes config: {_yes_no(payload['writes_config'])}",
-        f"Writes state: {_yes_no(payload['writes_state'])}",
-        f"Starts capture: {_yes_no(payload['starts_capture'])}",
-        f"Observed content trust: {payload['observed_content_trust']}",
-        "",
-        "Local checks:",
-        *[_format_codex_check_line(check) for check in checks],
-        "",
-        "Read-only MCP tools:",
-        *[f"- {tool}" for tool in tools],
-        "",
-        f"Add local plugin source: {plugin.get('codex_app_plugin_source_path', '')}",
-        "First-run checklist:",
+        "Fast path for Codex App:",
         f"1. Add local plugin source: {plugin.get('codex_app_plugin_source_path', '')}",
-        "2. Say in Codex App: 开始记录工作",
-        "3. Check status: winchronicle workday status --format text --language zh-CN",
-        "4. End and summarize: 停止工作并总结",
-        "5. Keep summaries local unless you explicitly ask Codex to paste them into chat.",
+        "2. In a Codex App thread, say:",
+        "   - 开始记录工作",
+        "   - 查看工作记录状态",
+        "   - 停止工作并总结",
+        "3. Keep summaries local unless you explicitly ask Codex to paste them into chat.",
         "",
-        "Next commands:",
-        *[f"- {command}" for command in next_commands],
+        "Safety boundary:",
+        f"- dry run only: {_yes_no(payload['dry_run'])}",
+        f"- writes Codex config: {_yes_no(payload['writes_config'])}",
+        f"- writes WinChronicle state: {_yes_no(payload['writes_state'])}",
+        f"- starts capture now: {_yes_no(payload['starts_capture'])}",
+        f"- Observed content trust: {payload['observed_content_trust']}",
+        "- no screenshots, OCR, clipboard, desktop control, or MCP write tools",
         "",
-        "Disabled surfaces remain off:",
-        *[f"- {surface}" for surface in disabled_surfaces],
-        "",
-        str(payload["chat_output_warning"]),
+        "For diagnostics: winchronicle doctor",
+        "For JSON setup details: winchronicle codex setup --dry-run",
+        "For plugin-only path: winchronicle codex plugin --dry-run --format text",
     ]
     return "\n".join(lines) + "\n"
 

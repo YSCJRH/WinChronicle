@@ -266,35 +266,27 @@ def test_codex_setup_dry_run_text_format_prints_readiness_without_state_write(
     output = capsys.readouterr().out
 
     assert output.startswith("WinChronicle Codex setup dry-run")
-    assert "Dry run only: yes" in output
-    assert "Writes config: no" in output
-    assert "Writes state: no" in output
-    assert "Starts capture: no" in output
-    assert "Observed content trust: untrusted_observed_content" in output
-    assert "Local checks:" in output
-    assert "- python: ok" in output
-    assert "- privacy_surfaces: ok" in output
-    assert "- mcp_tool_allowlist: ok" in output
-    assert "Read-only MCP tools:" in output
-    assert "- privacy_status" in output
-    assert "- current_context" in output
-    assert "- read_recent_capture" in output
-    assert "Add local plugin source:" in output
-    assert "First-run checklist:" in output
+    assert "Fast path for Codex App:" in output
     assert "1. Add local plugin source:" in output
-    assert "2. Say in Codex App: 开始记录工作" in output
-    assert "3. Check status: winchronicle workday status --format text --language zh-CN" in output
-    assert "4. End and summarize: 停止工作并总结" in output
-    assert "5. Keep summaries local unless you explicitly ask Codex to paste them into chat." in output
-    assert "Next commands:" in output
-    assert "- winchronicle codex install --dry-run" in output
-    assert "- winchronicle codex plugin --dry-run" in output
-    assert "- winchronicle workday status --format text --language zh-CN" in output
-    assert "Disabled surfaces remain off:" in output
-    assert "- screenshots" in output
-    assert "- ocr" in output
-    assert "- clipboard" in output
-    assert "- mcp_write_tools" in output
+    assert "2. In a Codex App thread, say:" in output
+    assert "3. Keep summaries local unless you explicitly ask Codex to paste them into chat." in output
+    assert "- 开始记录工作" in output
+    assert "- 查看工作记录状态" in output
+    assert "- 停止工作并总结" in output
+    assert "Safety boundary:" in output
+    assert "dry run only: yes" in output
+    assert "writes Codex config: no" in output
+    assert "writes WinChronicle state: no" in output
+    assert "starts capture now: no" in output
+    assert "Observed content trust: untrusted_observed_content" in output
+    assert "no screenshots, OCR, clipboard, desktop control, or MCP write tools" in output
+    assert "For diagnostics: winchronicle doctor" in output
+    assert "For JSON setup details: winchronicle codex setup --dry-run" in output
+    assert "For plugin-only path: winchronicle codex plugin --dry-run --format text" in output
+    assert "Local checks:" not in output
+    assert "Read-only MCP tools:" not in output
+    assert "Next commands:" not in output
+    assert "Disabled surfaces remain off:" not in output
 
     assert not home.exists()
     assert "visible_text" not in output

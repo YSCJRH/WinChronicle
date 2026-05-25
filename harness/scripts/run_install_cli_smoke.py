@@ -438,24 +438,28 @@ def _require_codex_setup_dry_run(
         "codex setup text dry-run did not print its heading",
     )
     _require(
-        "Writes config: no" in setup_text and "Writes state: no" in setup_text,
+        "writes Codex config: no" in setup_text
+        and "writes WinChronicle state: no" in setup_text,
         "codex setup text dry-run did not report write boundaries",
     )
     _require(
-        "Read-only MCP tools:" in setup_text and "privacy_status" in setup_text,
-        "codex setup text dry-run did not report read-only MCP tools",
+        "Safety boundary:" in setup_text
+        and "no screenshots, OCR, clipboard, desktop control, or MCP write tools"
+        in setup_text,
+        "codex setup text dry-run did not report the compact safety boundary",
     )
     _require(
-        "First-run checklist:" in setup_text
-        and "Say in Codex App: 开始记录工作" in setup_text
-        and "Check status: winchronicle workday status --format text --language zh-CN"
-        in setup_text
-        and "End and summarize: 停止工作并总结" in setup_text,
-        "codex setup text dry-run did not report the first-run user checklist",
+        "Fast path for Codex App:" in setup_text
+        and "In a Codex App thread, say:" in setup_text
+        and "开始记录工作" in setup_text
+        and "查看工作记录状态" in setup_text
+        and "停止工作并总结" in setup_text,
+        "codex setup text dry-run did not report the compact Codex App path",
     )
     _require(
-        "Disabled surfaces remain off:" in setup_text,
-        "codex setup text dry-run did not report disabled surfaces",
+        "For diagnostics: winchronicle doctor" in setup_text
+        and "For JSON setup details: winchronicle codex setup --dry-run" in setup_text,
+        "codex setup text dry-run did not point to detailed diagnostics",
     )
     _require("visible_text" not in setup_text, "codex setup text dry-run exposed visible text")
     _require("focused_text" not in setup_text, "codex setup text dry-run exposed focused text")

@@ -11,9 +11,10 @@ From the WinChronicle checkout or installed environment, run:
 winchronicle codex setup --dry-run --format text
 ```
 
-This prints local readiness checks, the packaged plugin source path, the first
-prompt to say in Codex App, and the summary boundary. It does not write Codex config;
-it does not write WinChronicle state; it does not start capture.
+This prints a three-step Codex App path with the packaged plugin source path,
+the daily phrases to say, and a short safety boundary. It does not write Codex config;
+it does not write WinChronicle state; it does not start capture. For diagnostics,
+run `winchronicle doctor` or the JSON form: `winchronicle codex setup --dry-run`.
 
 ## 2. Copy The Plugin Source Path
 
