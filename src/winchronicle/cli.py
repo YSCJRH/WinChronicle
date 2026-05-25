@@ -75,6 +75,12 @@ CODEX_WORKDAY_NEXT_PROMPTS = [
     "查看工作记录状态",
     "停止工作并总结",
 ]
+CODEX_RECORD_ONLY_PROMPT_COMMAND = "winchronicle codex daily --dry-run --format text"
+CODEX_PLUGIN_POST_INSTALL_SELF_CHECK = [
+    "After adding the plugin source, open a new Codex App thread in the folder you want to record.",
+    "Say: 查看工作记录状态",
+    "Expected local command: winchronicle workday status --format text --language zh-CN",
+]
 CODEX_RECORD_ONLY_THREAD_PROMPT = (
     "Only call WinChronicle workday commands for this thread.\n"
     "Do not inspect, scan, review, edit, test, commit, push, or release repository files.\n"
@@ -876,6 +882,19 @@ def _format_codex_plugin_dry_run_text(payload: dict[str, object]) -> str:
         "Starter prompts:",
         *[f"- {prompt}" for prompt in prompts],
         "",
+        "Post-install self-check:",
+        *[
+            f"{index}. {step}"
+            for index, step in enumerate(
+                payload["post_install_self_check"]
+                if isinstance(payload.get("post_install_self_check"), list)
+                else [],
+                start=1,
+            )
+        ],
+        "If Codex starts scanning files instead, paste the record-only prompt from:",
+        str(payload["record_only_prompt_command"]),
+        "",
         "Disabled surfaces remain off:",
         *[f"- {surface}" for surface in disabled_surface_names],
         "",
@@ -912,6 +931,8 @@ def _codex_plugin_dry_run_payload() -> dict[str, object]:
             "plugin source settings; do not paste summaries into chat unless the "
             "user explicitly asks for chat output."
         ),
+        "post_install_self_check": CODEX_PLUGIN_POST_INSTALL_SELF_CHECK,
+        "record_only_prompt_command": CODEX_RECORD_ONLY_PROMPT_COMMAND,
         "starter_phrases": CODEX_WORKDAY_DEFAULT_PROMPTS,
         "accepted_phrases": CODEX_WORKDAY_ACCEPTED_PHRASES,
         "default_prompts": CODEX_WORKDAY_DEFAULT_PROMPTS,

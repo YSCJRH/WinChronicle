@@ -68,6 +68,28 @@ When the day ends:
 The plugin is designed to call local `winchronicle workday ...` commands before
 repository scanning when the user only asks for recording.
 
+## 4. Post-install self-check
+
+Before starting a long recording, open a new Codex App thread in the folder you
+want to record and say:
+
+```text
+查看工作记录状态
+```
+
+The expected local route is:
+
+```text
+winchronicle workday status --format text --language zh-CN
+```
+
+If Codex starts scanning files instead of checking workday status, print the
+record-only prompt and use it in the thread:
+
+```powershell
+winchronicle codex daily --dry-run --format text
+```
+
 ## Boundary
 
 This local plugin source:

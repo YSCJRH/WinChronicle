@@ -164,6 +164,14 @@ def test_codex_plugin_dry_run_prints_local_plugin_source_without_state_write(
         f"Codex App -> Plugins -> Add local plugin source -> {payload['plugin_path']}"
     )
     assert payload["copyable_plugin_source_instruction"].count(payload["plugin_path"]) == 1
+    assert payload["post_install_self_check"] == [
+        "After adding the plugin source, open a new Codex App thread in the folder you want to record.",
+        "Say: 查看工作记录状态",
+        "Expected local command: winchronicle workday status --format text --language zh-CN",
+    ]
+    assert payload["record_only_prompt_command"] == (
+        "winchronicle codex daily --dry-run --format text"
+    )
     assert "add this local plugin source path" in payload["install_hint"].lower()
     assert "screenshots" in payload["disabled_surfaces"]
     assert "mcp_write_tools" in payload["disabled_surfaces"]
@@ -194,6 +202,21 @@ def test_codex_plugin_dry_run_text_format_prints_copyable_source_without_state_w
     assert "- 开始记录工作" in output
     assert "- 停止工作并总结" in output
     assert "- 查看工作记录状态" in output
+    assert "Post-install self-check:" in output
+    assert (
+        "1. After adding the plugin source, open a new Codex App thread in the folder you want to record."
+        in output
+    )
+    assert "2. Say: 查看工作记录状态" in output
+    assert (
+        "3. Expected local command: winchronicle workday status --format text --language zh-CN"
+        in output
+    )
+    assert (
+        "If Codex starts scanning files instead, paste the record-only prompt from:"
+        in output
+    )
+    assert "winchronicle codex daily --dry-run --format text" in output
     assert "Disabled surfaces remain off:" in output
     assert "- screenshots" in output
     assert "- ocr" in output
