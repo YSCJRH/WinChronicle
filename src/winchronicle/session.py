@@ -180,6 +180,7 @@ def write_monitor_session_state(
     mode: str,
     state: MonitorSessionState,
     extra_suggestions: Sequence[str] = (),
+    operator_focus: Sequence[str] = (),
 ) -> MonitorSessionResult:
     paths = ensure_state(home)
     session = _build_session_report(
@@ -193,6 +194,9 @@ def write_monitor_session_state(
     for suggestion in extra_suggestions:
         if suggestion not in session["suggestions"]:
             session["suggestions"].append(suggestion)
+    focus = _safe_operator_focus(operator_focus)
+    if focus:
+        session["operator_focus"] = focus
     return _write_session(paths, session)
 
 
@@ -431,6 +435,17 @@ def _write_session(paths: dict[str, Path], session: dict[str, Any]) -> MonitorSe
     session_path.write_bytes(json_text.encode("utf-8"))
     report_path.write_bytes(html_text.encode("utf-8"))
     return MonitorSessionResult(session_path, report_path, session)
+
+
+def _safe_operator_focus(notes: Sequence[str]) -> list[str]:
+    safe: list[str] = []
+    for note in notes:
+        text = " ".join(str(note).split())[:240]
+        if text and text not in safe:
+            safe.append(text)
+        if len(safe) >= 5:
+            break
+    return safe
 
 
 def _app_segments(timeline: list[dict[str, str]]) -> list[dict[str, Any]]:

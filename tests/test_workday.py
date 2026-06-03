@@ -29,6 +29,8 @@ def test_workday_start_stop_writes_summary_without_raw_jsonl(tmp_path, monkeypat
                 "60",
                 "--heartbeat-ms",
                 "250",
+                "--checkpoint-seconds",
+                "1",
                 "--session-id",
                 "today",
             ]
@@ -56,14 +58,14 @@ def test_workday_start_stop_writes_summary_without_raw_jsonl(tmp_path, monkeypat
     assert "只读取本地 session metadata" in text_status
     assert "Watcher burst should write one deterministic capture" not in text_status
     assert "visible_text" not in text_status
+    _wait_for_checkpoint(capsys)
 
     assert main(["workday", "stop", "--wait-seconds", "15"]) == 0
     stopped = json.loads(capsys.readouterr().out)
     assert stopped["active"] is False
     assert stopped["stopped"] is True
     assert stopped["summary_available"] is True
-    assert stopped["summary_source"] == "final_result"
-    assert stopped["recovered_from_capture_buffer"] is False
+    assert stopped["summary_source"] in {"final_result", "checkpoint", "capture_buffer_recovery"}
     assert stopped["summary"]["session_id"] == "today"
     assert stopped["summary"]["captures_written"] == 1
     assert stopped["summary"]["mode"] == "workday"
@@ -107,14 +109,16 @@ def test_workday_stop_can_print_chinese_text_summary(tmp_path, monkeypatch, caps
     )
     text_summary = capsys.readouterr().out
 
-    assert "工作概览" in text_summary
+    assert "今日工作复盘" in text_summary
+    assert "今日工作结论" in text_summary
+    assert "工作进行情况" in text_summary
+    assert "明天改进建议" in text_summary
+    assert "待确认问题" in text_summary
+    assert "数据依据" in text_summary
     assert "text-stop-day" in text_summary
-    assert "时间范围" in text_summary
-    assert "应用活动" in text_summary
-    assert "效率建议" in text_summary
     assert "隐私边界" in text_summary
     assert "untrusted_observed_content" in text_summary
-    assert "未调用 LLM" in text_summary
+    assert "不调用 LLM" in text_summary
     assert "Watcher burst should write one deterministic capture" not in text_summary
     assert "visible_text" not in text_summary
     assert not (home / "workday-active.json").exists()
@@ -221,10 +225,52 @@ def test_workday_intent_execute_runs_existing_bounded_commands(tmp_path, monkeyp
 
     assert main(["workday", "intent", "停止工作并总结", "--execute", "--wait-seconds", "15"]) == 0
     text_summary = capsys.readouterr().out
-    assert "工作概览" in text_summary
+    assert "今日工作复盘" in text_summary
+    assert "今日工作结论" in text_summary
+    assert "工作进行情况" in text_summary
+    assert "明天改进建议" in text_summary
+    assert "数据依据" in text_summary
+    assert "工作概览" not in text_summary
     assert "intent-day" in text_summary
     assert "untrusted_observed_content" in text_summary
     assert "Watcher burst should write one deterministic capture" not in text_summary
+    assert not (home / "workday-active.json").exists()
+
+
+def test_workday_intent_start_phrase_can_carry_focus_note(tmp_path, monkeypatch, capsys):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    fake_watcher = _write_sleeping_watcher(tmp_path)
+
+    assert (
+        main(
+            [
+                "workday",
+                "intent",
+                "开始记录工作：今天主要做论文整理和项目A需求文档",
+                "--execute",
+                "--watcher",
+                sys.executable,
+                "--watcher-arg",
+                str(fake_watcher),
+                "--duration",
+                "60",
+                "--heartbeat-ms",
+                "250",
+                "--session-id",
+                "focus-day",
+            ]
+        )
+        == 0
+    )
+    started = json.loads(capsys.readouterr().out)
+    assert started["active"] is True
+    assert started["operator_focus"] == ["今天主要做论文整理和项目A需求文档"]
+
+    assert main(["workday", "intent", "停止工作并总结", "--execute", "--wait-seconds", "15"]) == 0
+    text_summary = capsys.readouterr().out
+    assert "今日关注事项" in text_summary
+    assert "论文整理和项目A需求文档" in text_summary
     assert not (home / "workday-active.json").exists()
 
 
@@ -293,6 +339,8 @@ def test_workday_summarize_reads_named_session(tmp_path, monkeypatch, capsys):
                 "60",
                 "--heartbeat-ms",
                 "250",
+                "--checkpoint-seconds",
+                "1",
                 "--session-id",
                 "summary-check",
             ]
@@ -300,6 +348,7 @@ def test_workday_summarize_reads_named_session(tmp_path, monkeypatch, capsys):
         == 0
     )
     capsys.readouterr()
+    _wait_for_checkpoint(capsys)
     assert main(["workday", "stop", "--wait-seconds", "15"]) == 0
     capsys.readouterr()
 
@@ -314,17 +363,40 @@ def test_workday_summarize_reads_named_session(tmp_path, monkeypatch, capsys):
         == 0
     )
     text_summary = capsys.readouterr().out
-    assert "工作概览" in text_summary
+    assert "今日工作复盘" in text_summary
+    assert "今日工作结论" in text_summary
+    assert "工作进行情况" in text_summary
+    assert "明天改进建议" in text_summary
+    assert "待确认问题" in text_summary
+    assert "数据依据" in text_summary
     assert "summary-check" in text_summary
-    assert "时间范围" in text_summary
-    assert "应用活动" in text_summary
-    assert "效率建议" in text_summary
     assert "隐私边界" in text_summary
     assert "untrusted_observed_content" in text_summary
-    assert "未调用 LLM" in text_summary
+    assert "不调用 LLM" in text_summary
     assert "截图/OCR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具" in text_summary
     assert "Watcher burst should write one deterministic capture" not in text_summary
     assert "visible_text" not in text_summary
+
+    assert (
+        main(
+            [
+                "workday",
+                "summarize",
+                "summary-check",
+                "--format",
+                "text",
+                "--language",
+                "zh-CN",
+                "--summary-style",
+                "technical",
+            ]
+        )
+        == 0
+    )
+    technical_summary = capsys.readouterr().out
+    assert "工作概览" in technical_summary
+    assert "应用活动" in technical_summary
+    assert "数据看板" in technical_summary
 
 
 def test_workday_doctor_reports_no_active_session_without_capture_artifacts(
@@ -477,6 +549,51 @@ def test_workday_stop_recovers_summary_from_capture_buffer_when_result_is_missin
     assert list(home.rglob("*.jsonl")) == []
 
 
+def test_workday_runner_failure_writes_checkpoint_fallback_result(tmp_path, monkeypatch, capsys):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    fake_watcher = _write_checkpoint_then_bad_watcher(tmp_path)
+    logs = home / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    result_file = logs / "runner-fallback.result.json"
+    checkpoint_file = logs / "runner-fallback.checkpoint.json"
+
+    assert (
+        main(
+            [
+                "workday",
+                "run",
+                "--session-id",
+                "runner-fallback",
+                "--stop-file",
+                str(logs / "runner-fallback.stop"),
+                "--result-file",
+                str(result_file),
+                "--checkpoint-file",
+                str(checkpoint_file),
+                "--watcher-arg",
+                sys.executable,
+                "--watcher-arg",
+                str(fake_watcher),
+                "--duration",
+                "5",
+                "--checkpoint-seconds",
+                "1",
+            ]
+        )
+        == 0
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert payload["summary_available"] is True
+    assert payload["summary_source"] == "checkpoint"
+    assert payload["runner_status"] == "failed_recovered"
+    assert payload["runner_error"] == "workday_runner_failed_before_final_result"
+    assert payload["summary"]["session_id"] == "runner-fallback"
+    assert result_file.is_file()
+    assert checkpoint_file.is_file()
+
+
 def test_workday_text_summary_explains_error_signals_without_observed_text():
     session = {
         "session_id": "explain-errors",
@@ -522,16 +639,151 @@ def test_workday_text_summary_explains_error_signals_without_observed_text():
         },
     }
 
-    text = format_workday_text_summary(session)
+    text = format_workday_text_summary(session, project_snapshot={"projects": []})
 
-    assert "错误信号" in text
-    assert "命中次数: 2" in text
-    assert "Codex: 2" in text
-    assert "failed: 2" in text
-    assert "capture-abc123def456" in text
-    assert "observed text" not in text
+    assert "今日工作复盘" in text
+    assert "2 次错误信号" in text
+    assert "命中次数: 2" not in text
+    assert "Codex: 2" not in text
+    assert "failed: 2" not in text
+    assert "capture-abc123def456" not in text
     assert "test_payment_flow" not in text
     assert "ghp_winchroniclecanary1234567890ABCD" not in text
+
+    technical_text = format_workday_text_summary(
+        session,
+        project_snapshot={"projects": []},
+        summary_style="technical",
+    )
+
+    assert "错误信号" in technical_text
+    assert "命中次数: 2" in technical_text
+    assert "Codex: 2" in technical_text
+    assert "failed: 2" in technical_text
+    assert "capture-abc123def456" in technical_text
+    assert "observed text" not in technical_text
+    assert "test_payment_flow" not in technical_text
+    assert "ghp_winchroniclecanary1234567890ABCD" not in technical_text
+
+
+def test_workday_text_summary_includes_allowlisted_project_metadata_only():
+    session = {
+        "session_id": "useful-summary",
+        "mode": "workday",
+        "trust": "untrusted_observed_content",
+        "captures_written": 12,
+        "duplicates_skipped": 1,
+        "denylisted_skipped": 0,
+        "excluded_skipped": 0,
+        "started_at": "2026-04-25T09:00:00+08:00",
+        "ended_at": "2026-04-25T10:00:00+08:00",
+        "duration_seconds": 3600,
+        "source_capture_paths": [],
+        "app_segments": [
+            {"app_name": "Codex", "title": "WinChronicle", "capture_count": 8},
+            {"app_name": "Chrome", "title": "Docs", "capture_count": 4},
+        ],
+        "suggestions": ["Multiple apps appeared in the session; review context switches."],
+        "storage_policy": {
+            "raw_watcher_jsonl_saved": False,
+            "html_report_contains_visible_text": False,
+            "max_app_segments": 500,
+            "source_capture_paths_limit": 1000,
+        },
+        "storage_usage": {"session_json_bytes": 2048, "html_report_bytes": 1024},
+        "error_signals": {"total_count": 0},
+    }
+    project_snapshot = {
+        "projects": [
+            {
+                "name": "WinChronicle",
+                "exists": True,
+                "is_git_repo": True,
+                "branch": "main",
+                "changed_file_count": 2,
+                "changed_files": ["src/winchronicle/workday.py", "tests/test_workday.py"],
+                "diff_stat": {"insertions": 30, "deletions": 4},
+                "recent_commits": [{"hash": "abc1234", "subject": "Improve workday summary"}],
+            }
+        ]
+    }
+
+    text = format_workday_text_summary(
+        session,
+        project_snapshot=project_snapshot,
+        confirmation_notes=["今天主要在改进工作日总结质量。"],
+    )
+
+    assert "今日工作复盘" in text
+    assert "今日工作结论" in text
+    assert "主要推进了 WinChronicle" in text
+    assert "工作进行情况" in text
+    assert "进行中" in text
+    assert "明天改进建议" in text
+    assert "待确认问题" in text
+    assert "数据依据" in text
+    assert "今天主要在改进工作日总结质量" in text
+    assert "SECRET_CONTENT_SHOULD_NOT_APPEAR" not in text
+    assert "full diff" in text
+    assert "不读取文件内容" in text
+    assert text.index("今日工作结论") < text.index("数据依据")
+
+
+def test_workday_text_summary_turns_unregistered_app_activity_into_questions():
+    session = {
+        "session_id": "mixed-work",
+        "mode": "workday",
+        "trust": "untrusted_observed_content",
+        "operator_focus": ["今天主要做 WinChronicle、论文整理和项目A需求文档"],
+        "captures_written": 30,
+        "duplicates_skipped": 1,
+        "denylisted_skipped": 0,
+        "excluded_skipped": 0,
+        "started_at": "2026-04-25T09:00:00+08:00",
+        "ended_at": "2026-04-25T11:00:00+08:00",
+        "duration_seconds": 7200,
+        "source_capture_paths": [],
+        "app_segments": [
+            {"app_name": "Codex", "title": "WinChronicle", "capture_count": 12},
+            {"app_name": "WINWORD", "title": "Document", "capture_count": 9},
+            {"app_name": "chrome", "title": "Research", "capture_count": 7},
+            {"app_name": "explorer", "title": "Folder", "capture_count": 2},
+        ],
+        "suggestions": [],
+        "storage_policy": {
+            "raw_watcher_jsonl_saved": False,
+            "html_report_contains_visible_text": False,
+            "max_app_segments": 500,
+            "source_capture_paths_limit": 1000,
+        },
+        "storage_usage": {"session_json_bytes": 2048, "html_report_bytes": 1024},
+        "error_signals": {"total_count": 0},
+    }
+    project_snapshot = {
+        "projects": [
+            {
+                "name": "WinChronicle",
+                "exists": True,
+                "is_git_repo": True,
+                "branch": "main",
+                "changed_file_count": 2,
+                "changed_files": ["src/winchronicle/workday.py", "tests/test_workday.py"],
+                "diff_stat": {"insertions": 30, "deletions": 4},
+                "recent_commits": [],
+            }
+        ]
+    }
+
+    text = format_workday_text_summary(session, project_snapshot=project_snapshot)
+
+    assert "今日关注事项" in text
+    assert "论文整理和项目A需求文档" in text
+    assert "未登记工作线索" in text
+    assert "WINWORD" in text
+    assert "chrome" in text
+    assert "这些应用活动是否对应其它项目、写作、调研或沟通工作" in text
+    assert "Document" not in text
+    assert "Research" not in text
 
 
 def _write_sleeping_watcher(tmp_path: Path) -> Path:
@@ -572,10 +824,40 @@ def _write_slow_repeating_watcher(tmp_path: Path) -> Path:
     return fake_watcher
 
 
+def _write_checkpoint_then_bad_watcher(tmp_path: Path) -> Path:
+    fake_watcher = tmp_path / "fake_checkpoint_then_bad_watcher.py"
+    fake_watcher.write_text(
+        "\n".join(
+            [
+                "from pathlib import Path",
+                "import sys",
+                "import time",
+                f"sys.stdout.write(Path({str(WATCHER_FIXTURE)!r}).read_text(encoding='utf-8'))",
+                "sys.stdout.flush()",
+                "time.sleep(1.2)",
+                "print('{not-json', flush=True)",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    return fake_watcher
+
+
 def _sleep(seconds: float) -> None:
     import time
 
     time.sleep(seconds)
+
+
+def _wait_for_checkpoint(capsys) -> dict[str, object]:
+    status: dict[str, object] = {}
+    for _ in range(30):
+        assert main(["workday", "status"]) == 0
+        status = json.loads(capsys.readouterr().out)
+        if status.get("checkpoint_available"):
+            return status
+        _sleep(0.2)
+    raise AssertionError("checkpoint was not created")
 
 
 def _check(payload: dict[str, object], name: str) -> dict[str, object]:

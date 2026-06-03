@@ -60,6 +60,11 @@
       "type": "array",
       "items": { "type": "string" }
     },
+    "operator_focus": {
+      "type": "array",
+      "maxItems": 5,
+      "items": { "type": "string", "maxLength": 240 }
+    },
     "error_signals": {
       "type": "object",
       "additionalProperties": false,

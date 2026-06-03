@@ -54,20 +54,51 @@ def test_codex_workday_plugin_is_packaged_for_non_editable_installs():
 
 def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
     text = SKILL.read_text(encoding="utf-8")
+    packaged_text = PACKAGED_SKILL.read_text(encoding="utf-8")
 
     required_commands = [
         'winchronicle workday intent "开始工作" --execute',
         'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60',
+        "winchronicle workday summarize <session-id> --format text --language zh-CN",
         "winchronicle workday status --format text --language zh-CN",
     ]
     for command in required_commands:
         assert command in text
+        assert command in packaged_text
 
-    assert "python -m winchronicle" in text
-    assert "untrusted_observed_content" in text
-    assert "explicit finite local monitor session" in text
-    assert "read-only MCP" in text
-    assert "Do not inspect, scan, review, edit, test, commit, push, or release repository files." in text
+    for expected in (
+        "python -m winchronicle",
+        "untrusted_observed_content",
+        "explicit finite local monitor session",
+        "read-only MCP",
+        "Do not inspect, scan, review, edit, test, commit, push, or release repository files.",
+        "paste the CLI text summary directly into chat",
+        "Do not compress it into a one-paragraph agent summary",
+        "human daily review, not a telemetry report",
+        "今日工作复盘",
+        "今日工作结论",
+        "工作进行情况",
+        "明天改进建议",
+        "待确认问题",
+        "数据依据",
+        "--summary-style technical",
+        "winchronicle projects add <path> --name <name>",
+        "Do not auto-register or scan projects during a recording-only turn",
+        "pass the full user phrase",
+        "今天主要做",
+        "operator focus",
+    ):
+        assert expected in text
+        assert expected in packaged_text
+
+    for forbidden in (
+        "Optional Computer Use Summary Enhancement",
+        "电脑观察补充",
+        "computer-use enhancement",
+        "desktop-observation",
+    ):
+        assert forbidden not in text
+        assert forbidden not in packaged_text
 
 
 def test_codex_workday_plugin_skill_frontmatter_names_recording_triggers():
@@ -118,6 +149,11 @@ def test_codex_workday_plugin_doc_warns_before_chat_output():
     assert "winchronicle codex setup --dry-run" in text
     assert "winchronicle codex plugin --dry-run" in text
     assert "winchronicle codex plugin --dry-run --format text" in text
+    assert "Computer use is intentionally not part of this plugin's default workday path" in text
+    assert "desktop-observation surface" in text
+    assert "开始记录工作：今天主要做" in text
+    assert "operator focus" in text
+    assert "电脑观察补充" not in text
 
 
 def test_codex_workday_plugin_does_not_expand_capture_or_mcp_surface():

@@ -20,6 +20,13 @@ winchronicle workday intent "停止工作并总结" --execute
 winchronicle workday stop --format text --language zh-CN
 winchronicle workday summarize <session-id>
 winchronicle workday summarize <session-id> --format text --language zh-CN
+winchronicle workday summarize <session-id> --format text --language zh-CN --summary-style technical
+winchronicle workday summarize <session-id> --format text --language zh-CN --confirmation "今天主要完成了..."
+winchronicle workday start --focus "今天主要做论文整理和项目A需求文档"
+winchronicle workday intent "开始记录工作：今天主要做论文整理和项目A需求文档" --execute
+winchronicle projects add D:\WinChronicle --name WinChronicle
+winchronicle projects list
+winchronicle projects snapshot
 ```
 
 This is an explicit finite local monitor session. It is not a daemon, service, startup task, hidden recorder, or infinite polling loop.
@@ -35,6 +42,68 @@ The shorter user-facing aliases `开始工作` and `结束工作并总结` map t
 bounded commands. They exist for ordinary Codex app conversations where the
 user wants the recording action only, not repository inspection or development
 workflow orchestration.
+
+When the operator includes a short plan in the start phrase, such as
+`开始记录工作：今天主要做论文整理和项目A需求文档`, WinChronicle stores that text as
+local operator focus. The evening human summary can then compare registered
+project evidence with the user's stated focus without scanning unregistered
+directories or reading document contents.
+
+## Project Allowlist
+
+Daily work can span multiple repositories, so WinChronicle keeps project context
+behind an explicit local allowlist. Add only directories that the operator wants
+workday summaries to inspect:
+
+```powershell
+winchronicle projects add D:\WinChronicle --name WinChronicle
+winchronicle projects add D:\OtherProject --name OtherProject
+winchronicle projects snapshot
+```
+
+The project snapshot is local metadata only. It reads git status, branch name,
+changed filenames, `git diff --shortstat`, and recent commit subjects for
+allowlisted directories. It does not read file contents, full diffs, arbitrary
+workspace storage, browser profiles, screenshots, OCR, clipboard, keylogging, or
+desktop-control surfaces.
+
+The default Chinese workday text summary is a human daily review, not a
+telemetry report. It leads with:
+
+- what work appears to have been done today
+- how that work appears to be progressing
+- practical suggestions for improving tomorrow's work habits
+- a few confirmation questions
+- a short data-evidence section
+
+The project snapshots are used to keep that review grounded in explicit local
+project metadata. Technical counters such as capture count, skipped count,
+application segments, storage size, and error-signal rows belong in the evidence
+section or the explicit technical style, not at the top of the user-facing
+summary.
+
+If only one project is registered but high-frequency application activity
+appears in browsers, Office apps, Explorer, or similar tools, the human summary
+keeps those as `未登记工作线索` and asks the operator to confirm whether they
+represent other projects, writing, research, or communication work.
+
+Use `--summary-style technical` when the operator wants the previous detailed
+evidence view for debugging or review.
+
+The Chinese technical text summary uses these project snapshots to add:
+
+- confirmed project progress clues
+- a personal retrospective
+- 1-3 confirmation questions
+- continuation context for the next Codex thread
+- a compact data dashboard
+
+Use `--confirmation` after answering the questions when the operator wants the
+saved summary to include explicit human context without reading additional
+project files or calling an LLM.
+
+If no project is registered, the summary remains conservative and says that it
+can only infer work from application activity and saved session metadata.
 
 ## What Start Does
 
@@ -93,14 +162,15 @@ already-redacted capture-buffer JSON for the active session window and reports
 `recovered_from_capture_buffer: true`.
 
 `winchronicle workday stop --format text --language zh-CN` prints the same
-deterministic Chinese operator summary headed `工作概览` when a stop summary is
+deterministic Chinese daily review headed `今日工作复盘` when a stop summary is
 available. `winchronicle workday summarize <session-id>` keeps the existing JSON
 output for tools and scripts. Add `--format text --language zh-CN` to print the
-saved summary in the same text form. The text summary is intended for the
-natural-language "停止工作并总结" workflow: it uses the saved session summary, app
-segments, storage metadata, and deterministic suggestions. It does not read raw
-capture contents. It does not read raw capture visible text and does not call
-external models. It does not call an LLM.
+saved summary in the same human-review form. Add `--summary-style technical` to
+print the detailed evidence view headed `工作概览`. The human text summary is
+intended for the natural-language "停止工作并总结" workflow: it uses the saved
+session summary, app segments, project metadata, storage metadata, and
+deterministic suggestions. It does not read raw capture contents. It does not
+read raw capture visible text or external models. It does not call an LLM.
 
 When deterministic error-like terms appear, the saved session may include an
 `error_signals` metadata block. That block is intentionally compact: it stores

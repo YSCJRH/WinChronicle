@@ -16,10 +16,44 @@ When the user says `开始工作` or `开始记录工作`, run only:
 winchronicle workday intent "开始工作" --execute
 ```
 
+If the user includes today's intended tasks in the same message, pass the full user phrase so WinChronicle can store it as local operator focus for the final summary:
+
+```powershell
+winchronicle workday intent "开始记录工作：今天主要做论文整理和项目A需求文档" --execute
+```
+
 When the user says `结束工作并总结` or `停止工作并总结`, run only:
 
 ```powershell
 winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60
+```
+
+After the stop command returns, paste the CLI text summary directly into chat.
+Do not compress it into a one-paragraph agent summary. The default summary is a
+human daily review, not a telemetry report. Preserve these sections when they
+are present:
+
+- `今日工作复盘`
+- `今日工作结论`
+- `工作进行情况`
+- `明天改进建议`
+- `待确认问题`
+- `数据依据`
+
+If the stop output says a summary exists but does not include `今日工作复盘` or
+`待确认问题`, run:
+
+```powershell
+winchronicle workday summarize <session-id> --format text --language zh-CN
+```
+
+Then paste that full text summary instead of rewriting it. The questions are
+part of the product workflow; do not answer them for the user.
+
+Use the technical evidence view only when the user asks for debugging details:
+
+```powershell
+winchronicle workday summarize <session-id> --format text --language zh-CN --summary-style technical
 ```
 
 When the user asks for current workday recording state, run only:
@@ -45,6 +79,16 @@ that recording started, show recording status, stop recording, or summarize a
 finished workday session. It must not become a repository audit or coding task
 unless the user explicitly asks to inspect, modify, test, commit, push, release,
 or otherwise work on source files.
+
+For better summaries, the user may explicitly register project directories with:
+
+```powershell
+winchronicle projects add <path> --name <name>
+```
+
+Do not auto-register or scan projects during a recording-only turn. If no
+projects are registered, explain briefly that project-level progress cannot be
+distinguished yet.
 
 ## Operating Boundary
 

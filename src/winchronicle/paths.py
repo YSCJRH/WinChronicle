@@ -35,6 +35,7 @@ def state_paths(home: Path | str | None = None) -> dict[str, Path]:
         "reports": root / "reports",
         "sessions": root / "sessions",
         "logs": root / "logs",
+        "projects": root / "projects.json",
         "workday_active": root / "workday-active.json",
     }
 

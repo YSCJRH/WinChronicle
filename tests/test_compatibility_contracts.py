@@ -28,6 +28,7 @@ EXPECTED_CLI_COMMANDS = [
     "mcp-stdio",
     "monitor",
     "privacy-check",
+    "projects",
     "search-captures",
     "search-memory",
     "status",

@@ -15,6 +15,7 @@ from typing import Any, Sequence
 
 from .paths import ensure_state, state_paths
 from .privacy import DISABLED_SURFACE_STATUS, privacy_contract_payload
+from .projects import snapshot_projects
 from .session import (
     MonitorSessionState,
     append_monitor_records,
@@ -63,6 +64,7 @@ def start_workday(
     checkpoint_seconds: int = DEFAULT_CHECKPOINT_SECONDS,
     capture_on_start: bool = True,
     exclude_apps: Sequence[str] = (),
+    operator_focus: Sequence[str] = (),
 ) -> dict[str, Any]:
     if duration_seconds < 0 or duration_seconds > MAX_DURATION_SECONDS:
         raise WorkdayError(f"duration must be between 0 and {MAX_DURATION_SECONDS} seconds")
@@ -124,6 +126,9 @@ def start_workday(
         runner_args.append("--capture-on-start")
     for app in exclude_apps:
         runner_args.extend(["--exclude-app", app])
+    focus_notes = _safe_focus_notes(operator_focus)
+    for note in focus_notes:
+        runner_args.extend(["--focus", note])
 
     env = os.environ.copy()
     env["WINCHRONICLE_HOME"] = str(paths["home"])
@@ -159,6 +164,8 @@ def start_workday(
         "capture_surface": CAPTURE_SURFACE,
         "bounded": True,
     }
+    if focus_notes:
+        active["operator_focus"] = focus_notes
     _write_json(active_path, active)
     return active
 
@@ -179,6 +186,7 @@ def run_workday(
     checkpoint_seconds: int,
     capture_on_start: bool,
     exclude_apps: Sequence[str],
+    operator_focus: Sequence[str] = (),
 ) -> dict[str, Any]:
     paths = ensure_state(home)
     command = _watcher_command(
@@ -226,11 +234,18 @@ def run_workday(
                 session_id=session_id,
                 state=state,
                 checkpoint_file=checkpoint_file,
+                operator_focus=operator_focus,
             )
             last_checkpoint = time.monotonic()
         _drain(stderr_queue, [])
         if stop_file.exists():
             stop_requested = True
+            _drain_stdout_until_quiet(
+                stdout_queue,
+                paths["home"],
+                state=state,
+                exclude_apps=exclude_apps,
+            )
             _terminate_process_tree(process.pid)
             break
         if duration_seconds >= 0 and time.monotonic() > deadline + 5:
@@ -259,6 +274,7 @@ def run_workday(
         session_id=session_id,
         mode="workday",
         state=state,
+        operator_focus=operator_focus,
     )
     payload = {
         "active": False,
@@ -279,7 +295,62 @@ def run_workday(
         state=state,
         checkpoint_file=checkpoint_file,
         payload=payload,
+        operator_focus=operator_focus,
     )
+    return payload
+
+
+def recover_workday_runner_failure(
+    *,
+    session_id: str,
+    result_file: Path,
+    checkpoint_file: Path | None = None,
+    home: Path | str | None = None,
+    stopped: bool = False,
+) -> dict[str, Any]:
+    paths = ensure_state(home)
+    summary_source = None
+    summary = _summary_from_payload(_read_json(checkpoint_file)) if checkpoint_file else None
+    if summary is not None:
+        summary_source = "checkpoint"
+
+    recovered = False
+    if summary is None:
+        active = _read_json(paths["workday_active"]) or {}
+        started_at = str(active.get("started_at", ""))
+        if started_at:
+            try:
+                recovered_result = recover_session_from_capture_buffer(
+                    paths["home"],
+                    session_id=session_id,
+                    started_at=started_at,
+                    ended_at=datetime.now().astimezone().isoformat(timespec="seconds"),
+                )
+                summary = recovered_result.session
+                summary_source = "capture_buffer_recovery"
+                recovered = True
+            except Exception:
+                pass
+
+    if summary is None:
+        summary = _read_session_or_none(session_id, paths["home"])
+        if summary is not None:
+            summary_source = "session_file"
+
+    payload = {
+        "active": False,
+        "stopped": stopped,
+        "summary_available": summary is not None,
+        "summary_source": summary_source,
+        "recovered_from_capture_buffer": recovered,
+        "summary": summary,
+        "runner_status": "failed_recovered" if summary is not None else "failed_unrecovered",
+        "runner_error": "workday_runner_failed_before_final_result",
+        "trust": ACTIVE_TRUST,
+        "capture_surface": CAPTURE_SURFACE,
+    }
+    _attach_focus_to_payload(payload, _active_focus_notes(paths["workday_active"]))
+    _write_json(result_file, payload)
     return payload
 
 
@@ -427,12 +498,13 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
 
     active_path.unlink(missing_ok=True)
     if result:
+        _attach_focus_to_payload(result, _safe_focus_notes(active.get("operator_focus", [])))
         return {
             **result,
             "active": False,
             "stopped": True,
-            "summary_source": "final_result",
-            "recovered_from_capture_buffer": False,
+            "summary_source": result.get("summary_source") or "final_result",
+            "recovered_from_capture_buffer": bool(result.get("recovered_from_capture_buffer", False)),
         }
     summary_source = None
     checkpoint_summary = _summary_from_payload(_read_json(Path(active.get("checkpoint_file", ""))))
@@ -463,7 +535,7 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
         "stopped": True,
         "summary_available": summary is not None,
         "summary_source": summary_source,
-        "summary": summary,
+        "summary": _with_focus(summary, _safe_focus_notes(active.get("operator_focus", []))),
         "recovered_from_capture_buffer": recovered,
         "trust": ACTIVE_TRUST,
         "capture_surface": CAPTURE_SURFACE,
@@ -476,6 +548,8 @@ def summarize_workday(
     *,
     output_format: str = "json",
     language: str = "zh-CN",
+    confirmation_notes: Sequence[str] = (),
+    summary_style: str = "human",
 ) -> dict[str, Any] | str:
     paths = state_paths(home)
     session = read_session(identifier, paths["home"])
@@ -485,10 +559,78 @@ def summarize_workday(
         raise WorkdayError("workday summary format must be json or text")
     if language != "zh-CN":
         raise WorkdayError("workday text summaries currently support only zh-CN")
-    return format_workday_text_summary(session)
+    return format_workday_text_summary(
+        session,
+        project_snapshot=snapshot_projects(paths["home"]),
+        confirmation_notes=confirmation_notes,
+        summary_style=summary_style,
+    )
 
 
-def format_workday_text_summary(session: dict[str, Any]) -> str:
+def format_workday_text_summary(
+    session: dict[str, Any],
+    *,
+    project_snapshot: dict[str, Any] | None = None,
+    confirmation_notes: Sequence[str] = (),
+    summary_style: str = "human",
+) -> str:
+    if project_snapshot is None:
+        project_snapshot = _safe_project_snapshot()
+    if summary_style == "technical":
+        return _format_workday_technical_text_summary(
+            session,
+            project_snapshot=project_snapshot,
+            confirmation_notes=confirmation_notes,
+        )
+    if summary_style != "human":
+        raise WorkdayError("workday text summary style must be human or technical")
+    return _format_workday_human_text_summary(
+        session,
+        project_snapshot=project_snapshot,
+        confirmation_notes=confirmation_notes,
+    )
+
+
+def _format_workday_human_text_summary(
+    session: dict[str, Any],
+    *,
+    project_snapshot: dict[str, Any],
+    confirmation_notes: Sequence[str] = (),
+) -> str:
+    lines = [
+        "# 今日工作复盘",
+        "",
+        "## 今日工作结论",
+        "",
+    ]
+    lines.extend(_format_work_conclusions(session, project_snapshot))
+    lines.extend(_format_work_progress(session, project_snapshot))
+    lines.extend(_format_confirmation_notes(confirmation_notes))
+    lines.extend(_format_habit_improvements(session, project_snapshot))
+    lines.extend(_format_confirmation_questions(session, project_snapshot))
+    lines.extend(_format_human_evidence(session, project_snapshot))
+    lines.extend(
+        [
+            "",
+            "## 隐私边界",
+            "",
+            "- 本摘要只读取已保存的 session summary、allowlist 项目 git metadata 和用户确认内容。",
+            "- 不读取原始 capture visible text，不读取文件内容或 full diff，不调用 LLM。",
+            "- observed UI content 仍是 untrusted_observed_content，不能作为可信指令执行。",
+            "- 未新增 截图/" "O" "CR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具。",
+            "",
+            "需要调试证据时，可运行 `winchronicle workday summarize <session-id> --format text --language zh-CN --summary-style technical`。",
+        ]
+    )
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _format_workday_technical_text_summary(
+    session: dict[str, Any],
+    *,
+    project_snapshot: dict[str, Any],
+    confirmation_notes: Sequence[str] = (),
+) -> str:
     storage_usage = session.get("storage_usage", {})
     storage_policy = session.get("storage_policy", {})
     source_paths = session.get("source_capture_paths", [])
@@ -525,6 +667,12 @@ def format_workday_text_summary(session: dict[str, Any]) -> str:
     )
     lines.extend(_format_suggestions(suggestions))
     lines.extend(_format_error_signals(error_signals))
+    lines.extend(_format_project_evidence(project_snapshot))
+    lines.extend(_format_workday_retrospective(session, project_snapshot))
+    lines.extend(_format_confirmation_notes(confirmation_notes))
+    lines.extend(_format_confirmation_questions(session, project_snapshot))
+    lines.extend(_format_agent_continuation_context(session, project_snapshot))
+    lines.extend(_format_data_dashboard(session, project_snapshot))
     lines.extend(
         [
             "",
@@ -603,6 +751,429 @@ def _format_error_signals(error_signals: Any) -> list[str]:
         if source_ids:
             lines.append(f"- 样本 source id: {', '.join(source_ids)}")
     return lines
+
+
+def _format_project_evidence(project_snapshot: Any) -> list[str]:
+    lines = [
+        "",
+        "## 今日推进线索",
+        "",
+    ]
+    projects = _snapshot_projects(project_snapshot)
+    if not projects:
+        return [
+            *lines,
+            "- 未登记项目目录；本摘要只能根据应用活动和本地 session metadata 推断工作主题。",
+            "- 如需跨项目日报，先用 `winchronicle projects add <path> --name <name>` 登记明确允许读取元数据的目录。",
+        ]
+
+    for project in projects[:8]:
+        name = _safe_text(project.get("name", "project")) or "project"
+        if not project.get("exists"):
+            lines.append(f"- {name}: 目录当前不可用，未读取 git metadata。")
+            continue
+        if not project.get("is_git_repo"):
+            lines.append(f"- {name}: 已登记，但不是 git 工作树；未读取文件内容。")
+            continue
+        branch = _safe_text(project.get("branch", "")) or "unknown"
+        changed_count = _safe_int(project.get("changed_file_count"))
+        changed_files = project.get("changed_files", [])
+        diff_stat = project.get("diff_stat", {})
+        recent = project.get("recent_commits", [])
+        details = [f"branch {branch}", f"{changed_count} 个变更文件"]
+        if isinstance(diff_stat, dict):
+            insertions = _safe_int(diff_stat.get("insertions"))
+            deletions = _safe_int(diff_stat.get("deletions"))
+            if insertions or deletions:
+                details.append(f"+{insertions}/-{deletions}")
+        line = f"- {name}: " + "，".join(details)
+        if isinstance(changed_files, list) and changed_files:
+            filenames = ", ".join(_safe_text(path) for path in changed_files[:4])
+            line += f"；文件线索: {filenames}"
+        if isinstance(recent, list) and recent:
+            subject = _safe_text(recent[0].get("subject", "")) if isinstance(recent[0], dict) else ""
+            if subject:
+                line += f"；最近提交: {subject}"
+        lines.append(line)
+    if len(projects) > 8:
+        lines.append(f"- 另有 {len(projects) - 8} 个登记项目未展开。")
+    lines.append("- 边界: 只读取 allowlist 项目的 git metadata、文件名、diff shortstat 和 commit 标题；不读取文件内容或 full diff。")
+    return lines
+
+
+def _format_work_conclusions(session: dict[str, Any], project_snapshot: Any) -> list[str]:
+    projects = _snapshot_projects(project_snapshot)
+    changed_projects = [project for project in projects if _safe_int(project.get("changed_file_count")) > 0]
+    apps = _top_app_names(session.get("app_segments", []))
+    error_count = _error_signal_count(session)
+    focus_notes = _session_focus_notes(session)
+    lines: list[str] = []
+
+    if focus_notes:
+        lines.append(f"- 今日关注事项: {'；'.join(focus_notes)}。")
+
+    if changed_projects:
+        for project in changed_projects[:3]:
+            name = _safe_text(project.get("name", "project")) or "project"
+            branch = _safe_text(project.get("branch", "")) or "unknown"
+            changed_count = _safe_int(project.get("changed_file_count"))
+            clues = _project_file_clues(project)
+            if clues:
+                lines.append(f"- 主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件，集中在 {clues}。")
+            else:
+                lines.append(f"- 主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件。")
+        if len(changed_projects) > 3:
+            lines.append(f"- 另有 {len(changed_projects) - 3} 个登记项目也出现了变更，建议结束时按项目补一句完成度。")
+    elif projects:
+        lines.append("- 已登记项目目录，但未看到明显 git 变更；今天可能偏阅读、沟通、调研、文档查看或尚未保存。")
+    else:
+        lines.append("- 今天有本地工作记录，但未登记项目目录；系统还不能可靠判断具体项目产出。")
+
+    if apps:
+        lines.append(f"- 工作环境主要集中在 {', '.join(apps[:5])}，说明当天混合了开发、资料查看或文档处理。")
+    if error_count:
+        lines.append(f"- 记录中出现 {error_count} 次错误信号；这提示今天可能包含调试或失败排查，但是否已解决需要确认。")
+    if _safe_int(session.get("captures_written")) == 0:
+        lines.append("- 本次没有可用 capture，建议用一句人工确认补充今天实际完成的事项。")
+    return lines or ["- 本次会话缺少足够线索，需要用户补充今天实际完成的事项。"]
+
+
+def _format_work_progress(session: dict[str, Any], project_snapshot: Any) -> list[str]:
+    lines = [
+        "",
+        "## 工作进行情况",
+        "",
+    ]
+    projects = _snapshot_projects(project_snapshot)
+    if not projects:
+        return [
+            *lines,
+            "- 项目维度: 未登记 allowlist 项目，暂不能区分具体项目进展。",
+            "- 状态判断: 只能确认有工作活动，不能确认完成度。",
+        ]
+
+    for project in projects[:5]:
+        name = _safe_text(project.get("name", "project")) or "project"
+        if not project.get("exists"):
+            lines.append(f"- {name}: 目录当前不可用，无法判断进展。")
+            continue
+        if not project.get("is_git_repo"):
+            lines.append(f"- {name}: 已登记但不是 git 工作树；只能确认被纳入观察范围，不能判断代码进展。")
+            continue
+        changed_count = _safe_int(project.get("changed_file_count"))
+        branch = _safe_text(project.get("branch", "")) or "unknown"
+        if changed_count:
+            diff_stat = project.get("diff_stat", {})
+            insertions = _safe_int(diff_stat.get("insertions")) if isinstance(diff_stat, dict) else 0
+            deletions = _safe_int(diff_stat.get("deletions")) if isinstance(diff_stat, dict) else 0
+            lines.append(f"- {name}: 进行中，`{branch}` 分支有 {changed_count} 个变更文件，规模约 +{insertions}/-{deletions}。")
+        else:
+            lines.append(f"- {name}: 未见未提交变更；可能已提交、偏阅读调研，或工作发生在其他项目。")
+
+    unregistered_apps = _unregistered_activity_apps(session)
+    if unregistered_apps:
+        lines.append(
+            f"- 未登记工作线索: {', '.join(unregistered_apps)} 出现较多，但未绑定到 allowlist 项目；可能对应写作、调研、沟通或文件整理，需要人工确认。"
+        )
+
+    error_count = _error_signal_count(session)
+    if error_count:
+        lines.append(f"- 阻塞线索: 有 {error_count} 次错误信号，建议确认它们是实际阻塞、已解决问题，还是网页/日志误报。")
+    return lines
+
+
+def _format_habit_improvements(session: dict[str, Any], project_snapshot: Any) -> list[str]:
+    app_segments = session.get("app_segments", [])
+    app_segment_count = len(app_segments) if isinstance(app_segments, list) else 0
+    lines = [
+        "",
+        "## 明天改进建议",
+        "",
+    ]
+    if not _snapshot_projects(project_snapshot):
+        lines.append("- 开始记录前先登记当天相关项目目录，否则日报只能停留在应用活动层面。")
+    if app_segment_count >= 20:
+        lines.append("- 把一天拆成 1-2 个任务块记录，减少跨应用切换后复盘困难。")
+    if _error_signal_count(session):
+        lines.append("- 遇到错误时顺手标注“已解决 / 未解决 / 误报”，晚上总结会更接近真实进展。")
+    if _safe_int(session.get("captures_written")) > 1000:
+        lines.append("- 长时间记录后先看项目进展和待确认问题，不要从 capture 数量判断工作质量。")
+    lines.append("- 结束工作时补一句“今天最重要的完成项”和“明天第一步”，比增加采集量更有价值。")
+    return lines
+
+
+def _format_human_evidence(session: dict[str, Any], project_snapshot: Any) -> list[str]:
+    apps = _top_app_names(session.get("app_segments", []))
+    projects = _snapshot_projects(project_snapshot)
+    changed_files = sum(_safe_int(project.get("changed_file_count")) for project in projects)
+    return [
+        "",
+        "## 数据依据",
+        "",
+        f"- 会话: {_safe_text(session.get('session_id', ''))}",
+        f"- 时间: {_safe_text(session.get('started_at', ''))} -> {_safe_text(session.get('ended_at', ''))}，约 {_format_duration(_safe_int(session.get('duration_seconds')))}。",
+        f"- 项目: {len(projects)} 个 allowlist 项目，{changed_files} 个变更文件；只读取 git metadata，不读取文件内容。",
+        f"- 应用线索: {', '.join(apps[:5]) if apps else '无明显应用线索'}。",
+        f"- 质量信号: {_error_signal_count(session)} 次错误信号，{len(session.get('app_segments', [])) if isinstance(session.get('app_segments'), list) else 0} 个应用片段。",
+        f"- 采集规模: {_safe_int(session.get('captures_written'))} 条 capture，{_skipped_total(session)} 条跳过；这些是依据，不是日报主体。",
+    ]
+
+
+def _project_file_clues(project: dict[str, Any]) -> str:
+    changed_files = project.get("changed_files", [])
+    if not isinstance(changed_files, list) or not changed_files:
+        return ""
+    buckets: list[str] = []
+    for path in [_safe_text(item) for item in changed_files[:8]]:
+        if path.startswith("docs/"):
+            bucket = "文档"
+        elif path.startswith("tests/"):
+            bucket = "测试"
+        elif path.startswith("plugins/") or "codex_plugins" in path:
+            bucket = "插件"
+        elif path.startswith("src/"):
+            bucket = "核心代码"
+        else:
+            bucket = path.split("/", 1)[0] if "/" in path else path
+        if bucket and bucket not in buckets:
+            buckets.append(bucket)
+    return "、".join(buckets[:4])
+
+
+def _error_signal_count(session: dict[str, Any]) -> int:
+    error_signals = session.get("error_signals")
+    if not isinstance(error_signals, dict):
+        return 0
+    return _safe_int(error_signals.get("total_count"))
+
+
+def _format_duration(seconds: int) -> str:
+    if seconds <= 0:
+        return "0 分钟"
+    hours, remainder = divmod(seconds, 3600)
+    minutes = max(1, round(remainder / 60)) if hours == 0 else round(remainder / 60)
+    if hours and minutes:
+        return f"{hours} 小时 {minutes} 分钟"
+    if hours:
+        return f"{hours} 小时"
+    return f"{minutes} 分钟"
+
+
+def _format_workday_retrospective(session: dict[str, Any], project_snapshot: Any) -> list[str]:
+    app_segments = session.get("app_segments", [])
+    apps = _top_app_names(app_segments)
+    project_count = len(_snapshot_projects(project_snapshot))
+    changed_project_count = _changed_project_count(project_snapshot)
+    error_count = _safe_int(session.get("error_signals", {}).get("total_count")) if isinstance(session.get("error_signals"), dict) else 0
+    lines = [
+        "",
+        "## 个人复盘",
+        "",
+    ]
+    if changed_project_count:
+        lines.append(f"- 可确认推进集中在 {changed_project_count} 个登记项目；优先按项目收尾比按应用收尾更清晰。")
+    elif project_count:
+        lines.append("- 已登记项目目录，但本轮没有明显 git 变更；工作可能偏阅读、沟通、调试或未保存。")
+    else:
+        lines.append("- 未登记项目目录，系统无法区分多个项目的真实推进，只能给出较粗的活动总结。")
+    if apps:
+        lines.append(f"- 主要应用线索: {', '.join(apps[:5])}。")
+    if isinstance(app_segments, list) and len(app_segments) >= 6:
+        lines.append("- 本轮上下文切换较多；下一轮可以按项目或任务块分段记录，减少复盘噪声。")
+    if error_count:
+        lines.append(f"- 检测到 {error_count} 次错误信号；建议在总结时补一句最终是否已解决、剩余阻塞是什么。")
+    if _safe_int(session.get("captures_written")) == 0:
+        lines.append("- 本轮没有可用 capture；需要补充一句人工工作结果，避免日报只有空壳。")
+    return lines
+
+
+def _format_confirmation_notes(confirmation_notes: Sequence[str]) -> list[str]:
+    notes = [_safe_text(note) for note in confirmation_notes if _safe_text(note)]
+    if not notes:
+        return []
+    lines = [
+        "",
+        "## 用户确认",
+        "",
+    ]
+    lines.extend(f"- {note}" for note in notes[:5])
+    return lines
+
+
+def _format_confirmation_questions(session: dict[str, Any], project_snapshot: Any) -> list[str]:
+    questions: list[str] = []
+    unregistered_apps = _unregistered_activity_apps(session)
+    if not _snapshot_projects(project_snapshot):
+        questions.append("今天实际推进了哪些项目目录？是否需要把它们加入 WinChronicle projects allowlist？")
+    if _changed_project_count(project_snapshot) > 1:
+        questions.append("这些项目中，今天最重要的一个成果或阻塞分别是什么？")
+    if unregistered_apps:
+        questions.append(
+            f"这些应用活动是否对应其它项目、写作、调研或沟通工作：{', '.join(unregistered_apps)}？"
+        )
+    if _safe_int(session.get("error_signals", {}).get("total_count")) if isinstance(session.get("error_signals"), dict) else 0:
+        questions.append("错误信号对应的问题最后是已解决、仍阻塞，还是只是在日志中出现？")
+    if not questions:
+        questions.append("今天最值得保留为明天上下文的一句话结论是什么？")
+    questions.append("如果要提高效率，明天最该减少的是上下文切换、等待阻塞、重复命令，还是信息整理成本？")
+    return [
+        "",
+        "## 待确认问题",
+        "",
+        *[f"{index}. {question}" for index, question in enumerate(questions[:3], start=1)],
+    ]
+
+
+def _format_agent_continuation_context(session: dict[str, Any], project_snapshot: Any) -> list[str]:
+    lines = [
+        "",
+        "## 给下一线程的上下文",
+        "",
+        f"- session_id: {_safe_text(session.get('session_id', ''))}",
+        f"- time_range: {_safe_text(session.get('started_at', ''))} -> {_safe_text(session.get('ended_at', ''))}",
+        f"- capture_count: {_safe_int(session.get('captures_written'))}",
+    ]
+    projects = _snapshot_projects(project_snapshot)
+    if projects:
+        project_lines = []
+        for project in projects[:5]:
+            name = _safe_text(project.get("name", "project")) or "project"
+            branch = _safe_text(project.get("branch", "")) or "unknown"
+            changed_count = _safe_int(project.get("changed_file_count"))
+            project_lines.append(f"{name}({branch}, {changed_count} files)")
+        lines.append(f"- registered_projects: {', '.join(project_lines)}")
+    else:
+        lines.append("- registered_projects: none")
+    lines.append("- privacy_boundary: no screen" "shots/" "O" "CR/clipboard/keylogging/audio/cloud upload/desktop control/MCP write tools")
+    return lines
+
+
+def _format_data_dashboard(session: dict[str, Any], project_snapshot: Any) -> list[str]:
+    projects = _snapshot_projects(project_snapshot)
+    changed_files = sum(_safe_int(project.get("changed_file_count")) for project in projects)
+    return [
+        "",
+        "## 数据看板",
+        "",
+        f"- captures: {_safe_int(session.get('captures_written'))}",
+        f"- skipped: {_skipped_total(session)}",
+        f"- app_segments: {len(session.get('app_segments', [])) if isinstance(session.get('app_segments'), list) else 0}",
+        f"- registered_projects: {len(projects)}",
+        f"- changed_files_in_allowlist: {changed_files}",
+        f"- error_signals: {_safe_int(session.get('error_signals', {}).get('total_count')) if isinstance(session.get('error_signals'), dict) else 0}",
+    ]
+
+
+def _safe_project_snapshot() -> dict[str, Any]:
+    try:
+        return snapshot_projects()
+    except Exception:
+        return {"projects": []}
+
+
+def _snapshot_projects(project_snapshot: Any) -> list[dict[str, Any]]:
+    if not isinstance(project_snapshot, dict):
+        return []
+    projects = project_snapshot.get("projects", [])
+    if not isinstance(projects, list):
+        return []
+    return [project for project in projects if isinstance(project, dict)]
+
+
+def _changed_project_count(project_snapshot: Any) -> int:
+    return sum(1 for project in _snapshot_projects(project_snapshot) if _safe_int(project.get("changed_file_count")) > 0)
+
+
+def _top_app_names(app_segments: Any) -> list[str]:
+    if not isinstance(app_segments, list):
+        return []
+    counts: dict[str, int] = {}
+    for segment in app_segments:
+        if not isinstance(segment, dict):
+            continue
+        app = _safe_text(segment.get("app_name", ""))
+        if not app:
+            continue
+        counts[app] = counts.get(app, 0) + _safe_int(segment.get("capture_count"))
+    return [
+        app
+        for app, _count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:5]
+    ]
+
+
+def _unregistered_activity_apps(session: dict[str, Any]) -> list[str]:
+    app_segments = session.get("app_segments", [])
+    if not isinstance(app_segments, list):
+        return []
+    interesting = {
+        "chrome",
+        "msedge",
+        "firefox",
+        "winword",
+        "powerpnt",
+        "excel",
+        "explorer",
+        "searchhost",
+        "githubdesktop",
+    }
+    counts: dict[str, int] = {}
+    display_names: dict[str, str] = {}
+    for segment in app_segments:
+        if not isinstance(segment, dict):
+            continue
+        app = _safe_text(segment.get("app_name", ""))
+        key = app.casefold()
+        if key not in interesting:
+            continue
+        counts[key] = counts.get(key, 0) + _safe_int(segment.get("capture_count"))
+        display_names.setdefault(key, app)
+    return [
+        display_names[key]
+        for key, _count in sorted(counts.items(), key=lambda item: (-item[1], display_names[item[0]]))[:4]
+    ]
+
+
+def _session_focus_notes(session: dict[str, Any]) -> list[str]:
+    return _safe_focus_notes(session.get("operator_focus", []))
+
+
+def _safe_focus_notes(notes: Any) -> list[str]:
+    if isinstance(notes, str):
+        candidates: Sequence[Any] = [notes]
+    elif isinstance(notes, Sequence):
+        candidates = notes
+    else:
+        return []
+    safe: list[str] = []
+    for note in candidates:
+        text = " ".join(str(note).split())[:240]
+        if text and text not in safe:
+            safe.append(text)
+        if len(safe) >= 5:
+            break
+    return safe
+
+
+def _with_focus(summary: dict[str, Any] | None, focus_notes: Sequence[str]) -> dict[str, Any] | None:
+    if summary is None:
+        return None
+    focus = _safe_focus_notes(focus_notes)
+    if not focus or summary.get("operator_focus"):
+        return summary
+    updated = dict(summary)
+    updated["operator_focus"] = focus
+    return updated
+
+
+def _attach_focus_to_payload(payload: dict[str, Any], focus_notes: Sequence[str]) -> None:
+    summary = payload.get("summary")
+    if isinstance(summary, dict):
+        payload["summary"] = _with_focus(summary, focus_notes)
+
+
+def _active_focus_notes(active_path: Path) -> list[str]:
+    active = _read_json(active_path) or {}
+    return _safe_focus_notes(active.get("operator_focus", []))
 
 
 def _format_count_rows(rows: Any, key: str) -> str:
@@ -715,6 +1286,34 @@ def _drain(source: queue.Queue[str], destination: list[str]) -> None:
         destination.append(item)
 
 
+def _drain_stdout_until_quiet(
+    stdout_queue: queue.Queue[str],
+    home: Path,
+    *,
+    state: MonitorSessionState,
+    exclude_apps: Sequence[str],
+    quiet_seconds: float = 0.2,
+    max_seconds: float = 1.0,
+) -> None:
+    deadline = time.monotonic() + max_seconds
+    quiet_deadline = time.monotonic() + quiet_seconds
+    lines: list[str] = []
+    while time.monotonic() < deadline:
+        lines.clear()
+        _drain(stdout_queue, lines)
+        if lines:
+            append_monitor_records(
+                _parse_event_lines(lines),
+                home,
+                state=state,
+                exclude_apps=exclude_apps,
+            )
+            quiet_deadline = time.monotonic() + quiet_seconds
+        elif time.monotonic() >= quiet_deadline:
+            return
+        time.sleep(0.05)
+
+
 def _parse_event_lines(lines: Sequence[str]) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
     for line_number, line in enumerate(lines, start=1):
@@ -734,6 +1333,7 @@ def _write_checkpoint(
     state: MonitorSessionState,
     checkpoint_file: Path | None,
     payload: dict[str, Any] | None = None,
+    operator_focus: Sequence[str] = (),
 ) -> None:
     if checkpoint_file is None or not state.timestamps:
         return
@@ -743,6 +1343,7 @@ def _write_checkpoint(
             session_id=session_id,
             mode="workday",
             state=state,
+            operator_focus=operator_focus,
         )
         payload = {
             "active": True,
@@ -915,14 +1516,18 @@ def _is_process_running(pid: int) -> bool:
     if pid <= 0:
         return False
     if os.name == "nt":
-        completed = subprocess.run(
-            ["tasklist", "/FI", f"PID eq {pid}", "/FO", "CSV", "/NH"],
-            check=False,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            creationflags=_creation_flags(),
+        import ctypes
+
+        process_query_limited_information = 0x1000
+        handle = ctypes.windll.kernel32.OpenProcess(
+            process_query_limited_information,
+            False,
+            pid,
         )
-        return str(pid).encode("ascii") in completed.stdout
+        if not handle:
+            return False
+        ctypes.windll.kernel32.CloseHandle(handle)
+        return True
     try:
         os.kill(pid, 0)
     except OSError:
@@ -934,13 +1539,20 @@ def _terminate_process_tree(pid: int) -> None:
     if pid <= 0:
         return
     if os.name == "nt":
-        subprocess.run(
-            ["taskkill", "/PID", str(pid), "/T", "/F"],
-            check=False,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            creationflags=_creation_flags(),
-        )
+        try:
+            subprocess.run(
+                ["taskkill", "/PID", str(pid), "/T", "/F"],
+                check=False,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                creationflags=_creation_flags(),
+                timeout=2,
+            )
+        except subprocess.TimeoutExpired:
+            try:
+                os.kill(pid, signal.SIGTERM)
+            except OSError:
+                pass
         return
     try:
         os.kill(pid, signal.SIGTERM)

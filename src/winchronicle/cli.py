@@ -15,6 +15,7 @@ from .memory import generate_memory_entries
 from .mcp.server import TOOL_NAMES, run_stdio
 from .paths import ensure_state, state_paths
 from .privacy import DISABLED_SURFACE_STATUS, TRUST, privacy_contract_payload
+from .projects import add_project, load_project_registry, remove_project, snapshot_projects
 from .session import monitor_events, read_session, run_monitor_watcher_command, session_count
 from .storage import capture_count, init_db, memory_entry_count, search_captures, search_memory_entries
 from .workday import (
@@ -28,6 +29,7 @@ from .workday import (
     doctor_workday,
     format_workday_status_text,
     format_workday_text_summary,
+    recover_workday_runner_failure,
     run_workday,
     start_workday,
     status_workday,
@@ -210,6 +212,35 @@ def build_parser() -> argparse.ArgumentParser:
 
     subparsers.add_parser("mcp-stdio", help="Run the read-only MCP stdio server.")
 
+    projects = subparsers.add_parser(
+        "projects",
+        help="Manage the explicit local project allowlist used by workday summaries.",
+    )
+    project_subparsers = projects.add_subparsers(
+        dest="projects_command",
+        required=True,
+        metavar="{add,list,remove,snapshot}",
+    )
+    project_add = project_subparsers.add_parser(
+        "add",
+        help="Add an explicit local project directory to workday summaries.",
+    )
+    project_add.add_argument("path", type=Path)
+    project_add.add_argument("--name", help="Optional display name for the project.")
+    project_subparsers.add_parser(
+        "list",
+        help="Print the registered project allowlist as JSON.",
+    )
+    project_remove = project_subparsers.add_parser(
+        "remove",
+        help="Remove a project by exact name or path.",
+    )
+    project_remove.add_argument("identifier")
+    project_subparsers.add_parser(
+        "snapshot",
+        help="Print lightweight git metadata for registered projects.",
+    )
+
     workday = subparsers.add_parser(
         "workday",
         help="Manage an explicit finite local workday recording session.",
@@ -249,6 +280,12 @@ def build_parser() -> argparse.ArgumentParser:
         action="append",
         default=[],
         help="Skip exact app names in this workday session.",
+    )
+    workday_start.add_argument(
+        "--focus",
+        action="append",
+        default=[],
+        help="Optional user-stated focus note for the resulting human workday summary.",
     )
 
     workday_status = workday_subparsers.add_parser(
@@ -296,6 +333,18 @@ def build_parser() -> argparse.ArgumentParser:
         default="zh-CN",
         help="Language for --format text output.",
     )
+    workday_stop.add_argument(
+        "--confirmation",
+        action="append",
+        default=[],
+        help="Optional user-confirmed note to include in the text summary.",
+    )
+    workday_stop.add_argument(
+        "--summary-style",
+        choices=("human", "technical"),
+        default="human",
+        help="Use human daily-review text by default, or technical evidence text for debugging.",
+    )
 
     workday_summarize = workday_subparsers.add_parser(
         "summarize",
@@ -313,6 +362,18 @@ def build_parser() -> argparse.ArgumentParser:
         choices=("zh-CN",),
         default="zh-CN",
         help="Language for --format text output.",
+    )
+    workday_summarize.add_argument(
+        "--confirmation",
+        action="append",
+        default=[],
+        help="Optional user-confirmed note to include in the text summary.",
+    )
+    workday_summarize.add_argument(
+        "--summary-style",
+        choices=("human", "technical"),
+        default="human",
+        help="Use human daily-review text by default, or technical evidence text for debugging.",
     )
 
     workday_intent = workday_subparsers.add_parser(
@@ -353,6 +414,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=[],
         help="Skip exact app names in a started workday session.",
     )
+    workday_intent.add_argument(
+        "--focus",
+        action="append",
+        default=[],
+        help="Optional user-stated focus note for the resulting human workday summary.",
+    )
 
     workday_run = workday_subparsers.add_parser("run", help=argparse.SUPPRESS)
     workday_subparsers._choices_actions = [  # type: ignore[attr-defined]
@@ -371,6 +438,7 @@ def build_parser() -> argparse.ArgumentParser:
     workday_run.add_argument("--checkpoint-seconds", type=int, default=DEFAULT_CHECKPOINT_SECONDS)
     workday_run.add_argument("--capture-on-start", action="store_true")
     workday_run.add_argument("--exclude-app", action="append", default=[])
+    workday_run.add_argument("--focus", action="append", default=[])
 
     codex = subparsers.add_parser(
         "codex",
@@ -619,6 +687,9 @@ def main(argv: list[str] | None = None) -> int:
         paths = state_paths()
         return run_stdio(home=paths["home"])
 
+    if args.command == "projects":
+        return _handle_projects(args)
+
     if args.command == "workday":
         return _handle_workday(parser, args)
 
@@ -671,6 +742,26 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
     parser.error(f"unknown command: {args.command}")
+    return 2
+
+
+def _handle_projects(args: argparse.Namespace) -> int:
+    if args.projects_command == "add":
+        payload = add_project(args.path, name=args.name)
+        print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+    if args.projects_command == "list":
+        payload = load_project_registry()
+        print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+    if args.projects_command == "remove":
+        payload = remove_project(args.identifier)
+        print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+    if args.projects_command == "snapshot":
+        payload = snapshot_projects()
+        print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
     return 2
 
 
@@ -1104,6 +1195,8 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
                 args.session,
                 output_format=args.format,
                 language=args.language,
+                confirmation_notes=args.confirmation,
+                summary_style=args.summary_style,
             )
         except Exception:
             print("ERROR: session summary could not be read safely")
@@ -1151,8 +1244,18 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
                 checkpoint_seconds=args.checkpoint_seconds,
                 capture_on_start=args.capture_on_start,
                 exclude_apps=args.exclude_app,
+                operator_focus=args.focus,
             )
         except Exception:
+            recovery = recover_workday_runner_failure(
+                session_id=args.session_id,
+                result_file=args.result_file,
+                checkpoint_file=args.checkpoint_file,
+                stopped=args.stop_file.exists(),
+            )
+            if recovery.get("summary_available"):
+                print(json.dumps(recovery, indent=2, sort_keys=True))
+                return 0
             print("ERROR: workday runner could not write a safe session summary")
             return 1
         print(json.dumps(payload, indent=2, sort_keys=True))
@@ -1185,6 +1288,7 @@ def _execute_workday_start(parser: argparse.ArgumentParser, args: argparse.Names
             checkpoint_seconds=args.checkpoint_seconds,
             capture_on_start=args.capture_on_start,
             exclude_apps=args.exclude_app,
+            operator_focus=[*args.focus, *_focus_notes_from_phrase(getattr(args, "phrase", ""))],
         )
     except WorkdayError as exc:
         print(json.dumps({"active": False, "error": str(exc)}, indent=2, sort_keys=True))
@@ -1200,7 +1304,14 @@ def _execute_workday_stop(args: argparse.Namespace, *, output_format: str) -> in
         and payload.get("summary_available")
         and isinstance(payload.get("summary"), dict)
     ):
-        print(format_workday_text_summary(payload["summary"]), end="")
+        print(
+            format_workday_text_summary(
+                payload["summary"],
+                confirmation_notes=getattr(args, "confirmation", []),
+                summary_style=getattr(args, "summary_style", "human"),
+            ),
+            end="",
+        )
         return 0
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0
@@ -1209,13 +1320,18 @@ def _execute_workday_stop(args: argparse.Namespace, *, output_format: str) -> in
 def _workday_intent_plan(phrase: str) -> dict[str, object]:
     normalized = " ".join(str(phrase).split())
     supported_phrases = [*WORKDAY_START_PHRASES, *WORKDAY_STOP_SUMMARY_PHRASES]
-    if normalized in WORKDAY_START_PHRASES:
+    start_matched, focus_notes = _match_start_intent(normalized)
+    if start_matched:
+        command = ["winchronicle", "workday", "start"]
+        for note in focus_notes:
+            command.extend(["--focus", note])
         return {
             "matched": True,
             "execute": False,
             "intent": "start_workday",
             "phrase": phrase,
-            "command": ["winchronicle", "workday", "start"],
+            "command": command,
+            "operator_focus": focus_notes,
             "bounded": True,
             "capture_surface": CAPTURE_SURFACE,
             "trust": WORKDAY_INTENT_TRUST,
@@ -1250,3 +1366,20 @@ def _workday_intent_plan(phrase: str) -> dict[str, object]:
         "trust": WORKDAY_INTENT_TRUST,
         "dry_run_by_default": True,
     }
+
+
+def _match_start_intent(normalized: str) -> tuple[bool, list[str]]:
+    for start_phrase in WORKDAY_START_PHRASES:
+        if normalized == start_phrase:
+            return True, []
+        for separator in ("：", ":", "，", ",", " "):
+            prefix = f"{start_phrase}{separator}"
+            if normalized.startswith(prefix):
+                note = normalized[len(prefix) :].strip(" ：:,，")
+                return True, [note] if note else []
+    return False, []
+
+
+def _focus_notes_from_phrase(phrase: str) -> list[str]:
+    matched, notes = _match_start_intent(" ".join(str(phrase).split()))
+    return notes if matched else []
