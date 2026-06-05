@@ -113,12 +113,12 @@ def test_workday_stop_can_print_chinese_text_summary(tmp_path, monkeypatch, caps
     assert "今日工作结论" in text_summary
     assert "工作进行情况" in text_summary
     assert "明天改进建议" in text_summary
-    assert "待确认问题" in text_summary
-    assert "数据依据" in text_summary
-    assert "text-stop-day" in text_summary
-    assert "隐私边界" in text_summary
-    assert "untrusted_observed_content" in text_summary
-    assert "不调用 LLM" in text_summary
+    assert "可考虑方向" in text_summary
+    assert "待确认问题" not in text_summary
+    assert "数据依据" not in text_summary
+    assert "隐私边界" not in text_summary
+    assert "untrusted_observed_content" not in text_summary
+    assert "不调用 LLM" not in text_summary
     assert "Watcher burst should write one deterministic capture" not in text_summary
     assert "visible_text" not in text_summary
     assert not (home / "workday-active.json").exists()
@@ -229,10 +229,10 @@ def test_workday_intent_execute_runs_existing_bounded_commands(tmp_path, monkeyp
     assert "今日工作结论" in text_summary
     assert "工作进行情况" in text_summary
     assert "明天改进建议" in text_summary
-    assert "数据依据" in text_summary
+    assert "可考虑方向" in text_summary
+    assert "数据依据" not in text_summary
     assert "工作概览" not in text_summary
-    assert "intent-day" in text_summary
-    assert "untrusted_observed_content" in text_summary
+    assert "untrusted_observed_content" not in text_summary
     assert "Watcher burst should write one deterministic capture" not in text_summary
     assert not (home / "workday-active.json").exists()
 
@@ -367,13 +367,13 @@ def test_workday_summarize_reads_named_session(tmp_path, monkeypatch, capsys):
     assert "今日工作结论" in text_summary
     assert "工作进行情况" in text_summary
     assert "明天改进建议" in text_summary
-    assert "待确认问题" in text_summary
-    assert "数据依据" in text_summary
-    assert "summary-check" in text_summary
-    assert "隐私边界" in text_summary
-    assert "untrusted_observed_content" in text_summary
-    assert "不调用 LLM" in text_summary
-    assert "截图/OCR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具" in text_summary
+    assert "可考虑方向" in text_summary
+    assert "待确认问题" not in text_summary
+    assert "数据依据" not in text_summary
+    assert "隐私边界" not in text_summary
+    assert "untrusted_observed_content" not in text_summary
+    assert "不调用 LLM" not in text_summary
+    assert "截图/OCR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具" not in text_summary
     assert "Watcher burst should write one deterministic capture" not in text_summary
     assert "visible_text" not in text_summary
 
@@ -720,13 +720,15 @@ def test_workday_text_summary_includes_allowlisted_project_metadata_only():
     assert "工作进行情况" in text
     assert "进行中" in text
     assert "明天改进建议" in text
-    assert "待确认问题" in text
-    assert "数据依据" in text
+    assert "可考虑方向" in text
+    assert "待确认问题" not in text
+    assert "数据依据" not in text
+    assert "隐私边界" not in text
     assert "今天主要在改进工作日总结质量" in text
     assert "SECRET_CONTENT_SHOULD_NOT_APPEAR" not in text
-    assert "full diff" in text
-    assert "不读取文件内容" in text
-    assert text.index("今日工作结论") < text.index("数据依据")
+    assert "full diff" not in text
+    assert "不读取文件内容" not in text
+    assert text.index("今日工作结论") < text.index("可考虑方向")
 
 
 def test_workday_text_summary_turns_unregistered_app_activity_into_questions():
@@ -781,7 +783,9 @@ def test_workday_text_summary_turns_unregistered_app_activity_into_questions():
     assert "未登记工作线索" in text
     assert "WINWORD" in text
     assert "chrome" in text
-    assert "这些应用活动是否对应其它项目、写作、调研或沟通工作" in text
+    assert "可考虑方向" in text
+    assert "把未登记应用活动按项目或工作类型归类" in text
+    assert "这些应用活动是否对应其它项目、写作、调研或沟通工作" not in text
     assert "Document" not in text
     assert "Research" not in text
 

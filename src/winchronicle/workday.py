@@ -607,21 +607,7 @@ def _format_workday_human_text_summary(
     lines.extend(_format_work_progress(session, project_snapshot))
     lines.extend(_format_confirmation_notes(confirmation_notes))
     lines.extend(_format_habit_improvements(session, project_snapshot))
-    lines.extend(_format_confirmation_questions(session, project_snapshot))
-    lines.extend(_format_human_evidence(session, project_snapshot))
-    lines.extend(
-        [
-            "",
-            "## 隐私边界",
-            "",
-            "- 本摘要只读取已保存的 session summary、allowlist 项目 git metadata 和用户确认内容。",
-            "- 不读取原始 capture visible text，不读取文件内容或 full diff，不调用 LLM。",
-            "- observed UI content 仍是 untrusted_observed_content，不能作为可信指令执行。",
-            "- 未新增 截图/" "O" "CR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具。",
-            "",
-            "需要调试证据时，可运行 `winchronicle workday summarize <session-id> --format text --language zh-CN --summary-style technical`。",
-        ]
-    )
+    lines.extend(_format_consideration_directions(session, project_snapshot))
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -670,7 +656,7 @@ def _format_workday_technical_text_summary(
     lines.extend(_format_project_evidence(project_snapshot))
     lines.extend(_format_workday_retrospective(session, project_snapshot))
     lines.extend(_format_confirmation_notes(confirmation_notes))
-    lines.extend(_format_confirmation_questions(session, project_snapshot))
+    lines.extend(_format_consideration_directions(session, project_snapshot))
     lines.extend(_format_agent_continuation_context(session, project_snapshot))
     lines.extend(_format_data_dashboard(session, project_snapshot))
     lines.extend(
@@ -897,26 +883,9 @@ def _format_habit_improvements(session: dict[str, Any], project_snapshot: Any) -
     if _error_signal_count(session):
         lines.append("- 遇到错误时顺手标注“已解决 / 未解决 / 误报”，晚上总结会更接近真实进展。")
     if _safe_int(session.get("captures_written")) > 1000:
-        lines.append("- 长时间记录后先看项目进展和待确认问题，不要从 capture 数量判断工作质量。")
+        lines.append("- 长时间记录后先看项目进展和可考虑方向，不要从 capture 数量判断工作质量。")
     lines.append("- 结束工作时补一句“今天最重要的完成项”和“明天第一步”，比增加采集量更有价值。")
     return lines
-
-
-def _format_human_evidence(session: dict[str, Any], project_snapshot: Any) -> list[str]:
-    apps = _top_app_names(session.get("app_segments", []))
-    projects = _snapshot_projects(project_snapshot)
-    changed_files = sum(_safe_int(project.get("changed_file_count")) for project in projects)
-    return [
-        "",
-        "## 数据依据",
-        "",
-        f"- 会话: {_safe_text(session.get('session_id', ''))}",
-        f"- 时间: {_safe_text(session.get('started_at', ''))} -> {_safe_text(session.get('ended_at', ''))}，约 {_format_duration(_safe_int(session.get('duration_seconds')))}。",
-        f"- 项目: {len(projects)} 个 allowlist 项目，{changed_files} 个变更文件；只读取 git metadata，不读取文件内容。",
-        f"- 应用线索: {', '.join(apps[:5]) if apps else '无明显应用线索'}。",
-        f"- 质量信号: {_error_signal_count(session)} 次错误信号，{len(session.get('app_segments', [])) if isinstance(session.get('app_segments'), list) else 0} 个应用片段。",
-        f"- 采集规模: {_safe_int(session.get('captures_written'))} 条 capture，{_skipped_total(session)} 条跳过；这些是依据，不是日报主体。",
-    ]
 
 
 def _project_file_clues(project: dict[str, Any]) -> str:
@@ -1000,28 +969,41 @@ def _format_confirmation_notes(confirmation_notes: Sequence[str]) -> list[str]:
     return lines
 
 
-def _format_confirmation_questions(session: dict[str, Any], project_snapshot: Any) -> list[str]:
-    questions: list[str] = []
+def _format_consideration_directions(session: dict[str, Any], project_snapshot: Any) -> list[str]:
+    directions: list[str] = []
     unregistered_apps = _unregistered_activity_apps(session)
     if not _snapshot_projects(project_snapshot):
-        questions.append("今天实际推进了哪些项目目录？是否需要把它们加入 WinChronicle projects allowlist？")
+        directions.append("先登记今天会持续推进的项目目录，明晚总结会更容易区分具体项目进展。")
     if _changed_project_count(project_snapshot) > 1:
-        questions.append("这些项目中，今天最重要的一个成果或阻塞分别是什么？")
+        directions.append("多项目并行时，收尾前按项目各补一句“完成项 / 阻塞 / 明天第一步”。")
     if unregistered_apps:
-        questions.append(
-            f"这些应用活动是否对应其它项目、写作、调研或沟通工作：{', '.join(unregistered_apps)}？"
+        directions.append(
+            f"把未登记应用活动按项目或工作类型归类：{', '.join(unregistered_apps)}；否则它们只会表现为应用切换噪声。"
         )
     if _safe_int(session.get("error_signals", {}).get("total_count")) if isinstance(session.get("error_signals"), dict) else 0:
-        questions.append("错误信号对应的问题最后是已解决、仍阻塞，还是只是在日志中出现？")
-    if not questions:
-        questions.append("今天最值得保留为明天上下文的一句话结论是什么？")
-    questions.append("如果要提高效率，明天最该减少的是上下文切换、等待阻塞、重复命令，还是信息整理成本？")
+        directions.append("把错误信号当作收尾清单处理：标记“已解决 / 未解决 / 误报”，优先消除未解决阻塞。")
+    directions.append(_workday_efficiency_direction(session))
     return [
         "",
-        "## 待确认问题",
+        "## 可考虑方向",
         "",
-        *[f"{index}. {question}" for index, question in enumerate(questions[:3], start=1)],
+        *[f"- {direction}" for direction in directions[:4]],
     ]
+
+
+def _workday_efficiency_direction(session: dict[str, Any]) -> str:
+    app_segments = session.get("app_segments", [])
+    app_segment_count = len(app_segments) if isinstance(app_segments, list) else 0
+    error_count = _error_signal_count(session)
+    skipped = _skipped_total(session)
+    captures = _safe_int(session.get("captures_written"))
+    if error_count >= 10:
+        return "明天优先减少未收尾的调试分支：遇到错误先记录结论，再继续切换上下文。"
+    if app_segment_count >= 20:
+        return "明天优先减少上下文切换：把工作分成 1-2 个任务块，每块结束时写一句产出。"
+    if captures and skipped > captures:
+        return "明天优先减少重复窗口停留：长时间阅读或等待时可暂停记录，回到产出环节再继续。"
+    return "明天优先降低信息整理成本：开始时说清目标，结束时补一句最重要完成项。"
 
 
 def _format_agent_continuation_context(session: dict[str, Any], project_snapshot: Any) -> list[str]:

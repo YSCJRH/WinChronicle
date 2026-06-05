@@ -37,18 +37,18 @@ are present:
 - `今日工作结论`
 - `工作进行情况`
 - `明天改进建议`
-- `待确认问题`
-- `数据依据`
+- `可考虑方向`
 
 If the stop output says a summary exists but does not include `今日工作复盘` or
-`待确认问题`, run:
+`可考虑方向`, run:
 
 ```powershell
 winchronicle workday summarize <session-id> --format text --language zh-CN
 ```
 
 Then paste that full text summary instead of rewriting it. The questions are
-part of the product workflow; do not answer them for the user.
+not part of the default product workflow; prefer actionable directions that help
+the user decide what to adjust next.
 
 Use the technical evidence view only when the user asks for debugging details:
 

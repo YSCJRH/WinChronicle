@@ -73,19 +73,17 @@ telemetry report. It leads with:
 - what work appears to have been done today
 - how that work appears to be progressing
 - practical suggestions for improving tomorrow's work habits
-- a few confirmation questions
-- a short data-evidence section
+- actionable directions the user can consider next
 
 The project snapshots are used to keep that review grounded in explicit local
 project metadata. Technical counters such as capture count, skipped count,
-application segments, storage size, and error-signal rows belong in the evidence
-section or the explicit technical style, not at the top of the user-facing
-summary.
+application segments, storage size, and error-signal rows belong in the explicit
+technical style, not in the default user-facing summary.
 
 If only one project is registered but high-frequency application activity
 appears in browsers, Office apps, Explorer, or similar tools, the human summary
-keeps those as `未登记工作线索` and asks the operator to confirm whether they
-represent other projects, writing, research, or communication work.
+keeps those as `未登记工作线索` and gives an actionable `可考虑方向` instead of
+throwing the classification problem back to the operator.
 
 Use `--summary-style technical` when the operator wants the previous detailed
 evidence view for debugging or review.
@@ -94,13 +92,13 @@ The Chinese technical text summary uses these project snapshots to add:
 
 - confirmed project progress clues
 - a personal retrospective
-- 1-3 confirmation questions
+- actionable directions
 - continuation context for the next Codex thread
 - a compact data dashboard
 
-Use `--confirmation` after answering the questions when the operator wants the
-saved summary to include explicit human context without reading additional
-project files or calling an LLM.
+Use `--confirmation` when the operator wants the saved summary to include
+explicit human context without reading additional project files or calling an
+LLM.
 
 If no project is registered, the summary remains conservative and says that it
 can only infer work from application activity and saved session metadata.
@@ -170,7 +168,9 @@ print the detailed evidence view headed `工作概览`. The human text summary i
 intended for the natural-language "停止工作并总结" workflow: it uses the saved
 session summary, app segments, project metadata, storage metadata, and
 deterministic suggestions. It does not read raw capture contents. It does not
-read raw capture visible text or external models. It does not call an LLM.
+read raw capture visible text or external models. It does not call an LLM. The
+default human summary does not include separate `数据依据` or `隐私边界` sections;
+those details belong in the explicit technical view.
 
 When deterministic error-like terms appear, the saved session may include an
 `error_signals` metadata block. That block is intentionally compact: it stores

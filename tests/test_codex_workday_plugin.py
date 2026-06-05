@@ -79,17 +79,21 @@ def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
         "今日工作结论",
         "工作进行情况",
         "明天改进建议",
-        "待确认问题",
-        "数据依据",
+        "可考虑方向",
         "--summary-style technical",
         "winchronicle projects add <path> --name <name>",
         "Do not auto-register or scan projects during a recording-only turn",
         "pass the full user phrase",
         "今天主要做",
         "operator focus",
+        "prefer actionable directions",
     ):
         assert expected in text
         assert expected in packaged_text
+
+    for removed_default_section in ("待确认问题", "数据依据"):
+        assert removed_default_section not in text
+        assert removed_default_section not in packaged_text
 
     for forbidden in (
         "Optional Computer Use Summary Enhancement",
