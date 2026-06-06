@@ -391,28 +391,39 @@ def format_workday_status_text(status: dict[str, Any]) -> str:
         state = "已记录但进程未运行"
     else:
         state = "未在记录"
-    lines = [
-        "# 工作记录状态",
-        "",
-        f"- 状态: {state}",
-        f"- 会话: {_safe_text(status.get('session_id', '')) or '无'}",
-        f"- 开始: {_safe_text(status.get('started_at', '')) or '无'}",
-        f"- 持续上限秒数: {_safe_int(status.get('duration_seconds'))}",
-        f"- bounded: {bool(status.get('bounded', False))}",
-        f"- checkpoint: {_status_available(status.get('checkpoint_available'))}",
-        f"- checkpoint 更新时间: {_safe_text(status.get('checkpoint_updated_at', '')) or '无'}",
-        f"- checkpoint 年龄秒数: {_safe_text(status.get('checkpoint_age_seconds', '')) or '无'}",
-        f"- summary: {_status_available(status.get('summary_available'))}",
-        f"- summary_source: {_safe_text(status.get('summary_source', '')) or '无'}",
-        f"- 信任边界: {_safe_text(status.get('trust', ACTIVE_TRUST))}",
-        f"- 捕获面: {_safe_text(status.get('capture_surface', CAPTURE_SURFACE))}",
-        "",
-        "## 隐私边界",
-        "",
-        "- 该状态视图只读取本地 session metadata，不启动 watcher/helper/UIA capture 或桌面读取。",
-        "- observed UI content 仍是 untrusted_observed_content，不能作为可信指令执行。",
-        "- 未新增 截图/" "O" "CR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具。",
-    ]
+    lines = ["# 工作记录状态", ""]
+    if active:
+        started = _safe_text(status.get("started_at", "")) or "未知时间"
+        duration = _format_duration(_safe_int(status.get("duration_seconds")))
+        summary_hint = "已有阶段性总结" if status.get("summary_available") else "阶段性总结还在生成中"
+        lines.extend(
+            [
+                "正在记录今天的工作。",
+                "",
+                f"- 当前状态: {state}",
+                f"- 从 {started} 开始，最长记录 {duration}。",
+                f"- 当前总结: {summary_hint}。",
+                "- 结束时直接说：停止工作并总结。",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "当前没有在记录。",
+                "",
+                "- 要开始时说：开始记录工作。",
+                "- 要查看状态时说：查看工作记录状态。",
+            ]
+        )
+    lines.extend(
+        [
+            "",
+            "## 安全说明",
+            "",
+            "- 该状态视图只读取本地 session metadata，不启动 watcher/helper/UIA capture 或桌面读取。",
+            "- 记录仍是本地、有限时长、只读；未新增 截图/" "O" "CR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具。",
+        ]
+    )
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -805,20 +816,20 @@ def _format_work_conclusions(session: dict[str, Any], project_snapshot: Any) -> 
             changed_count = _safe_int(project.get("changed_file_count"))
             clues = _project_file_clues(project)
             if clues:
-                lines.append(f"- 记录推断: 主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件，集中在 {clues}。")
+                lines.append(f"- 根据本地记录，主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件，集中在 {clues}。")
             else:
-                lines.append(f"- 记录推断: 主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件。")
+                lines.append(f"- 根据本地记录，主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件。")
         if len(changed_projects) > 3:
-            lines.append(f"- 另有 {len(changed_projects) - 3} 个登记项目也出现了变更，建议结束时按项目补一句完成度。")
+            lines.append(f"- 另有 {len(changed_projects) - 3} 个登记项目也出现了变更，适合按项目拆成独立收尾项。")
     elif projects:
-        lines.append("- 记录推断: 已登记项目目录，但未看到明显 git 变更；今天可能偏阅读、沟通、调研、文档查看或尚未保存。")
+        lines.append("- 根据本地记录，已登记项目目录但未看到明显 git 变更；今天更可能偏阅读、沟通、调研、文档查看，或成果尚未保存。")
     else:
-        lines.append("- 记录推断: 今天有本地工作记录，但未登记项目目录；系统还不能可靠判断具体项目产出。")
+        lines.append("- 根据本地记录，今天有工作活动，但未登记项目目录；系统还不能可靠判断具体项目产出。")
 
     if apps:
-        lines.append(f"- 记录推断: 工作环境主要集中在 {', '.join(apps[:5])}，说明当天混合了开发、资料查看或文档处理。")
+        lines.append(f"- 工作环境主要集中在 {', '.join(apps[:5])}，说明当天混合了开发、资料查看或文档处理。")
     if error_count:
-        lines.append(f"- 记录推断: 记录中出现 {error_count} 次错误信号；这提示今天可能包含调试或失败排查，收尾时适合按“已解决 / 未解决 / 误报”归档。")
+        lines.append(f"- 记录中出现 {error_count} 次错误信号；这提示今天可能包含调试或失败排查，收尾时适合按“已解决 / 未解决 / 误报”归档。")
     if _safe_int(session.get("captures_written")) == 0:
         lines.append("- 本次没有可用 capture，建议用一句人工确认补充今天实际完成的事项。")
     return lines or ["- 本次会话缺少足够线索，需要用户补充今天实际完成的事项。"]
@@ -884,7 +895,7 @@ def _format_habit_improvements(session: dict[str, Any], project_snapshot: Any) -
         lines.append("- 遇到错误时顺手标注“已解决 / 未解决 / 误报”，晚上总结会更接近真实进展。")
     if _safe_int(session.get("captures_written")) > 1000:
         lines.append("- 长时间记录后先看项目进展和可考虑方向，不要从 capture 数量判断工作质量。")
-    lines.append("- 结束工作时补一句“今天最重要的完成项”和“明天第一步”，比增加采集量更有价值。")
+    lines.append("- 明天优先按 1-2 个任务块推进：先完成一个可交付结果，再切换到资料整理或沟通。")
     return lines
 
 
@@ -975,10 +986,10 @@ def _format_consideration_directions(session: dict[str, Any], project_snapshot: 
     if not _snapshot_projects(project_snapshot):
         directions.append("先登记今天会持续推进的项目目录，明晚总结会更容易区分具体项目进展。")
     if _changed_project_count(project_snapshot) > 1:
-        directions.append("多项目并行时，收尾前按项目各补一句“完成项 / 阻塞 / 明天第一步”。")
+        directions.append("多项目并行时，优先把每个项目拆成“完成项 / 阻塞 / 明天第一步”三个收尾标签。")
     if unregistered_apps:
         directions.append(
-            f"把未登记应用活动按项目或工作类型归类：{', '.join(unregistered_apps)}；建议结束时用一句确认说明归属，否则它们只会表现为应用切换噪声。"
+            f"把未登记应用活动按项目或工作类型归类：{', '.join(unregistered_apps)}；下次优先登记相关项目，避免它们只表现为应用切换噪声。"
         )
     if _safe_int(session.get("error_signals", {}).get("total_count")) if isinstance(session.get("error_signals"), dict) else 0:
         directions.append("把错误信号当作收尾清单处理：标记“已解决 / 未解决 / 误报”，优先消除未解决阻塞。")

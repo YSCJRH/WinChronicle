@@ -72,9 +72,12 @@ def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
         "explicit finite local monitor session",
         "read-only MCP",
         "Do not inspect, scan, review, edit, test, commit, push, or release repository files.",
-        "paste the CLI text summary directly into chat",
-        "Do not compress it into a one-paragraph agent summary",
+        "Use the local CLI output as evidence, then write a Codex-assisted Chinese daily report",
+        "Do not paste telemetry counters as the main answer",
         "human daily review, not a telemetry report",
+        "今日完成了什么",
+        "进展如何",
+        "明天怎样更高效",
         "今日工作复盘",
         "今日工作结论",
         "工作进行情况",
@@ -96,10 +99,9 @@ def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
         assert removed_default_section not in packaged_text
 
     for forbidden in (
-        "Optional Computer Use Summary Enhancement",
-        "电脑观察补充",
-        "computer-use enhancement",
         "desktop-observation",
+        "paste the CLI text summary directly into chat",
+        "Do not compress it into a one-paragraph agent summary",
     ):
         assert forbidden not in text
         assert forbidden not in packaged_text
@@ -153,8 +155,9 @@ def test_codex_workday_plugin_doc_warns_before_chat_output():
     assert "winchronicle codex setup --dry-run" in text
     assert "winchronicle codex plugin --dry-run" in text
     assert "winchronicle codex plugin --dry-run --format text" in text
-    assert "Computer use is intentionally not part of this plugin's default workday path" in text
-    assert "desktop-observation surface" in text
+    assert "Codex-assisted report" in text
+    assert "local evidence package" in text
+    assert "does not add screenshot" in text
     assert "开始记录工作：今天主要做" in text
     assert "operator focus" in text
     assert "电脑观察补充" not in text

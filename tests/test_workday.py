@@ -51,10 +51,14 @@ def test_workday_start_stop_writes_summary_without_raw_jsonl(tmp_path, monkeypat
     assert main(["workday", "status", "--format", "text", "--language", "zh-CN"]) == 0
     text_status = capsys.readouterr().out
     assert "工作记录状态" in text_status
-    assert "today" in text_status
     assert "运行中" in text_status
-    assert "local_workday_session_status" in text_status
-    assert "explicit_finite_monitor_session" in text_status
+    assert "正在记录今天的工作" in text_status
+    assert "最长记录" in text_status
+    assert "停止工作并总结" in text_status
+    assert "会话:" not in text_status
+    assert "capture_surface" not in text_status
+    assert "local_workday_session_status" not in text_status
+    assert "explicit_finite_monitor_session" not in text_status
     assert "只读取本地 session metadata" in text_status
     assert "Watcher burst should write one deterministic capture" not in text_status
     assert "visible_text" not in text_status
@@ -227,8 +231,9 @@ def test_workday_intent_execute_status_phrase_prints_text_status_without_capture
     assert main(["workday", "intent", "查看工作记录状态", "--execute"]) == 0
     text_status = capsys.readouterr().out
     assert "工作记录状态" in text_status
-    assert "未在记录" in text_status
-    assert "会话: 无" in text_status
+    assert "当前没有在记录" in text_status
+    assert "开始记录工作" in text_status
+    assert "会话: 无" not in text_status
     assert "visible_text" not in text_status
     assert "focused_text" not in text_status
     assert not (home / "workday-active.json").exists()
@@ -780,8 +785,9 @@ def test_workday_text_summary_includes_allowlisted_project_metadata_only():
 
     assert "今日工作复盘" in text
     assert "今日工作结论" in text
-    assert "记录推断" in text
+    assert "记录推断" not in text
     assert "主要推进了 WinChronicle" in text
+    assert "根据本地记录" in text
     assert "工作进行情况" in text
     assert "进行中" in text
     assert "用户确认事实" in text

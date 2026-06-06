@@ -28,10 +28,22 @@ When the user says `结束工作并总结` or `停止工作并总结`, run only:
 winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60
 ```
 
-After the stop command returns, paste the CLI text summary directly into chat.
-Do not compress it into a one-paragraph agent summary. The default summary is a
-human daily review, not a telemetry report. Preserve these sections when they
-are present:
+After the stop command returns, do not answer with raw counters first. Use the local CLI output as evidence, then write a Codex-assisted Chinese daily report.
+Do not paste telemetry counters as the main answer. The default summary is a
+human daily review, not a telemetry report. Lead with plain-language answers to:
+
+- 今日完成了什么
+- 进展如何
+- 明天怎样更高效
+
+Keep the report grounded in the local evidence package returned by WinChronicle:
+the CLI text summary, registered project metadata, application activity clues,
+error-signal counts, and any operator focus note in the current conversation.
+Do not scan the repository, read source files, inspect arbitrary folders, or add
+new capture surfaces just to improve the prose.
+
+Preserve or rewrite these sections into a concise daily report when they are
+present:
 
 - `今日工作复盘`
 - `今日工作结论`

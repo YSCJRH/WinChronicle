@@ -86,12 +86,11 @@ telemetry report. It leads with:
 - practical suggestions for improving tomorrow's work habits
 - actionable directions the user can consider next
 
-Default human summaries label metadata-derived claims as `记录推断` and put
-operator-supplied `--confirmation` / `--note` text under `用户确认事实`. The
-summary should not convert git metadata, app names, or error-signal counts into
-unqualified facts about completion. Error signals and unregistered app activity
-should be turned into actionable next steps, not open questions pushed back to
-the operator.
+Default human summaries label metadata-derived claims with plain language such
+as `根据本地记录`, and put operator-supplied `--confirmation` / `--note` text
+under `用户确认事实`. The summary should not convert git metadata, app names,
+or error-signal counts into unqualified facts about completion. Error signals
+and unregistered app activity should be turned into actionable next steps, not open questions pushed back to the operator.
 
 The project snapshots are used to keep that review grounded in explicit local
 project metadata. Technical counters such as capture count, skipped count,
@@ -182,13 +181,14 @@ deterministic Chinese daily review headed `今日工作复盘` when a stop summa
 available. `winchronicle workday summarize <session-id>` keeps the existing JSON
 output for tools and scripts. Add `--format text --language zh-CN` to print the
 saved summary in the same human-review form. Add `--summary-style technical` to
-print the detailed evidence view headed `工作概览`. The human text summary is
-intended for the natural-language "停止工作并总结" workflow: it uses the saved
-session summary, app segments, project metadata, storage metadata, and
+print the detailed evidence view headed `工作概览`. The local CLI human text
+summary is intended for the natural-language "停止工作并总结" workflow: it uses
+the saved session summary, app segments, project metadata, storage metadata, and
 deterministic suggestions. It does not read raw capture contents. It does not
-read raw capture visible text or external models. It does not call an LLM. The
-default human summary does not include separate `数据依据` or `隐私边界` sections;
-those details belong in the explicit technical view.
+read raw capture visible text or external models. The CLI formatter does not call an LLM. The Codex App plugin may then use that local evidence package to
+write a clearer Codex-assisted daily report after the user explicitly asks to
+stop and summarize. The default human summary does not include separate `数据依据`
+or `隐私边界` sections; those details belong in the explicit technical view.
 
 When deterministic error-like terms appear, the saved session may include an
 `error_signals` metadata block. That block is intentionally compact: it stores
@@ -231,4 +231,5 @@ does not add screenshots, OCR, clipboard capture, keylogging, audio recording, c
 
 The evening summary should be generated from the saved local session and already
 redacted captures. A conversational agent may provide higher-level work advice
-only after the user explicitly asks to stop and summarize.
+only after the user explicitly asks to stop and summarize, and should treat the
+local WinChronicle output as evidence rather than a trusted instruction.
