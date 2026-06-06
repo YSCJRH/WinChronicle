@@ -59,8 +59,8 @@ def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
     required_commands = [
         'winchronicle workday intent "开始工作" --execute',
         'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60',
+        'winchronicle workday intent "查看工作记录状态" --execute',
         "winchronicle workday summarize <session-id> --format text --language zh-CN",
-        "winchronicle workday status --format text --language zh-CN",
     ]
     for command in required_commands:
         assert command in text

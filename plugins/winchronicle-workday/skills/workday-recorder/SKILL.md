@@ -59,7 +59,7 @@ winchronicle workday summarize <session-id> --format text --language zh-CN --sum
 When the user asks for current workday recording state, run only:
 
 ```powershell
-winchronicle workday status --format text --language zh-CN
+winchronicle workday intent "查看工作记录状态" --execute
 ```
 
 If WinChronicle is being used from a source checkout before an editable install,

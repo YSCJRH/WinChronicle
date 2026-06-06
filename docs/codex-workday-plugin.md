@@ -15,7 +15,7 @@ existing local WinChronicle CLI:
 ```powershell
 winchronicle workday intent "开始工作" --execute
 winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60
-winchronicle workday status --format text --language zh-CN
+winchronicle workday intent "查看工作记录状态" --execute
 ```
 
 If you are using WinChronicle from a source checkout before editable install,

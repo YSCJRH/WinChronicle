@@ -192,6 +192,48 @@ def test_workday_intent_maps_short_user_phrases_without_capture_by_default(
     assert not (home / "workday-active.json").exists()
 
 
+def test_workday_intent_maps_status_phrase_without_capture_by_default(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["workday", "intent", "查看工作记录状态"]) == 0
+    status_plan = json.loads(capsys.readouterr().out)
+    assert status_plan["matched"] is True
+    assert status_plan["execute"] is False
+    assert status_plan["intent"] == "status_workday"
+    assert status_plan["command"] == [
+        "winchronicle",
+        "workday",
+        "status",
+        "--format",
+        "text",
+        "--language",
+        "zh-CN",
+    ]
+    assert status_plan["capture_surface"] == "none"
+    assert status_plan["bounded"] is True
+    assert status_plan["trust"] == "local_workday_intent_mapping"
+    assert not (home / "workday-active.json").exists()
+
+
+def test_workday_intent_execute_status_phrase_prints_text_status_without_capture(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["workday", "intent", "查看工作记录状态", "--execute"]) == 0
+    text_status = capsys.readouterr().out
+    assert "工作记录状态" in text_status
+    assert "未在记录" in text_status
+    assert "会话: 无" in text_status
+    assert "visible_text" not in text_status
+    assert "focused_text" not in text_status
+    assert not (home / "workday-active.json").exists()
+
+
 def test_workday_intent_execute_runs_existing_bounded_commands(tmp_path, monkeypatch, capsys):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))

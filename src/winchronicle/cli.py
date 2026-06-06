@@ -95,7 +95,7 @@ BOOTSTRAP_WORKDAY_COMMANDS = [
 CODEX_PLUGIN_POST_INSTALL_SELF_CHECK = [
     "After adding the plugin source, open a new Codex App thread in the folder you want to record.",
     "Say: 查看工作记录状态",
-    "Expected local command: winchronicle workday status --format text --language zh-CN",
+    'Expected local command: winchronicle workday intent "查看工作记录状态" --execute',
 ]
 CODEX_RECORD_ONLY_THREAD_PROMPT = (
     "Only call WinChronicle workday commands for this thread.\n"
@@ -105,7 +105,7 @@ CODEX_RECORD_ONLY_THREAD_PROMPT = (
     'When I say "结束工作并总结" or "停止工作并总结", run:\n'
     'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60\n'
     'When I say "查看工作记录状态", run:\n'
-    "winchronicle workday status --format text --language zh-CN\n"
+    'winchronicle workday intent "查看工作记录状态" --execute\n'
     "Only paste a summary into chat after the user explicitly asks for chat output.\n"
 )
 CODEX_RECORDING_MODE_BOUNDARY = (
@@ -118,6 +118,7 @@ CODEX_RECORDING_MODE_BOUNDARY = (
 WORKDAY_INTENT_TRUST = "local_workday_intent_mapping"
 WORKDAY_START_PHRASES = ("开始记录工作", "开始工作")
 WORKDAY_STOP_SUMMARY_PHRASES = ("停止工作并总结", "结束工作并总结")
+WORKDAY_STATUS_PHRASES = ("查看工作记录状态",)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -974,7 +975,7 @@ def _codex_setup_dry_run_payload() -> dict[str, object]:
         "next_commands": [
             "winchronicle codex install --dry-run",
             "winchronicle codex plugin --dry-run --format text",
-            "winchronicle workday status --format text --language zh-CN",
+            'winchronicle workday intent "查看工作记录状态" --execute',
         ],
         "chat_output_warning": (
             "Only paste local setup output into chat when the user explicitly asks "
@@ -1367,6 +1368,10 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
             return _execute_workday_start(parser, args)
         if plan["intent"] == "stop_and_summarize_workday":
             return _execute_workday_stop(args, output_format="text")
+        if plan["intent"] == "status_workday":
+            payload = status_workday()
+            print(format_workday_status_text(payload), end="")
+            return 0
         print(json.dumps(plan, indent=2, sort_keys=True, ensure_ascii=False))
         return 1
 
@@ -1467,7 +1472,11 @@ def _execute_workday_stop(args: argparse.Namespace, *, output_format: str) -> in
 
 def _workday_intent_plan(phrase: str) -> dict[str, object]:
     normalized = " ".join(str(phrase).split())
-    supported_phrases = [*WORKDAY_START_PHRASES, *WORKDAY_STOP_SUMMARY_PHRASES]
+    supported_phrases = [
+        *WORKDAY_START_PHRASES,
+        *WORKDAY_STOP_SUMMARY_PHRASES,
+        *WORKDAY_STATUS_PHRASES,
+    ]
     start_matched, focus_notes = _match_start_intent(normalized)
     if start_matched:
         command = ["winchronicle", "workday", "start"]
@@ -1502,6 +1511,26 @@ def _workday_intent_plan(phrase: str) -> dict[str, object]:
             ],
             "bounded": True,
             "capture_surface": CAPTURE_SURFACE,
+            "trust": WORKDAY_INTENT_TRUST,
+            "dry_run_by_default": True,
+        }
+    if normalized in WORKDAY_STATUS_PHRASES:
+        return {
+            "matched": True,
+            "execute": False,
+            "intent": "status_workday",
+            "phrase": phrase,
+            "command": [
+                "winchronicle",
+                "workday",
+                "status",
+                "--format",
+                "text",
+                "--language",
+                "zh-CN",
+            ],
+            "bounded": True,
+            "capture_surface": "none",
             "trust": WORKDAY_INTENT_TRUST,
             "dry_run_by_default": True,
         }

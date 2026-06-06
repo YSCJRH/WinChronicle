@@ -80,7 +80,7 @@ want to record and say:
 The expected local route is:
 
 ```text
-winchronicle workday status --format text --language zh-CN
+winchronicle workday intent "查看工作记录状态" --execute
 ```
 
 If Codex starts scanning files instead of checking workday status, print the

@@ -258,7 +258,7 @@ def test_codex_plugin_dry_run_prints_local_plugin_source_without_state_write(
     assert payload["post_install_self_check"] == [
         "After adding the plugin source, open a new Codex App thread in the folder you want to record.",
         "Say: 查看工作记录状态",
-        "Expected local command: winchronicle workday status --format text --language zh-CN",
+        'Expected local command: winchronicle workday intent "查看工作记录状态" --execute',
     ]
     assert payload["record_only_prompt_command"] == (
         "winchronicle codex daily --dry-run --format text"
@@ -300,7 +300,7 @@ def test_codex_plugin_dry_run_text_format_prints_copyable_source_without_state_w
     )
     assert "2. Say: 查看工作记录状态" in output
     assert (
-        "3. Expected local command: winchronicle workday status --format text --language zh-CN"
+        '3. Expected local command: winchronicle workday intent "查看工作记录状态" --execute'
         in output
     )
     assert (
@@ -363,7 +363,7 @@ def test_codex_setup_dry_run_prints_readiness_report_without_state_write(
     assert payload["next_commands"] == [
         "winchronicle codex install --dry-run",
         "winchronicle codex plugin --dry-run --format text",
-        "winchronicle workday status --format text --language zh-CN",
+        'winchronicle workday intent "查看工作记录状态" --execute',
     ]
     assert not home.exists()
     assert "visible_text" not in output
@@ -438,7 +438,7 @@ def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
     assert "Do not inspect, scan, review, edit, test, commit, push, or release repository files." in prompt
     assert 'winchronicle workday intent "开始工作" --execute' in prompt
     assert 'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60' in prompt
-    assert "winchronicle workday status --format text --language zh-CN" in prompt
+    assert 'winchronicle workday intent "查看工作记录状态" --execute' in prompt
 
     assert payload["setup_commands"] == [
         "winchronicle codex setup --dry-run",
@@ -506,7 +506,7 @@ def test_codex_daily_dry_run_text_format_prints_copyable_user_path_without_state
     assert "Do not inspect, scan, review, edit, test, commit, push, or release repository files." in output
     assert 'winchronicle workday intent "开始工作" --execute' in output
     assert 'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60' in output
-    assert "winchronicle workday status --format text --language zh-CN" in output
+    assert 'winchronicle workday intent "查看工作记录状态" --execute' in output
 
     assert not home.exists()
     assert "visible_text" not in output

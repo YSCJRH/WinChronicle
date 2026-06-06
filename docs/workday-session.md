@@ -12,6 +12,8 @@ In CLI terms, that maps to:
 ```powershell
 winchronicle workday start
 winchronicle workday intent "开始记录工作"
+winchronicle workday intent "查看工作记录状态"
+winchronicle workday intent "查看工作记录状态" --execute
 winchronicle workday status
 winchronicle workday status --format text --language zh-CN
 winchronicle workday doctor
@@ -34,9 +36,10 @@ This is an explicit finite local monitor session. It is not a daemon, service, s
 The natural-language intent mapping is a local deterministic allowlist. It is
 dry-run by default: `winchronicle workday intent "开始记录工作"` and
 `winchronicle workday intent "停止工作并总结"` print the exact mapped command as
-JSON without starting the watcher, helper, UIA capture, or desktop reading. Add
-`--execute` only when the operator or calling agent intentionally wants to run
-the mapped bounded command.
+JSON without starting the watcher, helper, UIA capture, or desktop reading.
+`winchronicle workday intent "查看工作记录状态"` maps to the read-only text status
+view and does not start capture. Add `--execute` only when the operator or
+calling agent intentionally wants to run the mapped bounded command.
 
 The shorter user-facing aliases `开始工作` and `结束工作并总结` map to the same
 bounded commands. They exist for ordinary Codex app conversations where the

@@ -36,7 +36,7 @@ uses. The snippet only enables WinChronicle's read-only MCP tools.
 Check local workday status:
 
 ```powershell
-winchronicle workday status --format text --language zh-CN
+winchronicle workday intent "查看工作记录状态" --execute
 ```
 
 To print the daily Codex plugin setup commands and record-only thread prompt in
@@ -85,7 +85,8 @@ WinChronicle accepts these local deterministic phrases:
 - `停止工作并总结`
 
 `开始工作` and `开始记录工作` map to a bounded `workday start` session.
-`查看工作记录状态` maps to `workday status --format text --language zh-CN`.
+`查看工作记录状态` maps through the same local intent allowlist to
+`workday status --format text --language zh-CN`.
 `结束工作并总结` and `停止工作并总结` map to `workday stop --format text
 --language zh-CN`.
 
@@ -101,7 +102,7 @@ winchronicle workday intent "开始工作" --execute
 When I say "结束工作并总结", run:
 winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60
 When I say "查看工作记录状态", run:
-winchronicle workday status --format text --language zh-CN
+winchronicle workday intent "查看工作记录状态" --execute
 Only paste a summary into chat after the user explicitly asks for chat output.
 ```
 

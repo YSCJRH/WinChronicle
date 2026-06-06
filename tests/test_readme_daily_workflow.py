@@ -49,7 +49,7 @@ def test_codex_app_plugin_install_guide_is_plain_user_path():
         "查看工作记录状态",
         "停止工作并总结",
         "Post-install self-check",
-        "winchronicle workday status --format text --language zh-CN",
+        'winchronicle workday intent "查看工作记录状态" --execute',
         "winchronicle codex daily --dry-run --format text",
         "does not write Codex config",
         "does not write WinChronicle state",
