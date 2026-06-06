@@ -398,6 +398,26 @@ def test_workday_summarize_reads_named_session(tmp_path, monkeypatch, capsys):
     assert "应用活动" in technical_summary
     assert "数据看板" in technical_summary
 
+    assert (
+        main(
+            [
+                "workday",
+                "summarize",
+                "summary-check",
+                "--format",
+                "text",
+                "--language",
+                "zh-CN",
+                "--note",
+                "今天确认完成了工作日总结文案校准。",
+            ]
+        )
+        == 0
+    )
+    noted_summary = capsys.readouterr().out
+    assert "用户确认事实" in noted_summary
+    assert "今天确认完成了工作日总结文案校准" in noted_summary
+
 
 def test_workday_doctor_reports_no_active_session_without_capture_artifacts(
     tmp_path, monkeypatch, capsys
@@ -643,6 +663,8 @@ def test_workday_text_summary_explains_error_signals_without_observed_text():
 
     assert "今日工作复盘" in text
     assert "2 次错误信号" in text
+    assert "已解决 / 未解决 / 误报" in text
+    assert "是否已解决需要确认" not in text
     assert "命中次数: 2" not in text
     assert "Codex: 2" not in text
     assert "failed: 2" not in text
@@ -716,9 +738,11 @@ def test_workday_text_summary_includes_allowlisted_project_metadata_only():
 
     assert "今日工作复盘" in text
     assert "今日工作结论" in text
+    assert "记录推断" in text
     assert "主要推进了 WinChronicle" in text
     assert "工作进行情况" in text
     assert "进行中" in text
+    assert "用户确认事实" in text
     assert "明天改进建议" in text
     assert "可考虑方向" in text
     assert "待确认问题" not in text
@@ -784,8 +808,10 @@ def test_workday_text_summary_turns_unregistered_app_activity_into_questions():
     assert "WINWORD" in text
     assert "chrome" in text
     assert "可考虑方向" in text
+    assert "建议结束时用一句确认说明归属" in text
     assert "把未登记应用活动按项目或工作类型归类" in text
     assert "这些应用活动是否对应其它项目、写作、调研或沟通工作" not in text
+    assert "需要人工确认" not in text
     assert "Document" not in text
     assert "Research" not in text
 

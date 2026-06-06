@@ -335,7 +335,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     workday_stop.add_argument(
         "--confirmation",
+        "--note",
         action="append",
+        dest="confirmation",
         default=[],
         help="Optional user-confirmed note to include in the text summary.",
     )
@@ -365,7 +367,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     workday_summarize.add_argument(
         "--confirmation",
+        "--note",
         action="append",
+        dest="confirmation",
         default=[],
         help="Optional user-confirmed note to include in the text summary.",
     )

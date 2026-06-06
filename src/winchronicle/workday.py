@@ -805,20 +805,20 @@ def _format_work_conclusions(session: dict[str, Any], project_snapshot: Any) -> 
             changed_count = _safe_int(project.get("changed_file_count"))
             clues = _project_file_clues(project)
             if clues:
-                lines.append(f"- 主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件，集中在 {clues}。")
+                lines.append(f"- 记录推断: 主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件，集中在 {clues}。")
             else:
-                lines.append(f"- 主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件。")
+                lines.append(f"- 记录推断: 主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件。")
         if len(changed_projects) > 3:
             lines.append(f"- 另有 {len(changed_projects) - 3} 个登记项目也出现了变更，建议结束时按项目补一句完成度。")
     elif projects:
-        lines.append("- 已登记项目目录，但未看到明显 git 变更；今天可能偏阅读、沟通、调研、文档查看或尚未保存。")
+        lines.append("- 记录推断: 已登记项目目录，但未看到明显 git 变更；今天可能偏阅读、沟通、调研、文档查看或尚未保存。")
     else:
-        lines.append("- 今天有本地工作记录，但未登记项目目录；系统还不能可靠判断具体项目产出。")
+        lines.append("- 记录推断: 今天有本地工作记录，但未登记项目目录；系统还不能可靠判断具体项目产出。")
 
     if apps:
-        lines.append(f"- 工作环境主要集中在 {', '.join(apps[:5])}，说明当天混合了开发、资料查看或文档处理。")
+        lines.append(f"- 记录推断: 工作环境主要集中在 {', '.join(apps[:5])}，说明当天混合了开发、资料查看或文档处理。")
     if error_count:
-        lines.append(f"- 记录中出现 {error_count} 次错误信号；这提示今天可能包含调试或失败排查，但是否已解决需要确认。")
+        lines.append(f"- 记录推断: 记录中出现 {error_count} 次错误信号；这提示今天可能包含调试或失败排查，收尾时适合按“已解决 / 未解决 / 误报”归档。")
     if _safe_int(session.get("captures_written")) == 0:
         lines.append("- 本次没有可用 capture，建议用一句人工确认补充今天实际完成的事项。")
     return lines or ["- 本次会话缺少足够线索，需要用户补充今天实际完成的事项。"]
@@ -859,12 +859,12 @@ def _format_work_progress(session: dict[str, Any], project_snapshot: Any) -> lis
     unregistered_apps = _unregistered_activity_apps(session)
     if unregistered_apps:
         lines.append(
-            f"- 未登记工作线索: {', '.join(unregistered_apps)} 出现较多，但未绑定到 allowlist 项目；可能对应写作、调研、沟通或文件整理，需要人工确认。"
+            f"- 未登记工作线索: {', '.join(unregistered_apps)} 出现较多，但未绑定到 allowlist 项目；建议结束时用一句确认说明归属，或下次开始前登记相关项目。"
         )
 
     error_count = _error_signal_count(session)
     if error_count:
-        lines.append(f"- 阻塞线索: 有 {error_count} 次错误信号，建议确认它们是实际阻塞、已解决问题，还是网页/日志误报。")
+        lines.append(f"- 阻塞线索: 有 {error_count} 次错误信号，建议按“已解决 / 未解决 / 误报”归档；未解决项优先作为明天第一步。")
     return lines
 
 
@@ -962,7 +962,7 @@ def _format_confirmation_notes(confirmation_notes: Sequence[str]) -> list[str]:
         return []
     lines = [
         "",
-        "## 用户确认",
+        "## 用户确认事实",
         "",
     ]
     lines.extend(f"- {note}" for note in notes[:5])
@@ -978,7 +978,7 @@ def _format_consideration_directions(session: dict[str, Any], project_snapshot: 
         directions.append("多项目并行时，收尾前按项目各补一句“完成项 / 阻塞 / 明天第一步”。")
     if unregistered_apps:
         directions.append(
-            f"把未登记应用活动按项目或工作类型归类：{', '.join(unregistered_apps)}；否则它们只会表现为应用切换噪声。"
+            f"把未登记应用活动按项目或工作类型归类：{', '.join(unregistered_apps)}；建议结束时用一句确认说明归属，否则它们只会表现为应用切换噪声。"
         )
     if _safe_int(session.get("error_signals", {}).get("total_count")) if isinstance(session.get("error_signals"), dict) else 0:
         directions.append("把错误信号当作收尾清单处理：标记“已解决 / 未解决 / 误报”，优先消除未解决阻塞。")
