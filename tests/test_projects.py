@@ -44,6 +44,67 @@ def test_projects_allowlist_snapshot_reads_metadata_not_file_contents(tmp_path, 
     assert "ghp_winchroniclecanary1234567890ABCD" not in serialized
 
 
+def test_projects_snapshot_redacts_secret_like_metadata(tmp_path, monkeypatch, capsys):
+    if not _git_available():
+        pytest.skip("git is not available")
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    secret = "ghp_winchroniclecanary1234567890ABCD"
+    branch_secret = "winchronicle_plain_canary_token"
+    repo = tmp_path / f"customer-{secret}-repo"
+    repo.mkdir()
+    subprocess.run(["git", "init"], cwd=repo, check=True, capture_output=True, text=True)
+    subprocess.run(
+        ["git", "config", "user.email", "winchronicle@example.invalid"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "WinChronicle Test"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    (repo / "README.md").write_text("safe fixture", encoding="utf-8")
+    subprocess.run(["git", "add", "README.md"], cwd=repo, check=True, capture_output=True, text=True)
+    subprocess.run(
+        ["git", "commit", "-m", f"Initial {branch_secret}"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        ["git", "checkout", "-b", f"feature/{branch_secret}"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    (repo / "src").mkdir()
+    (repo / "src" / f"{secret}.py").write_text("print('safe')", encoding="utf-8")
+
+    assert main(["projects", "add", str(repo), "--name", f"Client {secret}"]) == 0
+    capsys.readouterr()
+
+    assert main(["projects", "snapshot"]) == 0
+    snapshot = json.loads(capsys.readouterr().out)
+    project = snapshot["projects"][0]
+    serialized = json.dumps(snapshot, ensure_ascii=False)
+
+    assert snapshot["privacy"]["metadata_redaction_enabled"] is True
+    assert snapshot["privacy"]["project_paths_are_display_only"] is True
+    assert project["path"] != str(repo.resolve())
+    assert project["metadata_redacted"] is True
+    assert project["redactions"]
+    assert secret not in serialized
+    assert branch_secret not in serialized
+    assert "[REDACTED:" in serialized
+
+
 def _git_available() -> bool:
     try:
         return subprocess.run(

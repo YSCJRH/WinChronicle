@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import json
 import subprocess
+from collections import Counter
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from .paths import ensure_state, state_paths
+from .redaction import redact_text, redactions_from_counts
 
 
 PROJECT_REGISTRY_TRUST = "local_project_allowlist"
@@ -98,6 +100,8 @@ def snapshot_projects(home: Path | str | None = None) -> dict[str, Any]:
         "trust": PROJECT_METADATA_TRUST,
         "privacy": {
             "explicit_allowlist_only": True,
+            "metadata_redaction_enabled": True,
+            "project_paths_are_display_only": True,
             "reads_file_contents": False,
             "reads_full_diff": False,
             "reads_git_status": True,
@@ -109,9 +113,11 @@ def snapshot_projects(home: Path | str | None = None) -> dict[str, Any]:
 
 def _snapshot_project(project: dict[str, Any]) -> dict[str, Any]:
     path = Path(str(project.get("path", "")))
+    redaction_counts: Counter[str] = Counter()
     result: dict[str, Any] = {
-        "name": _clip(project.get("name", path.name), 80),
-        "path": str(path),
+        "name": _redact_metadata_text(project.get("name", path.name), 80, redaction_counts),
+        "path": _project_path_display(path, redaction_counts),
+        "path_kind": "basename_only",
         "exists": path.exists(),
         "is_git_repo": False,
         "branch": "",
@@ -133,47 +139,58 @@ def _snapshot_project(project: dict[str, Any]) -> dict[str, Any]:
         },
         "recent_commits": [],
         "errors": [],
+        "metadata_redacted": False,
+        "redactions": [],
     }
     if not path.exists():
         result["errors"].append("project_path_missing")
-        return result
+        return _finalize_project_metadata(result, redaction_counts)
     if not path.is_dir():
         result["errors"].append("project_path_not_directory")
-        return result
+        return _finalize_project_metadata(result, redaction_counts)
 
     inside = _git(path, "rev-parse", "--is-inside-work-tree")
     if inside.returncode != 0 or inside.stdout.strip() != "true":
         result["errors"].append("not_a_git_work_tree")
         if inside.stderr:
-            result["errors"].append(_clip(inside.stderr, 120))
-        return result
+            result["errors"].append(_redact_metadata_text(inside.stderr, 120, redaction_counts))
+        return _finalize_project_metadata(result, redaction_counts)
 
     result["is_git_repo"] = True
     branch = _git(path, "branch", "--show-current")
     if branch.returncode == 0:
-        result["branch"] = _clip(branch.stdout.strip(), 80)
+        result["branch"] = _redact_metadata_text(branch.stdout.strip(), 80, redaction_counts)
 
     status = _git(path, "status", "--porcelain=v1")
     if status.returncode == 0:
         changed_files, status_counts = _parse_status(status.stdout)
-        result["changed_files"] = changed_files
+        result["changed_files"] = [
+            _redact_metadata_text(filename, 160, redaction_counts)
+            for filename in changed_files
+        ]
         result["changed_file_count"] = len(changed_files)
         result["status_counts"] = status_counts
     elif status.stderr:
-        result["errors"].append(_clip(status.stderr, 120))
+        result["errors"].append(_redact_metadata_text(status.stderr, 120, redaction_counts))
 
     shortstat = _git(path, "diff", "--shortstat")
     if shortstat.returncode == 0:
-        result["diff_stat"] = _parse_shortstat(shortstat.stdout.strip())
+        result["diff_stat"] = _redact_shortstat(
+            _parse_shortstat(shortstat.stdout.strip()),
+            redaction_counts,
+        )
     elif shortstat.stderr:
-        result["errors"].append(_clip(shortstat.stderr, 120))
+        result["errors"].append(_redact_metadata_text(shortstat.stderr, 120, redaction_counts))
 
     commits = _git(path, "log", "-3", "--pretty=format:%h%x09%s")
     if commits.returncode == 0:
-        result["recent_commits"] = _parse_commits(commits.stdout)
+        result["recent_commits"] = _redact_commits(
+            _parse_commits(commits.stdout),
+            redaction_counts,
+        )
     elif commits.stderr and "does not have any commits" not in commits.stderr:
-        result["errors"].append(_clip(commits.stderr, 120))
-    return result
+        result["errors"].append(_redact_metadata_text(commits.stderr, 120, redaction_counts))
+    return _finalize_project_metadata(result, redaction_counts)
 
 
 def _git(cwd: Path, *args: str) -> subprocess.CompletedProcess[str]:
@@ -262,6 +279,43 @@ def _parse_commits(stdout: str) -> list[dict[str, str]]:
             }
         )
     return commits[:3]
+
+
+def _redact_shortstat(raw: dict[str, Any], counts: Counter[str]) -> dict[str, Any]:
+    return {
+        **raw,
+        "raw": _redact_metadata_text(raw.get("raw", ""), 160, counts),
+    }
+
+
+def _redact_commits(commits: list[dict[str, str]], counts: Counter[str]) -> list[dict[str, str]]:
+    return [
+        {
+            "hash": _redact_metadata_text(commit.get("hash", ""), 16, counts),
+            "subject": _redact_metadata_text(commit.get("subject", ""), 120, counts),
+        }
+        for commit in commits
+    ]
+
+
+def _project_path_display(path: Path, counts: Counter[str]) -> str:
+    return _redact_metadata_text(path.name or "project", 80, counts)
+
+
+def _redact_metadata_text(value: Any, limit: int, counts: Counter[str]) -> str:
+    text = _clip(value, limit)
+    redacted, field_counts = redact_text(text)
+    counts.update(field_counts)
+    return redacted or ""
+
+
+def _finalize_project_metadata(
+    result: dict[str, Any],
+    counts: Counter[str],
+) -> dict[str, Any]:
+    result["metadata_redacted"] = bool(counts)
+    result["redactions"] = redactions_from_counts(counts)
+    return result
 
 
 def _empty_registry() -> dict[str, Any]:

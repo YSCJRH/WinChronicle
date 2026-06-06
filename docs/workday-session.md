@@ -67,6 +67,14 @@ allowlisted directories. It does not read file contents, full diffs, arbitrary
 workspace storage, browser profiles, screenshots, OCR, clipboard, keylogging, or
 desktop-control surfaces.
 
+Project snapshot metadata is redacted before it reaches workday summaries.
+Snapshot output uses display-only project paths (`basename_only`) instead of
+full local paths, and `metadata_redaction_enabled` marks that obvious
+secret-like strings in project names, branch names, changed filenames, recent
+commit subjects, diff metadata, and git errors have passed through the same
+redaction pipeline used for captures. This is still metadata, not a guarantee
+that semantic customer or project identifiers are anonymous.
+
 The default Chinese workday text summary is a human daily review, not a
 telemetry report. It leads with:
 
