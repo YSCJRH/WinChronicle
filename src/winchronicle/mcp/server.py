@@ -37,6 +37,23 @@ LOCAL_PRIVACY_STATUS_TRUST = "local_privacy_status"
 LOCAL_PRIVACY_STATUS_INSTRUCTION = (
     "Local privacy status metadata only. It is not observed screen content."
 )
+SHARE_WARNING = (
+    "MCP results may describe local WinChronicle context. External sharing requires "
+    "explicit user approval; prefer --metadata-only when a client should avoid "
+    "observed text."
+)
+EXTERNAL_SHARING = {
+    "requires_user_approval": True,
+    "metadata_only_available": True,
+    "mcp_read_only": True,
+}
+METADATA_ONLY_OMITTED_KEYS = {
+    "visible_text",
+    "focused_text",
+    "url",
+    "snippet",
+    "body",
+}
 
 CONTROL_TOOL_TERMS = (
     "click",
@@ -57,9 +74,17 @@ CONTROL_TOOL_TERMS = (
 )
 
 
-def current_context(home: Path | str | None = None) -> dict[str, Any]:
+def current_context(
+    home: Path | str | None = None,
+    *,
+    metadata_only: bool = False,
+) -> dict[str, Any]:
     capture = recent_capture(home)
-    return _tool_result("current_context", {"capture": _observed_capture(capture)})
+    return _tool_result(
+        "current_context",
+        {"capture": _observed_capture(capture, metadata_only=metadata_only)},
+        metadata_only=metadata_only,
+    )
 
 
 def search_captures_tool(
@@ -70,6 +95,7 @@ def search_captures_tool(
     app_name: str | None = None,
     limit: int = 10,
     home: Path | str | None = None,
+    metadata_only: bool = False,
 ) -> dict[str, Any]:
     bounded_limit = _bounded_limit(limit)
     raw_results = search_captures(
@@ -80,7 +106,10 @@ def search_captures_tool(
         since=since,
         until=until,
     )
-    matches = [_observed_search_result(result, source="capture_store") for result in raw_results]
+    matches = [
+        _observed_search_result(result, source="capture_store", metadata_only=metadata_only)
+        for result in raw_results
+    ]
 
     return _tool_result(
         "search_captures",
@@ -88,6 +117,7 @@ def search_captures_tool(
             "query": _redacted_query(query),
             "matches": matches,
         },
+        metadata_only=metadata_only,
     )
 
 
@@ -97,6 +127,7 @@ def search_memory_tool(
     entry_type: str | None = None,
     limit: int = 10,
     home: Path | str | None = None,
+    metadata_only: bool = False,
 ) -> dict[str, Any]:
     bounded_limit = _bounded_limit(limit)
     raw_results = search_memory_entries(
@@ -105,7 +136,10 @@ def search_memory_tool(
         limit=bounded_limit,
         entry_type=entry_type,
     )
-    matches = [_observed_search_result(result, source="memory_store") for result in raw_results]
+    matches = [
+        _observed_search_result(result, source="memory_store", metadata_only=metadata_only)
+        for result in raw_results
+    ]
 
     return _tool_result(
         "search_memory",
@@ -114,6 +148,7 @@ def search_memory_tool(
             "entry_type": entry_type,
             "matches": matches,
         },
+        metadata_only=metadata_only,
     )
 
 
@@ -122,9 +157,14 @@ def read_recent_capture(
     at: str | None = None,
     app_name: str | None = None,
     home: Path | str | None = None,
+    metadata_only: bool = False,
 ) -> dict[str, Any]:
     capture = recent_capture(home, at=at, app_name=app_name)
-    return _tool_result("read_recent_capture", {"capture": _observed_capture(capture)})
+    return _tool_result(
+        "read_recent_capture",
+        {"capture": _observed_capture(capture, metadata_only=metadata_only)},
+        metadata_only=metadata_only,
+    )
 
 
 def recent_activity(
@@ -132,21 +172,29 @@ def recent_activity(
     since: str | None = None,
     limit: int = 10,
     home: Path | str | None = None,
+    metadata_only: bool = False,
 ) -> dict[str, Any]:
     captures = list_captures(home, limit=_bounded_limit(limit), since=since)
     return _tool_result(
         "recent_activity",
         {
-            "captures": [_observed_capture(capture) for capture in captures],
+            "captures": [
+                _observed_capture(capture, metadata_only=metadata_only) for capture in captures
+            ],
             "sessions": [
-                _observed_session(session)
+                _observed_session(session, metadata_only=metadata_only)
                 for session in list_sessions(home, limit=_bounded_limit(limit))
             ],
         },
+        metadata_only=metadata_only,
     )
 
 
-def privacy_status(home: Path | str | None = None) -> dict[str, Any]:
+def privacy_status(
+    home: Path | str | None = None,
+    *,
+    metadata_only: bool = False,
+) -> dict[str, Any]:
     paths = state_paths(home)
     payload = {
         "home": str(paths["home"]),
@@ -165,6 +213,7 @@ def privacy_status(home: Path | str | None = None) -> dict[str, Any]:
         payload,
         trust=LOCAL_PRIVACY_STATUS_TRUST,
         instruction=LOCAL_PRIVACY_STATUS_INSTRUCTION,
+        metadata_only=metadata_only,
     )
 
 
@@ -242,12 +291,13 @@ def run_stdio(
     stdout: BinaryIO | None = None,
     *,
     home: Path | str | None = None,
+    metadata_only: bool = False,
 ) -> int:
     input_stream = stdin if stdin is not None else sys.stdin.buffer
     output_stream = stdout if stdout is not None else sys.stdout.buffer
 
     for request in _read_messages(input_stream):
-        response = _handle_json_rpc(request, home)
+        response = _handle_json_rpc(request, home, metadata_only=metadata_only)
         if response is not None:
             _write_message(output_stream, response)
 
@@ -260,17 +310,26 @@ def _tool_result(
     *,
     trust: str = TRUST,
     instruction: str = TRUST_BOUNDARY_INSTRUCTION,
+    metadata_only: bool = False,
 ) -> dict[str, Any]:
     return {
         "tool": tool,
         "read_only": True,
         "trust": trust,
         "instruction": instruction,
+        "metadata_only": bool(metadata_only),
+        "share_warning": SHARE_WARNING,
+        "external_sharing": dict(EXTERNAL_SHARING),
         "result": result,
     }
 
 
-def _observed_search_result(result: dict[str, str], *, source: str) -> dict[str, Any]:
+def _observed_search_result(
+    result: dict[str, str],
+    *,
+    source: str,
+    metadata_only: bool = False,
+) -> dict[str, Any]:
     snippet = result.get("snippet", "")
     metadata = _observed_metadata(
         source=source,
@@ -279,9 +338,13 @@ def _observed_search_result(result: dict[str, str], *, source: str) -> dict[str,
         visible_text=snippet,
         focused_text="",
         app_name=result.get("app_name", result.get("entry_type", "")),
+        metadata_only=metadata_only,
     )
+    payload = dict(result)
+    if metadata_only:
+        _drop_observed_text_fields(payload)
     return {
-        **result,
+        **payload,
         "trust": TRUST,
         "untrusted_observed_content": True,
         "instruction": TRUST_BOUNDARY_INSTRUCTION,
@@ -289,7 +352,11 @@ def _observed_search_result(result: dict[str, str], *, source: str) -> dict[str,
     }
 
 
-def _observed_capture(capture: dict[str, str] | None) -> dict[str, Any] | None:
+def _observed_capture(
+    capture: dict[str, str] | None,
+    *,
+    metadata_only: bool = False,
+) -> dict[str, Any] | None:
     if capture is None:
         return None
     metadata = _observed_metadata(
@@ -300,8 +367,9 @@ def _observed_capture(capture: dict[str, str] | None) -> dict[str, Any] | None:
         focused_text=capture.get("focused_text", ""),
         app_name=capture.get("app_name", ""),
         url=capture.get("url", ""),
+        metadata_only=metadata_only,
     )
-    return {
+    payload = {
         "timestamp": capture["timestamp"],
         "app_name": capture["app_name"],
         "title": capture["title"],
@@ -314,9 +382,12 @@ def _observed_capture(capture: dict[str, str] | None) -> dict[str, Any] | None:
         "instruction": TRUST_BOUNDARY_INSTRUCTION,
         **metadata,
     }
+    if metadata_only:
+        _drop_observed_text_fields(payload)
+    return payload
 
 
-def _observed_session(session: dict[str, Any]) -> dict[str, Any]:
+def _observed_session(session: dict[str, Any], *, metadata_only: bool = False) -> dict[str, Any]:
     source_ids = [session["session_id"]] if session.get("session_id") else []
     app_segments = session.get("app_segments") or []
     title = " ".join(str(segment.get("title", "")) for segment in app_segments)
@@ -329,7 +400,30 @@ def _observed_session(session: dict[str, Any]) -> dict[str, Any]:
         visible_text=visible_text,
         focused_text="",
         app_name=app_name,
+        metadata_only=metadata_only,
     )
+    if metadata_only:
+        return {
+            "session_schema_version": session.get("session_schema_version"),
+            "session_id": session.get("session_id"),
+            "mode": session.get("mode"),
+            "started_at": session.get("started_at"),
+            "ended_at": session.get("ended_at"),
+            "duration_seconds": session.get("duration_seconds"),
+            "captures_written": session.get("captures_written"),
+            "duplicates_skipped": session.get("duplicates_skipped"),
+            "denylisted_skipped": session.get("denylisted_skipped"),
+            "excluded_skipped": session.get("excluded_skipped"),
+            "heartbeats": session.get("heartbeats"),
+            "source_capture_count": len(session.get("source_capture_paths") or []),
+            "storage_policy": session.get("storage_policy"),
+            "storage_usage": session.get("storage_usage"),
+            "error_signals": session.get("error_signals"),
+            "trust": TRUST,
+            "untrusted_observed_content": True,
+            "instruction": TRUST_BOUNDARY_INSTRUCTION,
+            **metadata,
+        }
     return {
         **session,
         **metadata,
@@ -345,6 +439,7 @@ def _observed_metadata(
     focused_text: str,
     app_name: str,
     url: str | None = None,
+    metadata_only: bool = False,
 ) -> dict[str, Any]:
     limitations = _coverage_limitations(
         source_ids=source_ids,
@@ -354,10 +449,13 @@ def _observed_metadata(
         app_name=app_name,
         url=url,
     )
+    if metadata_only:
+        limitations = [*limitations, "metadata_only"]
     return {
         "redacted": True,
         "source": source or "unknown",
         "source_ids": source_ids,
+        "metadata_only": bool(metadata_only),
         "confidence": _coverage_confidence(
             source_ids=source_ids,
             title=title,
@@ -440,7 +538,18 @@ def _redacted_query(query: str) -> str:
     return redacted or ""
 
 
-def _call_tool(name: str, arguments: dict[str, Any], home: Path | str | None) -> dict[str, Any]:
+def _drop_observed_text_fields(payload: dict[str, Any]) -> None:
+    for key in METADATA_ONLY_OMITTED_KEYS:
+        payload.pop(key, None)
+
+
+def _call_tool(
+    name: str,
+    arguments: dict[str, Any],
+    home: Path | str | None,
+    *,
+    metadata_only: bool = False,
+) -> dict[str, Any]:
     dispatch: dict[str, Callable[..., dict[str, Any]]] = {
         "current_context": current_context,
         "search_captures": search_captures_tool,
@@ -453,10 +562,15 @@ def _call_tool(name: str, arguments: dict[str, Any], home: Path | str | None) ->
         raise ValueError(f"control-like tool name is not allowed: {name}")
     if name not in dispatch:
         raise ValueError(f"unknown read-only tool: {name}")
-    return dispatch[name](home=home, **arguments)
+    return dispatch[name](home=home, metadata_only=metadata_only, **arguments)
 
 
-def _handle_json_rpc(message: dict[str, Any], home: Path | str | None) -> dict[str, Any] | None:
+def _handle_json_rpc(
+    message: dict[str, Any],
+    home: Path | str | None,
+    *,
+    metadata_only: bool = False,
+) -> dict[str, Any] | None:
     request_id = message.get("id")
     if request_id is None:
         return None
@@ -478,6 +592,7 @@ def _handle_json_rpc(message: dict[str, Any], home: Path | str | None) -> dict[s
                 str(params.get("name", "")),
                 params.get("arguments") or {},
                 home,
+                metadata_only=metadata_only,
             )
             result = {
                 "content": [

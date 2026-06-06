@@ -240,7 +240,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     summarize_session.add_argument("session")
 
-    subparsers.add_parser("mcp-stdio", help="Run the read-only MCP stdio server.")
+    mcp_stdio = subparsers.add_parser("mcp-stdio", help="Run the read-only MCP stdio server.")
+    mcp_stdio.add_argument(
+        "--metadata-only",
+        action="store_true",
+        help="Return provenance, trust, confidence, and counts without observed text fields.",
+    )
 
     projects = subparsers.add_parser(
         "projects",
@@ -729,7 +734,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "mcp-stdio":
         paths = state_paths()
-        return run_stdio(home=paths["home"])
+        return run_stdio(home=paths["home"], metadata_only=args.metadata_only)
 
     if args.command == "projects":
         return _handle_projects(args)

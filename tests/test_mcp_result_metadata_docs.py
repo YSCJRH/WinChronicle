@@ -18,8 +18,12 @@ def test_mcp_result_metadata_doc_defines_boundaries():
         "untrusted_observed_content",
         "local_privacy_status",
         "coverage quality, not trustworthiness or permission",
+        "share_warning",
+        "metadata-only",
+        "external sharing",
         "No screenshots, OCR, clipboard capture, desktop control, MCP write tools, or background capture are added by this metadata layer.",
     ):
         assert expected in doc
 
     assert "[MCP result metadata](mcp-result-metadata.md)" in setup
+    assert "mcp-stdio --metadata-only" in setup

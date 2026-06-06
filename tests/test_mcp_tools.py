@@ -43,6 +43,13 @@ EXPECTED_OBSERVED_METADATA_KEYS = {
     "confidence",
     "limitations",
 }
+EXPECTED_METADATA_ONLY_OMITTED_KEYS = {
+    "visible_text",
+    "focused_text",
+    "url",
+    "snippet",
+    "body",
+}
 LOCAL_PRIVACY_STATUS_TRUST = "local_privacy_status"
 FORBIDDEN_TOOL_TERMS = (
     "click",
@@ -366,6 +373,110 @@ def test_mcp_observed_content_results_include_compatible_metadata(tmp_path):
     assert capture_match["source"] == "capture_store"
     assert memory_match["source"] == "memory_store"
     assert activity_session["source"] == "monitor_session"
+
+
+def test_mcp_tool_results_include_external_share_warning(tmp_path):
+    home = tmp_path / "state"
+    capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / "terminal_error.json", home)
+
+    results = (
+        current_context(home=home),
+        search_captures_tool("AssertionError", home=home),
+        read_recent_capture(home=home),
+        recent_activity(home=home),
+        privacy_status(home=home),
+    )
+
+    for result in results:
+        validate_mcp_tool_result(result)
+        assert result["metadata_only"] is False
+        assert "external sharing" in result["share_warning"].casefold()
+        assert result["external_sharing"]["requires_user_approval"] is True
+        assert result["external_sharing"]["metadata_only_available"] is True
+        assert result["external_sharing"]["mcp_read_only"] is True
+
+
+def test_mcp_metadata_only_mode_omits_observed_text_without_tool_list_change(tmp_path):
+    home = tmp_path / "state"
+    capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / "terminal_error.json", home)
+    _index_memory_probe(
+        home,
+        path=tmp_path / "memory-probe.md",
+        entry_type="project",
+        title="Memory probe",
+        start_timestamp="2026-04-25T12:30:00+08:00",
+        body="AssertionError observed memory body should not be exported in metadata-only mode.",
+    )
+
+    context = current_context(home=home, metadata_only=True)
+    capture_search = search_captures_tool("AssertionError", home=home, metadata_only=True)
+    memory_search = search_memory_tool("AssertionError", home=home, metadata_only=True)
+    recent = read_recent_capture(home=home, metadata_only=True)
+    activity = recent_activity(home=home, metadata_only=True)
+
+    for result in (context, capture_search, memory_search, recent, activity):
+        validate_mcp_tool_result(result)
+        assert result["metadata_only"] is True
+        assert result["external_sharing"]["requires_user_approval"] is True
+        assert result["external_sharing"]["metadata_only_available"] is True
+
+    observed_items = [
+        context["result"]["capture"],
+        capture_search["result"]["matches"][0],
+        memory_search["result"]["matches"][0],
+        recent["result"]["capture"],
+        activity["result"]["captures"][0],
+    ]
+    for item in observed_items:
+        assert item["metadata_only"] is True
+        assert "metadata_only" in item["limitations"]
+        assert EXPECTED_METADATA_ONLY_OMITTED_KEYS.isdisjoint(item)
+        assert item["trust"] == TRUST
+
+    serialized = json.dumps(
+        {
+            "context": context,
+            "capture_search": capture_search,
+            "memory_search": memory_search,
+            "recent": recent,
+            "activity": activity,
+        },
+        sort_keys=True,
+    )
+    assert "AssertionError observed memory body" not in serialized
+    assert "Traceback" not in serialized
+    assert TOOL_NAMES == EXPECTED_TOOL_NAMES
+
+
+def test_mcp_stdio_metadata_only_mode_returns_same_tools_without_observed_text(tmp_path):
+    home = tmp_path / "state"
+    capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / "terminal_error.json", home)
+    stdin = BytesIO(
+        b"".join(
+            [
+                _encode({"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}}),
+                _encode(
+                    {
+                        "jsonrpc": "2.0",
+                        "id": 2,
+                        "method": "tools/call",
+                        "params": {"name": "read_recent_capture", "arguments": {}},
+                    }
+                ),
+            ]
+        )
+    )
+    stdout = BytesIO()
+
+    assert run_stdio(stdin, stdout, home=home, metadata_only=True) == 0
+
+    responses = _decode_stream(stdout.getvalue())
+    assert [tool["name"] for tool in responses[0]["result"]["tools"]] == EXPECTED_TOOL_NAMES
+    tool_result = json.loads(responses[1]["result"]["content"][0]["text"])
+    validate_mcp_tool_result(tool_result)
+    assert tool_result["metadata_only"] is True
+    assert EXPECTED_METADATA_ONLY_OMITTED_KEYS.isdisjoint(tool_result["result"]["capture"])
+    assert "Traceback" not in json.dumps(tool_result, sort_keys=True)
 
 
 def test_mcp_privacy_status_uses_local_status_trust_not_observed_content(tmp_path):

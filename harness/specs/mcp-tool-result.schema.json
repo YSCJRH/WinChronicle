@@ -7,6 +7,9 @@
     "read_only",
     "trust",
     "instruction",
+    "metadata_only",
+    "share_warning",
+    "external_sharing",
     "result"
   ],
   "additionalProperties": false,
@@ -35,6 +38,33 @@
     "instruction": {
       "type": "string",
       "minLength": 1
+    },
+    "metadata_only": {
+      "type": "boolean"
+    },
+    "share_warning": {
+      "type": "string",
+      "minLength": 1
+    },
+    "external_sharing": {
+      "type": "object",
+      "required": [
+        "requires_user_approval",
+        "metadata_only_available",
+        "mcp_read_only"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "requires_user_approval": {
+          "const": true
+        },
+        "metadata_only_available": {
+          "const": true
+        },
+        "mcp_read_only": {
+          "const": true
+        }
+      }
     },
     "result": {
       "type": "object"
