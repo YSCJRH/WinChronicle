@@ -78,6 +78,20 @@ CODEX_WORKDAY_NEXT_PROMPTS = [
     "停止工作并总结",
 ]
 CODEX_RECORD_ONLY_PROMPT_COMMAND = "winchronicle codex daily --dry-run --format text"
+BOOTSTRAP_FIRST_RUN_COMMANDS = [
+    'python -m pip install -e ".[dev]"',
+    "dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo",
+    "dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo",
+    "winchronicle init",
+    "winchronicle doctor",
+    "winchronicle codex setup --dry-run --format text",
+    "winchronicle codex plugin --dry-run --format text",
+]
+BOOTSTRAP_WORKDAY_COMMANDS = [
+    'winchronicle workday intent "开始工作" --execute',
+    "winchronicle workday status --format text --language zh-CN",
+    'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60',
+]
 CODEX_PLUGIN_POST_INSTALL_SELF_CHECK = [
     "After adding the plugin source, open a new Codex App thread in the folder you want to record.",
     "Say: 查看工作记录状态",
@@ -109,6 +123,22 @@ WORKDAY_STOP_SUMMARY_PHRASES = ("停止工作并总结", "结束工作并总结"
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="winchronicle")
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    bootstrap = subparsers.add_parser(
+        "bootstrap",
+        help="Print a Windows first-run checklist without writing state or starting capture.",
+    )
+    bootstrap.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print the first-run checklist without writing files or starting capture.",
+    )
+    bootstrap.add_argument(
+        "--format",
+        choices=("json", "text"),
+        default="json",
+        help="Print JSON by default, or a copyable first-run checklist.",
+    )
 
     subparsers.add_parser("init", help="Initialize the local WinChronicle state directory.")
     subparsers.add_parser("status", help="Print local state and privacy feature status as JSON.")
@@ -511,6 +541,16 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
+    if args.command == "bootstrap":
+        if not args.dry_run:
+            parser.error("bootstrap currently supports only --dry-run")
+        payload = _bootstrap_dry_run_payload()
+        if args.format == "text":
+            print(_format_bootstrap_dry_run_text(payload), end="")
+        else:
+            print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+
     if args.command == "init":
         paths = ensure_state()
         init_db(paths["db"])
@@ -767,6 +807,100 @@ def _handle_projects(args: argparse.Namespace) -> int:
         print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
     return 2
+
+
+def _bootstrap_dry_run_payload() -> dict[str, object]:
+    paths = state_paths()
+    privacy = privacy_contract_payload()
+    plugin = _codex_plugin_dry_run_payload()
+    helper_dll, watcher_dll = _uia_build_output_paths()
+    disabled_ok = all(privacy[key] is False for key in DISABLED_SURFACE_STATUS)
+
+    return {
+        "command": "bootstrap",
+        "dry_run": True,
+        "version": __version__,
+        "windows_first_run": True,
+        "writes_config": False,
+        "writes_state": False,
+        "starts_capture": False,
+        "starts_uia": False,
+        "observed_content_trust": TRUST,
+        "state_home": str(paths["home"]),
+        "checks": [
+            {
+                "name": "python",
+                "ok": sys.version_info >= (3, 11),
+                "detail": platform.python_version(),
+            },
+            _dotnet_check(),
+            {
+                "name": "uia_helper_dll",
+                "ok": helper_dll.exists(),
+                "path": str(helper_dll),
+            },
+            {
+                "name": "uia_watcher_dll",
+                "ok": watcher_dll.exists(),
+                "path": str(watcher_dll),
+            },
+            {
+                "name": "privacy_surfaces",
+                "ok": disabled_ok,
+                "detail": "disabled surfaces remain off",
+            },
+            {
+                "name": "codex_workday_plugin",
+                "ok": bool(plugin["plugin_available"]),
+                "detail": plugin["plugin_path"],
+            },
+        ],
+        "first_run_commands": BOOTSTRAP_FIRST_RUN_COMMANDS,
+        "workday_commands": BOOTSTRAP_WORKDAY_COMMANDS,
+        "recording_mode_boundary": CODEX_RECORDING_MODE_BOUNDARY,
+        "record_only_thread_prompt": CODEX_RECORD_ONLY_THREAD_PROMPT,
+        "disabled_surfaces": _codex_plugin_disabled_surface_names(),
+        "codex_plugin_source_path": plugin["codex_app_plugin_source_path"],
+        "next_doc": "docs/windows-first-run.md",
+    }
+
+
+def _format_bootstrap_dry_run_text(payload: dict[str, object]) -> str:
+    first_run_commands = payload["first_run_commands"]
+    first_run = first_run_commands if isinstance(first_run_commands, list) else []
+    workday_commands = payload["workday_commands"]
+    workday = workday_commands if isinstance(workday_commands, list) else []
+    checks = payload["checks"]
+    check_lines = checks if isinstance(checks, list) else []
+
+    lines = [
+        "WinChronicle Windows first-run bootstrap dry-run",
+        "",
+        f"Dry run only: {_yes_no(payload['dry_run'])}",
+        f"Writes config: {_yes_no(payload['writes_config'])}",
+        f"Writes state: {_yes_no(payload['writes_state'])}",
+        f"Starts capture now: {_yes_no(payload['starts_capture'])}",
+        f"Starts UIA now: {_yes_no(payload['starts_uia'])}",
+        f"Observed content trust: {payload['observed_content_trust']}",
+        f"State home: {payload['state_home']}",
+        "",
+        "Local checks:",
+        *[_format_codex_check_line(check) for check in check_lines],
+        "",
+        "Windows first-run checklist:",
+        *[f"{index}. {command}" for index, command in enumerate(first_run, start=1)],
+        "",
+        "Daily workday commands:",
+        *[f"- {command}" for command in workday],
+        "",
+        "Record-only boundary:",
+        "Do not inspect, scan, review, edit, test, commit, push, or release repository files.",
+        str(payload["recording_mode_boundary"]),
+        "",
+        "No screen" "shots, " "O" "CR, clipboard, desktop control, cloud upload, or MCP write tools are added.",
+        f"More detail: {payload['next_doc']}",
+    ]
+    return "\n".join(lines) + "\n"
 
 
 def _codex_mcp_config_snippet() -> str:
@@ -1080,25 +1214,7 @@ def _doctor_payload() -> dict[str, object]:
 
     checks.append(_dotnet_check())
 
-    root = Path(__file__).resolve().parents[2]
-    helper_dll = (
-        root
-        / "resources"
-        / "win-uia-helper"
-        / "bin"
-        / "Debug"
-        / "net8.0-windows"
-        / "win-uia-helper.dll"
-    )
-    watcher_dll = (
-        root
-        / "resources"
-        / "win-uia-watcher"
-        / "bin"
-        / "Debug"
-        / "net8.0-windows"
-        / "win-uia-watcher.dll"
-    )
+    helper_dll, watcher_dll = _uia_build_output_paths()
     checks.append(
         {
             "name": "uia_helper_dll",
@@ -1134,6 +1250,29 @@ def _doctor_payload() -> dict[str, object]:
         "checks": checks,
         **privacy,
     }
+
+
+def _uia_build_output_paths() -> tuple[Path, Path]:
+    root = Path(__file__).resolve().parents[2]
+    helper_dll = (
+        root
+        / "resources"
+        / "win-uia-helper"
+        / "bin"
+        / "Debug"
+        / "net8.0-windows"
+        / "win-uia-helper.dll"
+    )
+    watcher_dll = (
+        root
+        / "resources"
+        / "win-uia-watcher"
+        / "bin"
+        / "Debug"
+        / "net8.0-windows"
+        / "win-uia-watcher.dll"
+    )
+    return helper_dll, watcher_dll
 
 
 def _dotnet_check() -> dict[str, object]:

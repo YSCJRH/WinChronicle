@@ -79,6 +79,7 @@ From a fresh checkout on Windows with Python 3.11+:
 
 ```powershell
 python -m pip install -e ".[dev]"
+winchronicle bootstrap --dry-run --format text
 winchronicle --help
 winchronicle doctor
 dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo
@@ -90,6 +91,8 @@ python harness/scripts/run_quick_demo.py
 privacy-surface checks as JSON. It does not start UIA capture, read the
 desktop, run the watcher, or store observed content. Source checkouts can still
 use `python -m winchronicle ...` for every command.
+For a copyable first-run checklist, see
+[Windows first run](docs/windows-first-run.md).
 
 ## If You Only Want Codex App To Record Work
 
@@ -260,6 +263,7 @@ maintenance loop automatically.
 - [Known limitations](docs/known-limitations.md)
 - [Deterministic demo](docs/deterministic-demo.md)
 - [v0.2 monitor session](docs/v0.2-monitor-session.md)
+- [Windows first run](docs/windows-first-run.md)
 - [Workday session](docs/workday-session.md)
 - [Codex App local plugin install](docs/codex-app-plugin-install.md)
 - [Codex App workday guide](docs/codex-app-workday-guide.md)

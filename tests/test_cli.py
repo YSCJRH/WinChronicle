@@ -98,6 +98,97 @@ def test_doctor_cli_reports_safe_empty_state_without_capture(tmp_path, monkeypat
     assert "focused_text" not in serialized
 
 
+def test_bootstrap_dry_run_prints_windows_first_run_plan_without_state_write(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["bootstrap", "--dry-run"]) == 0
+    output = capsys.readouterr().out
+    payload = json.loads(output)
+
+    assert payload["command"] == "bootstrap"
+    assert payload["dry_run"] is True
+    assert payload["windows_first_run"] is True
+    assert payload["writes_config"] is False
+    assert payload["writes_state"] is False
+    assert payload["starts_capture"] is False
+    assert payload["starts_uia"] is False
+    assert payload["observed_content_trust"] == TRUST
+    assert payload["state_home"] == str(home.resolve())
+    assert payload["recording_mode_boundary"].startswith("Recording phrases are not")
+
+    check_names = {check["name"] for check in payload["checks"]}
+    assert {
+        "python",
+        "dotnet",
+        "uia_helper_dll",
+        "uia_watcher_dll",
+        "privacy_surfaces",
+        "codex_workday_plugin",
+    } <= check_names
+    assert next(check for check in payload["checks"] if check["name"] == "python")[
+        "ok"
+    ] is True
+    assert next(check for check in payload["checks"] if check["name"] == "privacy_surfaces")[
+        "ok"
+    ] is True
+
+    assert payload["first_run_commands"] == [
+        'python -m pip install -e ".[dev]"',
+        "dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo",
+        "dotnet build resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj --nologo",
+        "winchronicle init",
+        "winchronicle doctor",
+        "winchronicle codex setup --dry-run --format text",
+        "winchronicle codex plugin --dry-run --format text",
+    ]
+    assert payload["workday_commands"] == [
+        'winchronicle workday intent "开始工作" --execute',
+        "winchronicle workday status --format text --language zh-CN",
+        'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60',
+    ]
+    assert payload["disabled_surfaces"]
+    assert "screenshots" in payload["disabled_surfaces"]
+    assert "mcp_write_tools" in payload["disabled_surfaces"]
+
+    assert not home.exists()
+    assert "visible_text" not in output
+    assert "focused_text" not in output
+
+
+def test_bootstrap_dry_run_text_prints_copyable_first_run_checklist(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["bootstrap", "--dry-run", "--format", "text"]) == 0
+    output = capsys.readouterr().out
+
+    assert output.startswith("WinChronicle Windows first-run bootstrap dry-run")
+    assert "Dry run only: yes" in output
+    assert "Writes state: no" in output
+    assert "Starts capture now: no" in output
+    assert "Starts UIA now: no" in output
+    assert "Windows first-run checklist:" in output
+    assert '1. python -m pip install -e ".[dev]"' in output
+    assert "2. dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo" in output
+    assert "5. winchronicle doctor" in output
+    assert "Daily workday commands:" in output
+    assert 'winchronicle workday intent "开始工作" --execute' in output
+    assert 'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60' in output
+    assert "Record-only boundary:" in output
+    assert "Do not inspect, scan, review, edit, test, commit, push, or release repository files." in output
+    assert "No screenshots, OCR, clipboard, desktop control, cloud upload, or MCP write tools are added." in output
+    assert '"command":' not in output
+
+    assert not home.exists()
+    assert "visible_text" not in output
+    assert "focused_text" not in output
+
+
 def test_codex_install_dry_run_prints_read_only_mcp_config_without_state_write(
     tmp_path, monkeypatch, capsys
 ):

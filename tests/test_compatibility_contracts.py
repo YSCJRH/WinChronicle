@@ -19,6 +19,7 @@ from winchronicle.privacy import (
 ROOT = Path(__file__).resolve().parents[1]
 
 EXPECTED_CLI_COMMANDS = [
+    "bootstrap",
     "capture-frontmost",
     "capture-once",
     "codex",
