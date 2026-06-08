@@ -544,6 +544,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    _make_console_output_robust()
     parser = build_parser()
     args = parser.parse_args(argv)
 
@@ -793,6 +794,17 @@ def main(argv: list[str] | None = None) -> int:
 
     parser.error(f"unknown command: {args.command}")
     return 2
+
+
+def _make_console_output_robust() -> None:
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(errors="backslashreplace")
+        except Exception:
+            continue
 
 
 def _handle_projects(args: argparse.Namespace) -> int:

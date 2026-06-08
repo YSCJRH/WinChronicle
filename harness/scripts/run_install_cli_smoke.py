@@ -515,7 +515,7 @@ def _require_codex_daily_dry_run(
         "codex daily dry-run omitted the record-only prompt boundary",
     )
     _require(
-        "winchronicle workday status --format text --language zh-CN"
+        'winchronicle workday intent "查看工作记录状态" --execute'
         in daily_dry_run["record_only_thread_prompt"],
         "codex daily dry-run omitted the status phrase route",
     )
@@ -567,7 +567,7 @@ def _require_codex_daily_dry_run(
         and 'winchronicle workday intent "开始工作" --execute' in daily_text
         and 'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60'
         in daily_text
-        and "winchronicle workday status --format text --language zh-CN" in daily_text,
+        and 'winchronicle workday intent "查看工作记录状态" --execute' in daily_text,
         "codex daily text dry-run did not report the copyable record-only prompt",
     )
     _require("visible_text" not in daily_text, "codex daily text dry-run exposed visible text")

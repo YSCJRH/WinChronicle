@@ -1,4 +1,6 @@
 import json
+import os
+import subprocess
 import sys
 import tomllib
 from pathlib import Path
@@ -512,6 +514,32 @@ def test_codex_daily_dry_run_text_format_prints_copyable_user_path_without_state
     assert "visible_text" not in output
     assert "focused_text" not in output
     assert '"command":' not in output
+
+
+def test_codex_dry_runs_do_not_crash_on_non_utf8_stdout(tmp_path):
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "cp1252"
+    env["PYTHONUTF8"] = "0"
+    env["WINCHRONICLE_HOME"] = str(tmp_path / "state")
+    commands = [
+        ["codex", "setup", "--dry-run"],
+        ["codex", "setup", "--dry-run", "--format", "text"],
+        ["codex", "plugin", "--dry-run", "--format", "text"],
+        ["codex", "daily", "--dry-run", "--format", "text"],
+    ]
+
+    for command in commands:
+        completed = subprocess.run(
+            [sys.executable, "-m", "winchronicle", *command],
+            cwd=ROOT,
+            env=env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+
+        assert completed.returncode == 0, completed.stderr.decode("ascii", errors="replace")
+        assert b"UnicodeEncodeError" not in completed.stderr
 
 
 def test_init_status_and_empty_search_memory_are_stable(tmp_path, monkeypatch, capsys):
