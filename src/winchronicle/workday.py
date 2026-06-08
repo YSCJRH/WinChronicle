@@ -812,13 +812,12 @@ def _format_work_conclusions(session: dict[str, Any], project_snapshot: Any) -> 
     if changed_projects:
         for project in changed_projects[:3]:
             name = _safe_text(project.get("name", "project")) or "project"
-            branch = _safe_text(project.get("branch", "")) or "unknown"
             changed_count = _safe_int(project.get("changed_file_count"))
             clues = _project_file_clues(project)
             if clues:
-                lines.append(f"- 根据本地记录，主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件，集中在 {clues}。")
+                lines.append(f"- 根据本地记录，主要推进了 {name}：已有 {changed_count} 个本地改动，集中在{clues}。")
             else:
-                lines.append(f"- 根据本地记录，主要推进了 {name}：当前在 `{branch}`，有 {changed_count} 个变更文件。")
+                lines.append(f"- 根据本地记录，主要推进了 {name}：已有 {changed_count} 个本地改动。")
         if len(changed_projects) > 3:
             lines.append(f"- 另有 {len(changed_projects) - 3} 个登记项目也出现了变更，适合按项目拆成独立收尾项。")
     elif projects:
@@ -827,9 +826,12 @@ def _format_work_conclusions(session: dict[str, Any], project_snapshot: Any) -> 
         lines.append("- 根据本地记录，今天有工作活动，但未登记项目目录；系统还不能可靠判断具体项目产出。")
 
     if apps:
-        lines.append(f"- 工作环境主要集中在 {', '.join(apps[:5])}，说明当天混合了开发、资料查看或文档处理。")
+        lines.append(f"- 工作环境主要集中在 {_join_cn(apps[:5])}，说明当天混合了开发、资料查看或文档处理。")
+    workstream_clues = _title_workstream_clues(session)
+    if workstream_clues:
+        lines.append(f"- 今日工作线索: 窗口标题显示还涉及 {'、'.join(workstream_clues)}。")
     if error_count:
-        lines.append(f"- 记录中出现 {error_count} 次错误信号；这提示今天可能包含调试或失败排查，收尾时适合按“已解决 / 未解决 / 误报”归档。")
+        lines.append(f"- 记录中出现 {error_count} 次错误或失败提示；这提示今天可能包含调试或失败排查，收尾时适合按“已解决 / 未解决 / 误报”归档。")
     if _safe_int(session.get("captures_written")) == 0:
         lines.append("- 本次没有可用 capture，建议用一句人工确认补充今天实际完成的事项。")
     return lines or ["- 本次会话缺少足够线索，需要用户补充今天实际完成的事项。"]
@@ -845,7 +847,7 @@ def _format_work_progress(session: dict[str, Any], project_snapshot: Any) -> lis
     if not projects:
         return [
             *lines,
-            "- 项目维度: 未登记 allowlist 项目，暂不能区分具体项目进展。",
+            "- 项目维度: 还没有登记今天要关注的项目文件夹，暂不能区分具体项目进展。",
             "- 状态判断: 只能确认有工作活动，不能确认完成度。",
         ]
 
@@ -858,24 +860,22 @@ def _format_work_progress(session: dict[str, Any], project_snapshot: Any) -> lis
             lines.append(f"- {name}: 已登记但不是 git 工作树；只能确认被纳入观察范围，不能判断代码进展。")
             continue
         changed_count = _safe_int(project.get("changed_file_count"))
-        branch = _safe_text(project.get("branch", "")) or "unknown"
         if changed_count:
-            diff_stat = project.get("diff_stat", {})
-            insertions = _safe_int(diff_stat.get("insertions")) if isinstance(diff_stat, dict) else 0
-            deletions = _safe_int(diff_stat.get("deletions")) if isinstance(diff_stat, dict) else 0
-            lines.append(f"- {name}: 进行中，`{branch}` 分支有 {changed_count} 个变更文件，规模约 +{insertions}/-{deletions}。")
+            clues = _project_file_clues(project)
+            suffix = f"，主要集中在{clues}" if clues else ""
+            lines.append(f"- {name}: 正在推进，已有 {changed_count} 个本地改动{suffix}。")
         else:
             lines.append(f"- {name}: 未见未提交变更；可能已提交、偏阅读调研，或工作发生在其他项目。")
 
     unregistered_apps = _unregistered_activity_apps(session)
     if unregistered_apps:
         lines.append(
-            f"- 未登记工作线索: {', '.join(unregistered_apps)} 出现较多，但未绑定到 allowlist 项目；建议结束时用一句确认说明归属，或下次开始前登记相关项目。"
+            f"- 其它工作线索: {_join_cn(unregistered_apps)}活动较多，暂时无法判断具体属于哪个项目；下次开始前可以告诉 WinChronicle 还要关注哪些项目文件夹。"
         )
 
     error_count = _error_signal_count(session)
     if error_count:
-        lines.append(f"- 阻塞线索: 有 {error_count} 次错误信号，建议按“已解决 / 未解决 / 误报”归档；未解决项优先作为明天第一步。")
+        lines.append(f"- 阻塞线索: 有 {error_count} 次错误或失败提示，建议按“已解决 / 未解决 / 误报”归档；未解决项优先作为明天第一步。")
     return lines
 
 
@@ -888,7 +888,7 @@ def _format_habit_improvements(session: dict[str, Any], project_snapshot: Any) -
         "",
     ]
     if not _snapshot_projects(project_snapshot):
-        lines.append("- 开始记录前先登记当天相关项目目录，否则日报只能停留在应用活动层面。")
+        lines.append("- 开始记录前先告诉 WinChronicle 今天要关注哪些项目文件夹，否则日报只能停留在应用活动层面。")
     if app_segment_count >= 20:
         lines.append("- 把一天拆成 1-2 个任务块记录，减少跨应用切换后复盘困难。")
     if _error_signal_count(session):
@@ -905,7 +905,9 @@ def _project_file_clues(project: dict[str, Any]) -> str:
         return ""
     buckets: list[str] = []
     for path in [_safe_text(item) for item in changed_files[:8]]:
-        if path.startswith("docs/"):
+        if path == "AGENTS.md":
+            bucket = "项目协作说明"
+        elif path.startswith("docs/"):
             bucket = "文档"
         elif path.startswith("tests/"):
             bucket = "测试"
@@ -918,6 +920,40 @@ def _project_file_clues(project: dict[str, Any]) -> str:
         if bucket and bucket not in buckets:
             buckets.append(bucket)
     return "、".join(buckets[:4])
+
+
+def _title_workstream_clues(session: dict[str, Any]) -> list[str]:
+    segments = session.get("app_segments", [])
+    if not isinstance(segments, list):
+        return []
+    rules = [
+        ("Codex/OpenAI 相关调研或工具使用", ("codex", "openai", "chatgpt", "gpt")),
+        ("论文、Excel 或数据审查工作", ("论文", "excel", "数据审查", "nc论文")),
+        ("微信/小程序相关配置或开发", ("微信", "小程序", "wechatdevtools", "公众平台")),
+        ("邮箱、账号或服务配置处理", ("gmail", "inbox", "登录", "仪表盘", "会员", "account")),
+        ("网络、代理或环境配置", ("clash", "代理", "机场", "network", "vpn")),
+    ]
+    clues: list[str] = []
+    for segment in segments:
+        if not isinstance(segment, dict):
+            continue
+        haystack = " ".join(
+            [
+                _safe_text(segment.get("app_name", "")),
+                _safe_text(segment.get("title", "")),
+            ]
+        ).lower()
+        if not haystack.strip():
+            continue
+        for label, keywords in rules:
+            if label in clues:
+                continue
+            if any(keyword.lower() in haystack for keyword in keywords):
+                clues.append(label)
+                break
+        if len(clues) >= 4:
+            break
+    return clues
 
 
 def _error_signal_count(session: dict[str, Any]) -> int:
@@ -961,7 +997,7 @@ def _format_workday_retrospective(session: dict[str, Any], project_snapshot: Any
     if isinstance(app_segments, list) and len(app_segments) >= 6:
         lines.append("- 本轮上下文切换较多；下一轮可以按项目或任务块分段记录，减少复盘噪声。")
     if error_count:
-        lines.append(f"- 检测到 {error_count} 次错误信号；建议在总结时补一句最终是否已解决、剩余阻塞是什么。")
+        lines.append(f"- 检测到 {error_count} 次错误或失败提示；建议在总结时补一句最终是否已解决、剩余阻塞是什么。")
     if _safe_int(session.get("captures_written")) == 0:
         lines.append("- 本轮没有可用 capture；需要补充一句人工工作结果，避免日报只有空壳。")
     return lines
@@ -984,15 +1020,15 @@ def _format_consideration_directions(session: dict[str, Any], project_snapshot: 
     directions: list[str] = []
     unregistered_apps = _unregistered_activity_apps(session)
     if not _snapshot_projects(project_snapshot):
-        directions.append("先登记今天会持续推进的项目目录，明晚总结会更容易区分具体项目进展。")
+        directions.append("先告诉 WinChronicle 今天会持续推进哪些项目文件夹，明晚总结会更容易区分具体项目进展。")
     if _changed_project_count(project_snapshot) > 1:
         directions.append("多项目并行时，优先把每个项目拆成“完成项 / 阻塞 / 明天第一步”三个收尾标签。")
     if unregistered_apps:
         directions.append(
-            f"把未登记应用活动按项目或工作类型归类：{', '.join(unregistered_apps)}；下次优先登记相关项目，避免它们只表现为应用切换噪声。"
+            f"把其它应用活动按项目或工作类型归类：{_join_cn(unregistered_apps)}；下次开始前先补充相关项目文件夹，避免它们只表现为应用切换噪声。"
         )
     if _safe_int(session.get("error_signals", {}).get("total_count")) if isinstance(session.get("error_signals"), dict) else 0:
-        directions.append("把错误信号当作收尾清单处理：标记“已解决 / 未解决 / 误报”，优先消除未解决阻塞。")
+        directions.append("把错误或失败提示当作收尾清单处理：标记“已解决 / 未解决 / 误报”，优先消除未解决阻塞。")
     directions.append(_workday_efficiency_direction(session))
     return [
         "",
@@ -1087,7 +1123,8 @@ def _top_app_names(app_segments: Any) -> list[str]:
         app = _safe_text(segment.get("app_name", ""))
         if not app:
             continue
-        counts[app] = counts.get(app, 0) + _safe_int(segment.get("capture_count"))
+        display = _friendly_app_name(app)
+        counts[display] = counts.get(display, 0) + _safe_int(segment.get("capture_count"))
     return [
         app
         for app, _count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:5]
@@ -1119,11 +1156,34 @@ def _unregistered_activity_apps(session: dict[str, Any]) -> list[str]:
         if key not in interesting:
             continue
         counts[key] = counts.get(key, 0) + _safe_int(segment.get("capture_count"))
-        display_names.setdefault(key, app)
+        display_names.setdefault(key, _friendly_app_name(app))
     return [
         display_names[key]
         for key, _count in sorted(counts.items(), key=lambda item: (-item[1], display_names[item[0]]))[:4]
     ]
+
+
+def _friendly_app_name(app_name: str) -> str:
+    key = _safe_text(app_name).casefold()
+    names = {
+        "chrome": "浏览器",
+        "msedge": "浏览器",
+        "firefox": "浏览器",
+        "explorer": "文件管理器",
+        "snippingtool": "截图工具",
+        "winword": "Word 文档",
+        "powerpnt": "PowerPoint",
+        "excel": "Excel",
+        "searchhost": "系统搜索",
+        "clash-verge": "网络代理工具",
+        "wechatdevtools": "微信开发者工具",
+        "githubdesktop": "GitHub Desktop",
+    }
+    return names.get(key, _safe_text(app_name))
+
+
+def _join_cn(items: Sequence[str]) -> str:
+    return "、".join(_safe_text(item) for item in items if _safe_text(item))
 
 
 def _session_focus_notes(session: dict[str, Any]) -> list[str]:

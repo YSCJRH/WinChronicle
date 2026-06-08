@@ -709,7 +709,7 @@ def test_workday_text_summary_explains_error_signals_without_observed_text():
     text = format_workday_text_summary(session, project_snapshot={"projects": []})
 
     assert "今日工作复盘" in text
-    assert "2 次错误信号" in text
+    assert "2 次错误或失败提示" in text
     assert "已解决 / 未解决 / 误报" in text
     assert "是否已解决需要确认" not in text
     assert "命中次数: 2" not in text
@@ -789,7 +789,7 @@ def test_workday_text_summary_includes_allowlisted_project_metadata_only():
     assert "主要推进了 WinChronicle" in text
     assert "根据本地记录" in text
     assert "工作进行情况" in text
-    assert "进行中" in text
+    assert "正在推进" in text
     assert "用户确认事实" in text
     assert "明天改进建议" in text
     assert "可考虑方向" in text
@@ -852,16 +852,116 @@ def test_workday_text_summary_turns_unregistered_app_activity_into_questions():
 
     assert "今日关注事项" in text
     assert "论文整理和项目A需求文档" in text
-    assert "未登记工作线索" in text
-    assert "WINWORD" in text
-    assert "chrome" in text
+    assert "其它工作线索" in text
+    assert "Word 文档" in text
+    assert "浏览器" in text
+    assert "文件管理器" in text
     assert "可考虑方向" in text
-    assert "建议结束时用一句确认说明归属" in text
-    assert "把未登记应用活动按项目或工作类型归类" in text
+    assert "暂时无法判断具体属于哪个项目" in text
+    assert "把其它应用活动按项目或工作类型归类" in text
     assert "这些应用活动是否对应其它项目、写作、调研或沟通工作" not in text
     assert "需要人工确认" not in text
     assert "Document" not in text
     assert "Research" not in text
+
+
+def test_workday_text_summary_adds_title_derived_workstream_clues_without_raw_titles():
+    session = {
+        "session_id": "title-clues",
+        "mode": "workday",
+        "trust": "untrusted_observed_content",
+        "captures_written": 20,
+        "duplicates_skipped": 0,
+        "denylisted_skipped": 0,
+        "excluded_skipped": 0,
+        "started_at": "2026-06-08T06:00:00+08:00",
+        "ended_at": "2026-06-08T07:00:00+08:00",
+        "duration_seconds": 3600,
+        "source_capture_paths": [],
+        "app_segments": [
+            {"app_name": "chrome", "title": "Codex 订阅额度问题 - Google Chrome", "capture_count": 6},
+            {"app_name": "chrome", "title": "NC论文优化 - Excel 数据审查与分析 - Google Chrome", "capture_count": 5},
+            {"app_name": "wechatdevtools", "title": "微信开发者工具 Stable", "capture_count": 4},
+            {"app_name": "chrome", "title": "Inbox (95) - user@example.com - Gmail - Google Chrome", "capture_count": 3},
+        ],
+        "suggestions": [],
+        "storage_policy": {
+            "raw_watcher_jsonl_saved": False,
+            "html_report_contains_visible_text": False,
+            "max_app_segments": 500,
+            "source_capture_paths_limit": 1000,
+        },
+        "storage_usage": {"session_json_bytes": 2048, "html_report_bytes": 1024},
+        "error_signals": {"total_count": 0},
+    }
+
+    text = format_workday_text_summary(session, project_snapshot={"projects": []})
+
+    assert "今日工作线索" in text
+    assert "Codex/OpenAI 相关调研或工具使用" in text
+    assert "论文、Excel 或数据审查工作" in text
+    assert "微信/小程序相关配置或开发" in text
+    assert "邮箱、账号或服务配置处理" in text
+    assert "user@example.com" not in text
+    assert "Inbox (95)" not in text
+    assert "Google Chrome" not in text
+
+
+def test_workday_human_summary_avoids_project_jargon_in_default_text():
+    session = {
+        "session_id": "plain-project-language",
+        "mode": "workday",
+        "trust": "untrusted_observed_content",
+        "captures_written": 30,
+        "duplicates_skipped": 0,
+        "denylisted_skipped": 0,
+        "excluded_skipped": 0,
+        "started_at": "2026-06-08T06:00:00+08:00",
+        "ended_at": "2026-06-08T07:00:00+08:00",
+        "duration_seconds": 3600,
+        "source_capture_paths": [],
+        "app_segments": [
+            {"app_name": "chrome", "title": "Codex 订阅额度问题 - Google Chrome", "capture_count": 20},
+            {"app_name": "Codex", "title": "Codex", "capture_count": 10},
+        ],
+        "suggestions": [],
+        "storage_policy": {
+            "raw_watcher_jsonl_saved": False,
+            "html_report_contains_visible_text": False,
+            "max_app_segments": 500,
+            "source_capture_paths_limit": 1000,
+        },
+        "storage_usage": {"session_json_bytes": 2048, "html_report_bytes": 1024},
+        "error_signals": {"total_count": 0},
+    }
+    project_snapshot = {
+        "projects": [
+            {
+                "name": "WinChronicle",
+                "exists": True,
+                "is_git_repo": True,
+                "branch": "main",
+                "changed_file_count": 4,
+                "changed_files": ["AGENTS.md", "src/winchronicle/workday.py", "tests/test_workday.py"],
+                "diff_stat": {"insertions": 91, "deletions": 0},
+                "recent_commits": [],
+            }
+        ]
+    }
+
+    text = format_workday_text_summary(session, project_snapshot=project_snapshot)
+
+    assert "allowlist" not in text
+    assert "`main`" not in text
+    assert "分支有" not in text
+    assert "+91/-0" not in text
+    assert "规模约" not in text
+    assert "已有 4 个本地改动" in text
+    assert "暂时无法判断具体属于哪个项目" in text
+    assert "项目协作说明" in text
+    assert "AGENTS.md" not in text
+    assert "浏览器" in text
+    assert "chrome" not in text
 
 
 def _write_sleeping_watcher(tmp_path: Path) -> Path:

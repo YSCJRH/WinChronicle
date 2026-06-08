@@ -119,3 +119,11 @@ def test_codex_app_workday_guide_keeps_user_flow_record_only():
 
     assert "[Codex App workday guide](docs/codex-app-workday-guide.md)" in readme
     assert "[Codex App 工作日指南](docs/codex-app-workday-guide.md)" in readme_zh
+
+
+def test_agents_report_format_exempts_recording_only_workday_turns():
+    text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+
+    assert "Recording-only WinChronicle Workday turns are not development tasks" in text
+    assert "Do not use the required report format" in text
+    assert "paste the local workday summary or Codex-assisted daily report directly" in text

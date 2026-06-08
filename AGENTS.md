@@ -37,6 +37,10 @@ This is a harness-first project. Before implementing behavior, add or update:
 
 ## Required report format for each Codex task
 
+Recording-only WinChronicle Workday turns are not development tasks. When the
+user only asks to start recording, stop recording, summarize the workday, or
+check workday status, follow the Workday plugin/CLI output instead. Do not use the required report format for those turns; paste the local workday summary or Codex-assisted daily report directly.
+
 At the end of every task, report exactly:
 
 - What changed
