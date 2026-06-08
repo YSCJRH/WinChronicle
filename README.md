@@ -58,22 +58,16 @@ limitations.
 For the complete Windows checklist, use
 [Windows first run](docs/windows-first-run.md).
 
-## Chronicle Comparison
+## Relationship To Codex Chronicle
 
-For official Codex Chronicle behavior, see the
-[OpenAI Chronicle documentation](https://developers.openai.com/codex/memories/chronicle).
-WinChronicle should not be read as a promise to match that product surface.
+WinChronicle is independent from OpenAI and is not an official Chronicle clone.
+Official Codex Chronicle is a Codex-native macOS research preview; WinChronicle
+is a Windows-first open-source layer built around UIA metadata, local storage,
+deterministic reports, and read-only MCP. See the
+[project presentation checklist](docs/project-presentation.md) for copyable
+positioning and comparison language.
 
-| Area | Official Codex Chronicle | WinChronicle |
-| --- | --- | --- |
-| Platform | Opt-in Codex app research preview on macOS. | Windows-first open-source project. |
-| Default context source | Recent screen context, with macOS Screen Recording and Accessibility permissions. | Microsoft UI Automation structured context through deterministic fixtures, explicit helper/watcher previews, and finite monitor sessions. |
-| Codex-native memory integration | Augments Codex memories from recent screen context. | Does not write official Codex memories by default; produces local captures, SQLite search, deterministic Markdown memory, and read-only MCP context. |
-| Default screenshot/OCR behavior | Official docs describe selected screenshot frames and OCR text as possible inputs to memory generation. | Screenshots and OCR are not implemented as the baseline and remain off by default. |
-| Local storage | Official docs describe temporary local screen captures and local generated Markdown memories. | Stores local state under `%LOCALAPPDATA%\WinChronicle` by default, or `WINCHRONICLE_HOME` for isolated demos/tests. |
-| MCP interface | Not presented as the primary Chronicle interface in the official docs. | Exposes a fixed read-only MCP tool list for local context. |
-| Desktop control | Chronicle is described as a memory/context feature, not a desktop-control API. | No desktop control, click, type, keypress, clipboard, screenshot, OCR, audio, network, file-write, or MCP write tools. |
-| Privacy posture | Opt-in preview with explicit warnings about sensitive screen content and prompt injection risk. | Privacy/redaction-first baseline: observed content is untrusted, secrets are redacted before storage/search/memory/MCP, and capture-surface expansion requires human approval. |
+The detailed comparison covers Platform, Default context source, Codex-native memory integration, Default screenshot/OCR behavior, Local storage, MCP interface, Desktop control, and Privacy posture without making those fields the first screen.
 
 ## Recommended Codex Usage
 
@@ -281,31 +275,21 @@ maintenance loop automatically.
 - Improve local report readability without adding screenshots, OCR, upload, or
   desktop-control behavior.
 
+<!--
+Compatibility-contract references kept out of the rendered navigation list:
+[Operator quickstart](docs/operator-quickstart.md), [v0.1 closure note](docs/goal-closure-v0.1.md), [Deterministic demo](docs/deterministic-demo.md), [Workday session](docs/workday-session.md), [Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md), [Read-only MCP examples](docs/mcp-readonly-examples.md), [Agent context eval scaffold](benchmarks/evals/README.md), [Windows developer app compatibility](docs/windows-developer-app-compatibility.md), [Watcher preview](docs/watcher-preview.md), [Contributing](CONTRIBUTING.md).
+-->
+
 ## Key Docs
 
-- [5-minute demo](docs/quick-demo.md)
-- [Why WinChronicle](docs/why-winchronicle.md)
-- [Privacy architecture](docs/privacy-architecture.md)
-- [Operator quickstart](docs/operator-quickstart.md)
-- [Roadmap](docs/roadmap.md)
-- [v0.1 closure note](docs/goal-closure-v0.1.md)
-- [Known limitations](docs/known-limitations.md)
-- [Deterministic demo](docs/deterministic-demo.md)
-- [v0.2 monitor session](docs/v0.2-monitor-session.md)
 - [Windows first run](docs/windows-first-run.md)
-- [Workday session](docs/workday-session.md)
-- [Workday summary example](docs/examples/workday-summary.en.md)
-- [Codex App local plugin install](docs/codex-app-plugin-install.md)
+- [5-minute demo](docs/quick-demo.md)
 - [Codex App workday guide](docs/codex-app-workday-guide.md)
-- [Codex workday plugin](docs/codex-workday-plugin.md)
-- [Project presentation checklist](docs/project-presentation.md)
-- [v0.2.0 release record](docs/release-v0.2.0.md)
-- [Manual smoke evidence ledger](docs/manual-smoke-evidence-ledger.md)
 - [MCP client setup](docs/mcp-client-setup.md)
-- [Read-only MCP examples](docs/mcp-readonly-examples.md)
-- [Agent context eval scaffold](benchmarks/evals/README.md)
-- [Windows app compatibility](docs/windows-app-compatibility.md)
-- [Windows developer app compatibility](docs/windows-developer-app-compatibility.md)
-- [Watcher preview](docs/watcher-preview.md)
+- [Privacy architecture](docs/privacy-architecture.md)
+- [Roadmap](docs/roadmap.md)
+- [Known limitations](docs/known-limitations.md)
 - [Maintenance and release history index](docs/maintenance-index.md)
-- [Contributing](CONTRIBUTING.md)
+
+Historical audit, sweep, readiness, and release records remain reachable through
+the maintenance index instead of the README.
