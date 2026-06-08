@@ -4,7 +4,18 @@ This index keeps historical maintenance, audit, readiness, and release evidence
 reachable without making the README a ledger. It is historical reference only;
 it does not start a new maintenance loop or authorize new release work.
 
-## Core Product Docs
+## Current User Navigation
+
+- [Windows first run](windows-first-run.md)
+- [5-minute demo](quick-demo.md)
+- [Codex App workday guide](codex-app-workday-guide.md)
+- [MCP client setup](mcp-client-setup.md)
+- [Privacy architecture](privacy-architecture.md)
+- [Roadmap](roadmap.md)
+- [Known limitations](known-limitations.md)
+- [Contributing](../CONTRIBUTING.md)
+
+## Productization And Product Docs
 
 - [v0.2 monitor session](v0.2-monitor-session.md)
 - [v0.2.0 release record](release-v0.2.0.md)
@@ -23,6 +34,15 @@ it does not start a new maintenance loop or authorize new release work.
 - [Release checklist](release-checklist.md)
 - [Release evidence guide](release-evidence.md)
 - [Contributing](../CONTRIBUTING.md)
+
+## Productization Release Trail
+
+- v0.2.24: automation guardrails.
+- v0.2.25: README hero and social preview assets.
+- v0.2.26: three-path onboarding.
+- v0.2.27: synthetic workday summary examples.
+- v0.2.28: Codex App, CLI, and MCP usage surface clarity.
+- v0.2.29: docs navigation polish and finite productization completion.
 
 ## Post-v0.1.18 History
 
