@@ -77,6 +77,12 @@ WinChronicle should not be read as a promise to match that product surface.
 
 ## Recommended Codex Usage
 
+| Mode | Use it for | Boundary |
+| --- | --- | --- |
+| **Workday plugin** | Natural-language daily recording: `开始记录工作`, `查看工作记录状态`, `停止工作并总结`. | Record-only. Do not inspect, edit, test, commit, push, or release repository files. |
+| **Read-only MCP** | Let an agent read local WinChronicle context through six fixed tools. | No MCP write tools, desktop control, screenshots, OCR, clipboard, audio, network, or arbitrary file reads. |
+| **Development thread** | Ask Codex to modify WinChronicle itself. | Follow `AGENTS.md`; start from fixtures, schemas, tests, scorecards, and docs before behavior changes. |
+
 When using Codex app or Codex CLI to develop WinChronicle:
 
 - Read `AGENTS.md` first and keep the local-first, UIA-first, harness-first,

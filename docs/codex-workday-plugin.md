@@ -21,6 +21,14 @@ winchronicle workday intent "查看工作记录状态" --execute
 If you are using WinChronicle from a source checkout before editable install,
 use `python -m winchronicle` instead of `winchronicle`.
 
+## Workday Plugin, MCP, Or Development Thread?
+
+| Surface | Purpose | Boundary |
+| --- | --- | --- |
+| Workday plugin | Natural-language daily recording in Codex App. | Record-only: do not inspect, edit, test, commit, push, or release repository files. |
+| Read-only MCP | Tool-capable agents can query existing local WinChronicle context. | Fixed read-only tool list; no desktop control or write tools. |
+| Development thread | Maintainers ask Codex to change WinChronicle code/docs. | Follow `AGENTS.md` and the harness-first workflow. |
+
 The default stopped summary path is a Codex-assisted report grounded in local
 WinChronicle evidence. The plugin should use the CLI output as a local evidence
 package, then write a Chinese daily report that leads with what work appears to
