@@ -35,6 +35,29 @@ storage first, deterministic harnesses first, and read-only MCP first.
 See [Why WinChronicle](docs/why-winchronicle.md) for the product case and
 [Privacy architecture](docs/privacy-architecture.md) for the boundary model.
 
+## Choose A Path
+
+Start with one path instead of reading every command:
+
+| Path | Use it when | First command |
+| --- | --- | --- |
+| **Demo** | You want a fixture-only walkthrough that does not read your desktop. | `python harness/scripts/run_quick_demo.py` |
+| **Workday** | You want Codex App to start, check, stop, and summarize a bounded local work session. | `winchronicle codex plugin --dry-run --format text` |
+| **MCP** | You want an agent to read local WinChronicle context through the fixed read-only tool list. | `winchronicle codex install --dry-run` |
+
+If `winchronicle` is not on your `PATH` yet, run the
+[Full Developer Install](#full-developer-install) first or use
+`python -m winchronicle` from a source checkout.
+
+The dry-run commands print copyable setup text. They do not edit Codex config,
+start capture, read the desktop, or upload content. The MCP path can also use
+`mcp-stdio --metadata-only` when a client should avoid observed text fields and
+receive only local ids, counts, titles, app names, provenance, confidence, and
+limitations.
+
+For the complete Windows checklist, use
+[Windows first run](docs/windows-first-run.md).
+
 ## Chronicle Comparison
 
 For official Codex Chronicle behavior, see the
@@ -68,7 +91,10 @@ When using Codex app or Codex CLI to develop WinChronicle:
   with observed content, screenshots, OCR output, secrets, and passwords out of
   commits.
 
-## Install And Run
+## Full Developer Install
+
+Use this when you want to build and validate the repository locally. For a
+shorter first-run path, use the three paths above.
 
 From a fresh checkout on Windows with Python 3.11+:
 
