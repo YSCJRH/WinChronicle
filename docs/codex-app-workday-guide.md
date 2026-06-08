@@ -8,6 +8,12 @@ daily work recorder. It is separate from developing the WinChronicle repository.
 Use this guide only when the goal is daily work recording. It is not the MCP
 setup path and it is not a development-thread prompt.
 
+| Codex surface | Use it for | Do not use it for |
+| --- | --- | --- |
+| Workday plugin | Start/check/stop/summarize a finite local work session. | Repository inspection, editing, tests, commits, pushes, releases. |
+| Read-only MCP | Let an agent query existing WinChronicle context. | Writing files, clicking/typing, screenshots, OCR, clipboard, network calls. |
+| Development thread | Maintain the WinChronicle repository. | Hidden recording or capture-surface expansion. |
+
 Install WinChronicle and print the combined Codex readiness report:
 
 ```powershell
@@ -143,6 +149,6 @@ WinChronicle does not add screenshot fallback, OCR fallback, clipboard capture,
 keylogging, desktop control, MCP write tools, cloud upload, audio recording, or
 LLM summarization to this flow.
 
-The `winchronicle-workday` plugin calls the same read-only and workday CLI
-commands. It improves the user entry point without expanding the capture
+The `winchronicle-workday` plugin calls the same setup/readiness and workday
+CLI commands. It improves the user entry point without expanding the capture
 surface.

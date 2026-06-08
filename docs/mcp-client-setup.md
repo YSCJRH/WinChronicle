@@ -18,6 +18,12 @@ only want Codex App to start and stop daily work recording, use
 [Codex App Workday guide](codex-app-workday-guide.md). If you only want a safe
 fixture demo, use [Windows first run](windows-first-run.md).
 
+| Surface | Use it for | Boundary |
+| --- | --- | --- |
+| Workday plugin | Natural-language start/status/stop/summarize actions. | Record-only; no repository inspection or development work. |
+| Read-only MCP | Existing local context lookup through six fixed tools. | No write tools, desktop control, screenshots, OCR, clipboard, audio, network, or arbitrary file reads. |
+| Development thread | Maintaining WinChronicle itself. | Not an MCP or recording surface; follow `AGENTS.md`. |
+
 ## Generic Stdio Configuration
 
 Use this shape for MCP clients that accept a command and argument list:
