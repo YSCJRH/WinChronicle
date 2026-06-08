@@ -61,8 +61,9 @@ Those files must not be used for product behavior changes in this lane.
 
 Phase 0 may also fix release-gate onboarding compatibility when a CI failure
 shows that first-run or Codex dry-run output crashes before capture starts. Such
-fixes must stay limited to output robustness and tests; they must not change
-capture behavior, storage behavior, MCP tools, or Workday recording semantics.
+fixes must stay limited to output robustness, install smoke assertions, and
+tests; they must not change capture behavior, storage behavior, MCP tools, or
+Workday recording semantics.
 
 ## Review Contract
 

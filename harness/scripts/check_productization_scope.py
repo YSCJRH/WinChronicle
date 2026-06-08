@@ -14,6 +14,7 @@ PHASE_FILES = {
         ".github/workflows/windows-harness.yml",
         "docs/productization-blueprint.md",
         "harness/scripts/check_productization_scope.py",
+        "harness/scripts/run_install_cli_smoke.py",
         "src/winchronicle/cli.py",
         "tests/test_cli.py",
     },
