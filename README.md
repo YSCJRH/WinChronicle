@@ -173,6 +173,8 @@ fixture-only path, use [Deterministic demo](docs/deterministic-demo.md).
 For using Codex app as a daily work recorder, use the
 [Codex App workday guide](docs/codex-app-workday-guide.md) or the
 [Codex workday plugin](docs/codex-workday-plugin.md).
+For the intended end-of-day output shape, see the
+[synthetic workday summary example](docs/examples/workday-summary.en.md).
 
 ## What It Does Today
 
@@ -286,6 +288,7 @@ maintenance loop automatically.
 - [v0.2 monitor session](docs/v0.2-monitor-session.md)
 - [Windows first run](docs/windows-first-run.md)
 - [Workday session](docs/workday-session.md)
+- [Workday summary example](docs/examples/workday-summary.en.md)
 - [Codex App local plugin install](docs/codex-app-plugin-install.md)
 - [Codex App workday guide](docs/codex-app-workday-guide.md)
 - [Codex workday plugin](docs/codex-workday-plugin.md)

@@ -90,12 +90,23 @@ Default human summaries label metadata-derived claims with plain language such
 as `根据本地记录`, and put operator-supplied `--confirmation` / `--note` text
 under `用户确认事实`. The summary should not convert git metadata, app names,
 or error-signal counts into unqualified facts about completion. Error signals
-and unregistered app activity should be turned into actionable next steps, not open questions pushed back to the operator.
+and unregistered app activity should be turned into actionable confirmation
+directions or next steps, not open questions pushed back as unsupported facts
+for the operator to solve.
 
 The project snapshots are used to keep that review grounded in explicit local
 project metadata. Technical counters such as capture count, skipped count,
 application segments, storage size, and error-signal rows belong in the explicit
 technical style, not in the default user-facing summary.
+
+See the synthetic examples for the intended reader-facing shape:
+
+- [Chinese workday summary example](examples/workday-summary.zh-CN.md)
+- [English workday summary example](examples/workday-summary.en.md)
+
+The examples use fake project names, fake app activity, and fake evidence ids.
+They are not generated from a real user session and must not be treated as
+observed screen content.
 
 If only one project is registered but high-frequency application activity
 appears in browsers, Office apps, Explorer, or similar tools, the human summary
