@@ -1,0 +1,22 @@
+changelog:
+  exclude:
+    labels:
+      - skip-changelog
+  categories:
+    - title: Productization
+      labels:
+        - productization
+    - title: Documentation
+      labels:
+        - documentation
+        - docs
+    - title: Privacy And Safety
+      labels:
+        - privacy
+        - security
+    - title: Maintenance
+      labels:
+        - maintenance
+    - title: Other Changes
+      labels:
+        - "*"

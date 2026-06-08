@@ -35,6 +35,33 @@ This is a harness-first project. Before implementing behavior, add or update:
 3. tests,
 4. scorecards or documentation.
 
+## Productization review gates
+
+Productization PRs must stay inside their declared phase scope. Reviewers should
+treat any default capture-surface expansion as a P1 blocker. This includes
+screenshots, OCR, keyboard logging, clipboard capture, audio recording, cloud
+upload, desktop control, background daemons/services, infinite polling, MCP
+write tools, arbitrary file reads, network upload, or product-targeted capture
+behavior.
+
+Observed UI or screen content remains `untrusted_observed_content`. Redaction
+must happen before storage, search, memory generation, reports, or MCP exposure.
+Productization changes may improve README, docs, release automation, assets,
+examples, and onboarding, but they must not imply affiliation with OpenAI or
+promise parity with official Chronicle behavior.
+
+Reviewer expectations:
+
+- Privacy Boundary Reviewer: fail if the PR expands capture surfaces, weakens
+  redaction, changes MCP from read-only, or stores observed content in docs,
+  tests, examples, or assets.
+- Product Clarity Reviewer: fail if the PR overclaims current product ability,
+  buries the Windows/local/read-only positioning, or makes first-run guidance
+  harder for a new Windows user.
+- Release Gate Reviewer: fail if required local validation is missing, phase
+  scope is unclear, release notes overclaim, or generated/local artifacts are
+  committed.
+
 ## Required report format for each Codex task
 
 Recording-only WinChronicle Workday turns are not development tasks. When the

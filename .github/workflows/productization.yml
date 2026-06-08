@@ -1,0 +1,74 @@
+name: Productization Guardrails
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  scope:
+    name: Phase scope and artifact checks
+    runs-on: windows-2025-vs2026
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check productization scope
+        shell: pwsh
+        run: python harness/scripts/check_productization_scope.py
+
+  docs:
+    name: Productization docs checks
+    runs-on: windows-2025-vs2026
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Check docs boundaries
+        shell: pwsh
+        run: |
+          $script = @'
+          from pathlib import Path
+          import sys
+
+          required = [
+              "Windows-first",
+              "UIA",
+              "local",
+              "read-only MCP",
+              "untrusted_observed_content",
+          ]
+          blueprint = Path("docs/productization-blueprint.md")
+          agents = Path("AGENTS.md")
+          missing_files = [str(path) for path in (blueprint, agents) if not path.exists()]
+          if missing_files:
+              print("Missing required productization docs:")
+              for path in missing_files:
+                  print(f"  - {path}")
+              sys.exit(1)
+
+          text = (blueprint.read_text(encoding="utf-8") + "\n" + agents.read_text(encoding="utf-8")).lower()
+          missing_terms = [term for term in required if term.lower() not in text]
+          if missing_terms:
+              print("Productization docs are missing required boundary terms:")
+              for term in missing_terms:
+                  print(f"  - {term}")
+              sys.exit(1)
+
+          forbidden_promises = [
+              "official chronicle clone",
+              "default screenshots",
+              "default ocr",
+              "mcp write tools",
+              "desktop control by default",
+          ]
+          for phrase in forbidden_promises:
+              if f"supports {phrase}" in text or f"enables {phrase}" in text:
+                  print(f"Productization docs appear to promise forbidden behavior: {phrase}")
+                  sys.exit(1)
+
+          print("Productization docs boundary check passed.")
+          '@
+          $script | python -
