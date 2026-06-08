@@ -13,6 +13,11 @@ Source checkouts can use the compatible fallback:
 python -m winchronicle mcp-stdio
 ```
 
+Use this guide when an agent needs read-only local WinChronicle context. If you
+only want Codex App to start and stop daily work recording, use
+[Codex App Workday guide](codex-app-workday-guide.md). If you only want a safe
+fixture demo, use [Windows first run](windows-first-run.md).
+
 ## Generic Stdio Configuration
 
 Use this shape for MCP clients that accept a command and argument list:
@@ -125,6 +130,10 @@ text fields such as `visible_text`, `focused_text`, `snippet`, `body`, and
 `url` from observed-content objects. It still returns provenance, `trust`,
 `redacted`, `source`, `source_ids`, `confidence`, `limitations`, counts,
 titles, app names, and local ids.
+
+Metadata-only mode is still read-only. It is useful when a client should reason
+from activity shape, provenance, ids, counts, and limitations without receiving
+observed UI text in the tool result.
 
 ## Read-Only Boundary
 

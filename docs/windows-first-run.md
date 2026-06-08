@@ -13,6 +13,20 @@ The bootstrap command does not write state, does not write Codex config, does no
 and does not start capture. It only prints local checks and the copyable
 commands below. Observed content remains `untrusted_observed_content`.
 
+## Pick One Path
+
+Choose the smallest path that matches your goal:
+
+| Path | Goal | Command |
+| --- | --- | --- |
+| Demo | Run a deterministic local demo without reading the desktop. | `python harness/scripts/run_quick_demo.py` |
+| Workday | Use Codex App as a record-only daily work recorder. | `winchronicle codex plugin --dry-run --format text` |
+| MCP | Print a read-only Codex MCP config snippet. | `winchronicle codex install --dry-run` |
+
+All three paths are explicit. The dry-runs only print instructions or config
+snippets. They do not edit Codex config, start a monitor session, read the
+desktop, or create hidden background behavior.
+
 ## Install And Check
 
 Run these from the repository root:
@@ -30,6 +44,10 @@ winchronicle codex plugin --dry-run --format text
 `winchronicle doctor` initializes local state and SQLite, then checks Python,
 .NET, UIA helper/watcher build outputs, and privacy-disabled surfaces. It does
 not read the desktop or run live UIA capture.
+
+If you only want to connect an agent through MCP, use
+[MCP client setup](mcp-client-setup.md). If you only want daily work recording,
+use [Codex App Workday guide](codex-app-workday-guide.md).
 
 ## Daily Workday Flow
 
