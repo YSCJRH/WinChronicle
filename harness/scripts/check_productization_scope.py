@@ -11,8 +11,11 @@ PHASE_FILES = {
         "AGENTS.md",
         ".github/release.yml",
         ".github/workflows/productization.yml",
+        ".github/workflows/windows-harness.yml",
         "docs/productization-blueprint.md",
         "harness/scripts/check_productization_scope.py",
+        "src/winchronicle/cli.py",
+        "tests/test_cli.py",
     },
     "p1": {
         "README.md",

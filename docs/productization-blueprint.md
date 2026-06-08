@@ -59,6 +59,11 @@ Version metadata changes are allowed in every productization phase only for:
 
 Those files must not be used for product behavior changes in this lane.
 
+Phase 0 may also fix release-gate onboarding compatibility when a CI failure
+shows that first-run or Codex dry-run output crashes before capture starts. Such
+fixes must stay limited to output robustness and tests; they must not change
+capture behavior, storage behavior, MCP tools, or Workday recording semantics.
+
 ## Review Contract
 
 Each phase should receive isolated read-only review from:
