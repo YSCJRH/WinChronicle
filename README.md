@@ -6,6 +6,11 @@
 
 **面向 Windows AI Agent 的本地优先工作上下文记忆层。**
 
+![WinChronicle hero: UIA-first, redaction-first, read-only MCP](docs/assets/winchronicle-hero.png)
+
+*Windows UIA signals become redacted local memory and read-only agent context,
+without default screenshots, keylogging, cloud upload, or desktop control.*
+
 WinChronicle turns Microsoft UI Automation context into local, searchable,
 auditable work memory for tool-capable agents. It is built for developers who
 want Windows workflow context without default screenshots, OCR, keylogging,
@@ -19,16 +24,6 @@ WinChronicle 将 Microsoft UI Automation 上下文转成本地可搜索、可审
 > and it is not an official Chronicle clone. It deliberately targets a
 > narrower Windows-first, UIA-first, local-first, auditable, read-only MCP
 > memory layer rather than a full replica of OpenAI's Codex Chronicle feature.
-
-```mermaid
-flowchart LR
-    desktop["Windows UIA context"] --> privacy["privacy + redaction"]
-    privacy --> captures["local captures + SQLite search"]
-    captures --> memory["deterministic Markdown memory"]
-    captures --> sessions["finite monitor sessions + HTML reports"]
-    sessions --> mcp["read-only MCP context"]
-    memory --> mcp
-```
 
 ## Why It Exists
 

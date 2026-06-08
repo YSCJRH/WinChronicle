@@ -43,6 +43,24 @@ No screenshots. No keylogging. No cloud upload.
 GitHub social preview images should be at least `640x320` pixels, with
 `1280x640` preferred for sharper rendering.
 
+The committed social preview asset is:
+
+```text
+docs/assets/winchronicle-social-preview.png
+```
+
+The committed README hero asset is:
+
+```text
+docs/assets/winchronicle-hero.png
+```
+
+Regenerate or review both assets against
+[the hero prompt contract](assets/winchronicle-hero.prompt.md). The images must
+not include third-party logos, real desktop screenshots, OCR/screen-recording
+visuals, cloud-upload imagery, surveillance metaphors, desktop-control cues, or
+official-brand implications.
+
 ## First-Time Visitor Path
 
 Point new users to:
