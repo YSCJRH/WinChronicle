@@ -709,7 +709,9 @@ def test_workday_text_summary_explains_error_signals_without_observed_text():
     text = format_workday_text_summary(session, project_snapshot={"projects": []})
 
     assert "今日工作复盘" in text
-    assert "2 次错误或失败提示" in text
+    assert "一些错误或失败相关提示" in text
+    assert "不等于今天真的发生了同样数量的问题" in text
+    assert "2 次错误" not in text
     assert "已解决 / 未解决 / 误报" in text
     assert "是否已解决需要确认" not in text
     assert "命中次数: 2" not in text
@@ -733,6 +735,42 @@ def test_workday_text_summary_explains_error_signals_without_observed_text():
     assert "observed text" not in technical_text
     assert "test_payment_flow" not in technical_text
     assert "ghp_winchroniclecanary1234567890ABCD" not in technical_text
+
+
+def test_workday_human_summary_does_not_make_error_counts_scary():
+    session = {
+        "session_id": "error-tone",
+        "mode": "workday",
+        "trust": "untrusted_observed_content",
+        "captures_written": 20,
+        "duplicates_skipped": 0,
+        "denylisted_skipped": 0,
+        "excluded_skipped": 0,
+        "started_at": "2026-06-08T06:00:00+08:00",
+        "ended_at": "2026-06-08T07:00:00+08:00",
+        "duration_seconds": 3600,
+        "source_capture_paths": [],
+        "app_segments": [{"app_name": "Codex", "title": "Codex", "capture_count": 20}],
+        "suggestions": [],
+        "storage_policy": {
+            "raw_watcher_jsonl_saved": False,
+            "html_report_contains_visible_text": False,
+            "max_app_segments": 500,
+            "source_capture_paths_limit": 1000,
+        },
+        "storage_usage": {"session_json_bytes": 2048, "html_report_bytes": 1024},
+        "error_signals": {"total_count": 164},
+    }
+
+    text = format_workday_text_summary(session, project_snapshot={"projects": []})
+
+    assert "164 次错误" not in text
+    assert "阻塞线索" not in text
+    assert "可考虑查看的线索" in text
+    assert "需要留意的事项" not in text
+    assert "不等于今天真的发生了同样数量的问题" in text
+    assert "如果确实有卡住的事情" in text
+    assert "只需要确认" not in text
 
 
 def test_workday_text_summary_includes_allowlisted_project_metadata_only():
@@ -858,7 +896,8 @@ def test_workday_text_summary_turns_unregistered_app_activity_into_questions():
     assert "文件管理器" in text
     assert "可考虑方向" in text
     assert "暂时无法判断具体属于哪个项目" in text
-    assert "把其它应用活动按项目或工作类型归类" in text
+    assert "如果希望下次按项目呈现这些活动" in text
+    assert "先补充相关项目文件夹" not in text
     assert "这些应用活动是否对应其它项目、写作、调研或沟通工作" not in text
     assert "需要人工确认" not in text
     assert "Document" not in text
