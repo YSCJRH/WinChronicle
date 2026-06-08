@@ -4,6 +4,11 @@
 
 **面向 Windows AI Agent 的本地优先工作上下文记忆层。**
 
+![WinChronicle hero: UIA-first, redaction-first, read-only MCP](docs/assets/winchronicle-hero.png)
+
+*Windows UIA 信号会先经过脱敏，再变成本地工作记忆和只读 Agent 上下文；
+默认不启用截图、键盘记录、云上传或桌面控制。*
+
 WinChronicle 将 Microsoft UI Automation 上下文转成本地可搜索、可审计的
 工作记忆，让工具型 Agent 能读取 Windows 工作流上下文，同时默认不启用
 截图、OCR、键盘记录、剪贴板采集、云上传或桌面控制。
@@ -11,16 +16,6 @@ WinChronicle 将 Microsoft UI Automation 上下文转成本地可搜索、可审
 > WinChronicle 是独立开源项目，不隶属于 OpenAI，也不是官方 Chronicle 的克隆。
 > 它刻意聚焦更窄的 Windows-first、UIA-first、local-first、auditable、
 > read-only MCP 工作上下文记忆层，而不是复刻 OpenAI Codex Chronicle 的完整产品面。
-
-```mermaid
-flowchart LR
-    desktop["Windows UIA 上下文"] --> privacy["隐私检查 + 脱敏"]
-    privacy --> captures["本地 captures + SQLite 搜索"]
-    captures --> memory["确定性 Markdown 记忆"]
-    captures --> sessions["有限 monitor 会话 + HTML 报告"]
-    sessions --> mcp["只读 MCP 上下文"]
-    memory --> mcp
-```
 
 ## 为什么存在
 
