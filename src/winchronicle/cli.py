@@ -26,7 +26,9 @@ from .workday import (
     WorkdayError,
     default_helper_command,
     default_watcher_command,
+    format_workday_start_text,
     doctor_workday,
+    format_workday_stop_text,
     format_workday_status_text,
     format_workday_text_summary,
     recover_workday_runner_failure,
@@ -63,7 +65,10 @@ CODEX_MCP_ENABLED_TOOLS = [
 CODEX_WORKDAY_ACCEPTED_PHRASES = [
     "开始工作",
     "开始记录工作",
+    "开始记录今天的工作",
+    "开始记录今天工作",
     "结束工作并总结",
+    "结束今天的工作并总结",
     "停止工作并总结",
     "查看工作记录状态",
 ]
@@ -100,9 +105,9 @@ CODEX_PLUGIN_POST_INSTALL_SELF_CHECK = [
 CODEX_RECORD_ONLY_THREAD_PROMPT = (
     "Only call WinChronicle workday commands for this thread.\n"
     "Do not inspect, scan, review, edit, test, commit, push, or release repository files.\n"
-    'When I say "开始工作" or "开始记录工作", run:\n'
+    'When I say "开始工作", "开始记录工作", "开始记录今天的工作", or "开始记录今天工作", run:\n'
     'winchronicle workday intent "开始工作" --execute\n'
-    'When I say "结束工作并总结" or "停止工作并总结", run:\n'
+    'When I say "结束工作并总结", "停止工作并总结", or "结束今天的工作并总结", run:\n'
     'winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60\n'
     'When I say "查看工作记录状态", run:\n'
     'winchronicle workday intent "查看工作记录状态" --execute\n'
@@ -116,8 +121,8 @@ CODEX_RECORDING_MODE_BOUNDARY = (
 )
 
 WORKDAY_INTENT_TRUST = "local_workday_intent_mapping"
-WORKDAY_START_PHRASES = ("开始记录工作", "开始工作")
-WORKDAY_STOP_SUMMARY_PHRASES = ("停止工作并总结", "结束工作并总结")
+WORKDAY_START_PHRASES = ("开始记录工作", "开始工作", "开始记录今天的工作", "开始记录今天工作")
+WORKDAY_STOP_SUMMARY_PHRASES = ("停止工作并总结", "结束工作并总结", "结束今天的工作并总结")
 WORKDAY_STATUS_PHRASES = ("查看工作记录状态",)
 
 
@@ -1377,7 +1382,7 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
             print(json.dumps(plan, indent=2, sort_keys=True, ensure_ascii=False))
             return 0
         if plan["intent"] == "start_workday":
-            return _execute_workday_start(parser, args)
+            return _execute_workday_start(parser, args, output_format="text")
         if plan["intent"] == "stop_and_summarize_workday":
             return _execute_workday_stop(args, output_format="text")
         if plan["intent"] == "status_workday":
@@ -1430,7 +1435,12 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
     return 2
 
 
-def _execute_workday_start(parser: argparse.ArgumentParser, args: argparse.Namespace) -> int:
+def _execute_workday_start(
+    parser: argparse.ArgumentParser,
+    args: argparse.Namespace,
+    *,
+    output_format: str = "json",
+) -> int:
     _reject_forbidden_passthrough(parser, args.watcher_arg, "--watcher-arg")
     _reject_forbidden_passthrough(parser, args.helper_arg, "--helper-arg")
     if not 0 <= args.depth <= 80:
@@ -1458,6 +1468,9 @@ def _execute_workday_start(parser: argparse.ArgumentParser, args: argparse.Names
     except WorkdayError as exc:
         print(json.dumps({"active": False, "error": str(exc)}, indent=2, sort_keys=True))
         return 1
+    if output_format == "text":
+        print(format_workday_start_text(payload), end="")
+        return 1 if payload.get("error") else 0
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 1 if payload.get("error") else 0
 
@@ -1477,6 +1490,9 @@ def _execute_workday_stop(args: argparse.Namespace, *, output_format: str) -> in
             ),
             end="",
         )
+        return 0
+    if output_format == "text":
+        print(format_workday_stop_text(payload), end="")
         return 0
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0

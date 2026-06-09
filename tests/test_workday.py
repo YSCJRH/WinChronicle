@@ -196,6 +196,39 @@ def test_workday_intent_maps_short_user_phrases_without_capture_by_default(
     assert not (home / "workday-active.json").exists()
 
 
+def test_workday_intent_accepts_natural_today_aliases_without_capture(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    for phrase in ["开始记录今天的工作", "开始记录今天工作"]:
+        assert main(["workday", "intent", phrase]) == 0
+        start_plan = json.loads(capsys.readouterr().out)
+        assert start_plan["matched"] is True
+        assert start_plan["execute"] is False
+        assert start_plan["intent"] == "start_workday"
+        assert start_plan["command"] == ["winchronicle", "workday", "start"]
+        assert start_plan["capture_surface"] == "explicit_finite_monitor_session"
+        assert not (home / "workday-active.json").exists()
+
+    assert main(["workday", "intent", "结束今天的工作并总结"]) == 0
+    stop_plan = json.loads(capsys.readouterr().out)
+    assert stop_plan["matched"] is True
+    assert stop_plan["execute"] is False
+    assert stop_plan["intent"] == "stop_and_summarize_workday"
+    assert stop_plan["command"] == [
+        "winchronicle",
+        "workday",
+        "stop",
+        "--format",
+        "text",
+        "--language",
+        "zh-CN",
+    ]
+    assert not (home / "workday-active.json").exists()
+
+
 def test_workday_intent_maps_status_phrase_without_capture_by_default(
     tmp_path, monkeypatch, capsys
 ):
@@ -265,10 +298,14 @@ def test_workday_intent_execute_runs_existing_bounded_commands(tmp_path, monkeyp
         )
         == 0
     )
-    started = json.loads(capsys.readouterr().out)
-    assert started["active"] is True
-    assert started["session_id"] == "intent-day"
-    assert started["capture_surface"] == "explicit_finite_monitor_session"
+    start_text = capsys.readouterr().out
+    assert "已开始记录今天的工作" in start_text
+    assert "intent-day" in start_text
+    assert "查看工作记录状态" in start_text
+    assert "停止工作并总结" in start_text
+    assert "capture_surface" not in start_text
+    assert "local_workday_session_status" not in start_text
+    assert "visible_text" not in start_text
 
     assert main(["workday", "intent", "停止工作并总结", "--execute", "--wait-seconds", "15"]) == 0
     text_summary = capsys.readouterr().out
@@ -281,6 +318,63 @@ def test_workday_intent_execute_runs_existing_bounded_commands(tmp_path, monkeyp
     assert "工作概览" not in text_summary
     assert "untrusted_observed_content" not in text_summary
     assert "Watcher burst should write one deterministic capture" not in text_summary
+    assert not (home / "workday-active.json").exists()
+
+
+def test_workday_intent_execute_duplicate_start_prints_human_text(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    fake_watcher = _write_sleeping_watcher(tmp_path)
+
+    argv = [
+        "workday",
+        "intent",
+        "开始记录今天的工作",
+        "--execute",
+        "--watcher",
+        sys.executable,
+        "--watcher-arg",
+        str(fake_watcher),
+        "--duration",
+        "60",
+        "--heartbeat-ms",
+        "250",
+        "--session-id",
+        "duplicate-intent",
+    ]
+
+    assert main(argv) == 0
+    capsys.readouterr()
+
+    assert main(argv) == 1
+    duplicate_text = capsys.readouterr().out
+    assert "已经在记录中" in duplicate_text
+    assert "duplicate-intent" in duplicate_text
+    assert "停止工作并总结" in duplicate_text
+    assert "workday_session_already_active" not in duplicate_text
+    assert "capture_surface" not in duplicate_text
+    assert "visible_text" not in duplicate_text
+
+    assert main(["workday", "stop", "--wait-seconds", "15"]) == 0
+    capsys.readouterr()
+
+
+def test_workday_intent_execute_stop_without_active_session_prints_human_text(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(["workday", "intent", "停止工作并总结", "--execute", "--wait-seconds", "0"]) == 0
+    stop_text = capsys.readouterr().out
+    assert "当前没有在记录" in stop_text
+    assert "无需结束" in stop_text
+    assert "开始记录工作" in stop_text
+    assert "summary_available" not in stop_text
+    assert "capture_surface" not in stop_text
+    assert "visible_text" not in stop_text
     assert not (home / "workday-active.json").exists()
 
 
@@ -310,9 +404,11 @@ def test_workday_intent_start_phrase_can_carry_focus_note(tmp_path, monkeypatch,
         )
         == 0
     )
-    started = json.loads(capsys.readouterr().out)
-    assert started["active"] is True
-    assert started["operator_focus"] == ["今天主要做论文整理和项目A需求文档"]
+    start_text = capsys.readouterr().out
+    assert "已开始记录今天的工作" in start_text
+    assert "今天主要做论文整理和项目A需求文档" in start_text
+    assert "operator_focus" not in start_text
+    assert "capture_surface" not in start_text
 
     assert main(["workday", "intent", "停止工作并总结", "--execute", "--wait-seconds", "15"]) == 0
     text_summary = capsys.readouterr().out

@@ -1,6 +1,6 @@
 ---
 name: workday-recorder
-description: Route 开始记录工作, 停止工作并总结, 开始工作, 结束工作并总结, and 查看工作记录状态 to the local WinChronicle workday CLI without repository scanning or new capture surfaces.
+description: Route 开始记录工作, 开始记录今天的工作, 停止工作并总结, 结束今天的工作并总结, 开始工作, 结束工作并总结, and 查看工作记录状态 to the local WinChronicle workday CLI without repository scanning or new capture surfaces.
 ---
 
 # WinChronicle Workday Recorder
@@ -10,7 +10,8 @@ explicit WinChronicle workday recording session.
 
 ## Intent Routing
 
-When the user says `开始工作` or `开始记录工作`, run only:
+When the user says `开始工作`, `开始记录工作`, `开始记录今天的工作`, or
+`开始记录今天工作`, run only:
 
 ```powershell
 winchronicle workday intent "开始工作" --execute
@@ -22,7 +23,12 @@ If the user includes today's intended tasks in the same message, pass the full u
 winchronicle workday intent "开始记录工作：今天主要做论文整理和项目A需求文档" --execute
 ```
 
-When the user says `结束工作并总结` or `停止工作并总结`, run only:
+The start command already prints a short Chinese user-facing confirmation. If a
+session is already active, it prints a Chinese status message instead of raw
+JSON. Pass that through; do not rewrite it as a repository task report.
+
+When the user says `结束工作并总结`, `停止工作并总结`, or
+`结束今天的工作并总结`, run only:
 
 ```powershell
 winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60
@@ -30,7 +36,10 @@ winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60
 
 After the stop command returns, do not answer with raw counters first. Use the local CLI output as evidence, then write a Codex-assisted Chinese daily report.
 Do not paste telemetry counters as the main answer. The default summary is a
-human daily review, not a telemetry report. Lead with plain-language answers to:
+human daily review, not a telemetry report.
+If no session is active, the CLI prints a short Chinese status message. Pass that
+through and do not expose internal JSON fields.
+Lead with plain-language answers to:
 
 - 今日完成了什么
 - 进展如何

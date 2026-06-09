@@ -427,6 +427,82 @@ def format_workday_status_text(status: dict[str, Any]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def format_workday_start_text(payload: dict[str, Any]) -> str:
+    session_id = _safe_text(payload.get("session_id", ""))
+    duration = _format_duration(_safe_int(payload.get("duration_seconds")))
+    focus_notes = _safe_focus_notes(payload.get("operator_focus", []))
+    if payload.get("error") == "workday_session_already_active":
+        lines = [
+            "# 工作记录状态",
+            "",
+            "今天的工作记录已经在记录中，没有启动第二次记录。",
+        ]
+        if session_id:
+            lines.append(f"- 当前记录: {session_id}")
+        lines.extend(
+            [
+                "- 想看当前状态，可以说：查看工作记录状态。",
+                "- 想结束并复盘，可以说：停止工作并总结。",
+            ]
+        )
+        return "\n".join(lines).rstrip() + "\n"
+
+    if payload.get("active"):
+        lines = [
+            "# 工作记录已开始",
+            "",
+            "已开始记录今天的工作。",
+        ]
+        if session_id:
+            lines.append(f"- 当前记录: {session_id}")
+        if duration:
+            lines.append(f"- 这是一段有限时长的本地记录，最长 {duration}。")
+        if focus_notes:
+            lines.append(f"- 今天关注: {'；'.join(focus_notes)}。")
+        lines.extend(
+            [
+                "- 想看当前状态，可以说：查看工作记录状态。",
+                "- 想结束并复盘，可以说：停止工作并总结。",
+            ]
+        )
+        return "\n".join(lines).rstrip() + "\n"
+
+    lines = ["# 工作记录未开始", "", "这次没有启动工作记录。"]
+    error = _safe_text(payload.get("error", ""))
+    if error:
+        lines.append(f"- 原因: {error}")
+    lines.append("- 可以稍后再说：开始记录工作。")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def format_workday_stop_text(payload: dict[str, Any]) -> str:
+    if payload.get("summary_available") and isinstance(payload.get("summary"), dict):
+        return format_workday_text_summary(payload["summary"])
+
+    if not payload.get("stopped"):
+        return "\n".join(
+            [
+                "# 工作记录状态",
+                "",
+                "当前没有在记录，无需结束。",
+                "",
+                "- 要开始新的记录，可以说：开始记录工作。",
+                "- 要查看状态，可以说：查看工作记录状态。",
+            ]
+        ).rstrip() + "\n"
+
+    return "\n".join(
+        [
+            "# 工作记录已停止",
+            "",
+            "已请求停止记录，但这次没有生成可显示的工作复盘。",
+            "",
+            "- 可以稍后说：查看工作记录状态。",
+            "- 如果你愿意，也可以补一句今天完成了什么。",
+        ]
+    ).rstrip() + "\n"
+
+
 def doctor_workday(
     home: Path | str | None = None,
     *,

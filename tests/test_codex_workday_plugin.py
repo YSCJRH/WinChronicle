@@ -111,7 +111,14 @@ def test_codex_workday_plugin_skill_frontmatter_names_recording_triggers():
     text = SKILL.read_text(encoding="utf-8")
     frontmatter = text.split("---", 2)[1]
 
-    for phrase in ["开始记录工作", "停止工作并总结", "开始工作", "结束工作并总结"]:
+    for phrase in [
+        "开始记录工作",
+        "开始记录今天的工作",
+        "停止工作并总结",
+        "开始工作",
+        "结束工作并总结",
+        "结束今天的工作并总结",
+    ]:
         assert phrase in frontmatter
     assert "查看工作记录状态" in frontmatter
     assert "repository scanning" in frontmatter
@@ -136,11 +143,20 @@ def test_codex_workday_plugin_recording_mode_blocks_repo_preflight():
 def test_codex_workday_plugin_doc_warns_before_chat_output():
     text = (ROOT / "docs" / "codex-workday-plugin.md").read_text(encoding="utf-8")
 
-    for phrase in ["开始工作", "开始记录工作", "结束工作并总结", "停止工作并总结"]:
+    for phrase in [
+        "开始工作",
+        "开始记录工作",
+        "开始记录今天的工作",
+        "结束工作并总结",
+        "结束今天的工作并总结",
+        "停止工作并总结",
+    ]:
         assert phrase in text
     assert "Starter Prompts" in text
     assert "first three" in text
     assert "copyable plugin-source instruction" in text
+    assert "raw JSON" in text
+    assert "repository task report" in text
     assert "Codex App -> Plugins -> Add local plugin source" in text
     assert "Fastest Codex App Setup" in text
     assert "winchronicle codex setup --dry-run --format text" in text

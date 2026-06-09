@@ -248,7 +248,10 @@ def test_codex_plugin_dry_run_prints_local_plugin_source_without_state_write(
     assert payload["accepted_phrases"] == [
         "开始工作",
         "开始记录工作",
+        "开始记录今天的工作",
+        "开始记录今天工作",
         "结束工作并总结",
+        "结束今天的工作并总结",
         "停止工作并总结",
         "查看工作记录状态",
     ]
@@ -431,7 +434,10 @@ def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
     assert payload["daily_phrases"] == [
         "开始工作",
         "开始记录工作",
+        "开始记录今天的工作",
+        "开始记录今天工作",
         "结束工作并总结",
+        "结束今天的工作并总结",
         "停止工作并总结",
         "查看工作记录状态",
     ]
@@ -455,7 +461,9 @@ def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
     ]
     assert payload["plugin"]["starter_phrases"] == payload["plugin"]["default_prompts"]
     assert "开始工作" in payload["plugin"]["accepted_phrases"]
+    assert "开始记录今天的工作" in payload["plugin"]["accepted_phrases"]
     assert "结束工作并总结" in payload["plugin"]["accepted_phrases"]
+    assert "结束今天的工作并总结" in payload["plugin"]["accepted_phrases"]
     assert payload["plugin"]["codex_app_plugin_source_path"] == payload["plugin"]["plugin_path"]
     assert "Add local plugin source" in payload["plugin"]["copyable_plugin_source_instruction"]
     assert payload["what_to_say_next"] == [

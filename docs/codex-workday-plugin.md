@@ -5,7 +5,10 @@ who want the natural-language flow:
 
 - `开始工作`
 - `开始记录工作`
+- `开始记录今天的工作`
+- `开始记录今天工作`
 - `结束工作并总结`
+- `结束今天的工作并总结`
 - `停止工作并总结`
 - `查看工作记录状态`
 
@@ -17,6 +20,10 @@ winchronicle workday intent "开始工作" --execute
 winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60
 winchronicle workday intent "查看工作记录状态" --execute
 ```
+
+Start, duplicate-start, and no-active stop results are already printed as short
+Chinese user-facing messages. They are not meant to be shown as raw JSON or as a
+repository task report.
 
 If you are using WinChronicle from a source checkout before editable install,
 use `python -m winchronicle` instead of `winchronicle`.
@@ -59,9 +66,11 @@ After adding the plugin source in Codex App, use:
 
 ```text
 开始记录工作
+开始记录今天的工作
 开始记录工作：今天主要做 WinChronicle、论文整理和项目A需求文档
 查看工作记录状态
 停止工作并总结
+结束今天的工作并总结
 ```
 
 When the first prompt includes a short plan after `：`, the plugin should pass
@@ -79,8 +88,9 @@ need:
 - `停止工作并总结`
 - `查看工作记录状态`
 
-The shorter aliases `开始工作` and `结束工作并总结` still work through the same
-intent mapper, but the visible starters stay focused on record-only daily use.
+The shorter aliases `开始工作`, `开始记录今天工作`, `结束工作并总结`, and
+`结束今天的工作并总结` still work through the same intent mapper, but the visible
+starters stay focused on record-only daily use.
 
 ## Recording Mode
 
