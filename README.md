@@ -42,7 +42,7 @@ Start with one path instead of reading every command:
 | Path | Use it when | First command |
 | --- | --- | --- |
 | **Demo** | You want a fixture-only walkthrough that does not read your desktop. | `python harness/scripts/run_quick_demo.py` |
-| **Workday** | You want Codex App to start, check, stop, and summarize a bounded local work session. | `winchronicle codex plugin --dry-run --format text` |
+| **Workday** | You want Codex App to start, check, stop, and summarize a bounded local work session. | `winchronicle codex setup --dry-run --format text` |
 | **MCP** | You want an agent to read local WinChronicle context through the fixed read-only tool list. | `winchronicle codex install --dry-run` |
 
 If `winchronicle` is not on your `PATH` yet, run the
@@ -140,6 +140,11 @@ After adding that local plugin source in Codex App, use:
 查看工作记录状态
 停止工作并总结
 ```
+
+At the end you should get a short daily review that says what appears to have
+happened, how the work progressed, what may need light follow-up, and one or two
+ways to make tomorrow smoother. It should read like a work assistant summary,
+not a log counter report.
 
 For a record-only thread prompt instead of the plugin path, run:
 

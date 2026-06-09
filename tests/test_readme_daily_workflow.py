@@ -13,9 +13,13 @@ def test_readmes_surface_codex_daily_workflow_first_run_path():
         "## Try It In 5 Minutes"
     )
     assert "the fastest path is the local Workday plugin" in english
+    assert "| **Workday** | You want Codex App to start, check, stop, and summarize a bounded local work session. | `winchronicle codex setup --dry-run --format text` |" in english
+    assert "At the end you should get a short daily review" in english
     assert "## 如果你只想让 Codex App 记录工作" in chinese
     assert chinese.index("## 如果你只想让 Codex App 记录工作") < chinese.index("## 5 分钟试用")
     assert "最快路径是本地 Workday 插件" in chinese
+    assert "| **Workday** | 想让 Codex App 开始、查看、停止并总结一个有限本地工作会话。 | `winchronicle codex setup --dry-run --format text` |" in chinese
+    assert "结束时应该得到一份简短日报" in chinese
 
     for text in (english, chinese):
         assert "winchronicle codex daily --dry-run" in text

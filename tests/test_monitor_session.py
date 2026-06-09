@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from winchronicle.cli import main
-from winchronicle.mcp.server import recent_activity
+from winchronicle.mcp.server import recent_activity, search_captures_tool
 from winchronicle.schema import validate_session_report, validate_watcher_event
 from winchronicle.session import _error_signals, monitor_events, read_session
 from test_watcher_events import _assert_raw_terms_not_indexed, _write_privacy_parity_events
@@ -120,6 +120,45 @@ def test_monitor_session_records_metadata_only_error_signals(tmp_path, monkeypat
         assert raw_term not in serialized_signals
         assert raw_term not in session_text
         assert raw_term not in report_text
+
+
+def test_monitor_session_does_not_leak_secret_event_id_into_paths_or_mcp(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    base_event = json.loads(WATCHER_FIXTURE.read_text(encoding="utf-8").splitlines()[0])
+    event = deepcopy(base_event)
+    canary = "ghp_winchroniclecanary1234567890ABCD"
+    event["event_id"] = canary
+    event["timestamp"] = "2026-04-25T13:55:00+08:00"
+    event["capture"]["timestamp"] = "2026-04-25T13:55:00+08:00"
+    event["capture"]["visible_text"] = "event id privacy regression deterministic capture"
+    event["capture"]["uia_stats"]["chars_collected"] = len(event["capture"]["visible_text"])
+    event_path = tmp_path / "event-id-canary.jsonl"
+    event_path.write_text(json.dumps(event) + "\n", encoding="utf-8")
+
+    result = monitor_events(event_path, home, session_id="event-id-canary")
+    capture_paths = sorted((home / "capture-buffer").glob("*.json"))
+    capture_search = search_captures_tool(
+        "deterministic capture",
+        home=home,
+        metadata_only=True,
+    )
+    serialized = json.dumps(
+        {
+            "session": result.session,
+            "capture_paths": [str(path) for path in capture_paths],
+            "capture_search": capture_search,
+        },
+        sort_keys=True,
+    )
+
+    validate_session_report(result.session)
+    assert result.session["captures_written"] == 1
+    assert capture_paths
+    assert canary not in serialized
+    assert "winchroniclecanary" not in serialized.lower()
+    assert "github_token" not in serialized
+    assert all(canary not in path.name for path in capture_paths)
 
 
 def test_monitor_session_caps_error_signal_aggregate_rows(tmp_path, monkeypatch):

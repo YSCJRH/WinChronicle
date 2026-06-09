@@ -907,7 +907,7 @@ def _format_work_conclusions(session: dict[str, Any], project_snapshot: Any) -> 
     if workstream_clues:
         lines.append(f"- 今日工作线索: 窗口标题显示还涉及 {'、'.join(workstream_clues)}。")
     if error_count:
-        lines.append("- 需要留意的事项: 今天有一些收尾提示值得回看；它们只说明可能出现过调试或失败排查，不代表真实问题数量。")
+        lines.append("- 复盘小提醒: 记录里出现过调试或异常线索；这不代表工作质量，只提示收尾时可以看一眼是否有真正影响推进的事项。")
     if _safe_int(session.get("captures_written")) == 0:
         lines.append("- 本次没有可用 capture；如果你愿意，可以补一句今天实际完成的事项，让复盘更完整。")
     return lines or ["- 本次会话缺少足够线索；如果你愿意，可以补一句今天实际完成的事项。"]
@@ -927,7 +927,7 @@ def _format_work_progress(session: dict[str, Any], project_snapshot: Any) -> lis
             "- 如果希望下次更像项目进展总结，可以告诉 WinChronicle 相关项目文件夹；不填写也会继续记录。",
         ]
         if _error_signal_count(session):
-            no_project_lines.append("- 收尾提醒: 记录里有错误或失败相关提示；这不等于真实阻塞，也不代表真实问题数量。如果确实有卡住的事情，可以顺手记下它是已经处理、还要继续，还是只是历史提示，明天先处理真正影响推进的事项。")
+            no_project_lines.append("- 复盘小提醒: 记录里出现过调试或异常线索；这不代表工作质量。如果今天确实有卡住的事，明天先看真正影响推进的一两件事。")
         return no_project_lines
 
     for project in projects[:5]:
@@ -954,7 +954,7 @@ def _format_work_progress(session: dict[str, Any], project_snapshot: Any) -> lis
 
     error_count = _error_signal_count(session)
     if error_count:
-        lines.append("- 收尾提醒: 记录里有错误或失败相关提示；这不等于真实阻塞，也不代表真实问题数量。如果确实有卡住的事情，可以顺手记下它是已经处理、还要继续，还是只是历史提示，明天先处理真正影响推进的事项。")
+        lines.append("- 复盘小提醒: 记录里出现过调试或异常线索；这不代表工作质量。如果今天确实有卡住的事，明天先看真正影响推进的一两件事。")
     return lines
 
 
@@ -973,7 +973,7 @@ def _format_habit_improvements(session: dict[str, Any], project_snapshot: Any) -
     if _error_signal_count(session):
         lines.append("- 如果今天有真正卡住的事，可以顺手记一句处理结果，避免明天重复排查。")
     if _safe_int(session.get("captures_written")) > 1000:
-        lines.append("- 长时间记录后先看项目进展和可考虑方向，不要从 capture 数量判断工作质量。")
+        lines.append("- 长时间记录后先看项目进展和可考虑方向，不要用记录条数判断工作质量。")
     lines.append("- 明天可以按 1-2 个任务块推进：先完成一个可交付结果，再切换到资料整理或沟通。")
     return lines
 
@@ -1076,7 +1076,7 @@ def _format_workday_retrospective(session: dict[str, Any], project_snapshot: Any
     if isinstance(app_segments, list) and len(app_segments) >= 6:
         lines.append("- 本轮上下文切换较多；下一轮可以按项目或任务块分段记录，减少复盘噪声。")
     if error_count:
-        lines.append("- 需要留意的事项: 记录里有错误或失败相关提示；这只是复盘提醒，不代表真实问题数量。如果确实有卡住的事项，可以顺手记录处理结果。")
+        lines.append("- 复盘小提醒: 记录里出现过调试或异常线索；这只是收尾线索，不代表工作质量。真正卡住的事项可以顺手记一句处理结果。")
     if _safe_int(session.get("captures_written")) == 0:
         lines.append("- 本轮没有可用 capture；如果你愿意，可以补一句人工工作结果，避免日报只有空壳。")
     return lines
@@ -1107,7 +1107,7 @@ def _format_consideration_directions(session: dict[str, Any], project_snapshot: 
             f"如果希望下次按项目呈现这些活动，可以告诉 WinChronicle 相关项目文件夹；这次先保留软件名：{_join_cn(unregistered_apps)}。"
         )
     if _safe_int(session.get("error_signals", {}).get("total_count")) if isinstance(session.get("error_signals"), dict) else 0:
-        directions.append("可把收尾提示当作线索，不当成工作质量评价；只关注真正影响推进的事项。")
+        directions.append("把调试或异常线索当作收尾提醒，不当成工作质量评价；明天先处理真正影响推进的一两件事。")
     directions.append(_workday_efficiency_direction(session))
     return [
         "",
