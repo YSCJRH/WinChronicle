@@ -862,11 +862,15 @@ def test_workday_human_summary_does_not_make_error_counts_scary():
 
     assert "164 次错误" not in text
     assert "阻塞线索" not in text
+    assert "未收尾的问题分支" not in text
+    assert "错误统计" not in text
+    assert "命中次数" not in text
     assert "可考虑查看的线索" in text
-    assert "需要留意的事项" not in text
+    assert "需要留意的事项" in text
     assert "不等于今天真的发生了同样数量的问题" in text
     assert "如果确实有卡住的事情" in text
     assert "只需要确认" not in text
+    assert "明天先处理真正影响推进的事项" in text
 
 
 def test_workday_text_summary_includes_allowlisted_project_metadata_only():
