@@ -805,10 +805,12 @@ def test_workday_text_summary_explains_error_signals_without_observed_text():
     text = format_workday_text_summary(session, project_snapshot={"projects": []})
 
     assert "今日工作复盘" in text
-    assert "一些错误或失败相关提示" in text
-    assert "不等于今天真的发生了同样数量的问题" in text
+    assert "收尾提示" in text
+    assert "真实问题数量" in text
     assert "2 次错误" not in text
-    assert "已解决 / 未解决 / 误报" in text
+    assert "已经处理" in text
+    assert "还要继续" in text
+    assert "历史提示" in text
     assert "是否已解决需要确认" not in text
     assert "命中次数: 2" not in text
     assert "Codex: 2" not in text
@@ -865,12 +867,14 @@ def test_workday_human_summary_does_not_make_error_counts_scary():
     assert "未收尾的问题分支" not in text
     assert "错误统计" not in text
     assert "命中次数" not in text
-    assert "可考虑查看的线索" in text
+    assert "收尾提醒" in text
     assert "需要留意的事项" in text
-    assert "不等于今天真的发生了同样数量的问题" in text
+    assert "真实问题数量" in text
     assert "如果确实有卡住的事情" in text
     assert "只需要确认" not in text
     assert "明天先处理真正影响推进的事项" in text
+    assert text.count("错误或失败相关提示") <= 1
+    assert "已解决 / 未解决 / 误报" not in text
 
 
 def test_workday_text_summary_includes_allowlisted_project_metadata_only():
