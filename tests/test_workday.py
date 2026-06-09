@@ -890,12 +890,14 @@ def test_workday_text_summary_turns_unregistered_app_activity_into_questions():
 
     assert "今日关注事项" in text
     assert "论文整理和项目A需求文档" in text
-    assert "其它工作线索" in text
+    assert "还较多使用了" in text
     assert "Word 文档" in text
     assert "浏览器" in text
     assert "文件管理器" in text
     assert "可考虑方向" in text
-    assert "暂时无法判断具体属于哪个项目" in text
+    assert "可能对应其它项目、写作、调研或沟通" in text
+    assert "其它工作线索" not in text
+    assert "暂时无法判断具体属于哪个项目" not in text
     assert "如果希望下次按项目呈现这些活动" in text
     assert "先补充相关项目文件夹" not in text
     assert "这些应用活动是否对应其它项目、写作、调研或沟通工作" not in text
@@ -996,7 +998,7 @@ def test_workday_human_summary_avoids_project_jargon_in_default_text():
     assert "+91/-0" not in text
     assert "规模约" not in text
     assert "已有 4 个本地改动" in text
-    assert "暂时无法判断具体属于哪个项目" in text
+    assert "可能对应其它项目、写作、调研或沟通" in text
     assert "项目协作说明" in text
     assert "AGENTS.md" not in text
     assert "浏览器" in text

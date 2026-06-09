@@ -826,7 +826,7 @@ def _format_work_conclusions(session: dict[str, Any], project_snapshot: Any) -> 
         lines.append("- 根据本地记录，今天有工作活动，但未登记项目目录；系统还不能可靠判断具体项目产出。")
 
     if apps:
-        lines.append(f"- 工作环境主要集中在 {_join_cn(apps[:5])}，说明当天混合了开发、资料查看或文档处理。")
+        lines.append(f"- 今天主要使用了 {_join_cn(apps[:5])}，这些软件活动显示当天混合了开发、资料查看或文档处理。")
     workstream_clues = _title_workstream_clues(session)
     if workstream_clues:
         lines.append(f"- 今日工作线索: 窗口标题显示还涉及 {'、'.join(workstream_clues)}。")
@@ -847,8 +847,8 @@ def _format_work_progress(session: dict[str, Any], project_snapshot: Any) -> lis
     if not projects:
         no_project_lines = [
             *lines,
-            "- 项目维度: 还没有登记今天要关注的项目文件夹，暂不能区分具体项目进展。",
-            "- 状态判断: 只能确认有工作活动，不能确认完成度。",
+            "- 今天已经记录到工作活动，但还没有看到你希望重点跟踪的项目文件夹，所以目前只能给出整体复盘。",
+            "- 如果希望下次更像项目进展总结，可以告诉 WinChronicle 相关项目文件夹；不填写也会继续记录。",
         ]
         if _error_signal_count(session):
             no_project_lines.append("- 可考虑查看的线索: 记录里有错误或失败相关提示；这不等于真实阻塞，也不代表真实问题数量。如果确实有卡住的事情，可以顺手按“已解决 / 未解决 / 误报”做个标记。")
@@ -873,7 +873,7 @@ def _format_work_progress(session: dict[str, Any], project_snapshot: Any) -> lis
     unregistered_apps = _unregistered_activity_apps(session)
     if unregistered_apps:
         lines.append(
-            f"- 其它工作线索: {_join_cn(unregistered_apps)}活动较多，暂时无法判断具体属于哪个项目；下次开始前可以告诉 WinChronicle 还要关注哪些项目文件夹。"
+            f"- 还较多使用了 {_join_cn(unregistered_apps)}；这些活动可能对应其它项目、写作、调研或沟通，当前总结先按软件名保留。"
         )
 
     error_count = _error_signal_count(session)
@@ -1028,7 +1028,7 @@ def _format_consideration_directions(session: dict[str, Any], project_snapshot: 
         directions.append("多项目并行时，可以把每个项目拆成“完成项 / 阻塞 / 明天第一步”三个收尾标签。")
     if unregistered_apps:
         directions.append(
-            f"如果希望下次按项目呈现这些活动，可以告诉 WinChronicle 相关项目文件夹；当前线索包括 {_join_cn(unregistered_apps)}，不填写也不影响继续记录。"
+            f"如果希望下次按项目呈现这些活动，可以告诉 WinChronicle 相关项目文件夹；这次先保留软件名：{_join_cn(unregistered_apps)}。"
         )
     if _safe_int(session.get("error_signals", {}).get("total_count")) if isinstance(session.get("error_signals"), dict) else 0:
         directions.append("可把错误或失败相关提示当作筛选器，不当成错误统计；只处理真正卡住的事项。")
