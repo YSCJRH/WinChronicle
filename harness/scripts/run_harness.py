@@ -37,6 +37,7 @@ def main() -> int:
                 "--nologo",
             ],
             [sys.executable, "harness/scripts/run_quick_demo.py"],
+            [sys.executable, "harness/scripts/run_productization_self_eval.py"],
             [sys.executable, "harness/scripts/run_watcher_smoke.py"],
             [sys.executable, "harness/scripts/run_watcher_slow_helper_smoke.py"],
             [sys.executable, "harness/scripts/run_mcp_smoke.py"],

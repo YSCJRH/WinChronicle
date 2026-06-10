@@ -175,6 +175,8 @@ python harness/scripts/run_mcp_smoke.py
 
 For a guided walkthrough, use [5-minute demo](docs/quick-demo.md). For the full
 fixture-only path, use [Deterministic demo](docs/deterministic-demo.md).
+For copyable launch/demo text, use the
+[Demo promotion kit](docs/demo-promotion-kit.md).
 For using Codex app as a daily work recorder, use the
 [Codex App workday guide](docs/codex-app-workday-guide.md) or the
 [Codex workday plugin](docs/codex-workday-plugin.md).
@@ -279,6 +281,9 @@ maintenance loop automatically.
 - Add redaction tests for new token canaries.
 - Improve local report readability without adding screenshots, OCR, upload, or
   desktop-control behavior.
+- Run or improve the
+  [Productization self-eval](docs/productization-self-eval.md) when changing
+  the README, demo, Codex entry, contribution path, or safety claims.
 
 <!--
 Compatibility-contract references kept out of the rendered navigation list:

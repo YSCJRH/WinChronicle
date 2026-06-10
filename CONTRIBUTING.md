@@ -18,6 +18,25 @@ Good first contributions are small, deterministic, and easy to review:
 - add privacy regression tests for secret canaries;
 - clarify monitor session reports and timeline examples.
 
+## Growth And Trust Starter Tasks
+
+These are good first issues for contributors who want to make the project
+easier to understand, try, trust, or share:
+
+- improve the README first screen without adding a long maintenance ledger;
+- improve `docs/demo-promotion-kit.md` with clearer fixture-only demo copy;
+- improve Codex App Workday plugin docs while keeping the flow record-only;
+- add Windows app compatibility notes, but do not commit observed content;
+- add deterministic privacy/redaction fixtures using synthetic data only;
+- improve `harness/scripts/run_productization_self_eval.py` when onboarding or
+  safety promises change.
+
+Before opening a product-facing PR, run:
+
+```powershell
+python harness/scripts/run_productization_self_eval.py
+```
+
 Use the GitHub issue templates for bug reports, privacy concerns, Windows app
 compatibility notes, feature proposals, harness-first tasks, and privacy
 boundary reviews.
