@@ -144,7 +144,9 @@ After adding that local plugin source in Codex App, use:
 At the end you should get a short daily review that says what appears to have
 happened, how the work progressed, what may need light follow-up, and one or two
 ways to make tomorrow smoother. It should read like a work assistant summary,
-not a log counter report.
+not a log counter report. The Workday plugin's default stop path is a
+Codex-assisted daily review based on summary-level evidence from the local CLI;
+it does not add new capture behavior or send raw observed text by default.
 
 For a record-only thread prompt instead of the plugin path, run:
 

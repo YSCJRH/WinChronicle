@@ -83,6 +83,20 @@ The plugin is a thin wrapper around the same commands and does not add capture
 behavior. The dry-run output contains local filesystem paths; only paste it into
 chat when you explicitly want to share that metadata.
 
+When you say `停止工作并总结`, the plugin should produce a Codex-assisted daily
+review from the existing local CLI summary. It uses only summary-level evidence:
+the local text summary, application clues, registered project metadata,
+error-signal summaries, and explicit user context already in the current chat.
+It does not send raw observed text, does not read file contents, does not add a
+new CLI command, and does not add MCP tools.
+
+The default report should read like a work assistant, not a log report:
+
+- 今天主要做了什么
+- 进展如何
+- 值得留意的地方
+- 明天怎么更顺手
+
 If you want read-only agent context instead of daily recording, use
 [MCP client setup](mcp-client-setup.md). If you want a fixture-only demo, use
 [Windows first run](windows-first-run.md).

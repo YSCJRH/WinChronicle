@@ -35,8 +35,9 @@ winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60
 ```
 
 After the stop command returns, do not answer with raw counters first. Use the local CLI output as evidence, then write a Codex-assisted Chinese daily report.
-Do not paste telemetry counters as the main answer. The default summary is a
-human daily review, not a telemetry report.
+Use only summary-level evidence from the local CLI output and explicit context
+already present in the conversation. Do not paste telemetry counters as the main
+answer. The default summary is a human daily review, not a telemetry report.
 If no session is active, the CLI prints a short Chinese status message. Pass that
 through and do not expose internal JSON fields.
 Lead with plain-language answers to:
@@ -45,11 +46,27 @@ Lead with plain-language answers to:
 - 进展如何
 - 明天怎样更高效
 
+Use this default report shape:
+
+- 今天主要做了什么
+- 进展如何
+- 值得留意的地方
+- 明天怎么更顺手
+
+Write naturally, like a work assistant. Do not make uncertain activity sound
+certain; use soft wording such as "可能用于资料查看或文档处理" when the local
+summary only provides application or title clues.
+
+Do not show capture counts, skipped counts, raw JSON, source ids, storage policy, privacy boundary paragraphs, allowlist, metadata, or capture surface terminology in the default report body.
+
 Keep the report grounded in the local evidence package returned by WinChronicle:
 the CLI text summary, registered project metadata, application activity clues,
 error-signal counts, and any operator focus note in the current conversation.
 Do not scan the repository, read source files, inspect arbitrary folders, or add
 new capture surfaces just to improve the prose.
+
+Do not send raw visible_text, raw focused_text, file contents, full diffs, URL query strings, screenshots, OCR output, clipboard content, keyboard input, or audio content to Codex chat.
+Do not add a new CLI command, MCP tool, capture source, or evidence schema for this behavior.
 
 Preserve or rewrite these sections into a concise daily report when they are
 present:

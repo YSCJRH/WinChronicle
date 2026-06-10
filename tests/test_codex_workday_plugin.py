@@ -55,6 +55,8 @@ def test_codex_workday_plugin_is_packaged_for_non_editable_installs():
 def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
     text = SKILL.read_text(encoding="utf-8")
     packaged_text = PACKAGED_SKILL.read_text(encoding="utf-8")
+    normalized_text = " ".join(text.split())
+    normalized_packaged_text = " ".join(packaged_text.split())
 
     required_commands = [
         'winchronicle workday intent "开始工作" --execute',
@@ -73,11 +75,16 @@ def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
         "read-only MCP",
         "Do not inspect, scan, review, edit, test, commit, push, or release repository files.",
         "Use the local CLI output as evidence, then write a Codex-assisted Chinese daily report",
+        "Use only summary-level evidence",
         "Do not paste telemetry counters as the main answer",
+        "Do not show capture counts, skipped counts, raw JSON, source ids, storage policy, privacy boundary paragraphs, allowlist, metadata, or capture surface terminology in the default report body.",
         "human daily review, not a telemetry report",
         "今日完成了什么",
         "进展如何",
         "明天怎样更高效",
+        "今天主要做了什么",
+        "值得留意的地方",
+        "明天怎么更顺手",
         "今日工作复盘",
         "今日工作结论",
         "工作进行情况",
@@ -90,9 +97,12 @@ def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
         "今天主要做",
         "operator focus",
         "prefer actionable directions",
+        "Do not send raw visible_text, raw focused_text, file contents, full diffs, URL query strings, screenshots, OCR output, clipboard content, keyboard input, or audio content to Codex chat.",
+        "Do not add a new CLI command, MCP tool, capture source, or evidence schema for this behavior.",
     ):
-        assert expected in text
-        assert expected in packaged_text
+        normalized_expected = " ".join(expected.split())
+        assert normalized_expected in normalized_text
+        assert normalized_expected in normalized_packaged_text
 
     for removed_default_section in ("待确认问题", "数据依据"):
         assert removed_default_section not in text
@@ -142,6 +152,7 @@ def test_codex_workday_plugin_recording_mode_blocks_repo_preflight():
 
 def test_codex_workday_plugin_doc_warns_before_chat_output():
     text = (ROOT / "docs" / "codex-workday-plugin.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
 
     for phrase in [
         "开始工作",
@@ -173,6 +184,16 @@ def test_codex_workday_plugin_doc_warns_before_chat_output():
     assert "winchronicle codex plugin --dry-run --format text" in text
     assert "Codex-assisted report" in text
     assert "local evidence package" in text
+    assert "summary-level evidence" in normalized
+    assert "does not send raw observed text" in normalized
+    assert "does not read file contents" in normalized
+    assert "does not add a CLI command" in normalized
+    assert "今天主要做了什么" in text
+    assert "进展如何" in text
+    assert "值得留意的地方" in text
+    assert "明天怎么更顺手" in text
+    assert "capture counts" in text
+    assert "metadata" in text
     assert "does not add screenshot" in text
     assert "开始记录工作：今天主要做" in text
     assert "operator focus" in text
@@ -200,3 +221,22 @@ def test_codex_workday_plugin_does_not_expand_capture_or_mcp_surface():
     assert not (PLUGIN / ".app.json").exists()
     assert "mcpServers" not in manifest
     assert "apps" not in manifest
+
+
+def test_codex_app_guide_documents_assisted_summary_boundary():
+    text = (ROOT / "docs" / "codex-app-workday-guide.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    for expected in (
+        "Codex-assisted daily review",
+        "summary-level evidence",
+        "does not send raw observed text",
+        "does not read file contents",
+        "does not add a new CLI command",
+        "does not add MCP tools",
+        "今天主要做了什么",
+        "进展如何",
+        "值得留意的地方",
+        "明天怎么更顺手",
+    ):
+        assert " ".join(expected.split()) in normalized

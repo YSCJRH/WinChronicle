@@ -130,7 +130,9 @@ Codex App -> Plugins -> Add local plugin source -> <plugin_path>
 
 结束时应该得到一份简短日报：它会说明今天大概做了什么、进展如何、
 哪些地方值得轻量回看，以及明天怎样更顺手。它应该像工作记录助手，
-而不是日志计数报告。
+而不是日志计数报告。Workday 插件的默认停止路径会生成 Codex-assisted daily
+review，基于本地 CLI 的摘要级 evidence；它不会新增采集能力，也不会默认发送
+原始 observed text。
 
 如果你更想使用只记录线程 prompt，而不是插件源路径，可以运行：
 
