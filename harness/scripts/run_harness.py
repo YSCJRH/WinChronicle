@@ -27,6 +27,23 @@ def main() -> int:
         commands = [
             [sys.executable, "-m", "pytest", "-q"],
             [
+                sys.executable,
+                "harness/scripts/check_release_evidence.py",
+                "docs/release-v0.2.0.md",
+            ],
+            [
+                sys.executable,
+                "harness/scripts/check_manual_smoke_freshness.py",
+                "--project",
+                "pyproject.toml",
+                "--ledger",
+                "docs/manual-smoke-evidence-ledger.md",
+                "--guide",
+                "docs/release-evidence.md",
+                "--checklist",
+                "docs/release-checklist.md",
+            ],
+            [
                 "dotnet",
                 "build",
                 "resources/win-uia-helper/WinChronicle.UiaHelper.csproj",

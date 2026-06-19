@@ -1,5 +1,6 @@
 import importlib.util
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -101,6 +102,9 @@ def test_harness_readme_documents_timeout_defaults_and_ci_budget():
     assert "do not print partial stdout or stderr" in normalized
     assert "observed content" in normalized
     assert "does not expand capture surfaces" in normalized
+    assert "static release-evidence validator" in normalized
+    assert "manual-smoke freshness validator" in normalized
+    assert "does not call GitHub" in normalized
 
 
 def test_install_cli_smoke_covers_workday_intent_dry_run():
@@ -148,6 +152,37 @@ def test_run_harness_times_out_subprocess_with_diagnostic(monkeypatch, capsys):
     output = capsys.readouterr().out
     assert "SECRET_CANARY" not in output
     assert "Command timed out after 7s: slow-command" in output
+
+
+def test_run_harness_includes_static_release_validators(monkeypatch):
+    run_harness = _load_script(RUN_HARNESS)
+    commands = []
+
+    def record_run(command, _env):
+        commands.append(command)
+        return 0
+
+    monkeypatch.setattr(run_harness, "_run", record_run)
+
+    assert run_harness.main() == 0
+
+    assert [
+        sys.executable,
+        "harness/scripts/check_release_evidence.py",
+        "docs/release-v0.2.0.md",
+    ] in commands
+    assert [
+        sys.executable,
+        "harness/scripts/check_manual_smoke_freshness.py",
+        "--project",
+        "pyproject.toml",
+        "--ledger",
+        "docs/manual-smoke-evidence-ledger.md",
+        "--guide",
+        "docs/release-evidence.md",
+        "--checklist",
+        "docs/release-checklist.md",
+    ] in commands
 
 
 def test_run_harness_uses_default_and_env_timeout(monkeypatch):

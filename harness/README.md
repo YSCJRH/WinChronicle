@@ -81,7 +81,10 @@ python harness/scripts/run_harness.py
 ```
 
 The runner uses a temporary `WINCHRONICLE_HOME` so CLI smoke checks do not write
-to the user's normal WinChronicle state directory.
+to the user's normal WinChronicle state directory. It also runs the static
+release-evidence validator and manual-smoke freshness validator against the
+published `v0.2.0` release record and current release docs. The static suite
+does not call GitHub and does not inspect observed content.
 
 ## Harness Timeouts
 
