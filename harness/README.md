@@ -83,6 +83,28 @@ python harness/scripts/run_harness.py
 The runner uses a temporary `WINCHRONICLE_HOME` so CLI smoke checks do not write
 to the user's normal WinChronicle state directory.
 
+## Harness Timeouts
+
+`python harness/scripts/run_harness.py` defaults to 900 seconds per subprocess.
+Override this only for local diagnosis with
+`WINCHRONICLE_HARNESS_COMMAND_TIMEOUT_SECONDS`.
+
+`python harness/scripts/run_install_cli_smoke.py` defaults to 300 seconds per
+subprocess. Override this only for local diagnosis with
+`WINCHRONICLE_INSTALL_CLI_SMOKE_COMMAND_TIMEOUT_SECONDS`.
+
+The Windows CI workflow wraps `python harness/scripts/run_harness.py` in a
+30-minute outer timeout so a stuck release gate fails instead of hanging. The
+step-level timeout is intentionally longer than the per-subprocess default
+because the full harness runs several independent commands.
+
+Timeout handlers print the command and timeout value, but do not print partial
+stdout or stderr. A timed-out command may already have emitted observed content
+before it is killed, so diagnostics must stay content-free. Raising or lowering
+these values does not expand capture surfaces, start live UIA capture, enable
+screenshots, OCR, clipboard capture, cloud upload, desktop control, or MCP write
+tools.
+
 Before publishing alpha or beta releases, use `docs/release-checklist.md`.
 Phase 6 screenshot/OCR enrichment is tracked only as a privacy scorecard until
 tests and explicit opt-in configuration exist.

@@ -71,6 +71,28 @@ python harness/scripts/run_harness.py
 git diff --check
 ```
 
+### Harness Timeout Policy
+
+The local harness runners use per-command timeouts to fail closed instead of
+hanging release work:
+
+- `python harness/scripts/run_harness.py` defaults to 900 seconds per
+  subprocess. Override only for local diagnosis with
+  `WINCHRONICLE_HARNESS_COMMAND_TIMEOUT_SECONDS`.
+- `python harness/scripts/run_install_cli_smoke.py` defaults to 300 seconds per
+  subprocess. Override only for local diagnosis with
+  `WINCHRONICLE_INSTALL_CLI_SMOKE_COMMAND_TIMEOUT_SECONDS`.
+- GitHub Actions mirrors this with step-level `timeout-minutes` entries for
+  install, unit tests, .NET builds, the deterministic harness, and whitespace
+  checks.
+
+Timeout handlers print the command and timeout value, but do not print partial
+stdout or stderr. A hung command may already have emitted observed content
+before it is killed, so timeout diagnostics must stay content-free. Adjusting
+timeout values does not authorize new capture surfaces, live UIA capture,
+screenshots, OCR, clipboard capture, cloud upload, desktop control, or MCP write
+tools.
+
 ## Privacy And Scope Boundaries
 
 Do not add screenshot capture, OCR, audio recording, keyboard capture, clipboard

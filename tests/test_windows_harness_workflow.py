@@ -7,6 +7,8 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "windows-harness.yml"
+CONTRIBUTING = ROOT / "CONTRIBUTING.md"
+HARNESS_README = ROOT / "harness" / "README.md"
 INSTALL_CLI_SMOKE = ROOT / "harness" / "scripts" / "run_install_cli_smoke.py"
 RUN_HARNESS = ROOT / "harness" / "scripts" / "run_harness.py"
 
@@ -68,6 +70,37 @@ def test_windows_harness_uses_current_windows_runner_without_gate_drift():
         next_step_index = text.find("\n      - name:", command_index + 1)
         step_text = text[command_index:] if next_step_index == -1 else text[command_index:next_step_index]
         assert "timeout-minutes:" in step_text
+
+
+def test_contributing_documents_harness_timeout_policy():
+    text = CONTRIBUTING.read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "### Harness Timeout Policy" in text
+    assert "900 seconds per subprocess" in normalized
+    assert "WINCHRONICLE_HARNESS_COMMAND_TIMEOUT_SECONDS" in text
+    assert "300 seconds per subprocess" in normalized
+    assert "WINCHRONICLE_INSTALL_CLI_SMOKE_COMMAND_TIMEOUT_SECONDS" in text
+    assert "timeout-minutes" in text
+    assert "do not print partial stdout or stderr" in normalized
+    assert "observed content" in normalized
+    assert "does not authorize new capture surfaces" in normalized
+    assert "screenshots, OCR, clipboard capture, cloud upload" in normalized
+
+
+def test_harness_readme_documents_timeout_defaults_and_ci_budget():
+    text = HARNESS_README.read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "## Harness Timeouts" in text
+    assert "900 seconds per subprocess" in normalized
+    assert "WINCHRONICLE_HARNESS_COMMAND_TIMEOUT_SECONDS" in text
+    assert "300 seconds per subprocess" in normalized
+    assert "WINCHRONICLE_INSTALL_CLI_SMOKE_COMMAND_TIMEOUT_SECONDS" in text
+    assert "30-minute outer timeout" in normalized
+    assert "do not print partial stdout or stderr" in normalized
+    assert "observed content" in normalized
+    assert "does not expand capture surfaces" in normalized
 
 
 def test_install_cli_smoke_covers_workday_intent_dry_run():
