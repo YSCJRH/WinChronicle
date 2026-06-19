@@ -852,11 +852,75 @@ def test_workday_doctor_reports_recoverable_stale_checkpoint_summary(
     assert _check(doctor, "summary_available")["ok"] is True
     recovery_check = _check(doctor, "stale_session_recovery")
     assert recovery_check["ok"] is True
-    assert "recoverable local summary is available" in recovery_check["detail"]
+    assert "recoverable checkpoint summary is available" in recovery_check["detail"]
     assert (
         f"winchronicle workday summarize {session_id} --format text --language zh-CN"
         in recovery_check["detail"]
     )
+    assert "Watcher burst should write one deterministic capture" not in json.dumps(doctor)
+    assert "visible_text" not in json.dumps(doctor)
+
+
+def test_workday_doctor_reports_recoverable_stale_session_file_summary(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "stale-session-file-doctor"
+    _write_minimal_session_summary(paths, session_id)
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, pid="not-a-pid"),
+    )
+
+    assert main(["workday", "doctor", "--checkpoint-stale-seconds", "30"]) == 0
+    doctor = json.loads(capsys.readouterr().out)
+
+    assert doctor["active"] is False
+    assert doctor["running"] is False
+    assert doctor["active_marker_present"] is True
+    assert doctor["recoverable_stale_session"] is True
+    assert doctor["summary_available"] is True
+    assert doctor["summary_source"] == "session_file"
+    assert doctor["checkpoint_available"] is False
+    recovery_check = _check(doctor, "stale_session_recovery")
+    assert recovery_check["ok"] is True
+    assert "recoverable session file summary is available" in recovery_check["detail"]
+    assert "checkpoint summary" not in recovery_check["detail"]
+    assert (
+        f"winchronicle workday summarize {session_id} --format text --language zh-CN"
+        in recovery_check["detail"]
+    )
+    assert "Watcher burst should write one deterministic capture" not in json.dumps(doctor)
+    assert "visible_text" not in json.dumps(doctor)
+
+
+def test_workday_doctor_reports_unrecoverable_stale_marker_without_summary(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "stale-no-summary-doctor"
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, pid="not-a-pid"),
+    )
+
+    assert main(["workday", "doctor", "--checkpoint-stale-seconds", "30"]) == 0
+    doctor = json.loads(capsys.readouterr().out)
+
+    assert doctor["active"] is False
+    assert doctor["running"] is False
+    assert doctor["active_marker_present"] is True
+    assert doctor["recoverable_stale_session"] is False
+    assert doctor["summary_available"] is False
+    assert doctor["summary_source"] is None
+    recovery_check = _check(doctor, "stale_session_recovery")
+    assert recovery_check["ok"] is False
+    assert "no checkpoint or session-file summary is available yet" in recovery_check["detail"]
+    assert f"winchronicle workday summarize {session_id}" not in recovery_check["detail"]
     assert "Watcher burst should write one deterministic capture" not in json.dumps(doctor)
     assert "visible_text" not in json.dumps(doctor)
 
@@ -1799,6 +1863,42 @@ def _workday_active_marker(
         "capture_surface": "explicit_finite_monitor_session",
         "bounded": True,
     }
+
+
+def _write_minimal_session_summary(paths, session_id: str) -> Path:
+    session_path = paths["sessions"] / f"{session_id}.json"
+    _write_json(
+        session_path,
+        {
+            "session_schema_version": 1,
+            "session_id": session_id,
+            "mode": "workday",
+            "started_at": "2026-04-25T09:00:00+08:00",
+            "ended_at": "2026-04-25T09:05:00+08:00",
+            "duration_seconds": 300,
+            "trust": "untrusted_observed_content",
+            "instruction": "Monitor a bounded local workday session",
+            "untrusted_observed_content": True,
+            "captures_written": 1,
+            "duplicates_skipped": 0,
+            "denylisted_skipped": 0,
+            "excluded_skipped": 0,
+            "heartbeats": 0,
+            "app_segments": [],
+            "suggestions": [],
+            "source_capture_paths": [],
+            "storage_policy": {
+                "raw_watcher_jsonl_saved": False,
+                "html_report_contains_visible_text": False,
+                "max_app_segments": 500,
+                "max_title_chars": 120,
+                "source_capture_paths_limit": 1000,
+            },
+            "storage_usage": {"session_json_bytes": 2048, "html_report_bytes": 1024},
+            "report_path": str(paths["reports"] / f"{session_id}.html"),
+        },
+    )
+    return session_path
 
 
 def _fail_active_marker_unlink(monkeypatch, active_path: Path) -> None:

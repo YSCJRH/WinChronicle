@@ -565,6 +565,7 @@ def doctor_workday(
         recoverable_stale_session=recoverable_stale_session,
         session_id=str(status.get("session_id", "")),
         bounded=bool(status.get("bounded", False)),
+        summary_source=status.get("summary_source"),
         checkpoint_available=checkpoint_available,
         checkpoint_fresh=checkpoint_fresh,
         summary_available=summary_available,
@@ -1618,6 +1619,7 @@ def _doctor_checks(
     recoverable_stale_session: bool,
     session_id: str,
     bounded: bool,
+    summary_source: Any,
     checkpoint_available: bool,
     checkpoint_fresh: bool | None,
     summary_available: bool,
@@ -1689,19 +1691,34 @@ def _doctor_checks(
         )
         if not running:
             session = _safe_text(session_id) or "<session-id>"
+            if recoverable_stale_session:
+                source = _stale_recovery_source_label(summary_source)
+                recovery_detail = (
+                    f"recoverable {source} summary is available; run "
+                    f"winchronicle workday summarize {session} --format text --language zh-CN"
+                )
+            else:
+                recovery_detail = "no checkpoint or session-file summary is available yet"
             checks.append(
                 {
                     "name": "stale_session_recovery",
                     "ok": recoverable_stale_session,
-                    "detail": (
-                        "recoverable local summary is available; run "
-                        f"winchronicle workday summarize {session} --format text --language zh-CN"
-                    )
-                    if recoverable_stale_session
-                    else "stale active marker has no recoverable local summary yet",
+                    "detail": recovery_detail,
                 }
             )
     return checks
+
+
+def _stale_recovery_source_label(summary_source: Any) -> str:
+    if summary_source == "checkpoint":
+        return "checkpoint"
+    if summary_source == "session_file":
+        return "session file"
+    if summary_source == "final_result":
+        return "final result"
+    if summary_source == "capture_buffer_recovery":
+        return "capture buffer recovery"
+    return "local"
 
 
 def _checkpoint_updated_at(path: Path) -> str:
