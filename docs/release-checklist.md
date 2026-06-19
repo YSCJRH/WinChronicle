@@ -116,6 +116,13 @@ post-v0.1.10 plan is completed historical evidence.
 - `git diff --check`
 
 These gates must pass on Windows CI and should be rerun locally before release.
+See [Harness timeouts](../harness/README.md#harness-timeouts) for the
+900-second `run_harness.py` subprocess default, the 300-second install-smoke
+subprocess default, `WINCHRONICLE_HARNESS_COMMAND_TIMEOUT_SECONDS`,
+`WINCHRONICLE_INSTALL_CLI_SMOKE_COMMAND_TIMEOUT_SECONDS`, and the 30-minute
+Windows CI outer timeout rationale. Timeout handlers must stay content-free:
+no partial stdout or stderr, no observed-content output, and changing timeout
+values does not authorize new capture surfaces.
 
 ## Evidence Freshness
 

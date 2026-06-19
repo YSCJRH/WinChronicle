@@ -134,6 +134,25 @@ def test_release_checklist_requires_compatibility_evidence():
         assert f"`{tool_name}`" in text
 
 
+def test_release_checklist_points_to_harness_timeout_policy():
+    text = CHECKLIST.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "## Deterministic Gates",
+        "../harness/README.md#harness-timeouts",
+        "900-second",
+        "300-second",
+        "WINCHRONICLE_HARNESS_COMMAND_TIMEOUT_SECONDS",
+        "WINCHRONICLE_INSTALL_CLI_SMOKE_COMMAND_TIMEOUT_SECONDS",
+        "30-minute Windows CI outer timeout",
+        "no partial stdout or stderr",
+        "no observed-content output",
+        "does not authorize new capture surfaces",
+    ):
+        assert phrase in normalized
+
+
 def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
     text = EVIDENCE.read_text(encoding="utf-8")
     normalized = _normalized(text)
