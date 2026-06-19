@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -106,6 +107,7 @@ def test_harness_readme_documents_timeout_defaults_and_ci_budget():
     assert "manual-smoke freshness validator" in normalized
     assert "does not call GitHub" in normalized
     assert "python harness/scripts/run_harness.py --list-commands" in normalized
+    assert "python harness/scripts/run_harness.py --list-commands --format json" in normalized
     assert "does not create harness state, start subprocesses, or read observed content" in normalized
 
 
@@ -212,6 +214,57 @@ def test_run_harness_lists_commands_without_running(monkeypatch, capsys):
     assert output.index("harness/scripts/run_install_cli_smoke.py") < output.index(
         "-m winchronicle init"
     )
+
+
+def test_run_harness_lists_commands_as_json_without_running(monkeypatch, capsys):
+    run_harness = _load_script(RUN_HARNESS)
+
+    def fail_run(*_args, **_kwargs):
+        raise AssertionError("--list-commands --format json must not run harness commands")
+
+    monkeypatch.setattr(run_harness, "_run", fail_run)
+
+    assert run_harness.main(["--list-commands", "--format", "json"]) == 0
+
+    output = capsys.readouterr().out
+    plan = json.loads(output)
+
+    assert plan["schema"] == "winchronicle.harness.command_plan.v1"
+    assert plan["execution"] == "not_run"
+    assert plan["privacy"] == {
+        "creates_harness_state": False,
+        "starts_subprocesses": False,
+        "reads_observed_content": False,
+    }
+    assert plan["command_count"] == len(run_harness._harness_commands())
+    assert plan["commands"][0] == {
+        "index": 1,
+        "argv": [sys.executable, "-m", "pytest", "-q"],
+        "display": run_harness._display_command([sys.executable, "-m", "pytest", "-q"]),
+    }
+    assert plan["commands"] == [
+        {
+            "index": index,
+            "argv": command,
+            "display": run_harness._display_command(command),
+        }
+        for index, command in enumerate(run_harness._harness_commands(), start=1)
+    ]
+
+
+def test_run_harness_rejects_format_without_list_commands(monkeypatch, capsys):
+    run_harness = _load_script(RUN_HARNESS)
+
+    def fail_run(*_args, **_kwargs):
+        raise AssertionError("--format without --list-commands must not run the harness")
+
+    monkeypatch.setattr(run_harness, "_run", fail_run)
+
+    with pytest.raises(SystemExit) as exc_info:
+        run_harness.main(["--format", "json"])
+
+    assert exc_info.value.code == 2
+    assert "--format is only valid with --list-commands" in capsys.readouterr().err
 
 
 def test_run_harness_command_plan_matches_executed_commands(monkeypatch):

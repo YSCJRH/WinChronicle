@@ -90,10 +90,12 @@ To inspect the deterministic gate list without executing the harness, run:
 
 ```powershell
 python harness/scripts/run_harness.py --list-commands
+python harness/scripts/run_harness.py --list-commands --format json
 ```
 
-This prints the command plan in execution order and does not create harness
-state, start subprocesses, or read observed content.
+This prints the command plan in execution order. The JSON form is intended for
+release tooling that needs a stable, machine-readable plan. This mode does not
+create harness state, start subprocesses, or read observed content.
 
 ## Harness Timeouts
 

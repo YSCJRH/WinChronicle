@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -27,12 +28,24 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Print the harness command plan without running commands.",
     )
+    parser.add_argument(
+        "--format",
+        choices=("text", "json"),
+        default=None,
+        help="Output format for --list-commands.",
+    )
     args = parser.parse_args([] if argv is None else argv)
 
     commands = _harness_commands()
     if args.list_commands:
-        _print_command_plan(commands)
+        output_format = args.format or "text"
+        if output_format == "json":
+            _print_command_plan_json(commands)
+        else:
+            _print_command_plan(commands)
         return 0
+    if args.format is not None:
+        parser.error("--format is only valid with --list-commands")
 
     with tempfile.TemporaryDirectory(prefix="winchronicle-harness-") as temp_dir:
         env = os.environ.copy()
@@ -158,6 +171,32 @@ def _print_command_plan(commands: list[list[str]]) -> None:
     print("No commands were run.")
     for index, command in enumerate(commands, start=1):
         print(f"{index}. {_display_command(command)}")
+
+
+def _print_command_plan_json(commands: list[list[str]]) -> None:
+    json.dump(_command_plan_payload(commands), sys.stdout, indent=2)
+    print()
+
+
+def _command_plan_payload(commands: list[list[str]]) -> dict[str, object]:
+    return {
+        "schema": "winchronicle.harness.command_plan.v1",
+        "execution": "not_run",
+        "privacy": {
+            "creates_harness_state": False,
+            "starts_subprocesses": False,
+            "reads_observed_content": False,
+        },
+        "command_count": len(commands),
+        "commands": [
+            {
+                "index": index,
+                "argv": command,
+                "display": _display_command(command),
+            }
+            for index, command in enumerate(commands, start=1)
+        ],
+    }
 
 
 def _run(
