@@ -575,10 +575,11 @@ published `Current Package Release Evidence` tag, release URL, tag target SHA,
 publication status, Windows Harness Actions URL, and matching run head SHA. If
 `pyproject.toml` moves ahead of that published release, the same mode also
 requires a `Next Package Release Preflight` section for the project version with
-the expected release URL, an explicit not-published status, the deterministic
-harness gate, and a post-publication reconciliation plan. Once `project.version`
-again matches the published release evidence, any lingering next-release
-preflight section is stale and must be removed. The freshness validator checks
-that the latest package/tag release and latest full manual UIA smoke source are
+the expected release URL, an explicit not-published status, the manual-smoke
+relationship, the deterministic harness gate, and a post-publication
+reconciliation plan. Once `project.version` again matches the published release
+evidence, any lingering next-release preflight section is stale and must be
+removed. The freshness validator checks that the latest package/tag release,
+next package preflight when present, and latest full manual UIA smoke source are
 explicitly separated. The validators do not call GitHub and do not inspect
 observed content.

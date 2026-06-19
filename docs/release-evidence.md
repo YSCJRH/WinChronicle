@@ -116,6 +116,17 @@ post-v0.1.10 cursor is completed historical evidence.
 | Manual smoke relationship | `v0.2.51` does not refresh manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md). |
 | Next active execution cursor | [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md) |
 
+## Next Package Release Preflight
+
+| Field | Value |
+| --- | --- |
+| Release | `v0.2.52` |
+| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.52 |
+| Publication status | Not published; pending post-publication reconciliation |
+| Manual smoke relationship | `v0.2.52` does not refresh manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md). |
+| Required deterministic gate | `python harness/scripts/run_harness.py` |
+| Post-publication reconciliation | Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA. |
+
 ## Evidence Location
 
 Release evidence should live in the release-candidate record, final release
@@ -555,11 +566,12 @@ published `Current Package Release Evidence` tag, release URL, tag target SHA,
 publication status, Windows Harness Actions URL, and matching run head SHA. If
 `pyproject.toml` moves ahead of that published release, the same mode also
 requires a `Next Package Release Preflight` section for the project version with
-the expected release URL, an explicit not-published status, the deterministic
-harness gate, and a post-publication reconciliation plan. Once `project.version`
-again matches the published release evidence, any lingering next-release
-preflight section is stale and must be removed. The freshness validator checks
-that the latest package/tag release and latest full manual UIA smoke source are
+the expected release URL, an explicit not-published status, the manual-smoke
+relationship, the deterministic harness gate, and a post-publication
+reconciliation plan. Once `project.version` again matches the published release
+evidence, any lingering next-release preflight section is stale and must be
+removed. The freshness validator checks that the latest package/tag release,
+next package preflight when present, and latest full manual UIA smoke source are
 explicitly separated. The validators do not call GitHub and do not inspect
 observed content, and they do not replace the `gh release view` or `gh run view`
 evidence used to verify the current remote state.

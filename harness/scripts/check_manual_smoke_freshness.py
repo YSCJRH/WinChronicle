@@ -13,6 +13,7 @@ PACKAGE_RELEASE_RE = re.compile(
 MANUAL_SMOKE_SOURCE_RE = re.compile(
     r"\|\s*Latest full manual UIA smoke source\s*\|\s*\[v(?P<version>[^\]]+?) release record\]"
 )
+NEXT_RELEASE_PREFLIGHT_HEADING = "## Next Package Release Preflight"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -51,10 +52,6 @@ def _validate(project: Path, ledger: Path, guide: Path, checklist: Path) -> list
         package_version = None
     else:
         package_version = package_match.group("version")
-        if package_version != version:
-            failures.append(
-                f"{ledger}: Latest package/tag release must be `v{version}`, found `v{package_version}`"
-            )
 
     smoke_match = MANUAL_SMOKE_SOURCE_RE.search(ledger_text)
     if not smoke_match:
@@ -62,10 +59,16 @@ def _validate(project: Path, ledger: Path, guide: Path, checklist: Path) -> list
         return failures
 
     smoke_version = smoke_match.group("version")
-    if smoke_version == version:
+    if smoke_version == version and package_version == version:
         return failures
 
-    package_phrase = f"latest package/tag release is `v{version}`"
+    if package_version is None:
+        return failures
+
+    if package_version != version:
+        failures.extend(_next_release_preflight_failures(guide, guide_text, version))
+
+    package_phrase = f"latest package/tag release is `v{package_version}`"
     smoke_phrase = f"latest full manual UIA smoke source remains [v{smoke_version} release record]"
     stale_claim = f"`v{smoke_version}` is the latest published release"
 
@@ -77,11 +80,46 @@ def _validate(project: Path, ledger: Path, guide: Path, checklist: Path) -> list
         if stale_claim in text:
             failures.append(f"{path}: stale package-release claim remains: {stale_claim}")
 
-    ledger_phrase = f"`v{version}` does not refresh manual UIA smoke"
+    ledger_phrase = f"`v{package_version}` does not refresh manual UIA smoke"
     if ledger_phrase not in ledger_text:
         failures.append(f"{ledger}: missing phrase: {ledger_phrase}")
 
     return failures
+
+
+def _next_release_preflight_failures(path: Path, text: str, version: str) -> list[str]:
+    failures: list[str] = []
+    section = _markdown_section(text, NEXT_RELEASE_PREFLIGHT_HEADING)
+    tag = f"v{version}"
+    if section is None or f"| Release | `{tag}` |" not in section:
+        return [f"{path}: missing next release preflight for project version `{tag}`"]
+    if "Not published" not in section:
+        failures.append(f"{path}: next release preflight for `{tag}` must say not published")
+    relationship = f"`{tag}` does not refresh manual UIA smoke"
+    if relationship not in section:
+        failures.append(
+            f"{path}: next release preflight must state `{tag}` does not refresh manual UIA smoke"
+        )
+    return failures
+
+
+def _markdown_section(text: str, heading: str) -> str | None:
+    lines = text.splitlines()
+    start = None
+    for index, line in enumerate(lines):
+        if line.strip() == heading:
+            start = index
+            break
+    if start is None:
+        return None
+
+    end = len(lines)
+    for index in range(start + 1, len(lines)):
+        line = lines[index]
+        if line.startswith("## ") and line.strip() != heading:
+            end = index
+            break
+    return "\n".join(lines[start:end])
 
 
 def _project_version(path: Path, failures: list[str]) -> str | None:
