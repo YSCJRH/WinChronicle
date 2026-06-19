@@ -364,6 +364,7 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
     result = _read_json(Path(active.get("result_file", "")))
     checkpoint_path = Path(active.get("checkpoint_file", ""))
     checkpoint = _read_json(checkpoint_path)
+    checkpoint_available = _summary_from_payload(checkpoint) is not None
     summary, summary_source = _active_summary_details(
         result=result,
         checkpoint=checkpoint,
@@ -375,7 +376,7 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
         "active": running,
         "running": running,
         "summary_available": summary is not None,
-        "checkpoint_available": bool(checkpoint or (summary and not result)),
+        "checkpoint_available": checkpoint_available,
         "checkpoint_updated_at": _checkpoint_updated_at(checkpoint_path),
         "checkpoint_age_seconds": _checkpoint_age_seconds(checkpoint_path),
         "summary_source": summary_source,

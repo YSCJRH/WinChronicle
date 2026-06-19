@@ -1,10 +1,13 @@
 import json
+import os
 import sys
 from pathlib import Path
 
 from winchronicle.capture import capture_once_from_fixture
 from winchronicle.cli import main
+from winchronicle.paths import ensure_state
 from winchronicle.redaction import scan_for_unredacted_secrets
+from winchronicle.session import monitor_events
 from winchronicle.workday import format_workday_text_summary
 
 
@@ -707,6 +710,52 @@ def test_workday_status_reports_checkpoint_summary_while_runner_is_active(
 
     assert main(["workday", "stop", "--wait-seconds", "15"]) == 0
     capsys.readouterr()
+
+
+def test_workday_status_does_not_mark_checkpoint_available_without_checkpoint_summary(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "checkpoint-race"
+    monitor_events(WATCHER_FIXTURE, home, session_id=session_id)
+    checkpoint_file = paths["logs"] / f"{session_id}.workday-checkpoint.json"
+    result_file = paths["logs"] / f"{session_id}.workday-result.json"
+    checkpoint_file.write_text(json.dumps({"checkpoint": True}) + "\n", encoding="utf-8")
+    paths["workday_active"].write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "active": True,
+                "session_id": session_id,
+                "pid": os.getpid(),
+                "started_at": "2026-04-25T13:30:00+08:00",
+                "duration_seconds": 60,
+                "state_home": str(paths["home"]),
+                "stop_file": str(paths["logs"] / f"{session_id}.stop"),
+                "result_file": str(result_file),
+                "checkpoint_file": str(checkpoint_file),
+                "stdout_path": str(paths["logs"] / f"{session_id}.stdout.json"),
+                "stderr_path": str(paths["logs"] / f"{session_id}.stderr.txt"),
+                "trust": "untrusted_observed_content",
+                "capture_surface": "explicit_finite_monitor_session",
+                "bounded": True,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    assert main(["workday", "status"]) == 0
+    status = json.loads(capsys.readouterr().out)
+
+    assert status["active"] is True
+    assert status["summary_source"] == "session_file"
+    assert status["summary_available"] is True
+    assert status["checkpoint_available"] is False
 
 
 def test_workday_stop_recovers_summary_from_capture_buffer_when_result_is_missing(
