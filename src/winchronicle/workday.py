@@ -604,7 +604,7 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
         time.sleep(0.2)
         result = _read_json(result_file)
 
-    active_path.unlink(missing_ok=True)
+    cleanup_metadata = _cleanup_active_marker(active_path)
     if result:
         _attach_focus_to_payload(result, _safe_focus_notes(active.get("operator_focus", [])))
         return {
@@ -613,6 +613,7 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
             "stopped": True,
             "summary_source": result.get("summary_source") or "final_result",
             "recovered_from_capture_buffer": bool(result.get("recovered_from_capture_buffer", False)),
+            **cleanup_metadata,
         }
     summary_source = None
     checkpoint_summary = _summary_from_payload(_read_json(Path(active.get("checkpoint_file", ""))))
@@ -647,7 +648,19 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
         "recovered_from_capture_buffer": recovered,
         "trust": ACTIVE_TRUST,
         "capture_surface": CAPTURE_SURFACE,
+        **cleanup_metadata,
     }
+
+
+def _cleanup_active_marker(active_path: Path) -> dict[str, Any]:
+    try:
+        active_path.unlink(missing_ok=True)
+    except OSError:
+        return {
+            "active_state_cleanup_failed": True,
+            "active_state_cleanup_error": "workday_active_state_cleanup_failed",
+        }
+    return {}
 
 
 def summarize_workday(

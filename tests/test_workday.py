@@ -909,6 +909,91 @@ def test_workday_stop_uses_checkpoint_when_stop_marker_parent_is_missing(
     assert not paths["workday_active"].exists()
 
 
+def test_workday_stop_returns_final_result_when_active_marker_cleanup_fails(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "active-cleanup-final"
+    result_file = paths["logs"] / f"{session_id}.workday-result.json"
+    _write_json(
+        result_file,
+        {
+            "active": True,
+            "summary_available": True,
+            "summary": {
+                "session_id": session_id,
+                "mode": "workday",
+                "captures_written": 2,
+                "trust": "untrusted_observed_content",
+            },
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, result_file=result_file),
+    )
+    _fail_active_marker_unlink(monkeypatch, paths["workday_active"])
+
+    assert main(["workday", "stop", "--wait-seconds", "0"]) == 0
+    stopped = json.loads(capsys.readouterr().out)
+
+    assert stopped["active"] is False
+    assert stopped["stopped"] is True
+    assert stopped["summary_available"] is True
+    assert stopped["summary_source"] == "final_result"
+    assert stopped["summary"]["session_id"] == session_id
+    assert stopped["active_state_cleanup_failed"] is True
+    assert stopped["active_state_cleanup_error"] == "workday_active_state_cleanup_failed"
+    assert paths["workday_active"].exists()
+
+
+def test_workday_stop_uses_checkpoint_when_active_marker_cleanup_fails(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "active-cleanup-checkpoint"
+    checkpoint_file = paths["logs"] / f"{session_id}.workday-checkpoint.json"
+    _write_json(
+        checkpoint_file,
+        {
+            "active": True,
+            "summary_available": True,
+            "summary_source": "checkpoint",
+            "summary": {
+                "session_id": session_id,
+                "mode": "workday",
+                "captures_written": 1,
+                "trust": "untrusted_observed_content",
+            },
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, checkpoint_file=checkpoint_file),
+    )
+    _fail_active_marker_unlink(monkeypatch, paths["workday_active"])
+
+    assert main(["workday", "stop", "--wait-seconds", "0"]) == 0
+    stopped = json.loads(capsys.readouterr().out)
+
+    assert stopped["active"] is False
+    assert stopped["stopped"] is True
+    assert stopped["summary_available"] is True
+    assert stopped["summary_source"] == "checkpoint"
+    assert stopped["summary"]["session_id"] == session_id
+    assert stopped["active_state_cleanup_failed"] is True
+    assert stopped["active_state_cleanup_error"] == "workday_active_state_cleanup_failed"
+    assert paths["workday_active"].exists()
+
+
 def test_workday_json_state_write_preserves_previous_payload_when_temp_replace_fails(
     tmp_path, monkeypatch
 ):
@@ -1532,6 +1617,17 @@ def _workday_active_marker(
         "capture_surface": "explicit_finite_monitor_session",
         "bounded": True,
     }
+
+
+def _fail_active_marker_unlink(monkeypatch, active_path: Path) -> None:
+    original_unlink = Path.unlink
+
+    def fail_active_unlink(self: Path, missing_ok: bool = False) -> None:
+        if self == active_path:
+            raise OSError("simulated active marker cleanup failure")
+        original_unlink(self, missing_ok=missing_ok)
+
+    monkeypatch.setattr(Path, "unlink", fail_active_unlink)
 
 
 def _write_sentinel_sleeping_watcher(tmp_path: Path, pid_file: Path) -> Path:
