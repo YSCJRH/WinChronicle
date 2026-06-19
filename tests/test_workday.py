@@ -266,7 +266,7 @@ def test_workday_intent_execute_status_phrase_prints_text_status_without_capture
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
 
-    assert main(["workday", "intent", "查看工作记录状态", "--execute"]) == 0
+    assert main(["workday", "status", "--format", "text", "--language", "zh-CN"]) == 0
     text_status = capsys.readouterr().out
     assert "工作记录状态" in text_status
     assert "当前没有在记录" in text_status
@@ -788,11 +788,12 @@ def test_workday_status_text_reports_recoverable_stale_checkpoint_summary(
         _workday_active_marker(paths, session_id, pid="not-a-pid", checkpoint_file=checkpoint_file),
     )
 
-    assert main(["workday", "intent", "查看工作记录状态", "--execute"]) == 0
+    assert main(["workday", "status", "--format", "text", "--language", "zh-CN"]) == 0
     text_status = capsys.readouterr().out
 
     assert "上一段工作记录的进程已不在运行" in text_status
-    assert "本地仍有阶段性总结" in text_status
+    assert "本地 checkpoint 阶段性总结仍可查看" in text_status
+    assert "session 文件总结" not in text_status
     assert f"winchronicle workday summarize {session_id} --format text --language zh-CN" in text_status
     assert "要开始时说：开始记录工作" not in text_status
     assert "Watcher burst should write one deterministic capture" not in text_status
@@ -806,6 +807,41 @@ def test_workday_status_text_reports_recoverable_stale_checkpoint_summary(
     assert status["recoverable_stale_session"] is True
     assert status["summary_available"] is True
     assert status["summary_source"] == "checkpoint"
+
+
+def test_workday_status_text_reports_recoverable_stale_session_file_summary(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "stale-session-file-status"
+    _write_minimal_session_summary(paths, session_id)
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, pid="not-a-pid"),
+    )
+
+    assert main(["workday", "intent", "查看工作记录状态", "--execute"]) == 0
+    text_status = capsys.readouterr().out
+
+    assert "上一段工作记录的进程已不在运行" in text_status
+    assert "本地 session 文件总结仍可查看" in text_status
+    assert "checkpoint 阶段性总结" not in text_status
+    assert f"winchronicle workday summarize {session_id} --format text --language zh-CN" in text_status
+    assert "要开始时说：开始记录工作" not in text_status
+    assert "Watcher burst should write one deterministic capture" not in text_status
+    assert "visible_text" not in text_status
+
+    assert main(["workday", "status"]) == 0
+    status = json.loads(capsys.readouterr().out)
+    assert status["active"] is False
+    assert status["running"] is False
+    assert status["active_marker_present"] is True
+    assert status["recoverable_stale_session"] is True
+    assert status["summary_available"] is True
+    assert status["summary_source"] == "session_file"
+    assert status["checkpoint_available"] is False
 
 
 def test_workday_doctor_reports_recoverable_stale_checkpoint_summary(

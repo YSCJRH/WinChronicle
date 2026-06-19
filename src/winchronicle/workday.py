@@ -430,7 +430,7 @@ def format_workday_status_text(status: dict[str, Any]) -> str:
         )
     elif recoverable_stale_session:
         session_id = _safe_text(status.get("session_id", "")) or "<session-id>"
-        summary_hint = "本地仍有阶段性总结" if status.get("summary_available") else "本地可能有阶段性总结"
+        summary_hint = _stale_status_summary_hint(status)
         lines.extend(
             [
                 "上一段工作记录的进程已不在运行。",
@@ -460,6 +460,21 @@ def format_workday_status_text(status: dict[str, Any]) -> str:
         ]
     )
     return "\n".join(lines).rstrip() + "\n"
+
+
+def _stale_status_summary_hint(status: dict[str, Any]) -> str:
+    if not status.get("summary_available"):
+        return "本地可能有阶段性总结"
+    source = status.get("summary_source")
+    if source == "checkpoint":
+        return "本地 checkpoint 阶段性总结仍可查看"
+    if source == "session_file":
+        return "本地 session 文件总结仍可查看"
+    if source == "final_result":
+        return "本地最终结果总结仍可查看"
+    if source == "capture_buffer_recovery":
+        return "本地恢复总结仍可查看"
+    return "本地仍有阶段性总结"
 
 
 def format_workday_start_text(payload: dict[str, Any]) -> str:

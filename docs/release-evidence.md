@@ -116,6 +116,17 @@ post-v0.1.10 cursor is completed historical evidence.
 | Manual smoke relationship | `v0.2.57` does not refresh manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md). |
 | Next active execution cursor | [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md) |
 
+## Next Package Release Preflight
+
+| Field | Value |
+| --- | --- |
+| Release | `v0.2.58` |
+| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.58 |
+| Publication status | Not published; pending post-publication reconciliation |
+| Manual smoke relationship | `v0.2.58` does not refresh manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md). |
+| Required deterministic gate | `python harness/scripts/run_harness.py` |
+| Post-publication reconciliation | Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA. |
+
 ## Evidence Location
 
 Release evidence should live in the release-candidate record, final release
