@@ -27,6 +27,33 @@ def test_capture_once_writes_redacted_schema_valid_capture(tmp_path, monkeypatch
     assert capture["untrusted_observed_content"] is True
 
 
+def test_capture_once_does_not_publish_file_when_atomic_replace_fails(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    original_replace = Path.replace
+
+    def fail_capture_replace(self: Path, target_path: Path) -> Path:
+        if target_path.parent.name == "capture-buffer" and target_path.suffix == ".json":
+            raise OSError("simulated capture replace failure")
+        return original_replace(self, target_path)
+
+    monkeypatch.setattr(Path, "replace", fail_capture_replace)
+
+    try:
+        capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / "terminal_error.json")
+    except OSError:
+        pass
+    else:
+        raise AssertionError("expected simulated capture replace failure")
+
+    capture_buffer = home / "capture-buffer"
+    assert list(capture_buffer.glob("*.json")) == []
+    assert list(capture_buffer.glob("*.tmp")) == []
+    assert search_captures("AssertionError", home) == []
+
+
 def test_capture_once_redacts_secret_like_uia_metadata_before_storage(
     tmp_path, monkeypatch
 ):

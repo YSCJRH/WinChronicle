@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
+from .atomic import atomic_write_text
 from .paths import ensure_state
 from .redaction import scan_for_unredacted_secrets
 from .schema import validate_memory_entry
@@ -287,7 +288,7 @@ def _write_memory_entry(
         raise ValueError(f"memory entry contains unredacted secrets: {', '.join(sorted(set(failures)))}")
 
     entry_path = paths["memory"] / filename
-    entry_path.write_text(entry["body"] + "\n", encoding="utf-8")
+    atomic_write_text(entry_path, entry["body"] + "\n")
     index_memory_entry(entry, entry_path, paths["home"])
     return MemoryGenerationResult(entry_path, entry, capture_count)
 

@@ -115,6 +115,60 @@ def test_generate_memory_is_idempotent_for_files_and_index(tmp_path, monkeypatch
     assert entry_row == (6,)
 
 
+def test_generate_memory_preserves_existing_entry_when_atomic_replace_fails(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    for fixture_name in ("terminal_error.json", "vscode_editor.json", "edge_browser.json"):
+        capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / fixture_name, home)
+
+    generate_memory_entries(home, date="2026-04-25")
+    before_matches = search_memory_entries("harness README", home)
+    with sqlite3.connect(state_paths(home)["db"]) as conn:
+        before_rows = conn.execute(
+            """
+            SELECT path, entry_type, title, body, content_fingerprint
+            FROM entries
+            ORDER BY path
+            """
+        ).fetchall()
+
+    event_path = home / "memory" / "event-2026-04-25.md"
+    previous_body = "# Previous memory entry\n\ntrust: untrusted_observed_content\n"
+    event_path.write_text(previous_body, encoding="utf-8")
+    capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / "notepad_basic.json", home)
+    original_replace = Path.replace
+
+    def fail_event_memory_replace(self: Path, target_path: Path) -> Path:
+        if target_path == event_path:
+            raise OSError("simulated memory replace failure")
+        return original_replace(self, target_path)
+
+    monkeypatch.setattr(Path, "replace", fail_event_memory_replace)
+
+    try:
+        generate_memory_entries(home, date="2026-04-25")
+    except OSError:
+        pass
+    else:
+        raise AssertionError("expected simulated memory replace failure")
+
+    assert event_path.read_text(encoding="utf-8") == previous_body
+    assert list((home / "memory").glob("*.tmp")) == []
+    with sqlite3.connect(state_paths(home)["db"]) as conn:
+        after_rows = conn.execute(
+            """
+            SELECT path, entry_type, title, body, content_fingerprint
+            FROM entries
+            ORDER BY path
+            """
+        ).fetchall()
+
+    assert after_rows == before_rows
+    assert search_memory_entries("harness README", home) == before_matches
+
+
 def test_memory_sqlite_entries_preserve_source_paths_and_public_search_shape(tmp_path, monkeypatch):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))

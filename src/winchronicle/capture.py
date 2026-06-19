@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Sequence
 
+from .atomic import atomic_write_text
 from .paths import ensure_state
 from .privacy import denylist_reason
 from .redaction import redact_capture, scan_for_unredacted_secrets
@@ -153,7 +154,7 @@ def persist_capture(
 ) -> CaptureResult:
     paths = ensure_state(home)
     output_path = paths["capture_buffer"] / _capture_filename(capture, filename_hint)
-    output_path.write_text(json.dumps(capture, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    atomic_write_text(output_path, json.dumps(capture, indent=2, sort_keys=True) + "\n")
     index_capture(capture, output_path, paths["home"])
     return CaptureResult(path=output_path, capture=capture)
 
