@@ -86,6 +86,15 @@ release-evidence validator and manual-smoke freshness validator against the
 published `v0.2.0` release record and current release docs. The static suite
 does not call GitHub and does not inspect observed content.
 
+To inspect the deterministic gate list without executing the harness, run:
+
+```powershell
+python harness/scripts/run_harness.py --list-commands
+```
+
+This prints the command plan in execution order and does not create harness
+state, start subprocesses, or read observed content.
+
 ## Harness Timeouts
 
 `python harness/scripts/run_harness.py` defaults to 900 seconds per subprocess.

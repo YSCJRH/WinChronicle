@@ -105,6 +105,8 @@ def test_harness_readme_documents_timeout_defaults_and_ci_budget():
     assert "static release-evidence validator" in normalized
     assert "manual-smoke freshness validator" in normalized
     assert "does not call GitHub" in normalized
+    assert "python harness/scripts/run_harness.py --list-commands" in normalized
+    assert "does not create harness state, start subprocesses, or read observed content" in normalized
 
 
 def test_install_cli_smoke_covers_workday_intent_dry_run():
@@ -183,6 +185,48 @@ def test_run_harness_includes_static_release_validators(monkeypatch):
         "--checklist",
         "docs/release-checklist.md",
     ] in commands
+
+
+def test_run_harness_lists_commands_without_running(monkeypatch, capsys):
+    run_harness = _load_script(RUN_HARNESS)
+
+    def fail_run(*_args, **_kwargs):
+        raise AssertionError("--list-commands must not run harness commands")
+
+    monkeypatch.setattr(run_harness, "_run", fail_run)
+
+    assert run_harness.main(["--list-commands"]) == 0
+
+    output = capsys.readouterr().out
+    assert "WinChronicle harness command plan" in output
+    assert "No commands were run." in output
+    assert "1. " in output
+    assert "python.exe -m pytest -q" in output or "python -m pytest -q" in output
+    assert "harness/scripts/check_release_evidence.py docs/release-v0.2.0.md" in output
+    assert "harness/scripts/check_manual_smoke_freshness.py" in output
+    assert "dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo" in output
+    assert "harness/scripts/run_install_cli_smoke.py" in output
+    assert "-m winchronicle privacy-check harness/fixtures/privacy/secrets_visible_text.json" in output
+    assert "-m winchronicle watch --events harness/fixtures/watcher/notepad_burst.jsonl" in output
+    assert output.index("-m pytest -q") < output.index("harness/scripts/check_release_evidence.py")
+    assert output.index("harness/scripts/run_install_cli_smoke.py") < output.index(
+        "-m winchronicle init"
+    )
+
+
+def test_run_harness_command_plan_matches_executed_commands(monkeypatch):
+    run_harness = _load_script(RUN_HARNESS)
+    commands = []
+
+    def record_run(command, _env):
+        commands.append(command)
+        return 0
+
+    monkeypatch.setattr(run_harness, "_run", record_run)
+
+    assert run_harness.main() == 0
+
+    assert commands == run_harness._harness_commands()
 
 
 def test_run_harness_uses_default_and_env_timeout(monkeypatch):

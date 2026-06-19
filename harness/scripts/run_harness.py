@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import os
 import subprocess
 import sys
@@ -19,93 +20,100 @@ SEARCH_FIXTURES = [
 ]
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Run the deterministic WinChronicle harness.")
+    parser.add_argument(
+        "--list-commands",
+        action="store_true",
+        help="Print the harness command plan without running commands.",
+    )
+    args = parser.parse_args([] if argv is None else argv)
+
+    commands = _harness_commands()
+    if args.list_commands:
+        _print_command_plan(commands)
+        return 0
+
     with tempfile.TemporaryDirectory(prefix="winchronicle-harness-") as temp_dir:
         env = os.environ.copy()
         env["WINCHRONICLE_HOME"] = str(Path(temp_dir) / "state")
-
-        commands = [
-            [sys.executable, "-m", "pytest", "-q"],
-            [
-                sys.executable,
-                "harness/scripts/check_release_evidence.py",
-                "docs/release-v0.2.0.md",
-            ],
-            [
-                sys.executable,
-                "harness/scripts/check_manual_smoke_freshness.py",
-                "--project",
-                "pyproject.toml",
-                "--ledger",
-                "docs/manual-smoke-evidence-ledger.md",
-                "--guide",
-                "docs/release-evidence.md",
-                "--checklist",
-                "docs/release-checklist.md",
-            ],
-            [
-                "dotnet",
-                "build",
-                "resources/win-uia-helper/WinChronicle.UiaHelper.csproj",
-                "--nologo",
-            ],
-            [
-                "dotnet",
-                "build",
-                "resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj",
-                "--nologo",
-            ],
-            [sys.executable, "harness/scripts/run_quick_demo.py"],
-            [sys.executable, "harness/scripts/run_productization_self_eval.py"],
-            [sys.executable, "harness/scripts/run_watcher_smoke.py"],
-            [sys.executable, "harness/scripts/run_watcher_slow_helper_smoke.py"],
-            [sys.executable, "harness/scripts/run_mcp_smoke.py"],
-            [sys.executable, "harness/scripts/run_install_cli_smoke.py"],
-            [sys.executable, "-m", "winchronicle", "init"],
-            [sys.executable, "-m", "winchronicle", "status"],
-            [
-                sys.executable,
-                "-m",
-                "winchronicle",
-                "privacy-check",
-                "harness/fixtures/privacy/secrets_visible_text.json",
-            ],
-        ]
 
         for command in commands:
             if _run(command, env) != 0:
                 return 1
 
-        for fixture, query in SEARCH_FIXTURES:
-            if (
-                _run(
-                    [
-                        sys.executable,
-                        "-m",
-                        "winchronicle",
-                        "capture-once",
-                        "--fixture",
-                        fixture,
-                    ],
-                    env,
-                )
-                != 0
-            ):
-                return 1
-            if _run([sys.executable, "-m", "winchronicle", "search-captures", query], env) != 0:
-                return 1
+    print("WinChronicle harness passed.")
+    return 0
 
-        memory_commands = [
+
+def _harness_commands() -> list[list[str]]:
+    commands = [
+        [sys.executable, "-m", "pytest", "-q"],
+        [
+            sys.executable,
+            "harness/scripts/check_release_evidence.py",
+            "docs/release-v0.2.0.md",
+        ],
+        [
+            sys.executable,
+            "harness/scripts/check_manual_smoke_freshness.py",
+            "--project",
+            "pyproject.toml",
+            "--ledger",
+            "docs/manual-smoke-evidence-ledger.md",
+            "--guide",
+            "docs/release-evidence.md",
+            "--checklist",
+            "docs/release-checklist.md",
+        ],
+        [
+            "dotnet",
+            "build",
+            "resources/win-uia-helper/WinChronicle.UiaHelper.csproj",
+            "--nologo",
+        ],
+        [
+            "dotnet",
+            "build",
+            "resources/win-uia-watcher/WinChronicle.UiaWatcher.csproj",
+            "--nologo",
+        ],
+        [sys.executable, "harness/scripts/run_quick_demo.py"],
+        [sys.executable, "harness/scripts/run_productization_self_eval.py"],
+        [sys.executable, "harness/scripts/run_watcher_smoke.py"],
+        [sys.executable, "harness/scripts/run_watcher_slow_helper_smoke.py"],
+        [sys.executable, "harness/scripts/run_mcp_smoke.py"],
+        [sys.executable, "harness/scripts/run_install_cli_smoke.py"],
+        [sys.executable, "-m", "winchronicle", "init"],
+        [sys.executable, "-m", "winchronicle", "status"],
+        [
+            sys.executable,
+            "-m",
+            "winchronicle",
+            "privacy-check",
+            "harness/fixtures/privacy/secrets_visible_text.json",
+        ],
+    ]
+
+    for fixture, query in SEARCH_FIXTURES:
+        commands.append(
+            [
+                sys.executable,
+                "-m",
+                "winchronicle",
+                "capture-once",
+                "--fixture",
+                fixture,
+            ]
+        )
+        commands.append([sys.executable, "-m", "winchronicle", "search-captures", query])
+
+    commands.extend(
+        [
             [sys.executable, "-m", "winchronicle", "generate-memory", "--date", "2026-04-25"],
             [sys.executable, "-m", "winchronicle", "search-memory", "AssertionError"],
             [sys.executable, "-m", "winchronicle", "search-memory", "written_json"],
             [sys.executable, "-m", "winchronicle", "search-memory", "OpenChronicle"],
-        ]
-        for command in memory_commands:
-            if _run(command, env) != 0:
-                return 1
-
-        watch_commands = [
             [
                 sys.executable,
                 "-m",
@@ -141,12 +149,15 @@ def main() -> int:
                 "--capture-on-start",
             ],
         ]
-        for command in watch_commands:
-            if _run(command, env) != 0:
-                return 1
+    )
+    return commands
 
-    print("WinChronicle harness passed.")
-    return 0
+
+def _print_command_plan(commands: list[list[str]]) -> None:
+    print("WinChronicle harness command plan:")
+    print("No commands were run.")
+    for index, command in enumerate(commands, start=1):
+        print(f"{index}. {_display_command(command)}")
 
 
 def _run(
@@ -154,7 +165,7 @@ def _run(
     env: dict[str, str],
     timeout_seconds: int | None = None,
 ) -> int:
-    display = " ".join(command)
+    display = _display_command(command)
     print(f"\n$ {display}")
     timeout_seconds = timeout_seconds or _command_timeout_seconds()
     try:
@@ -177,6 +188,10 @@ def _run(
     return completed.returncode
 
 
+def _display_command(command: list[str]) -> str:
+    return " ".join(command)
+
+
 def _command_timeout_seconds() -> int:
     raw = os.environ.get(COMMAND_TIMEOUT_ENV)
     if raw is None:
@@ -189,4 +204,4 @@ def _command_timeout_seconds() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main(sys.argv[1:]))
