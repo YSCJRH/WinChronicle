@@ -8,6 +8,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_COMMAND_TIMEOUT_SECONDS = 900
+COMMAND_TIMEOUT_ENV = "WINCHRONICLE_HARNESS_COMMAND_TIMEOUT_SECONDS"
 
 
 SEARCH_FIXTURES = [
@@ -130,22 +132,43 @@ def main() -> int:
     return 0
 
 
-def _run(command: list[str], env: dict[str, str]) -> int:
+def _run(
+    command: list[str],
+    env: dict[str, str],
+    timeout_seconds: int | None = None,
+) -> int:
     display = " ".join(command)
     print(f"\n$ {display}")
-    completed = subprocess.run(
-        command,
-        cwd=ROOT,
-        env=env,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-    )
+    timeout_seconds = timeout_seconds or _command_timeout_seconds()
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=ROOT,
+            env=env,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=timeout_seconds,
+        )
+    except subprocess.TimeoutExpired:
+        print(f"Command timed out after {timeout_seconds}s: {display}")
+        return 1
     if completed.stdout:
         print(completed.stdout, end="" if completed.stdout.endswith("\n") else "\n")
     if completed.returncode:
         print(f"Command failed with exit code {completed.returncode}: {display}")
     return completed.returncode
+
+
+def _command_timeout_seconds() -> int:
+    raw = os.environ.get(COMMAND_TIMEOUT_ENV)
+    if raw is None:
+        return DEFAULT_COMMAND_TIMEOUT_SECONDS
+    try:
+        value = int(raw)
+    except ValueError:
+        return DEFAULT_COMMAND_TIMEOUT_SECONDS
+    return value if value > 0 else DEFAULT_COMMAND_TIMEOUT_SECONDS
 
 
 if __name__ == "__main__":

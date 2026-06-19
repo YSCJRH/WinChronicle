@@ -10,6 +10,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_COMMAND_TIMEOUT_SECONDS = 300
+COMMAND_TIMEOUT_ENV = "WINCHRONICLE_INSTALL_CLI_SMOKE_COMMAND_TIMEOUT_SECONDS"
 SEARCH_RESULT_KEYS = {"timestamp", "app_name", "title", "snippet", "path", "trust"}
 DISABLED_SURFACE_KEYS = (
     "screenshots_enabled",
@@ -285,23 +287,44 @@ def _venv_script(venv_dir: Path, name: str) -> Path:
     return candidates[0]
 
 
-def _run(command: list[str], *, env: dict[str, str]) -> str:
+def _run(
+    command: list[str],
+    *,
+    env: dict[str, str],
+    timeout_seconds: int | None = None,
+) -> str:
     display = " ".join(command)
     print(f"\n$ {display}")
-    completed = subprocess.run(
-        command,
-        cwd=ROOT,
-        env=env,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-    )
+    timeout_seconds = timeout_seconds or _command_timeout_seconds()
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=ROOT,
+            env=env,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=timeout_seconds,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise SmokeFailure(f"command timed out after {timeout_seconds}s: {display}") from exc
     if completed.returncode:
         if completed.stdout:
             print(completed.stdout, end="" if completed.stdout.endswith("\n") else "\n")
         raise SmokeFailure(f"command failed with exit code {completed.returncode}: {display}")
     print("OK")
     return completed.stdout
+
+
+def _command_timeout_seconds() -> int:
+    raw = os.environ.get(COMMAND_TIMEOUT_ENV)
+    if raw is None:
+        return DEFAULT_COMMAND_TIMEOUT_SECONDS
+    try:
+        value = int(raw)
+    except ValueError:
+        return DEFAULT_COMMAND_TIMEOUT_SECONDS
+    return value if value > 0 else DEFAULT_COMMAND_TIMEOUT_SECONDS
 
 
 def _require(condition: bool, message: str) -> None:
