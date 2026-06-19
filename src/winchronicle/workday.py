@@ -525,9 +525,22 @@ def format_workday_start_text(payload: dict[str, Any]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def format_workday_stop_text(payload: dict[str, Any]) -> str:
+def format_workday_stop_text(
+    payload: dict[str, Any],
+    *,
+    confirmation_notes: Sequence[str] = (),
+    summary_style: str = "human",
+) -> str:
     if payload.get("summary_available") and isinstance(payload.get("summary"), dict):
-        return format_workday_text_summary(payload["summary"])
+        summary_text = format_workday_text_summary(
+            payload["summary"],
+            confirmation_notes=confirmation_notes,
+            summary_style=summary_style,
+        )
+        source_notice = _stop_summary_source_notice(payload)
+        if source_notice:
+            return _insert_after_first_heading(summary_text, f"复盘来源: {source_notice}")
+        return summary_text
 
     if not payload.get("stopped"):
         return "\n".join(
@@ -551,6 +564,26 @@ def format_workday_stop_text(payload: dict[str, Any]) -> str:
             "- 如果你愿意，也可以补一句今天完成了什么。",
         ]
     ).rstrip() + "\n"
+
+
+def _stop_summary_source_notice(payload: dict[str, Any]) -> str:
+    source = payload.get("summary_source")
+    if source == "checkpoint":
+        return "本地阶段性记录"
+    if source == "session_file":
+        return "本地已保存记录"
+    if source == "capture_buffer_recovery" or payload.get("recovered_from_capture_buffer"):
+        return "本地恢复记录"
+    return ""
+
+
+def _insert_after_first_heading(text: str, line: str) -> str:
+    lines = text.rstrip("\n").splitlines()
+    if not lines:
+        return line.rstrip() + "\n"
+    lines.insert(1, "")
+    lines.insert(2, line.rstrip())
+    return "\n".join(lines).rstrip() + "\n"
 
 
 def doctor_workday(

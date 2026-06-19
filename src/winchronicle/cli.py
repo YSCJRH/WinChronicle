@@ -1477,22 +1477,15 @@ def _execute_workday_start(
 
 def _execute_workday_stop(args: argparse.Namespace, *, output_format: str) -> int:
     payload = stop_workday(wait_seconds=args.wait_seconds)
-    if (
-        output_format == "text"
-        and payload.get("summary_available")
-        and isinstance(payload.get("summary"), dict)
-    ):
+    if output_format == "text":
         print(
-            format_workday_text_summary(
-                payload["summary"],
+            format_workday_stop_text(
+                payload,
                 confirmation_notes=getattr(args, "confirmation", []),
                 summary_style=getattr(args, "summary_style", "human"),
             ),
             end="",
         )
-        return 0
-    if output_format == "text":
-        print(format_workday_stop_text(payload), end="")
         return 0
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0

@@ -189,12 +189,15 @@ already-redacted capture-buffer JSON for the active session window and reports
 
 `winchronicle workday stop --format text --language zh-CN` prints the same
 deterministic Chinese daily review headed `今日工作复盘` when a stop summary is
-available. `winchronicle workday summarize <session-id>` keeps the existing JSON
-output for tools and scripts. Add `--format text --language zh-CN` to print the
-saved summary in the same human-review form. Add `--summary-style technical` to
-print the detailed evidence view headed `工作概览`. The local CLI human text
-summary is intended for the natural-language "停止工作并总结" workflow: it uses
-the saved session summary, app segments, project metadata, storage metadata, and
+available. If stop falls back to a local checkpoint, saved session file, or
+recovered local summary, the stop text adds a concise `复盘来源` line such as
+`复盘来源: 本地阶段性记录`; normal final runner summaries do not add that line.
+`winchronicle workday summarize <session-id>` keeps the existing JSON output for
+tools and scripts. Add `--format text --language zh-CN` to print the saved
+summary in the same human-review form. Add `--summary-style technical` to print
+the detailed evidence view headed `工作概览`. The local CLI human text summary is
+intended for the natural-language "停止工作并总结" workflow: it uses the saved
+session summary, app segments, project metadata, storage metadata, and
 deterministic suggestions. It does not read raw capture contents. It does not
 read raw capture visible text or external models. The CLI formatter does not call an LLM. The Codex App plugin may then use that local evidence package to
 write a clearer Codex-assisted daily report after the user explicitly asks to

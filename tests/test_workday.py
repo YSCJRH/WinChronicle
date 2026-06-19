@@ -9,7 +9,7 @@ from winchronicle.paths import ensure_state
 from winchronicle.redaction import scan_for_unredacted_secrets
 from winchronicle.session import monitor_events
 import winchronicle.workday as workday_module
-from winchronicle.workday import _write_json, format_workday_text_summary
+from winchronicle.workday import _write_json, format_workday_stop_text, format_workday_text_summary
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -133,6 +133,177 @@ def test_workday_stop_can_print_chinese_text_summary(tmp_path, monkeypatch, caps
     assert not (home / "workday-active.json").exists()
     assert (home / "sessions" / "text-stop-day.json").is_file()
     assert list(home.rglob("*.jsonl")) == []
+
+
+def test_workday_stop_text_keeps_final_result_summary_without_source_notice():
+    text_summary = format_workday_stop_text(
+        {
+            "stopped": True,
+            "summary_available": True,
+            "summary_source": "final_result",
+            "summary": _minimal_workday_summary("final-result-text"),
+        }
+    )
+
+    assert "今日工作复盘" in text_summary
+    assert "复盘来源" not in text_summary
+    assert "数据依据" not in text_summary
+    assert "隐私边界" not in text_summary
+    assert "visible_text" not in text_summary
+
+
+def test_workday_stop_text_names_checkpoint_fallback_source_without_observed_content():
+    text_summary = format_workday_stop_text(
+        {
+            "stopped": True,
+            "summary_available": True,
+            "summary_source": "checkpoint",
+            "summary": _minimal_workday_summary("checkpoint-stop-text"),
+        }
+    )
+
+    assert "今日工作复盘" in text_summary
+    assert "复盘来源: 本地阶段性记录" in text_summary
+    assert "checkpoint" not in text_summary
+    assert "数据依据" not in text_summary
+    assert "隐私边界" not in text_summary
+    assert "visible_text" not in text_summary
+
+
+def test_workday_stop_text_names_session_file_fallback_source():
+    text_summary = format_workday_stop_text(
+        {
+            "stopped": True,
+            "summary_available": True,
+            "summary_source": "session_file",
+            "summary": _minimal_workday_summary("session-file-stop-text"),
+        }
+    )
+
+    assert "今日工作复盘" in text_summary
+    assert "复盘来源: 本地已保存记录" in text_summary
+    assert "session_file" not in text_summary
+    assert "checkpoint" not in text_summary
+    assert "visible_text" not in text_summary
+
+
+def test_workday_stop_text_names_capture_buffer_recovery_source():
+    text_summary = format_workday_stop_text(
+        {
+            "stopped": True,
+            "summary_available": True,
+            "summary_source": "capture_buffer_recovery",
+            "recovered_from_capture_buffer": True,
+            "summary": _minimal_workday_summary("capture-recovery-stop-text"),
+        }
+    )
+
+    assert "今日工作复盘" in text_summary
+    assert "复盘来源: 本地恢复记录" in text_summary
+    assert "capture_buffer_recovery" not in text_summary
+    assert "visible_text" not in text_summary
+
+
+def test_workday_stop_text_command_names_checkpoint_fallback_source(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "checkpoint-stop-text-command"
+    checkpoint_file = paths["logs"] / f"{session_id}.workday-checkpoint.json"
+    _write_json(
+        checkpoint_file,
+        {
+            "active": True,
+            "summary_available": True,
+            "summary_source": "checkpoint",
+            "summary": _minimal_workday_summary(session_id, paths=paths),
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, pid="not-a-pid", checkpoint_file=checkpoint_file),
+    )
+
+    assert (
+        main(["workday", "stop", "--wait-seconds", "0", "--format", "text", "--language", "zh-CN"])
+        == 0
+    )
+    text_summary = capsys.readouterr().out
+
+    assert "今日工作复盘" in text_summary
+    assert "复盘来源: 本地阶段性记录" in text_summary
+    assert "checkpoint" not in text_summary
+    assert "summary_source" not in text_summary
+    assert "visible_text" not in text_summary
+
+
+def test_workday_stop_text_command_keeps_source_notice_in_technical_style(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "phase-stop-technical-command"
+    checkpoint_file = paths["logs"] / f"{session_id}.workday-checkpoint.json"
+    _write_json(
+        checkpoint_file,
+        {
+            "active": True,
+            "summary_available": True,
+            "summary_source": "checkpoint",
+            "summary": _minimal_workday_summary(session_id, paths=paths),
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, pid="not-a-pid", checkpoint_file=checkpoint_file),
+    )
+
+    assert (
+        main(
+            [
+                "workday",
+                "stop",
+                "--wait-seconds",
+                "0",
+                "--format",
+                "text",
+                "--language",
+                "zh-CN",
+                "--summary-style",
+                "technical",
+            ]
+        )
+        == 0
+    )
+    technical_summary = capsys.readouterr().out
+
+    assert "工作概览" in technical_summary
+    assert "复盘来源: 本地阶段性记录" in technical_summary
+    assert "应用活动" in technical_summary
+    assert "checkpoint" not in technical_summary
+    assert "visible_text" not in technical_summary
+
+
+def test_workday_summarize_text_does_not_add_stop_source_notice(tmp_path, monkeypatch, capsys):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "summarize-without-stop-source"
+    _write_minimal_session_summary(paths, session_id)
+
+    assert main(["workday", "summarize", session_id, "--format", "text", "--language", "zh-CN"]) == 0
+    text_summary = capsys.readouterr().out
+
+    assert "今日工作复盘" in text_summary
+    assert "复盘来源" not in text_summary
+    assert "visible_text" not in text_summary
 
 
 def test_workday_intent_maps_chinese_phrases_without_capture_by_default(
@@ -1903,38 +2074,44 @@ def _workday_active_marker(
 
 def _write_minimal_session_summary(paths, session_id: str) -> Path:
     session_path = paths["sessions"] / f"{session_id}.json"
-    _write_json(
-        session_path,
-        {
-            "session_schema_version": 1,
-            "session_id": session_id,
-            "mode": "workday",
-            "started_at": "2026-04-25T09:00:00+08:00",
-            "ended_at": "2026-04-25T09:05:00+08:00",
-            "duration_seconds": 300,
-            "trust": "untrusted_observed_content",
-            "instruction": "Monitor a bounded local workday session",
-            "untrusted_observed_content": True,
-            "captures_written": 1,
-            "duplicates_skipped": 0,
-            "denylisted_skipped": 0,
-            "excluded_skipped": 0,
-            "heartbeats": 0,
-            "app_segments": [],
-            "suggestions": [],
-            "source_capture_paths": [],
-            "storage_policy": {
-                "raw_watcher_jsonl_saved": False,
-                "html_report_contains_visible_text": False,
-                "max_app_segments": 500,
-                "max_title_chars": 120,
-                "source_capture_paths_limit": 1000,
-            },
-            "storage_usage": {"session_json_bytes": 2048, "html_report_bytes": 1024},
-            "report_path": str(paths["reports"] / f"{session_id}.html"),
-        },
-    )
+    _write_json(session_path, _minimal_workday_summary(session_id, paths=paths))
     return session_path
+
+
+def _minimal_workday_summary(session_id: str, paths=None) -> dict[str, object]:
+    report_path = (
+        str(paths["reports"] / f"{session_id}.html")
+        if paths is not None
+        else f"{session_id}.html"
+    )
+    return {
+        "session_schema_version": 1,
+        "session_id": session_id,
+        "mode": "workday",
+        "started_at": "2026-04-25T09:00:00+08:00",
+        "ended_at": "2026-04-25T09:05:00+08:00",
+        "duration_seconds": 300,
+        "trust": "untrusted_observed_content",
+        "instruction": "Monitor a bounded local workday session",
+        "untrusted_observed_content": True,
+        "captures_written": 1,
+        "duplicates_skipped": 0,
+        "denylisted_skipped": 0,
+        "excluded_skipped": 0,
+        "heartbeats": 0,
+        "app_segments": [],
+        "suggestions": [],
+        "source_capture_paths": [],
+        "storage_policy": {
+            "raw_watcher_jsonl_saved": False,
+            "html_report_contains_visible_text": False,
+            "max_app_segments": 500,
+            "max_title_chars": 120,
+            "source_capture_paths_limit": 1000,
+        },
+        "storage_usage": {"session_json_bytes": 2048, "html_report_bytes": 1024},
+        "report_path": report_path,
+    }
 
 
 def _fail_active_marker_unlink(monkeypatch, active_path: Path) -> None:
