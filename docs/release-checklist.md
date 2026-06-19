@@ -5,8 +5,8 @@ releases.
 
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
-The latest package/tag release is `v0.2.48`
-([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.48));
+The latest package/tag release is `v0.2.49`
+([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.49));
 the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md).
 The previous stable release record is [v0.1.19 maintenance release record](release-v0.1.19.md).
 The earlier stable release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
@@ -130,8 +130,8 @@ values does not authorize new capture surfaces.
 Before release, confirm the evidence record distinguishes current package/tag
 evidence from inherited historical manual-smoke evidence:
 
-- the latest package/tag release is `v0.2.48`, recorded in the
-  [v0.2.48 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.48);
+- the latest package/tag release is `v0.2.49`, recorded in the
+  [v0.2.49 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.49);
 - the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md);
 - the current published manual-smoke baseline is `v0.2.0`, recorded in
   [v0.2.0 release record](release-v0.2.0.md);
