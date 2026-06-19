@@ -9,6 +9,8 @@ from pathlib import Path
 
 DEFAULT_REPO = "YSCJRH/WinChronicle"
 CURRENT_RELEASE_HEADING = "## Current Package Release Evidence"
+NEXT_RELEASE_PREFLIGHT_HEADING = "## Next Package Release Preflight"
+TAG_RE = re.compile(r"\bv\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.]+)?\b")
 SHA_RE = re.compile(r"\b[0-9a-f]{40}\b", re.IGNORECASE)
 HEAD_SHA_RE = re.compile(r"\bhead(?:\s+SHA)?\s+`?([0-9a-f]{40})`?", re.IGNORECASE)
 PUBLISHED_RE = re.compile(r"\bpublished\b", re.IGNORECASE)
@@ -33,7 +35,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--project",
         type=Path,
-        help="pyproject.toml used to bind strict current-release evidence to project.version.",
+        help="pyproject.toml used by strict release evidence checks.",
     )
     parser.add_argument(
         "--require-current-release",
@@ -41,6 +43,14 @@ def main(argv: list[str] | None = None) -> int:
         help=(
             "Require a Current Package Release Evidence section binding project.version "
             "to release URL, tag SHA, Windows Harness URL, and run head SHA."
+        ),
+    )
+    parser.add_argument(
+        "--require-release-state",
+        action="store_true",
+        help=(
+            "Require published-release evidence, and require a next-release preflight "
+            "section only when project.version is ahead of the published release."
         ),
     )
     parser.add_argument(
@@ -53,16 +63,25 @@ def main(argv: list[str] | None = None) -> int:
 
     failures: list[str] = []
     current_version = None
-    if args.require_current_release:
+    if args.require_current_release or args.require_release_state:
         if args.project is None:
-            parser.error("--project is required with --require-current-release")
+            parser.error(
+                "--project is required with --require-current-release or --require-release-state"
+            )
         try:
             current_version = _read_project_version(args.project)
         except ValueError as exc:
             failures.append(str(exc))
 
     for path in args.evidence:
-        failures.extend(_validate_path(path, repo=args.repo, current_version=current_version))
+        failures.extend(
+            _validate_path(
+                path,
+                repo=args.repo,
+                current_version=current_version if args.require_current_release else None,
+                release_state_version=current_version if args.require_release_state else None,
+            )
+        )
 
     if failures:
         for failure in failures:
@@ -77,7 +96,12 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-def _validate_path(path: Path, repo: str, current_version: str | None = None) -> list[str]:
+def _validate_path(
+    path: Path,
+    repo: str,
+    current_version: str | None = None,
+    release_state_version: str | None = None,
+) -> list[str]:
     if not path.is_file():
         return [f"{path}: missing file"]
 
@@ -119,6 +143,61 @@ def _validate_path(path: Path, repo: str, current_version: str | None = None) ->
                 actions_run_url_re=actions_run_url_re,
             )
         )
+
+    if release_state_version is not None:
+        failures.extend(
+            _release_state_failures(
+                path,
+                text,
+                repo=repo,
+                project_version=release_state_version,
+                actions_run_url_re=actions_run_url_re,
+            )
+        )
+
+    return failures
+
+
+def _release_state_failures(
+    path: Path,
+    text: str,
+    *,
+    repo: str,
+    project_version: str,
+    actions_run_url_re: re.Pattern[str],
+) -> list[str]:
+    failures: list[str] = []
+    section = _markdown_section(text, CURRENT_RELEASE_HEADING)
+    if section is None:
+        return [f"{path}: missing {CURRENT_RELEASE_HEADING} section"]
+
+    published_tag = _release_tag(section)
+    if published_tag is None:
+        failures.append(f"{path}: missing current release tag")
+    else:
+        published_version = published_tag.removeprefix("v")
+        failures.extend(
+            _current_release_failures(
+                path,
+                text,
+                repo=repo,
+                version=published_version,
+                actions_run_url_re=actions_run_url_re,
+            )
+        )
+        if published_version != project_version:
+            failures.extend(
+                _next_release_preflight_failures(
+                    path,
+                    text,
+                    repo=repo,
+                    version=project_version,
+                )
+            )
+        elif _markdown_section(text, NEXT_RELEASE_PREFLIGHT_HEADING) is not None:
+            failures.append(
+                f"{path}: unexpected next release preflight section when project version already matches `{published_tag}`"
+            )
 
     return failures
 
@@ -180,6 +259,53 @@ def _current_release_failures(
     return failures
 
 
+def _next_release_preflight_failures(
+    path: Path,
+    text: str,
+    *,
+    repo: str,
+    version: str,
+) -> list[str]:
+    failures: list[str] = []
+    section = _markdown_section(text, NEXT_RELEASE_PREFLIGHT_HEADING)
+    tag = f"v{version}"
+    if section is None:
+        return [
+            f"{path}: missing {NEXT_RELEASE_PREFLIGHT_HEADING} section for project version `{tag}`"
+        ]
+
+    release_value = _table_row_value(section, "Release")
+    if release_value is None or f"`{tag}`" not in release_value:
+        failures.append(f"{path}: missing next release preflight tag `{tag}`")
+
+    expected_release_url = f"https://github.com/{repo}/releases/tag/{tag}"
+    expected_url_value = _table_row_value(section, "Expected release URL")
+    if expected_url_value is None or expected_release_url not in expected_url_value:
+        failures.append(f"{path}: missing expected next release URL {expected_release_url}")
+
+    status_value = _table_row_value(section, "Publication status")
+    if status_value is None:
+        failures.append(f"{path}: missing next release preflight publication status")
+    elif "not published" not in status_value.lower():
+        failures.append(f"{path}: next release preflight must say not published")
+
+    gate_value = _table_row_value(section, "Required deterministic gate")
+    if gate_value is None or "harness/scripts/run_harness.py" not in gate_value:
+        failures.append(f"{path}: missing next release deterministic harness gate")
+
+    reconciliation_value = _table_row_value(section, "Post-publication reconciliation")
+    lowered_reconciliation_line = (reconciliation_value or "").lower()
+    if (
+        reconciliation_value is None
+        or "current package release evidence" not in lowered_reconciliation_line
+        or "tag target sha" not in lowered_reconciliation_line
+        or "windows harness head sha" not in lowered_reconciliation_line
+    ):
+        failures.append(f"{path}: missing next release post-publication reconciliation plan")
+
+    return failures
+
+
 def _unexpected_repo_failures(
     path: Path,
     text: str,
@@ -237,6 +363,14 @@ def _first_sha(text: str) -> str | None:
     return match.group(0) if match else None
 
 
+def _release_tag(text: str) -> str | None:
+    release_value = _table_row_value(text, "Release")
+    if release_value is None:
+        return None
+    match = TAG_RE.search(release_value)
+    return match.group(0) if match else None
+
+
 def _explicit_head_sha(text: str) -> str | None:
     match = HEAD_SHA_RE.search(text)
     return match.group(1) if match else None
@@ -250,6 +384,15 @@ def _has_publication_status(line: str) -> bool:
 def _table_value(line: str) -> str:
     cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
     return cells[1] if len(cells) > 1 else ""
+
+
+def _table_row_value(text: str, field: str) -> str | None:
+    expected = field.lower()
+    for line in text.splitlines():
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) >= 2 and cells[0].lower() == expected:
+            return cells[1]
+    return None
 
 
 def _repo_patterns(repo: str) -> tuple[re.Pattern[str], re.Pattern[str]]:

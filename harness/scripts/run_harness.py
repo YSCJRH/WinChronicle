@@ -72,7 +72,7 @@ def _harness_commands() -> list[list[str]]:
             "harness/scripts/check_release_evidence.py",
             "--project",
             "pyproject.toml",
-            "--require-current-release",
+            "--require-release-state",
             "docs/release-evidence.md",
         ],
         [

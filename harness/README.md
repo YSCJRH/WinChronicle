@@ -83,9 +83,12 @@ python harness/scripts/run_harness.py
 The runner uses a temporary `WINCHRONICLE_HOME` so CLI smoke checks do not write
 to the user's normal WinChronicle state directory. It also runs the static
 release-evidence validator against the published `v0.2.0` release record, the
-strict current-release validator against `docs/release-evidence.md`, and the
-manual-smoke freshness validator against current release docs. The static suite
-does not call GitHub and does not inspect observed content.
+release-state validator against `docs/release-evidence.md`, and the
+manual-smoke freshness validator against current release docs. The
+release-state gate keeps published-release evidence bound to its tag and only
+requires a next-release preflight section when `pyproject.toml` moves ahead of
+the published package version. The static suite does not call GitHub and does
+not inspect observed content.
 
 To inspect the deterministic gate list without executing the harness, run:
 

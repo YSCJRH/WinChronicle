@@ -370,6 +370,186 @@ def test_release_evidence_guide_passes_current_release_validator():
     assert completed.returncode == 0, completed.stdout
 
 
+def test_release_state_validator_accepts_published_version_without_preflight(tmp_path):
+    project = tmp_path / "pyproject.toml"
+    project.write_text(
+        '[project]\nname = "winchronicle"\nversion = "0.2.51"\n',
+        encoding="utf-8",
+    )
+    evidence = tmp_path / "release-evidence.md"
+    evidence.write_text(_published_release_evidence(), encoding="utf-8")
+
+    completed = _run_validator_args(
+        "--project",
+        str(project),
+        "--require-release-state",
+        str(evidence),
+    )
+
+    assert completed.returncode == 0, completed.stdout
+
+
+def test_release_state_validator_requires_next_preflight_when_project_version_ahead(tmp_path):
+    project = tmp_path / "pyproject.toml"
+    project.write_text(
+        '[project]\nname = "winchronicle"\nversion = "0.2.52"\n',
+        encoding="utf-8",
+    )
+    evidence = tmp_path / "release-evidence.md"
+    evidence.write_text(_published_release_evidence(), encoding="utf-8")
+
+    completed = _run_validator_args(
+        "--project",
+        str(project),
+        "--require-release-state",
+        str(evidence),
+    )
+
+    assert completed.returncode == 1
+    assert "missing ## Next Package Release Preflight section for project version `v0.2.52`" in completed.stdout
+
+
+def test_release_state_validator_accepts_project_version_ahead_with_preflight(tmp_path):
+    project = tmp_path / "pyproject.toml"
+    project.write_text(
+        '[project]\nname = "winchronicle"\nversion = "0.2.52"\n',
+        encoding="utf-8",
+    )
+    evidence = tmp_path / "release-evidence.md"
+    evidence.write_text(
+        "\n".join(
+            [
+                _published_release_evidence(),
+                "",
+                "## Next Package Release Preflight",
+                "",
+                "| Field | Value |",
+                "| --- | --- |",
+                "| Release | `v0.2.52` |",
+                "| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.52 |",
+                "| Publication status | Not published; pending post-publication reconciliation |",
+                "| Required deterministic gate | `python harness/scripts/run_harness.py` |",
+                "| Post-publication reconciliation | Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA. |",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator_args(
+        "--project",
+        str(project),
+        "--require-release-state",
+        str(evidence),
+    )
+
+    assert completed.returncode == 0, completed.stdout
+
+
+def test_release_state_validator_rejects_preflight_marked_published(tmp_path):
+    project = tmp_path / "pyproject.toml"
+    project.write_text(
+        '[project]\nname = "winchronicle"\nversion = "0.2.52"\n',
+        encoding="utf-8",
+    )
+    evidence = tmp_path / "release-evidence.md"
+    evidence.write_text(
+        "\n".join(
+            [
+                _published_release_evidence(),
+                "",
+                "## Next Package Release Preflight",
+                "",
+                "| Field | Value |",
+                "| --- | --- |",
+                "| Release | `v0.2.52` |",
+                "| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.52 |",
+                "| Publication status | Published, not a draft, not a prerelease |",
+                "| Required deterministic gate | `python harness/scripts/run_harness.py` |",
+                "| Post-publication reconciliation | Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA. |",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator_args(
+        "--project",
+        str(project),
+        "--require-release-state",
+        str(evidence),
+    )
+
+    assert completed.returncode == 1
+    assert "next release preflight must say not published" in completed.stdout
+
+
+def test_release_state_validator_rejects_stale_preflight_when_project_version_is_published(tmp_path):
+    project = tmp_path / "pyproject.toml"
+    project.write_text(
+        '[project]\nname = "winchronicle"\nversion = "0.2.51"\n',
+        encoding="utf-8",
+    )
+    evidence = tmp_path / "release-evidence.md"
+    evidence.write_text(
+        "\n".join(
+            [
+                _published_release_evidence(),
+                "",
+                "## Next Package Release Preflight",
+                "",
+                "| Field | Value |",
+                "| --- | --- |",
+                "| Release | `v0.2.52` |",
+                "| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.52 |",
+                "| Publication status | Not published; pending post-publication reconciliation |",
+                "| Required deterministic gate | `python harness/scripts/run_harness.py` |",
+                "| Post-publication reconciliation | Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA. |",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator_args(
+        "--project",
+        str(project),
+        "--require-release-state",
+        str(evidence),
+    )
+
+    assert completed.returncode == 1
+    assert "unexpected next release preflight section when project version already matches" in completed.stdout
+
+
+def test_release_evidence_guide_passes_release_state_validator():
+    completed = _run_validator_args(
+        "--project",
+        str(ROOT / "pyproject.toml"),
+        "--require-release-state",
+        str(ROOT / "docs" / "release-evidence.md"),
+    )
+
+    assert completed.returncode == 0, completed.stdout
+
+
+def _published_release_evidence() -> str:
+    head_sha = "53ad63a79ec088100999a64cca803ed53f04504d"
+    return "\n".join(
+        [
+            "# Release Evidence",
+            "",
+            "## Current Package Release Evidence",
+            "",
+            "| Field | Value |",
+            "| --- | --- |",
+            "| Release | `v0.2.51` |",
+            "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.51 |",
+            f"| Tag target SHA | `{head_sha}` |",
+            "| Publication status | Published, not a draft, not a prerelease |",
+            f"| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101, head `{head_sha}` |",
+            "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+        ]
+    )
+
+
 def _run_validator(path: Path) -> subprocess.CompletedProcess[str]:
     return _run_validator_args(str(path))
 

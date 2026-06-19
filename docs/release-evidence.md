@@ -536,7 +536,7 @@ file:
 
 ```powershell
 python harness/scripts/check_release_evidence.py <release-notes-or-evidence.md>
-python harness/scripts/check_release_evidence.py --project pyproject.toml --require-current-release docs/release-evidence.md
+python harness/scripts/check_release_evidence.py --project pyproject.toml --require-release-state docs/release-evidence.md
 ```
 
 Before publishing a package/tag release or updating the manual smoke ledger,
@@ -550,13 +550,18 @@ The static validator suite stays local and read-only. The URL validator checks
 for a GitHub release URL and a GitHub Actions run URL from the expected
 repository, rejects unexpected-repository GitHub release or Actions URLs, and
 requires the Windows Harness label to appear on the same evidence line as the
-matching Actions run URL. The strict current-release mode also binds
-`pyproject.toml` version to the current release URL, tag target SHA, Windows
-Harness Actions URL, and matching run head SHA recorded in
-`docs/release-evidence.md`. The freshness validator checks that the latest
-package/tag release and latest full manual UIA smoke source are explicitly
-separated. The validators do not call GitHub and do not inspect observed
-content, and they do not replace the `gh release view` or `gh run view`
+matching Actions run URL. The release-state mode validates the already
+published `Current Package Release Evidence` tag, release URL, tag target SHA,
+publication status, Windows Harness Actions URL, and matching run head SHA. If
+`pyproject.toml` moves ahead of that published release, the same mode also
+requires a `Next Package Release Preflight` section for the project version with
+the expected release URL, an explicit not-published status, the deterministic
+harness gate, and a post-publication reconciliation plan. Once `project.version`
+again matches the published release evidence, any lingering next-release
+preflight section is stale and must be removed. The freshness validator checks
+that the latest package/tag release and latest full manual UIA smoke source are
+explicitly separated. The validators do not call GitHub and do not inspect
+observed content, and they do not replace the `gh release view` or `gh run view`
 evidence used to verify the current remote state.
 
 Do not retag an already published release to reconcile documentation. If a
