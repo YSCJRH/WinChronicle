@@ -3,8 +3,8 @@
 Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
-artifacts. The latest package/tag release is `v0.2.50`
-([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.50));
+artifacts. The latest package/tag release is `v0.2.51`
+([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.51));
 the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md).
 The previous stable release record is [v0.1.19 maintenance release record](release-v0.1.19.md).
 The earlier stable release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
@@ -127,8 +127,8 @@ Release evidence must name which facts are current and which are inherited from
 historical records. For the current package/tag release and latest full manual
 UIA smoke source:
 
-- the latest package/tag release is `v0.2.50`, recorded in the
-  [v0.2.50 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.50);
+- the latest package/tag release is `v0.2.51`, recorded in the
+  [v0.2.51 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.51);
 - the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md);
 - `v0.2.0` is the current published manual-smoke baseline, recorded in
   [v0.2.0 release record](release-v0.2.0.md);
