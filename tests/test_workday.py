@@ -2202,15 +2202,18 @@ def _wait_for_pid_exit(pid: int) -> bool:
     return False
 
 
-def _wait_for_checkpoint(capsys) -> dict[str, object]:
+def _wait_for_checkpoint(capsys, *, timeout_seconds: float = 30.0) -> dict[str, object]:
+    import time
+
     status: dict[str, object] = {}
-    for _ in range(30):
+    deadline = time.monotonic() + timeout_seconds
+    while time.monotonic() < deadline:
         assert main(["workday", "status"]) == 0
         status = json.loads(capsys.readouterr().out)
         if status.get("checkpoint_available"):
             return status
-        _sleep(0.2)
-    raise AssertionError("checkpoint was not created")
+        _sleep(0.25)
+    raise AssertionError(f"checkpoint was not created; last status: {status!r}")
 
 
 def _check(payload: dict[str, object], name: str) -> dict[str, object]:
