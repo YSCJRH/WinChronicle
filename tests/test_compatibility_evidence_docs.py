@@ -153,6 +153,24 @@ def test_release_checklist_points_to_harness_timeout_policy():
         assert phrase in normalized
 
 
+def test_release_evidence_records_timeout_override_context():
+    text = EVIDENCE.read_text(encoding="utf-8")
+    normalized = _normalized(text)
+
+    for phrase in (
+        "## Deterministic Evidence",
+        "../harness/README.md#harness-timeouts",
+        "timeout override",
+        "WINCHRONICLE_HARNESS_COMMAND_TIMEOUT_SECONDS",
+        "WINCHRONICLE_INSTALL_CLI_SMOKE_COMMAND_TIMEOUT_SECONDS",
+        "command, timeout value, env var name, env var value",
+        "do not paste partial stdout or stderr",
+        "do not paste observed content",
+        "does not authorize new capture surfaces",
+    ):
+        assert phrase in normalized
+
+
 def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
     text = EVIDENCE.read_text(encoding="utf-8")
     normalized = _normalized(text)

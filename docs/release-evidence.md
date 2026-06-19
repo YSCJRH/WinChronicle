@@ -492,6 +492,14 @@ git diff --check
 Also record the GitHub Actions `Windows Harness` run URL for the PR and for
 `main` after merge.
 
+If a deterministic gate uses a timeout override or times out, cite
+[Harness timeouts](../harness/README.md#harness-timeouts) and record the
+command, timeout value, env var name, env var value, and retry result. The
+relevant override names are `WINCHRONICLE_HARNESS_COMMAND_TIMEOUT_SECONDS` and
+`WINCHRONICLE_INSTALL_CLI_SMOKE_COMMAND_TIMEOUT_SECONDS`. Keep timeout evidence
+content-free: do not paste partial stdout or stderr, do not paste observed
+content, and changing timeout values does not authorize new capture surfaces.
+
 ## Post-Publication Reconciliation
 
 After a prerelease or final release is published, reconcile the repository
