@@ -545,3 +545,14 @@ After publishing, confirm the repository records the release URL, exact tag
 target, PR Windows Harness URL, post-merge `main` Windows Harness URL, and
 next active execution cursor. Do not commit observed-content artifacts while
 reconciling release evidence.
+
+Run the static validator before publishing release notes or committing
+post-push reconciliation evidence:
+
+```powershell
+python harness/scripts/check_release_evidence.py <release-notes-or-evidence.md>
+```
+
+The static validator checks for a GitHub release URL, a GitHub Actions run URL,
+and a Windows Harness label. It does not call GitHub and does not inspect
+observed content.

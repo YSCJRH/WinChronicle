@@ -512,6 +512,18 @@ docs with the published facts:
 - post-merge `main` Windows Harness URL and head SHA;
 - next active execution cursor.
 
+Before publishing release notes or committing post-push reconciliation
+evidence, run the static validator against the release-note or evidence file:
+
+```powershell
+python harness/scripts/check_release_evidence.py <release-notes-or-evidence.md>
+```
+
+The static validator checks for a GitHub release URL, a GitHub Actions run URL,
+and a Windows Harness label. It does not call GitHub, does not inspect observed
+content, and does not replace the `gh release view` or `gh run view` evidence
+used to verify the current remote state.
+
 Do not retag an already published release to reconcile documentation. If a
 subsequent product, schema, CLI/MCP JSON shape, or privacy behavior change is
 needed, publish a new release candidate instead.

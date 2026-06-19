@@ -59,6 +59,8 @@ Environment:
 | `gh release create v0.2.0 --target 76005d7b3f115df36ce024ba69b02da28e239ff8` | Pass | release created at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.0 |
 | `gh release view v0.2.0 --json tagName,name,url,targetCommitish,isDraft,isPrerelease,publishedAt` | Pass | `v0.2.0` is published, not a draft, not a prerelease, published at `2026-05-16T00:06:56Z`, and targets `76005d7b3f115df36ce024ba69b02da28e239ff8` |
 | `git ls-remote --tags origin v0.2.0` | Pass | `76005d7b3f115df36ce024ba69b02da28e239ff8` |
+| `gh run view 25947270522 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` | Pass | Windows Harness concluded `success` on `76005d7b3f115df36ce024ba69b02da28e239ff8`, https://github.com/YSCJRH/WinChronicle/actions/runs/25947270522 |
+| `gh run view 25947532087 --json databaseId,status,conclusion,headSha,url,displayTitle,createdAt,updatedAt` | Pass | Publication reconciliation Windows Harness concluded `success` on `fe711d3694df520199b92668f96aa967866eb2c1`, https://github.com/YSCJRH/WinChronicle/actions/runs/25947532087 |
 
 ## Manual UIA Smoke Gates
 

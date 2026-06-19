@@ -171,6 +171,23 @@ def test_release_evidence_records_timeout_override_context():
         assert phrase in normalized
 
 
+def test_release_docs_point_to_static_evidence_validator():
+    evidence = EVIDENCE.read_text(encoding="utf-8")
+    checklist = CHECKLIST.read_text(encoding="utf-8")
+    combined = _normalized(f"{evidence}\n{checklist}")
+
+    for phrase in (
+        "python harness/scripts/check_release_evidence.py",
+        "GitHub release URL",
+        "GitHub Actions run URL",
+        "Windows Harness",
+        "static validator",
+        "does not call GitHub",
+        "does not inspect observed content",
+    ):
+        assert phrase in combined
+
+
 def test_release_evidence_requires_mcp_and_phase6_compatibility_records():
     text = EVIDENCE.read_text(encoding="utf-8")
     normalized = _normalized(text)
