@@ -4,6 +4,7 @@ from pathlib import Path
 
 from winchronicle.capture import capture_once_from_fixture
 from winchronicle.cli import main
+from winchronicle.redaction import scan_for_unredacted_secrets
 from winchronicle.workday import format_workday_text_summary
 
 
@@ -414,6 +415,56 @@ def test_workday_intent_start_phrase_can_carry_focus_note(tmp_path, monkeypatch,
     text_summary = capsys.readouterr().out
     assert "今日关注事项" in text_summary
     assert "论文整理和项目A需求文档" in text_summary
+    assert not (home / "workday-active.json").exists()
+
+
+def test_workday_intent_redacts_secret_like_focus_note_before_storage(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    fake_watcher = _write_sleeping_watcher(tmp_path)
+    secret_focus = "今天排查 OPENAI_API_KEY=sk-winchroniclecanary0123456789abcd"
+
+    assert (
+        main(
+            [
+                "workday",
+                "intent",
+                f"开始记录工作：{secret_focus}",
+                "--execute",
+                "--watcher",
+                sys.executable,
+                "--watcher-arg",
+                str(fake_watcher),
+                "--duration",
+                "60",
+                "--heartbeat-ms",
+                "250",
+                "--session-id",
+                "redacted-focus-day",
+            ]
+        )
+        == 0
+    )
+    start_text = capsys.readouterr().out
+    active_text = (home / "workday-active.json").read_text(encoding="utf-8")
+
+    assert "sk-winchroniclecanary0123456789abcd" not in start_text
+    assert "sk-winchroniclecanary0123456789abcd" not in active_text
+    assert "[REDACTED:api_key]" in start_text
+    assert scan_for_unredacted_secrets(start_text) == []
+    assert scan_for_unredacted_secrets(active_text) == []
+
+    assert main(["workday", "intent", "停止工作并总结", "--execute", "--wait-seconds", "15"]) == 0
+    text_summary = capsys.readouterr().out
+    session_text = (home / "sessions" / "redacted-focus-day.json").read_text(encoding="utf-8")
+
+    assert "sk-winchroniclecanary0123456789abcd" not in text_summary
+    assert "sk-winchroniclecanary0123456789abcd" not in session_text
+    assert "[REDACTED:api_key]" in text_summary
+    assert scan_for_unredacted_secrets(text_summary) == []
+    assert scan_for_unredacted_secrets(session_text) == []
     assert not (home / "workday-active.json").exists()
 
 

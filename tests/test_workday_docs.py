@@ -33,6 +33,7 @@ def test_workday_session_docs_define_natural_language_and_storage_boundaries():
         "今日工作复盘",
         "human daily review",
         "operator focus",
+        "operator focus after obvious-secret redaction",
         "未登记工作线索",
         "工作概览",
         "工作记录状态",

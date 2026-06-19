@@ -89,8 +89,8 @@ After adding the plugin source in Codex App, use:
 
 When the first prompt includes a short plan after `：`, the plugin should pass
 the full phrase through to the local CLI. WinChronicle stores it as operator focus
-for the evening summary; it does not scan extra project folders or read file
-contents.
+for the evening summary after obvious-secret redaction; it does not scan extra
+project folders or read file contents.
 
 ## Starter Prompts
 

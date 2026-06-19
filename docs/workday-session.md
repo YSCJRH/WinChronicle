@@ -48,9 +48,9 @@ workflow orchestration.
 
 When the operator includes a short plan in the start phrase, such as
 `开始记录工作：今天主要做论文整理和项目A需求文档`, WinChronicle stores that text as
-local operator focus. The evening human summary can then compare registered
-project evidence with the user's stated focus without scanning unregistered
-directories or reading document contents.
+local operator focus after obvious-secret redaction. The evening human summary
+can then compare registered project evidence with the user's stated focus
+without scanning unregistered directories or reading document contents.
 
 ## Project Allowlist
 

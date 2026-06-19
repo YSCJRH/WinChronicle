@@ -15,6 +15,7 @@ from .capture import normalize_uia_helper_output, persist_capture
 from .memory import TRUST, TRUST_BOUNDARY_INSTRUCTION
 from .paths import ensure_state, state_paths
 from .privacy import denylist_reason
+from .redaction import redact_text
 from .schema import validate_capture, validate_session_report, validate_uia_helper_output, validate_watcher_event
 from .storage import capture_fingerprint_exists
 
@@ -440,7 +441,8 @@ def _write_session(paths: dict[str, Path], session: dict[str, Any]) -> MonitorSe
 def _safe_operator_focus(notes: Sequence[str]) -> list[str]:
     safe: list[str] = []
     for note in notes:
-        text = " ".join(str(note).split())[:240]
+        redacted, _counts = redact_text(" ".join(str(note).split()))
+        text = (redacted or "")[:240]
         if text and text not in safe:
             safe.append(text)
         if len(safe) >= 5:

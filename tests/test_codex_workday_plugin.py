@@ -96,6 +96,7 @@ def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
         "pass the full user phrase",
         "今天主要做",
         "operator focus",
+        "obvious-secret redaction",
         "prefer actionable directions",
         "Do not send raw visible_text, raw focused_text, file contents, full diffs, URL query strings, screenshots, OCR output, clipboard content, keyboard input, or audio content to Codex chat.",
         "Do not add a new CLI command, MCP tool, capture source, or evidence schema for this behavior.",
@@ -197,6 +198,7 @@ def test_codex_workday_plugin_doc_warns_before_chat_output():
     assert "does not add screenshot" in text
     assert "开始记录工作：今天主要做" in text
     assert "operator focus" in text
+    assert "obvious-secret redaction" in text
     assert "电脑观察补充" not in text
 
 

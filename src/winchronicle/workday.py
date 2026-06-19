@@ -16,6 +16,7 @@ from typing import Any, Sequence
 from .paths import ensure_state, state_paths
 from .privacy import DISABLED_SURFACE_STATUS, privacy_contract_payload
 from .projects import snapshot_projects
+from .redaction import redact_text
 from .session import (
     MonitorSessionState,
     append_monitor_records,
@@ -1278,7 +1279,8 @@ def _safe_focus_notes(notes: Any) -> list[str]:
         return []
     safe: list[str] = []
     for note in candidates:
-        text = " ".join(str(note).split())[:240]
+        redacted, _counts = redact_text(" ".join(str(note).split()))
+        text = (redacted or "")[:240]
         if text and text not in safe:
             safe.append(text)
         if len(safe) >= 5:

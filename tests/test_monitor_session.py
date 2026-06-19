@@ -7,8 +7,15 @@ import pytest
 
 from winchronicle.cli import main
 from winchronicle.mcp.server import recent_activity, search_captures_tool
+from winchronicle.redaction import scan_for_unredacted_secrets
 from winchronicle.schema import validate_session_report, validate_watcher_event
-from winchronicle.session import _error_signals, monitor_events, read_session
+from winchronicle.session import (
+    _error_signals,
+    create_monitor_session_state,
+    monitor_events,
+    read_session,
+    write_monitor_session_state,
+)
 from test_watcher_events import _assert_raw_terms_not_indexed, _write_privacy_parity_events
 
 
@@ -57,6 +64,30 @@ def test_monitor_events_creates_session_summary_and_html_report(tmp_path, monkey
         summary["report_path"]
     ).read_text(encoding="utf-8")
     assert list(home.rglob("*.jsonl")) == []
+
+
+def test_monitor_session_redacts_secret_like_operator_focus_before_storage(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    secret_focus = "handoff ACCESS_TOKEN=winchroniclecanary0123456789abcd"
+
+    result = write_monitor_session_state(
+        home,
+        session_id="secret-focus",
+        mode="workday",
+        state=create_monitor_session_state(),
+        operator_focus=[secret_focus],
+    )
+    session_text = result.path.read_text(encoding="utf-8")
+    report_text = result.report_path.read_text(encoding="utf-8")
+
+    assert "winchroniclecanary0123456789abcd" not in session_text
+    assert "winchroniclecanary0123456789abcd" not in report_text
+    assert "[REDACTED:api_key]" in session_text
+    assert scan_for_unredacted_secrets(session_text) == []
+    assert scan_for_unredacted_secrets(report_text) == []
 
 
 def test_monitor_session_records_metadata_only_error_signals(tmp_path, monkeypatch):

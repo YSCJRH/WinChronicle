@@ -78,8 +78,13 @@ def redact_capture(capture: dict[str, Any]) -> dict[str, Any]:
             counts["password_field"] += password_count
 
     string_locations = [
+        (result["window_meta"], "process_name"),
+        (result["window_meta"], "exe_path"),
+        (result["window_meta"], "app_name"),
         (result["window_meta"], "title"),
         (focused, "name"),
+        (focused, "automation_id"),
+        (focused, "class_name"),
         (focused, "value"),
         (focused, "text"),
         (result, "visible_text"),
