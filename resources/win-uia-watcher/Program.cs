@@ -52,6 +52,8 @@ sealed class WinEventWatcher : IDisposable
 
         if (_options.CaptureOnStart)
         {
+            _lastHeartbeatMs = _clock.ElapsedMilliseconds;
+            WriteHeartbeat();
             WriteCaptureEvent("foreground_changed");
         }
 

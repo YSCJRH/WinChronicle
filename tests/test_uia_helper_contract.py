@@ -11,6 +11,7 @@ from jsonschema.exceptions import ValidationError
 from winchronicle.capture import (
     capture_frontmost_with_helper,
     capture_once_from_uia_helper_output,
+    capture_once_from_uia_helper_record,
     load_json,
     normalize_uia_helper_output,
     privacy_check_path,
@@ -114,6 +115,28 @@ def test_uia_helper_capture_indexes_searchable_redacted_output(tmp_path, monkeyp
 
     assert len(results) == 1
     assert results[0]["app_name"] == "Notepad"
+
+
+def test_uia_helper_name_is_not_used_in_durable_paths(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    raw_hint = "customer-alpha-helper"
+    output = load_json(ROOT / "harness" / "fixtures" / "uia-helper" / "notepad_frontmost.json")
+
+    result = capture_once_from_uia_helper_record(output, home, filename_hint=raw_hint)
+    matches = search_captures("helper contract", home)
+    serialized = json.dumps(
+        {
+            "path": str(result.path),
+            "matches": matches,
+        },
+        sort_keys=True,
+    )
+
+    assert result.path is not None
+    assert matches
+    assert raw_hint not in serialized
+    assert "customer-alpha" not in serialized
 
 
 def test_uia_helper_password_output_stays_redacted(tmp_path, monkeypatch):

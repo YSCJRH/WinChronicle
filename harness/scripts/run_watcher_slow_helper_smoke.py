@@ -19,6 +19,11 @@ DEFAULT_WATCHER_DLL = (
     / "win-uia-watcher.dll"
 )
 OBSERVED_CANARY = "SLOW_HELPER_OBSERVED_CONTENT_MUST_NOT_ECHO"
+SLOW_HELPER_DURATION_MS = 3000
+SLOW_HELPER_HEARTBEAT_MS = 250
+SLOW_HELPER_TIMEOUT_MS = 250
+MAX_WATCHER_EXIT_SECONDS = 5
+WATCHER_TIMEOUT_SECONDS = 7
 
 
 def main() -> int:
@@ -35,11 +40,11 @@ def main() -> int:
                 str(DEFAULT_WATCHER_DLL),
                 "watch",
                 "--duration-ms",
-                "1200",
+                str(SLOW_HELPER_DURATION_MS),
                 "--heartbeat-ms",
-                "250",
+                str(SLOW_HELPER_HEARTBEAT_MS),
                 "--helper-timeout-ms",
-                "250",
+                str(SLOW_HELPER_TIMEOUT_MS),
                 "--helper",
                 sys.executable,
                 "--helper-arg",
@@ -50,14 +55,14 @@ def main() -> int:
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-            timeout=5,
+            timeout=WATCHER_TIMEOUT_SECONDS,
         )
         elapsed = time.monotonic() - started
 
     if completed.returncode:
         print("FAIL: watcher command failed")
         return completed.returncode
-    if elapsed >= 3:
+    if elapsed >= MAX_WATCHER_EXIT_SECONDS:
         print(f"FAIL: slow helper delayed watcher exit ({elapsed:.2f}s)")
         return 1
     if OBSERVED_CANARY in completed.stdout:

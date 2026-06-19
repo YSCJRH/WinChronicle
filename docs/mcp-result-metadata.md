@@ -30,6 +30,11 @@ Observed capture, search, memory, and monitor-session results may include:
 | `confidence` | Context coverage quality, not trustworthiness or permission. |
 | `limitations` | Deterministic quality notes such as `no_visible_text`, `low_visible_text`, `no_focused_element`, `source_id_unavailable`, or `redaction_applied`. |
 
+Newly written capture path source ids use opaque timestamp-plus-digest
+filenames. Watcher event ids, fixture names, helper names, and app-name slugs
+are not copied into new durable capture paths before MCP exposure. Existing
+local state with older filenames can still be read for compatibility.
+
 `confidence` is deterministic and conservative. It is based on available local
 fields such as title, visible text, focused text, app name, URL, and source ids.
 It is not computed by an LLM and must not be used as a security authorization

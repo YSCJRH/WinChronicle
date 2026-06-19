@@ -10,7 +10,7 @@ from typing import Any, Sequence
 
 from .paths import ensure_state
 from .privacy import denylist_reason
-from .redaction import redact_capture, redact_text, scan_for_unredacted_secrets
+from .redaction import redact_capture, scan_for_unredacted_secrets
 from .schema import validate_capture, validate_uia_helper_output
 from .storage import index_capture
 
@@ -294,21 +294,10 @@ def _privacy_failure_message(name: str) -> str:
     return f"FAIL: unredacted {name} would be written"
 
 
-def _capture_filename(capture: dict[str, Any], fixture_name: str | None) -> str:
-    stem = _slug(_safe_filename_hint(fixture_name) or capture["window_meta"]["app_name"] or "capture")
+def _capture_filename(capture: dict[str, Any], _filename_hint: str | None) -> str:
     timestamp = _slug(capture["timestamp"])
     digest = capture["content_fingerprint"].split(":", 1)[1][:12]
-    return f"{timestamp}-{stem}-{digest}.json"
-
-
-def _safe_filename_hint(value: str | None) -> str | None:
-    if not value:
-        return None
-    text = str(value)
-    redacted, counts = redact_text(text)
-    if counts or redacted != text or scan_for_unredacted_secrets(text):
-        return "redacted-source"
-    return text
+    return f"{timestamp}-capture-{digest}.json"
 
 
 def _slug(value: str) -> str:

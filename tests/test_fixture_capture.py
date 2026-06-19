@@ -66,6 +66,37 @@ def test_capture_once_redacts_secret_like_uia_metadata_before_storage(
         assert search_captures(raw, home) == []
 
 
+def test_capture_once_does_not_use_fixture_name_in_durable_paths(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    fixture = json.loads(
+        (ROOT / "harness" / "fixtures" / "uia" / "notepad_basic.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    raw_hint = "customer-alpha-rollout"
+    fixture["fixture_name"] = raw_hint
+    fixture_path = tmp_path / "custom-fixture.json"
+    fixture_path.write_text(json.dumps(fixture), encoding="utf-8")
+
+    result = capture_once_from_fixture(fixture_path)
+    matches = search_captures("harness README", home)
+    serialized = json.dumps(
+        {
+            "path": str(result.path),
+            "matches": matches,
+        },
+        sort_keys=True,
+    )
+
+    assert result.path is not None
+    assert matches
+    assert raw_hint not in serialized
+    assert "customer-alpha" not in serialized
+
+
 def test_denylisted_app_capture_is_skipped(tmp_path, monkeypatch):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))

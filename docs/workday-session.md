@@ -223,7 +223,9 @@ The workday layer is designed to keep reports bounded:
   `checkpoint`, `session_file`, or `capture_buffer_recovery`
 - app segments are capped
 - long app titles are clipped before report storage
-- source capture paths are bounded in the session summary
+- source capture paths are bounded in the session summary, and capture filenames
+  use timestamp-plus-digest names instead of watcher event ids or fixture/helper
+  hints
 - error signal samples are capped and metadata-only
 
 The HTML report is intentionally a compact activity timeline: app names, window

@@ -2,6 +2,7 @@ import json
 import sqlite3
 import subprocess
 import sys
+from copy import deepcopy
 from pathlib import Path
 
 from winchronicle.cli import main
@@ -11,10 +12,10 @@ from winchronicle.events import (
     run_watcher_command,
 )
 from winchronicle.memory import generate_memory_entries
-from winchronicle.mcp.server import search_memory_tool
+from winchronicle.mcp.server import search_captures_tool, search_memory_tool
 from winchronicle.schema import validate_capture, validate_watcher_event
 from winchronicle.storage import search_captures, search_memory_entries
-from harness.scripts import run_watcher_smoke
+from harness.scripts import run_watcher_slow_helper_smoke, run_watcher_smoke
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -296,6 +297,62 @@ def test_watcher_privacy_fixture_preserves_redaction_skip_and_trust(
             "title-denylisted observed text",
         ),
     )
+
+
+def test_watcher_event_id_is_not_used_in_durable_paths_or_metadata(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    base_event = json.loads(
+        (ROOT / "harness" / "fixtures" / "watcher" / "notepad_burst.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()[0]
+    )
+    event = deepcopy(base_event)
+    raw_event_id = "customer-alpha-rollout-event"
+    observed_text = "opaque source id regression deterministic capture"
+    event["event_id"] = raw_event_id
+    event["timestamp"] = "2026-04-25T13:55:00+08:00"
+    event["capture"]["timestamp"] = "2026-04-25T13:55:00+08:00"
+    event["capture"]["visible_text"] = observed_text
+    event["capture"]["focused_element"]["text"] = ""
+    event["capture"]["uia_stats"]["chars_collected"] = len(observed_text)
+    event_path = tmp_path / "watcher-events.jsonl"
+    event_path.write_text(json.dumps(event, sort_keys=True) + "\n", encoding="utf-8")
+
+    result = dispatch_watcher_events(event_path, home)
+    generate_memory_entries(home, date="2026-04-25")
+    capture_paths = sorted((home / "capture-buffer").glob("*.json"))
+    memory_payload = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in sorted((home / "memory").glob("*.md"))
+    )
+    capture_search = search_captures_tool(
+        "opaque source id regression",
+        home=home,
+        metadata_only=True,
+    )
+    memory_search = search_memory_tool(
+        "opaque source id regression",
+        home=home,
+        metadata_only=True,
+    )
+    serialized = json.dumps(
+        {
+            "capture_paths": [str(path) for path in capture_paths],
+            "sqlite": _sqlite_text_payload(home),
+            "memory": memory_payload,
+            "capture_search": capture_search,
+            "memory_search": memory_search,
+        },
+        sort_keys=True,
+    )
+
+    assert result.captures_written == 1
+    assert capture_paths
+    assert raw_event_id not in serialized
+    assert "customer-alpha" not in serialized
 
 
 def test_watcher_dispatch_counts_heartbeat_only_without_capture(tmp_path, monkeypatch):
@@ -766,6 +823,15 @@ def test_watcher_smoke_rejects_heartbeat_only_without_capture():
             "heartbeats": 1,
         }
     )
+
+
+def test_watcher_slow_helper_smoke_allows_heartbeat_after_helper_timeout():
+    assert run_watcher_slow_helper_smoke.SLOW_HELPER_DURATION_MS >= 2000
+    assert (
+        run_watcher_slow_helper_smoke.MAX_WATCHER_EXIT_SECONDS
+        > run_watcher_slow_helper_smoke.SLOW_HELPER_DURATION_MS / 1000
+    )
+    assert run_watcher_slow_helper_smoke.WATCHER_TIMEOUT_SECONDS < 10
 
 
 def test_watcher_preview_docs_cover_reliability_modes_and_boundaries():
