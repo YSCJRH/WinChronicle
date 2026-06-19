@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from winchronicle.cli import main
+from winchronicle.projects import add_project, load_project_registry
 
 
 def test_projects_allowlist_snapshot_reads_metadata_not_file_contents(tmp_path, monkeypatch, capsys):
@@ -103,6 +104,35 @@ def test_projects_snapshot_redacts_secret_like_metadata(tmp_path, monkeypatch, c
     assert secret not in serialized
     assert branch_secret not in serialized
     assert "[REDACTED:" in serialized
+
+
+def test_project_registry_preserves_existing_file_when_atomic_replace_fails(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    add_project(tmp_path / "alpha", name="Alpha", home=home)
+    projects_path = home / "projects.json"
+    before_text = projects_path.read_text(encoding="utf-8")
+    original_replace = Path.replace
+
+    def fail_project_registry_replace(self: Path, target_path: Path) -> Path:
+        if target_path == projects_path:
+            raise OSError("simulated project registry replace failure")
+        return original_replace(self, target_path)
+
+    monkeypatch.setattr(Path, "replace", fail_project_registry_replace)
+
+    try:
+        add_project(tmp_path / "beta", name="Beta", home=home)
+    except OSError:
+        pass
+    else:
+        raise AssertionError("expected simulated project registry replace failure")
+
+    assert projects_path.read_text(encoding="utf-8") == before_text
+    assert list(home.glob("*.tmp")) == []
+    registry = load_project_registry(home)
+    assert [project["name"] for project in registry["projects"]] == ["Alpha"]
 
 
 def _git_available() -> bool:

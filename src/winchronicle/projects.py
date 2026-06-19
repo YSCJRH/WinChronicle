@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from .atomic import atomic_write_text
 from .paths import ensure_state, state_paths
 from .redaction import redact_text, redactions_from_counts
 
@@ -42,9 +43,9 @@ def save_project_registry(payload: dict[str, Any], home: Path | str | None = Non
         "trust": PROJECT_REGISTRY_TRUST,
         "projects": payload.get("projects", []),
     }
-    paths["projects"].write_text(
+    atomic_write_text(
+        paths["projects"],
         json.dumps(registry, ensure_ascii=False, indent=2, sort_keys=True),
-        encoding="utf-8",
     )
     return registry
 
