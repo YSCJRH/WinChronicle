@@ -2827,7 +2827,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "latest package/tag release is `v0.2.56`",
+        "latest package/tag release is `v0.2.57`",
         "latest full manual UIA smoke source remains [v0.2.0 release record]",
         "current published manual-smoke baseline is `v0.2.0`",
         "fresh Notepad and Edge manual\n  UIA smoke",
@@ -2911,7 +2911,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "latest package/tag release is `v0.2.56`",
+        "latest package/tag release is `v0.2.57`",
         "latest full manual UIA smoke source remains [v0.2.0 release record]",
         "`v0.2.0` is the current published manual-smoke baseline",
         "fake-helper monitor watcher smoke",
@@ -3019,8 +3019,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
 
     for expected in (
         "Stable release baseline | `v0.2.0`",
-        "Latest package/tag release | `v0.2.56`",
-        "Manual smoke relationship for latest package/tag | `v0.2.56` does not refresh manual UIA smoke",
+        "Latest package/tag release | `v0.2.57`",
+        "Manual smoke relationship for latest package/tag | `v0.2.57` does not refresh manual UIA smoke",
         "Current maintenance plan | [Post-v0.1.18 maintenance plan]",
         "Current public metadata audit | [Public metadata audit after v0.1.18]",
         "Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.18]",
