@@ -808,6 +808,59 @@ def test_workday_status_text_reports_recoverable_stale_checkpoint_summary(
     assert status["summary_source"] == "checkpoint"
 
 
+def test_workday_doctor_reports_recoverable_stale_checkpoint_summary(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "stale-checkpoint-doctor"
+    checkpoint_file = paths["logs"] / f"{session_id}.workday-checkpoint.json"
+    _write_json(
+        checkpoint_file,
+        {
+            "active": True,
+            "summary_available": True,
+            "summary_source": "checkpoint",
+            "summary": {
+                "session_id": session_id,
+                "mode": "workday",
+                "captures_written": 1,
+                "trust": "untrusted_observed_content",
+            },
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, pid="not-a-pid", checkpoint_file=checkpoint_file),
+    )
+
+    assert main(["workday", "doctor", "--checkpoint-stale-seconds", "30"]) == 0
+    doctor = json.loads(capsys.readouterr().out)
+
+    assert doctor["active"] is False
+    assert doctor["running"] is False
+    assert doctor["active_marker_present"] is True
+    assert doctor["recoverable_stale_session"] is True
+    assert doctor["summary_available"] is True
+    assert doctor["summary_source"] == "checkpoint"
+    assert doctor["checkpoint_available"] is True
+    assert _check(doctor, "runner_process")["ok"] is False
+    assert _check(doctor, "checkpoint_available")["ok"] is True
+    assert _check(doctor, "summary_available")["ok"] is True
+    recovery_check = _check(doctor, "stale_session_recovery")
+    assert recovery_check["ok"] is True
+    assert "recoverable local summary is available" in recovery_check["detail"]
+    assert (
+        f"winchronicle workday summarize {session_id} --format text --language zh-CN"
+        in recovery_check["detail"]
+    )
+    assert "Watcher burst should write one deterministic capture" not in json.dumps(doctor)
+    assert "visible_text" not in json.dumps(doctor)
+
+
 def test_workday_status_treats_malformed_active_pid_as_not_running(
     tmp_path, monkeypatch, capsys
 ):

@@ -548,6 +548,8 @@ def doctor_workday(
     disabled_surfaces = {key: privacy[key] for key in DISABLED_SURFACE_STATUS}
     active = bool(status.get("active", False))
     running = bool(status.get("running", False))
+    active_marker_present = bool(status.get("active_marker_present", active))
+    recoverable_stale_session = bool(status.get("recoverable_stale_session", False))
     checkpoint_available = bool(status.get("checkpoint_available", False))
     checkpoint_age = status.get("checkpoint_age_seconds")
     checkpoint_fresh = _checkpoint_fresh(
@@ -559,6 +561,9 @@ def doctor_workday(
     checks = _doctor_checks(
         active=active,
         running=running,
+        active_marker_present=active_marker_present,
+        recoverable_stale_session=recoverable_stale_session,
+        session_id=str(status.get("session_id", "")),
         bounded=bool(status.get("bounded", False)),
         checkpoint_available=checkpoint_available,
         checkpoint_fresh=checkpoint_fresh,
@@ -570,6 +575,8 @@ def doctor_workday(
         "command": "workday doctor",
         "active": active,
         "running": running,
+        "active_marker_present": active_marker_present,
+        "recoverable_stale_session": recoverable_stale_session,
         "session_id": str(status.get("session_id", "")),
         "started_at": str(status.get("started_at", "")),
         "duration_seconds": int(status.get("duration_seconds", 0)),
@@ -1607,6 +1614,9 @@ def _doctor_checks(
     *,
     active: bool,
     running: bool,
+    active_marker_present: bool,
+    recoverable_stale_session: bool,
+    session_id: str,
     bounded: bool,
     checkpoint_available: bool,
     checkpoint_fresh: bool | None,
@@ -1614,11 +1624,17 @@ def _doctor_checks(
     disabled_surfaces: dict[str, bool],
 ) -> list[dict[str, Any]]:
     privacy_ok = all(value is False for value in disabled_surfaces.values())
+    if running:
+        active_detail = "active workday session found"
+    elif active_marker_present:
+        active_detail = "active marker found but runner process is not active"
+    else:
+        active_detail = "no active workday session"
     checks = [
         {
             "name": "active_session",
             "ok": True,
-            "detail": "active workday session found" if active else "no active workday session",
+            "detail": active_detail,
         },
         {
             "name": "capture_surface",
@@ -1631,7 +1647,7 @@ def _doctor_checks(
             "detail": "disabled surfaces remain off" if privacy_ok else "disabled surface drift detected",
         },
     ]
-    if active:
+    if active_marker_present:
         checks.extend(
             [
                 {
@@ -1671,6 +1687,20 @@ def _doctor_checks(
                 },
             ]
         )
+        if not running:
+            session = _safe_text(session_id) or "<session-id>"
+            checks.append(
+                {
+                    "name": "stale_session_recovery",
+                    "ok": recoverable_stale_session,
+                    "detail": (
+                        "recoverable local summary is available; run "
+                        f"winchronicle workday summarize {session} --format text --language zh-CN"
+                    )
+                    if recoverable_stale_session
+                    else "stale active marker has no recoverable local summary yet",
+                }
+            )
     return checks
 
 
