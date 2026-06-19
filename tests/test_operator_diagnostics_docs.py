@@ -2827,10 +2827,12 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "current published baseline is `v0.2.0`",
+        "latest package/tag release is `v0.2.46`",
+        "latest full manual UIA smoke source remains [v0.2.0 release record]",
+        "current published manual-smoke baseline is `v0.2.0`",
         "fresh Notepad and Edge manual\n  UIA smoke",
         "fake-helper monitor watcher smoke",
-        "`v0.2.0` is the latest published release",
+        "`v0.2.0` is historical package/tag evidence, not the latest package/tag",
         "tag target\n  `76005d7b3f115df36ce024ba69b02da28e239ff8`",
         "`v0.1.19` is the previous stable release",
         "`v0.1.18` is historical stable release evidence",
@@ -2909,9 +2911,11 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "`v0.2.0` is the current published baseline",
+        "latest package/tag release is `v0.2.46`",
+        "latest full manual UIA smoke source remains [v0.2.0 release record]",
+        "`v0.2.0` is the current published manual-smoke baseline",
         "fake-helper monitor watcher smoke",
-        "`v0.2.0` is the latest published release",
+        "`v0.2.0` is historical package/tag evidence, not the latest package/tag",
         "tag target\n  `76005d7b3f115df36ce024ba69b02da28e239ff8`",
         "`v0.1.19` is the previous stable release",
         "`v0.1.18` is historical stable release evidence",
@@ -3015,6 +3019,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
 
     for expected in (
         "Stable release baseline | `v0.2.0`",
+        "Latest package/tag release | `v0.2.46`",
+        "Manual smoke relationship for latest package/tag | `v0.2.46` does not refresh manual UIA smoke",
         "Current maintenance plan | [Post-v0.1.18 maintenance plan]",
         "Current public metadata audit | [Public metadata audit after v0.1.18]",
         "Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.18]",
@@ -3027,7 +3033,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Completed fixture/privacy parity matrix | [Fixture/privacy parity matrix after v0.1.18]",
         "Completed fixture/privacy residual gap audit | [Fixture/privacy residual gap audit after v0.1.18]",
         "Current privacy-output release-readiness decision | [Privacy-output release-readiness decision after v0.1.18]",
-        "Current release record | [v0.2.0 release record]",
+        "Current full manual-smoke release record | [v0.2.0 release record]",
         "Previous release-readiness decision | [v0.1.18 maintenance release record]",
         "Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17]",
         "Previous maintenance plan | [Post-v0.1.17 maintenance plan]",
@@ -3038,8 +3044,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Completed final-release plan | [v0.1.16 final-release plan]",
         "Previous prerelease record | [v0.1.16-rc.0 release candidate record]",
         "Previous pre-v0.1.16 maintenance plan | [Post-v0.1.15 maintenance plan]",
-        "Published release record | [v0.2.0 release record]",
-        "Latest published release record | [v0.2.0 release record]",
+        "Published full manual-smoke release record | [v0.2.0 release record]",
+        "Latest full manual-smoke release record | [v0.2.0 release record]",
         "Previous stable release record | [v0.1.19 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.2.0 release record]",
         "Last freshness decision | For the published `v0.2.0` monitor-session release",

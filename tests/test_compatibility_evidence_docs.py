@@ -178,12 +178,16 @@ def test_release_docs_point_to_static_evidence_validator():
 
     for phrase in (
         "python harness/scripts/check_release_evidence.py",
+        "python harness/scripts/check_manual_smoke_freshness.py",
         "GitHub release URL",
         "GitHub Actions run URL",
         "Windows Harness",
         "static validator",
-        "does not call GitHub",
-        "does not inspect observed content",
+        "freshness validator",
+        "latest package/tag release",
+        "latest full manual UIA smoke source",
+        "do not call GitHub",
+        "do not inspect observed content",
     ):
         assert phrase in combined
 

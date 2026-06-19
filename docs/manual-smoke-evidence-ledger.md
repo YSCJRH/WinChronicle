@@ -14,6 +14,8 @@ or token canaries.
 | Field | Value |
 | --- | --- |
 | Stable release baseline | `v0.2.0` |
+| Latest package/tag release | `v0.2.46` ([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.46)) |
+| Manual smoke relationship for latest package/tag | `v0.2.46` does not refresh manual UIA smoke; it is separate from the latest full manual UIA smoke source unless a release record explicitly accepts or reruns manual smoke. |
 | Current maintenance plan | [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md) |
 | Current public metadata audit | [Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md) |
 | Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.18](helper-watcher-diagnostics-sweep-post-v0.1.18.md) |
@@ -26,7 +28,7 @@ or token canaries.
 | Completed fixture/privacy parity matrix | [Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md) |
 | Completed fixture/privacy residual gap audit | [Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md) |
 | Current privacy-output release-readiness decision | [Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md) |
-| Current release record | [v0.2.0 release record](release-v0.2.0.md) |
+| Current full manual-smoke release record | [v0.2.0 release record](release-v0.2.0.md) |
 | Previous release-readiness decision | [v0.1.18 maintenance release record](release-v0.1.18.md) |
 | Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md) |
 | Previous maintenance plan | [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md) |
@@ -37,8 +39,8 @@ or token canaries.
 | Completed final-release plan | [v0.1.16 final-release plan](next-round-plan-v0.1.16-final-release.md) |
 | Previous prerelease record | [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md) |
 | Previous pre-v0.1.16 maintenance plan | [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md) |
-| Published release record | [v0.2.0 release record](release-v0.2.0.md) |
-| Latest published release record | [v0.2.0 release record](release-v0.2.0.md) |
+| Published full manual-smoke release record | [v0.2.0 release record](release-v0.2.0.md) |
+| Latest full manual-smoke release record | [v0.2.0 release record](release-v0.2.0.md) |
 | Previous stable release record | [v0.1.19 maintenance release record](release-v0.1.19.md) |
 | Latest full manual UIA smoke source | [v0.2.0 release record](release-v0.2.0.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
@@ -133,6 +135,11 @@ smoke. These command patterns are evidence shapes only; replace
   Notepad and Edge passed, VS Code metadata passed with the known Monaco
   diagnostic warning, VS Code strict remains diagnostic and non-blocking, and
   fake-helper monitor watcher smoke passed with local session/report paths.
+- The latest package/tag release is `v0.2.46`, but `v0.2.46` does not refresh
+  manual UIA smoke. The latest full manual UIA smoke source remains
+  [v0.2.0 release record](release-v0.2.0.md) until a later release record
+  explicitly accepts inherited evidence for that package/tag or reruns manual
+  smoke.
 - Fresh manual smoke must use the
   [Manual smoke evidence template](manual-smoke-evidence-template.md).
 - Inherited evidence can provide context, but it is not current evidence unless

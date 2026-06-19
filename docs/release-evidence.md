@@ -3,10 +3,11 @@
 Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
-artifacts. The current published v0.2 release record is
-[v0.2.0 release record](release-v0.2.0.md). The previous stable release record is
-[v0.1.19 maintenance release record](release-v0.1.19.md). The earlier stable
-release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
+artifacts. The latest package/tag release is `v0.2.46`
+([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.46));
+the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md).
+The previous stable release record is [v0.1.19 maintenance release record](release-v0.1.19.md).
+The earlier stable release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
 active post-v0.1.18 maintenance cursor is recorded in
 [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md), and the
 completed post-v0.1.18 public metadata/evidence freshness audit is
@@ -123,14 +124,19 @@ Record only:
 ## Evidence Freshness
 
 Release evidence must name which facts are current and which are inherited from
-historical records. For the published `v0.2.0` monitor-session release:
+historical records. For the current package/tag release and latest full manual
+UIA smoke source:
 
-- `v0.2.0` is the current published baseline, recorded in
+- the latest package/tag release is `v0.2.46`, recorded in the
+  [v0.2.46 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.46);
+- the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md);
+- `v0.2.0` is the current published manual-smoke baseline, recorded in
   [v0.2.0 release record](release-v0.2.0.md);
 - `v0.2.0` records fresh deterministic gates, fresh Notepad and Edge manual
   UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke;
-- `v0.2.0` is the latest published release; its release URL, tag target
+- `v0.2.0` is historical package/tag evidence, not the latest package/tag
+  release; its release URL, tag target
   `76005d7b3f115df36ce024ba69b02da28e239ff8`, published timestamp
   `2026-05-16T00:06:56Z`, and Windows Harness evidence are recorded in the
   release record;
@@ -513,16 +519,27 @@ docs with the published facts:
 - next active execution cursor.
 
 Before publishing release notes or committing post-push reconciliation
-evidence, run the static validator against the release-note or evidence file:
+evidence, run the static URL validator against the release-note or evidence
+file:
 
 ```powershell
 python harness/scripts/check_release_evidence.py <release-notes-or-evidence.md>
 ```
 
-The static validator checks for a GitHub release URL, a GitHub Actions run URL,
-and a Windows Harness label. It does not call GitHub, does not inspect observed
-content, and does not replace the `gh release view` or `gh run view` evidence
-used to verify the current remote state.
+Before publishing a package/tag release or updating the manual smoke ledger,
+also run the static freshness validator:
+
+```powershell
+python harness/scripts/check_manual_smoke_freshness.py --project pyproject.toml --ledger docs/manual-smoke-evidence-ledger.md --guide docs/release-evidence.md --checklist docs/release-checklist.md
+```
+
+The static validator suite stays local and read-only. The URL validator checks
+for a GitHub release URL, a GitHub Actions run URL, and a Windows Harness
+label. The freshness validator checks that the latest package/tag release and
+latest full manual UIA smoke source are explicitly separated. The validators do
+not call GitHub and do not inspect observed content, and they do not replace
+the `gh release view` or `gh run view` evidence used to verify the current
+remote state.
 
 Do not retag an already published release to reconcile documentation. If a
 subsequent product, schema, CLI/MCP JSON shape, or privacy behavior change is
