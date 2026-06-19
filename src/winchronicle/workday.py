@@ -13,6 +13,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Sequence
 
+from .atomic import atomic_write_text
 from .paths import ensure_state, state_paths
 from .privacy import DISABLED_SURFACE_STATUS, privacy_contract_payload
 from .projects import snapshot_projects
@@ -72,7 +73,7 @@ def start_workday(
     paths = ensure_state(home)
     active_path = paths["workday_active"]
     existing = _read_json(active_path)
-    if existing and _is_process_running(int(existing.get("pid", 0))):
+    if existing and _is_process_running(_safe_int(existing.get("pid"))):
         return {
             "active": True,
             "error": "workday_session_already_active",
@@ -369,7 +370,7 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
     active = _read_json(paths["workday_active"])
     if not active:
         return {"active": False, "trust": ACTIVE_TRUST, "capture_surface": CAPTURE_SURFACE}
-    running = _is_process_running(int(active.get("pid", 0)))
+    running = _is_process_running(_safe_int(active.get("pid")))
     result = _read_json(Path(active.get("result_file", "")))
     checkpoint_path = Path(active.get("checkpoint_file", ""))
     checkpoint = _read_json(checkpoint_path)
@@ -579,8 +580,17 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
 
     stop_file = Path(active["stop_file"])
     result_file = Path(active["result_file"])
-    stop_file.write_text(datetime.now().astimezone().isoformat(timespec="seconds"), encoding="utf-8")
-    pid = int(active.get("pid", 0))
+    pid = _safe_int(active.get("pid"))
+    try:
+        atomic_write_text(
+            stop_file,
+            datetime.now().astimezone().isoformat(timespec="seconds"),
+            encoding="utf-8",
+        )
+    except Exception:
+        if _is_process_running(pid):
+            _terminate_process_tree(pid)
+            time.sleep(0.2)
     deadline = time.monotonic() + max(0, wait_seconds)
     result = _read_json(result_file)
     while time.monotonic() < deadline and not result:

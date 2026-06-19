@@ -759,6 +759,156 @@ def test_workday_status_does_not_mark_checkpoint_available_without_checkpoint_su
     assert status["checkpoint_available"] is False
 
 
+def test_workday_status_treats_malformed_active_pid_as_not_running(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "malformed-pid-status"
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, pid="not-a-pid"),
+    )
+
+    assert main(["workday", "status"]) == 0
+    status = json.loads(capsys.readouterr().out)
+
+    assert status["active"] is False
+    assert status["running"] is False
+    assert status["summary_available"] is False
+
+
+def test_workday_start_replaces_stale_marker_with_malformed_pid(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    fake_watcher = _write_sleeping_watcher(tmp_path)
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, "malformed-pid-stale", pid="not-a-pid"),
+    )
+
+    assert (
+        main(
+            [
+                "workday",
+                "start",
+                "--watcher",
+                sys.executable,
+                "--watcher-arg",
+                str(fake_watcher),
+                "--duration",
+                "60",
+                "--session-id",
+                "malformed-pid-new",
+            ]
+        )
+        == 0
+    )
+    started = json.loads(capsys.readouterr().out)
+
+    assert started["active"] is True
+    assert started["session_id"] == "malformed-pid-new"
+    assert json.loads(paths["workday_active"].read_text(encoding="utf-8"))["session_id"] == (
+        "malformed-pid-new"
+    )
+
+    assert main(["workday", "stop", "--wait-seconds", "10"]) == 0
+    capsys.readouterr()
+
+
+def test_workday_stop_uses_checkpoint_when_active_pid_is_malformed(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "malformed-pid-stop"
+    checkpoint_file = paths["logs"] / f"{session_id}.workday-checkpoint.json"
+    _write_json(
+        checkpoint_file,
+        {
+            "active": True,
+            "summary_available": True,
+            "summary_source": "checkpoint",
+            "summary": {
+                "session_id": session_id,
+                "mode": "workday",
+                "captures_written": 1,
+                "trust": "untrusted_observed_content",
+            },
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, pid="not-a-pid", checkpoint_file=checkpoint_file),
+    )
+
+    assert main(["workday", "stop", "--wait-seconds", "0"]) == 0
+    stopped = json.loads(capsys.readouterr().out)
+
+    assert stopped["active"] is False
+    assert stopped["stopped"] is True
+    assert stopped["summary_available"] is True
+    assert stopped["summary_source"] == "checkpoint"
+    assert stopped["summary"]["session_id"] == session_id
+    assert not paths["workday_active"].exists()
+
+
+def test_workday_stop_uses_checkpoint_when_stop_marker_parent_is_missing(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "missing-stop-parent"
+    checkpoint_file = paths["logs"] / f"{session_id}.workday-checkpoint.json"
+    stop_file = home / "missing-stop-dir" / f"{session_id}.stop"
+    result_file = paths["logs"] / f"{session_id}.workday-result.json"
+    _write_json(
+        checkpoint_file,
+        {
+            "active": True,
+            "summary_available": True,
+            "summary_source": "checkpoint",
+            "summary": {
+                "session_id": session_id,
+                "mode": "workday",
+                "captures_written": 1,
+                "trust": "untrusted_observed_content",
+            },
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(
+            paths,
+            session_id,
+            stop_file=stop_file,
+            result_file=result_file,
+            checkpoint_file=checkpoint_file,
+        ),
+    )
+
+    assert main(["workday", "stop", "--wait-seconds", "0"]) == 0
+    stopped = json.loads(capsys.readouterr().out)
+
+    assert stopped["active"] is False
+    assert stopped["stopped"] is True
+    assert stopped["summary_available"] is True
+    assert stopped["summary_source"] == "checkpoint"
+    assert stopped["summary"]["session_id"] == session_id
+    assert stop_file.is_file()
+    assert not paths["workday_active"].exists()
+
+
 def test_workday_json_state_write_preserves_previous_payload_when_temp_replace_fails(
     tmp_path, monkeypatch
 ):
@@ -1353,6 +1503,35 @@ def _write_sleeping_watcher(tmp_path: Path) -> Path:
         encoding="utf-8",
     )
     return fake_watcher
+
+
+def _workday_active_marker(
+    paths,
+    session_id: str,
+    *,
+    pid=0,
+    stop_file: Path | None = None,
+    result_file: Path | None = None,
+    checkpoint_file: Path | None = None,
+) -> dict[str, object]:
+    logs = paths["logs"]
+    return {
+        "schema_version": 1,
+        "active": True,
+        "session_id": session_id,
+        "pid": pid,
+        "started_at": "2026-04-25T09:00:00+08:00",
+        "duration_seconds": 43200,
+        "state_home": str(paths["home"]),
+        "stop_file": str(stop_file or logs / f"{session_id}.stop"),
+        "result_file": str(result_file or logs / f"{session_id}.workday-result.json"),
+        "checkpoint_file": str(checkpoint_file or logs / f"{session_id}.workday-checkpoint.json"),
+        "stdout_path": str(logs / f"{session_id}.workday-stdout.json"),
+        "stderr_path": str(logs / f"{session_id}.workday-stderr.txt"),
+        "trust": "local_workday_session_status",
+        "capture_surface": "explicit_finite_monitor_session",
+        "bounded": True,
+    }
 
 
 def _write_sentinel_sleeping_watcher(tmp_path: Path, pid_file: Path) -> Path:

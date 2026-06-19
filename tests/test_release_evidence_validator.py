@@ -535,10 +535,9 @@ def test_release_evidence_guide_passes_release_state_validator():
     assert completed.returncode == 0, completed.stdout
 
 
-def test_release_evidence_guide_records_published_current_release_without_preflight():
+def test_release_evidence_guide_records_published_current_release_and_next_preflight():
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
 
-    assert "## Next Package Release Preflight" not in evidence
     assert "| Release | `v0.2.52` |" in evidence
     assert "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.52 |" in evidence
     assert "| Tag target SHA | `fb1f8a04642ace1b58d4267a14e2bf5108a73e62` |" in evidence
@@ -554,6 +553,19 @@ def test_release_evidence_guide_records_published_current_release_without_prefli
         "| Manual smoke relationship | `v0.2.52` does not refresh manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md). |"
         in evidence
     )
+    assert "## Next Package Release Preflight" in evidence
+    assert "| Release | `v0.2.53` |" in evidence
+    assert (
+        "| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.53 |"
+        in evidence
+    )
+    assert "| Publication status | Not published; pending post-publication reconciliation |" in evidence
+    assert (
+        "| Manual smoke relationship | `v0.2.53` does not refresh manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md). |"
+        in evidence
+    )
+    assert "| Required deterministic gate | `python harness/scripts/run_harness.py` |" in evidence
+    assert "Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA." in evidence
 
 
 def _published_release_evidence() -> str:
