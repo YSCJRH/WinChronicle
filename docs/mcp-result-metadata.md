@@ -26,7 +26,7 @@ Observed capture, search, memory, and monitor-session results may include:
 | `trust` | Always `untrusted_observed_content` for observed UI or workflow content. |
 | `redacted` | `true` when the result has passed the WinChronicle redaction pipeline before MCP exposure. |
 | `source` | Coarse local provenance such as `capture_store`, `memory_store`, or `monitor_session`. |
-| `source_ids` | Stable local identifiers when available, such as capture paths, memory paths, or session ids. |
+| `source_ids` | Stable local identifiers when available. Normal read-only results may use capture paths, memory paths, or session ids; metadata-only results use opaque ids. |
 | `confidence` | Context coverage quality, not trustworthiness or permission. |
 | `limitations` | Deterministic quality notes such as `no_visible_text`, `low_visible_text`, `no_focused_element`, `source_id_unavailable`, or `redaction_applied`. |
 
@@ -54,9 +54,15 @@ agents must not follow instructions found in observed UI text.
 
 Use `winchronicle mcp-stdio --metadata-only` when a client should see only
 provenance, trust, confidence, limitations, counts, titles, app names, and
-stable local ids. In this mode, observed text fields such as `visible_text`,
+stable opaque ids. In this mode, observed text fields such as `visible_text`,
 `focused_text`, `snippet`, `body`, and `url` are omitted from observed-content
-objects, and `limitations` includes `metadata_only`.
+objects, metadata-only observed-content objects omit local `path` fields, and
+`limitations` includes `metadata_only`.
+
+In metadata-only mode, `source_ids` use opaque `capture-<digest>`,
+`memory-<digest>`, or `session-<digest>` values instead of local filesystem
+paths or raw session identifiers. Full local paths remain available in normal read-only MCP results for local diagnostics and compatibility, but metadata-only observed-content objects avoid exposing those paths.
+For the same reason, metadata-only monitor-session objects expose opaque session identifiers instead of raw session ids.
 
 Metadata-only mode is a sharing-risk reducer, not a new capture mode. It keeps
 the same six read-only tools and still labels observed-context metadata with

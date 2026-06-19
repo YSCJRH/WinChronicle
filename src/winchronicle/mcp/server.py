@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -53,6 +54,7 @@ METADATA_ONLY_OMITTED_KEYS = {
     "url",
     "snippet",
     "body",
+    "path",
 }
 
 CONTROL_TOOL_TERMS = (
@@ -405,7 +407,7 @@ def _observed_session(session: dict[str, Any], *, metadata_only: bool = False) -
     if metadata_only:
         return {
             "session_schema_version": session.get("session_schema_version"),
-            "session_id": session.get("session_id"),
+            "session_id": _metadata_session_id(session.get("session_id")),
             "mode": session.get("mode"),
             "started_at": session.get("started_at"),
             "ended_at": session.get("ended_at"),
@@ -454,7 +456,11 @@ def _observed_metadata(
     return {
         "redacted": True,
         "source": source or "unknown",
-        "source_ids": source_ids,
+        "source_ids": _metadata_source_ids(
+            source,
+            source_ids,
+            metadata_only=metadata_only,
+        ),
         "metadata_only": bool(metadata_only),
         "confidence": _coverage_confidence(
             source_ids=source_ids,
@@ -466,6 +472,39 @@ def _observed_metadata(
         ),
         "limitations": limitations,
     }
+
+
+def _metadata_source_ids(
+    source: str,
+    source_ids: list[str],
+    *,
+    metadata_only: bool,
+) -> list[str]:
+    if not metadata_only:
+        return source_ids
+    prefix = _opaque_source_prefix(source)
+    return [_opaque_source_id(prefix, source_id) for source_id in source_ids]
+
+
+def _metadata_session_id(session_id: Any) -> str | None:
+    if session_id is None:
+        return None
+    return _opaque_source_id("session", str(session_id))
+
+
+def _opaque_source_prefix(source: str) -> str:
+    if source == "capture_store":
+        return "capture"
+    if source == "memory_store":
+        return "memory"
+    if source == "monitor_session":
+        return "session"
+    return "source"
+
+
+def _opaque_source_id(prefix: str, raw_source_id: str) -> str:
+    digest = hashlib.sha256(raw_source_id.encode("utf-8")).hexdigest()[:12]
+    return f"{prefix}-{digest}"
 
 
 def _coverage_confidence(

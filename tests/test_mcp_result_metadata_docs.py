@@ -37,3 +37,15 @@ def test_mcp_docs_show_opaque_new_capture_path_examples():
     assert "capture-" in examples
     for semantic_stem in ("terminal-error", "vscode-editor", "edge-browser"):
         assert semantic_stem not in examples
+
+
+def test_mcp_docs_scope_metadata_only_source_ids_as_opaque():
+    metadata_doc = (ROOT / "docs" / "mcp-result-metadata.md").read_text(encoding="utf-8")
+    setup_doc = (ROOT / "docs" / "mcp-client-setup.md").read_text(encoding="utf-8")
+
+    assert "In metadata-only mode, `source_ids` use opaque" in metadata_doc
+    assert "metadata-only observed-content objects omit local `path` fields" in metadata_doc
+    assert "metadata-only monitor-session objects expose opaque session identifiers" in metadata_doc
+    assert "Full local paths remain available in normal read-only MCP results" in metadata_doc
+    assert "stable opaque ids" in setup_doc
+    assert "local observed-content paths" in setup_doc

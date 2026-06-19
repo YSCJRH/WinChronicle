@@ -135,11 +135,11 @@ enabled_tools = [
 text fields such as `visible_text`, `focused_text`, `snippet`, `body`, and
 `url` from observed-content objects. It still returns provenance, `trust`,
 `redacted`, `source`, `source_ids`, `confidence`, `limitations`, counts,
-titles, app names, and local ids.
+titles, app names, and stable opaque ids.
 
 Metadata-only mode is still read-only. It is useful when a client should reason
-from activity shape, provenance, ids, counts, and limitations without receiving
-observed UI text in the tool result.
+from activity shape, provenance, opaque ids, counts, and limitations without
+receiving observed UI text or local observed-content paths in the tool result.
 
 ## Read-Only Boundary
 

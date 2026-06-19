@@ -49,6 +49,7 @@ EXPECTED_METADATA_ONLY_OMITTED_KEYS = {
     "url",
     "snippet",
     "body",
+    "path",
 }
 LOCAL_PRIVACY_STATUS_TRUST = "local_privacy_status"
 FORBIDDEN_TOOL_TERMS = (
@@ -407,6 +408,12 @@ def test_mcp_metadata_only_mode_omits_observed_text_without_tool_list_change(tmp
         start_timestamp="2026-04-25T12:30:00+08:00",
         body="AssertionError observed memory body should not be exported in metadata-only mode.",
     )
+    raw_session_id = "customer-alpha-metadata-session"
+    monitor_events(
+        ROOT / "harness" / "fixtures" / "watcher" / "notepad_burst.jsonl",
+        home,
+        session_id=raw_session_id,
+    )
 
     context = current_context(home=home, metadata_only=True)
     capture_search = search_captures_tool("AssertionError", home=home, metadata_only=True)
@@ -426,12 +433,14 @@ def test_mcp_metadata_only_mode_omits_observed_text_without_tool_list_change(tmp
         memory_search["result"]["matches"][0],
         recent["result"]["capture"],
         activity["result"]["captures"][0],
+        activity["result"]["sessions"][0],
     ]
     for item in observed_items:
         assert item["metadata_only"] is True
         assert "metadata_only" in item["limitations"]
         assert EXPECTED_METADATA_ONLY_OMITTED_KEYS.isdisjoint(item)
         assert item["trust"] == TRUST
+        assert _has_only_opaque_source_ids(item)
 
     serialized = json.dumps(
         {
@@ -445,6 +454,9 @@ def test_mcp_metadata_only_mode_omits_observed_text_without_tool_list_change(tmp
     )
     assert "AssertionError observed memory body" not in serialized
     assert "Traceback" not in serialized
+    assert raw_session_id not in serialized
+    assert _local_path_not_in_serialized_result(home, serialized)
+    assert _local_path_not_in_serialized_result(tmp_path, serialized)
     assert TOOL_NAMES == EXPECTED_TOOL_NAMES
 
 
@@ -476,6 +488,8 @@ def test_mcp_stdio_metadata_only_mode_returns_same_tools_without_observed_text(t
     validate_mcp_tool_result(tool_result)
     assert tool_result["metadata_only"] is True
     assert EXPECTED_METADATA_ONLY_OMITTED_KEYS.isdisjoint(tool_result["result"]["capture"])
+    assert _has_only_opaque_source_ids(tool_result["result"]["capture"])
+    assert _local_path_not_in_serialized_result(home, json.dumps(tool_result, sort_keys=True))
     assert "Traceback" not in json.dumps(tool_result, sort_keys=True)
 
 
@@ -709,6 +723,25 @@ def _index_memory_probe(
         ).hexdigest(),
     }
     index_memory_entry(entry, path, home)
+
+
+def _has_only_opaque_source_ids(item: dict[str, object]) -> bool:
+    source_ids = item.get("source_ids")
+    return isinstance(source_ids, list) and all(
+        isinstance(source_id, str)
+        and re.fullmatch(r"(capture|memory|session)-[0-9a-f]{12}", source_id) is not None
+        for source_id in source_ids
+    )
+
+
+def _local_path_not_in_serialized_result(path: Path, serialized: str) -> bool:
+    path_text = str(path)
+    escaped_path_text = json.dumps(path_text)[1:-1]
+    return (
+        path_text not in serialized
+        and escaped_path_text not in serialized
+        and path.as_posix() not in serialized
+    )
 
 
 def _contains_key(value, needles: set[str]) -> bool:
