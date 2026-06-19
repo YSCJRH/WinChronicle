@@ -7,10 +7,13 @@ import pytest
 
 from winchronicle.cli import main
 from winchronicle.mcp.server import recent_activity, search_captures_tool
+from winchronicle.paths import ensure_state
 from winchronicle.redaction import scan_for_unredacted_secrets
 from winchronicle.schema import validate_session_report, validate_watcher_event
 from winchronicle.session import (
+    _build_session_report,
     _error_signals,
+    _write_session,
     create_monitor_session_state,
     monitor_events,
     read_session,
@@ -64,6 +67,126 @@ def test_monitor_events_creates_session_summary_and_html_report(tmp_path, monkey
         summary["report_path"]
     ).read_text(encoding="utf-8")
     assert list(home.rglob("*.jsonl")) == []
+
+
+def test_monitor_session_preserves_previous_files_when_report_replace_fails(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    old_result = write_monitor_session_state(
+        home,
+        session_id="daily",
+        mode="workday",
+        state=create_monitor_session_state(),
+        operator_focus=["old focus"],
+    )
+    old_session_text = old_result.path.read_text(encoding="utf-8")
+    old_report_text = old_result.report_path.read_text(encoding="utf-8")
+    original_replace = Path.replace
+
+    def fail_report_replace(self: Path, target_path: Path) -> Path:
+        if target_path == old_result.report_path:
+            raise OSError("simulated report replace failure")
+        return original_replace(self, target_path)
+
+    monkeypatch.setattr(Path, "replace", fail_report_replace)
+
+    try:
+        write_monitor_session_state(
+            home,
+            session_id="daily",
+            mode="workday",
+            state=create_monitor_session_state(),
+            operator_focus=["new focus"],
+        )
+    except OSError:
+        pass
+    else:
+        raise AssertionError("expected simulated report replace failure")
+
+    assert old_result.path.read_text(encoding="utf-8") == old_session_text
+    assert old_result.report_path.read_text(encoding="utf-8") == old_report_text
+    assert list(home.rglob("*.tmp")) == []
+
+
+def test_monitor_session_restores_previous_report_when_session_replace_fails(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    old_result = write_monitor_session_state(
+        home,
+        session_id="daily",
+        mode="workday",
+        state=create_monitor_session_state(),
+        extra_suggestions=["old suggestion"],
+    )
+    old_session_text = old_result.path.read_text(encoding="utf-8")
+    old_report_text = old_result.report_path.read_text(encoding="utf-8")
+    original_replace = Path.replace
+
+    def fail_session_replace(self: Path, target_path: Path) -> Path:
+        if target_path == old_result.path:
+            raise OSError("simulated session replace failure")
+        return original_replace(self, target_path)
+
+    monkeypatch.setattr(Path, "replace", fail_session_replace)
+
+    try:
+        write_monitor_session_state(
+            home,
+            session_id="daily",
+            mode="workday",
+            state=create_monitor_session_state(),
+            extra_suggestions=["new suggestion"],
+        )
+    except OSError:
+        pass
+    else:
+        raise AssertionError("expected simulated session replace failure")
+
+    assert old_result.path.read_text(encoding="utf-8") == old_session_text
+    assert old_result.report_path.read_text(encoding="utf-8") == old_report_text
+    assert "new suggestion" not in old_result.report_path.read_text(encoding="utf-8")
+    assert list(home.rglob("*.tmp")) == []
+
+
+def test_monitor_session_write_failure_does_not_mutate_input_session(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    state = create_monitor_session_state()
+    session = _build_session_report(
+        paths,
+        session_id="daily",
+        mode="workday",
+        timestamps=list(state.timestamps),
+        timeline=list(state.timeline),
+        counts=dict(state.counts),
+    )
+    original_session = deepcopy(session)
+    report_path = Path(session["report_path"])
+    original_replace = Path.replace
+
+    def fail_report_replace(self: Path, target_path: Path) -> Path:
+        if target_path == report_path:
+            raise OSError("simulated report replace failure")
+        return original_replace(self, target_path)
+
+    monkeypatch.setattr(Path, "replace", fail_report_replace)
+
+    try:
+        _write_session(paths, session)
+    except OSError:
+        pass
+    else:
+        raise AssertionError("expected simulated report replace failure")
+
+    assert session == original_session
+    assert list(home.rglob("*.tmp")) == []
 
 
 def test_monitor_session_redacts_secret_like_operator_focus_before_storage(

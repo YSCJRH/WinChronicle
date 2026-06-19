@@ -3,9 +3,12 @@ from __future__ import annotations
 import hashlib
 import html
 import json
+import os
 import re
 import subprocess
+import time
 from collections import Counter
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -419,23 +422,66 @@ def _build_session_report(
 
 
 def _write_session(paths: dict[str, Path], session: dict[str, Any]) -> MonitorSessionResult:
-    session_path = paths["sessions"] / f"{session['session_id']}.json"
-    report_path = Path(session["report_path"])
-    html_text = _render_html_report(session) + "\n"
-    session["storage_usage"]["html_report_bytes"] = len(html_text.encode("utf-8"))
-    session["storage_usage"]["session_json_bytes"] = 0
+    persisted_session = deepcopy(session)
+    session_path = paths["sessions"] / f"{persisted_session['session_id']}.json"
+    report_path = Path(persisted_session["report_path"])
+    html_text = _render_html_report(persisted_session) + "\n"
+    persisted_session["storage_usage"]["html_report_bytes"] = len(html_text.encode("utf-8"))
+    persisted_session["storage_usage"]["session_json_bytes"] = 0
     json_text = ""
     for _ in range(5):
-        json_text = json.dumps(session, indent=2, sort_keys=True) + "\n"
+        json_text = json.dumps(persisted_session, indent=2, sort_keys=True) + "\n"
         size = len(json_text.encode("utf-8"))
-        if session["storage_usage"]["session_json_bytes"] == size:
+        if persisted_session["storage_usage"]["session_json_bytes"] == size:
             break
-        session["storage_usage"]["session_json_bytes"] = size
-    json_text = json.dumps(session, indent=2, sort_keys=True) + "\n"
-    validate_session_report(session)
-    session_path.write_bytes(json_text.encode("utf-8"))
-    report_path.write_bytes(html_text.encode("utf-8"))
-    return MonitorSessionResult(session_path, report_path, session)
+        persisted_session["storage_usage"]["session_json_bytes"] = size
+    json_text = json.dumps(persisted_session, indent=2, sort_keys=True) + "\n"
+    validate_session_report(persisted_session)
+    report_temp: Path | None = None
+    session_temp: Path | None = None
+    old_report_bytes = report_path.read_bytes() if report_path.exists() else None
+    try:
+        report_temp = _write_temp_bytes(report_path, html_text.encode("utf-8"))
+        session_temp = _write_temp_bytes(session_path, json_text.encode("utf-8"))
+        report_temp.replace(report_path)
+        report_temp = None
+        try:
+            session_temp.replace(session_path)
+            session_temp = None
+        except Exception:
+            _restore_file(report_path, old_report_bytes)
+            raise
+    finally:
+        if report_temp is not None:
+            report_temp.unlink(missing_ok=True)
+        if session_temp is not None:
+            session_temp.unlink(missing_ok=True)
+    return MonitorSessionResult(session_path, report_path, persisted_session)
+
+
+def _write_temp_bytes(path: Path, data: bytes) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = path.with_name(f".{path.name}.{os.getpid()}.{time.monotonic_ns()}.tmp")
+    try:
+        with temp_path.open("wb") as handle:
+            handle.write(data)
+            handle.flush()
+            os.fsync(handle.fileno())
+    except Exception:
+        temp_path.unlink(missing_ok=True)
+        raise
+    return temp_path
+
+
+def _restore_file(path: Path, data: bytes | None) -> None:
+    if data is None:
+        path.unlink(missing_ok=True)
+        return
+    temp_path = _write_temp_bytes(path, data)
+    try:
+        temp_path.replace(path)
+    finally:
+        temp_path.unlink(missing_ok=True)
 
 
 def _safe_operator_focus(notes: Sequence[str]) -> list[str]:
