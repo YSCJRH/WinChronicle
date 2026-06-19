@@ -26,3 +26,12 @@ def atomic_write_bytes(path: Path, data: bytes) -> None:
         with suppress(OSError):
             temp_path.unlink(missing_ok=True)
         raise
+
+
+def restore_or_remove(path: Path, previous_bytes: bytes | None) -> None:
+    if previous_bytes is None:
+        with suppress(OSError):
+            path.unlink(missing_ok=True)
+        return
+
+    atomic_write_bytes(path, previous_bytes)

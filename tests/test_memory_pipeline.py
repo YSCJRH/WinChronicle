@@ -169,6 +169,85 @@ def test_generate_memory_preserves_existing_entry_when_atomic_replace_fails(
     assert search_memory_entries("harness README", home) == before_matches
 
 
+def test_generate_memory_restores_existing_entry_when_indexing_fails(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    for fixture_name in ("terminal_error.json", "vscode_editor.json", "edge_browser.json"):
+        capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / fixture_name, home)
+
+    generate_memory_entries(home, date="2026-04-25")
+    event_path = home / "memory" / "event-2026-04-25.md"
+    before_body = event_path.read_text(encoding="utf-8")
+    before_matches = search_memory_entries("harness README", home)
+    with sqlite3.connect(state_paths(home)["db"]) as conn:
+        before_rows = conn.execute(
+            """
+            SELECT path, entry_type, title, body, content_fingerprint
+            FROM entries
+            ORDER BY path
+            """
+        ).fetchall()
+
+    capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / "notepad_basic.json", home)
+
+    def fail_event_index(_entry, entry_path: Path, *_args, **_kwargs) -> None:
+        if entry_path == event_path:
+            raise RuntimeError("simulated memory index failure")
+
+    monkeypatch.setattr("winchronicle.memory.index_memory_entry", fail_event_index)
+
+    try:
+        generate_memory_entries(home, date="2026-04-25")
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError("expected simulated memory index failure")
+
+    assert event_path.read_text(encoding="utf-8") == before_body
+    assert list((home / "memory").glob("*.tmp")) == []
+    with sqlite3.connect(state_paths(home)["db"]) as conn:
+        after_rows = conn.execute(
+            """
+            SELECT path, entry_type, title, body, content_fingerprint
+            FROM entries
+            ORDER BY path
+            """
+        ).fetchall()
+
+    assert after_rows == before_rows
+    assert search_memory_entries("harness README", home) == before_matches
+
+
+def test_generate_memory_removes_new_entry_when_storage_indexing_fails(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    for fixture_name in ("terminal_error.json", "vscode_editor.json", "edge_browser.json"):
+        capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / fixture_name, home)
+
+    monkeypatch.setattr("winchronicle.storage.init_db", lambda _db_path: None)
+
+    def fail_after_base_row(_conn):
+        raise RuntimeError("simulated memory FTS indexing failure")
+
+    monkeypatch.setattr("winchronicle.storage._entries_fts_table_exists", fail_after_base_row)
+
+    try:
+        generate_memory_entries(home, date="2026-04-25")
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError("expected simulated memory storage failure")
+
+    assert not (home / "memory" / "event-2026-04-25.md").exists()
+    assert list((home / "memory").glob("*.tmp")) == []
+    with sqlite3.connect(state_paths(home)["db"]) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM entries").fetchone() == (0,)
+
+
 def test_memory_sqlite_entries_preserve_source_paths_and_public_search_shape(tmp_path, monkeypatch):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))

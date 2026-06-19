@@ -1,9 +1,11 @@
 import json
+import sqlite3
 from pathlib import Path
 
 from winchronicle.capture import capture_once_from_fixture
+from winchronicle.paths import state_paths
 from winchronicle.redaction import scan_for_unredacted_secrets
-from winchronicle.storage import search_captures
+from winchronicle.storage import init_db, search_captures
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,6 +54,87 @@ def test_capture_once_does_not_publish_file_when_atomic_replace_fails(
     assert list(capture_buffer.glob("*.json")) == []
     assert list(capture_buffer.glob("*.tmp")) == []
     assert search_captures("AssertionError", home) == []
+
+
+def test_capture_once_removes_published_file_when_indexing_fails(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    def fail_index(*_args, **_kwargs):
+        raise RuntimeError("simulated capture index failure")
+
+    monkeypatch.setattr("winchronicle.capture.index_capture", fail_index)
+
+    try:
+        capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / "terminal_error.json")
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError("expected simulated capture index failure")
+
+    capture_buffer = home / "capture-buffer"
+    assert list(capture_buffer.glob("*.json")) == []
+    assert list(capture_buffer.glob("*.tmp")) == []
+    assert search_captures("AssertionError", home) == []
+
+
+def test_capture_once_restores_existing_file_when_indexing_fails(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    fixture_path = ROOT / "harness" / "fixtures" / "uia" / "terminal_error.json"
+
+    result = capture_once_from_fixture(fixture_path)
+    assert result.path is not None
+    before_text = result.path.read_text(encoding="utf-8")
+    before_matches = search_captures("AssertionError", home)
+
+    def fail_index(*_args, **_kwargs):
+        raise RuntimeError("simulated capture index failure")
+
+    monkeypatch.setattr("winchronicle.capture.index_capture", fail_index)
+
+    try:
+        capture_once_from_fixture(fixture_path)
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError("expected simulated capture index failure")
+
+    assert result.path.exists()
+    assert result.path.read_text(encoding="utf-8") == before_text
+    assert list((home / "capture-buffer").glob("*.tmp")) == []
+    assert search_captures("AssertionError", home) == before_matches
+
+
+def test_capture_once_rolls_back_file_and_sqlite_row_when_storage_indexing_fails(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    init_db(state_paths(home)["db"])
+
+    monkeypatch.setattr("winchronicle.storage.init_db", lambda _db_path: None)
+
+    def fail_after_base_row(_conn):
+        raise RuntimeError("simulated capture FTS indexing failure")
+
+    monkeypatch.setattr("winchronicle.storage._fts_table_exists", fail_after_base_row)
+
+    try:
+        capture_once_from_fixture(ROOT / "harness" / "fixtures" / "uia" / "terminal_error.json")
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError("expected simulated capture storage failure")
+
+    assert list((home / "capture-buffer").glob("*.json")) == []
+    assert list((home / "capture-buffer").glob("*.tmp")) == []
+    with sqlite3.connect(state_paths(home)["db"]) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM captures").fetchone() == (0,)
 
 
 def test_capture_once_redacts_secret_like_uia_metadata_before_storage(
