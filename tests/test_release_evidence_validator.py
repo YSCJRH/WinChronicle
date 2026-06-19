@@ -27,6 +27,24 @@ def test_release_evidence_validator_accepts_release_and_actions_urls(tmp_path):
     assert "PASS" in completed.stdout
 
 
+def test_release_evidence_validator_accepts_run_url_before_windows_harness_label(tmp_path):
+    evidence = tmp_path / "release-notes.md"
+    evidence.write_text(
+        "\n".join(
+            [
+                "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.47",
+                "Remote run: https://github.com/YSCJRH/WinChronicle/actions/runs/27828004902 completed Windows Harness successfully.",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator(evidence)
+
+    assert completed.returncode == 0, completed.stdout
+    assert "PASS" in completed.stdout
+
+
 def test_release_evidence_validator_fails_without_release_url(tmp_path):
     evidence = tmp_path / "release-notes.md"
     evidence.write_text(
@@ -52,6 +70,99 @@ def test_release_evidence_validator_fails_without_windows_harness_run_url(tmp_pa
     assert completed.returncode == 1
     assert "missing GitHub Actions run URL" in completed.stdout
     assert "missing Windows Harness label" in completed.stdout
+
+
+def test_release_evidence_validator_rejects_release_url_from_wrong_repo(tmp_path):
+    evidence = tmp_path / "release-notes.md"
+    evidence.write_text(
+        "\n".join(
+            [
+                "Release URL: https://github.com/someone-else/WinChronicle/releases/tag/v0.2.47",
+                "Remote Windows Harness: https://github.com/YSCJRH/WinChronicle/actions/runs/27828004902",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator(evidence)
+
+    assert completed.returncode == 1
+    assert "missing GitHub release URL for YSCJRH/WinChronicle" in completed.stdout
+
+
+def test_release_evidence_validator_rejects_mixed_release_urls_from_wrong_repo(tmp_path):
+    evidence = tmp_path / "release-notes.md"
+    evidence.write_text(
+        "\n".join(
+            [
+                "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.47",
+                "Mirror release URL: https://github.com/someone-else/WinChronicle/releases/tag/v0.2.47",
+                "Remote Windows Harness: https://github.com/YSCJRH/WinChronicle/actions/runs/27828004902",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator(evidence)
+
+    assert completed.returncode == 1
+    assert "unexpected GitHub release URL repo someone-else/WinChronicle" in completed.stdout
+
+
+def test_release_evidence_validator_rejects_windows_harness_run_from_wrong_repo(tmp_path):
+    evidence = tmp_path / "release-notes.md"
+    evidence.write_text(
+        "\n".join(
+            [
+                "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.47",
+                "Remote Windows Harness: https://github.com/someone-else/WinChronicle/actions/runs/27828004902",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator(evidence)
+
+    assert completed.returncode == 1
+    assert "missing Windows Harness GitHub Actions run URL for YSCJRH/WinChronicle" in completed.stdout
+
+
+def test_release_evidence_validator_rejects_mixed_actions_urls_from_wrong_repo(tmp_path):
+    evidence = tmp_path / "release-notes.md"
+    evidence.write_text(
+        "\n".join(
+            [
+                "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.47",
+                "Remote Windows Harness: https://github.com/YSCJRH/WinChronicle/actions/runs/27828004902",
+                "Foreign Windows Harness: https://github.com/someone-else/WinChronicle/actions/runs/27828004902",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator(evidence)
+
+    assert completed.returncode == 1
+    assert "unexpected GitHub Actions run URL repo someone-else/WinChronicle" in completed.stdout
+
+
+def test_release_evidence_validator_rejects_unbound_windows_harness_label(tmp_path):
+    evidence = tmp_path / "release-notes.md"
+    evidence.write_text(
+        "\n".join(
+            [
+                "Release URL: https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.47",
+                "Remote CI: https://github.com/YSCJRH/WinChronicle/actions/runs/27828004902",
+                "Windows Harness completed successfully.",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator(evidence)
+
+    assert completed.returncode == 1
+    assert "missing Windows Harness GitHub Actions run URL for YSCJRH/WinChronicle" in completed.stdout
 
 
 def test_v020_release_record_passes_release_evidence_validator():

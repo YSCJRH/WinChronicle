@@ -566,7 +566,10 @@ python harness/scripts/check_manual_smoke_freshness.py --project pyproject.toml 
 ```
 
 The static validator suite stays local and read-only. The URL validator checks
-for a GitHub release URL, a GitHub Actions run URL, and a Windows Harness
-label. The freshness validator checks that the latest package/tag release and
-latest full manual UIA smoke source are explicitly separated. The validators do
-not call GitHub and do not inspect observed content.
+for a GitHub release URL and a GitHub Actions run URL from the expected
+repository, rejects unexpected-repository GitHub release or Actions URLs, and
+requires the Windows Harness label to appear on the same evidence line as the
+matching Actions run URL. The freshness validator checks that the latest
+package/tag release and latest full manual UIA smoke source are explicitly
+separated. The validators do not call GitHub and do not inspect observed
+content.
