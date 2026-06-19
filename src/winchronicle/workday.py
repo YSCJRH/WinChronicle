@@ -167,7 +167,12 @@ def start_workday(
     }
     if focus_notes:
         active["operator_focus"] = focus_notes
-    _write_json(active_path, active)
+    try:
+        _write_json(active_path, active)
+    except Exception as exc:
+        _terminate_and_wait(process)
+        active_path.unlink(missing_ok=True)
+        raise WorkdayError("workday_active_state_write_failed") from exc
     return active
 
 
@@ -211,15 +216,55 @@ def run_workday(
         bufsize=1,
         creationflags=_creation_flags(),
     )
-    _start_reader(process.stdout, stdout_queue)
-    _start_reader(process.stderr, stderr_queue)
-    deadline = time.monotonic() + max(0, duration_seconds)
-    checkpoint_interval = max(1, checkpoint_seconds)
-    last_checkpoint = time.monotonic()
-    state = create_monitor_session_state()
-    stop_requested = False
+    try:
+        _start_reader(process.stdout, stdout_queue)
+        _start_reader(process.stderr, stderr_queue)
+        deadline = time.monotonic() + max(0, duration_seconds)
+        checkpoint_interval = max(1, checkpoint_seconds)
+        last_checkpoint = time.monotonic()
+        state = create_monitor_session_state()
+        stop_requested = False
 
-    while process.poll() is None:
+        while process.poll() is None:
+            lines.clear()
+            _drain(stdout_queue, lines)
+            if lines:
+                append_monitor_records(
+                    _parse_event_lines(lines),
+                    paths["home"],
+                    state=state,
+                    exclude_apps=exclude_apps,
+                )
+            if time.monotonic() - last_checkpoint >= checkpoint_interval:
+                _write_checkpoint(
+                    paths["home"],
+                    session_id=session_id,
+                    state=state,
+                    checkpoint_file=checkpoint_file,
+                    operator_focus=operator_focus,
+                )
+                last_checkpoint = time.monotonic()
+            _drain(stderr_queue, [])
+            if stop_file.exists():
+                stop_requested = True
+                _drain_stdout_until_quiet(
+                    stdout_queue,
+                    paths["home"],
+                    state=state,
+                    exclude_apps=exclude_apps,
+                )
+                _terminate_process_tree(process.pid)
+                break
+            if duration_seconds >= 0 and time.monotonic() > deadline + 5:
+                _terminate_process_tree(process.pid)
+                break
+            time.sleep(0.1)
+
+        try:
+            process.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            _terminate_process_tree(process.pid)
+            process.wait(timeout=5)
         lines.clear()
         _drain(stdout_queue, lines)
         if lines:
@@ -229,46 +274,10 @@ def run_workday(
                 state=state,
                 exclude_apps=exclude_apps,
             )
-        if time.monotonic() - last_checkpoint >= checkpoint_interval:
-            _write_checkpoint(
-                paths["home"],
-                session_id=session_id,
-                state=state,
-                checkpoint_file=checkpoint_file,
-                operator_focus=operator_focus,
-            )
-            last_checkpoint = time.monotonic()
         _drain(stderr_queue, [])
-        if stop_file.exists():
-            stop_requested = True
-            _drain_stdout_until_quiet(
-                stdout_queue,
-                paths["home"],
-                state=state,
-                exclude_apps=exclude_apps,
-            )
-            _terminate_process_tree(process.pid)
-            break
-        if duration_seconds >= 0 and time.monotonic() > deadline + 5:
-            _terminate_process_tree(process.pid)
-            break
-        time.sleep(0.1)
-
-    try:
-        process.wait(timeout=10)
-    except subprocess.TimeoutExpired:
-        _terminate_process_tree(process.pid)
-        process.wait(timeout=5)
-    lines.clear()
-    _drain(stdout_queue, lines)
-    if lines:
-        append_monitor_records(
-            _parse_event_lines(lines),
-            paths["home"],
-            state=state,
-            exclude_apps=exclude_apps,
-        )
-    _drain(stderr_queue, [])
+    except Exception:
+        _terminate_and_wait(process)
+        raise
 
     result = write_monitor_session_state(
         paths["home"],
@@ -1644,7 +1653,19 @@ def _read_json(path: Path) -> dict[str, Any] | None:
 
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = path.with_name(
+        f".{path.name}.{os.getpid()}.{threading.get_ident()}.{time.monotonic_ns()}.tmp"
+    )
+    try:
+        with temp_path.open("w", encoding="utf-8") as handle:
+            handle.write(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        temp_path.replace(path)
+    except Exception:
+        temp_path.unlink(missing_ok=True)
+        raise
 
 
 def _is_process_running(pid: int) -> bool:
@@ -1652,17 +1673,34 @@ def _is_process_running(pid: int) -> bool:
         return False
     if os.name == "nt":
         import ctypes
+        from ctypes import wintypes
 
         process_query_limited_information = 0x1000
-        handle = ctypes.windll.kernel32.OpenProcess(
+        still_active = 259
+        kernel32 = ctypes.windll.kernel32
+        kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel32.OpenProcess.restype = wintypes.HANDLE
+        kernel32.GetExitCodeProcess.argtypes = [
+            wintypes.HANDLE,
+            ctypes.POINTER(wintypes.DWORD),
+        ]
+        kernel32.GetExitCodeProcess.restype = wintypes.BOOL
+        kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+        kernel32.CloseHandle.restype = wintypes.BOOL
+        handle = kernel32.OpenProcess(
             process_query_limited_information,
             False,
             pid,
         )
         if not handle:
             return False
-        ctypes.windll.kernel32.CloseHandle(handle)
-        return True
+        try:
+            exit_code = wintypes.DWORD()
+            if not kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
+                return False
+            return exit_code.value == still_active
+        finally:
+            kernel32.CloseHandle(handle)
     try:
         os.kill(pid, 0)
     except OSError:
@@ -1692,6 +1730,25 @@ def _terminate_process_tree(pid: int) -> None:
     try:
         os.kill(pid, signal.SIGTERM)
     except OSError:
+        return
+
+
+def _terminate_and_wait(process: subprocess.Popen[Any], *, timeout: float = 5.0) -> None:
+    if process.poll() is not None:
+        return
+    _terminate_process_tree(process.pid)
+    try:
+        process.wait(timeout=timeout)
+        return
+    except subprocess.TimeoutExpired:
+        pass
+    try:
+        process.kill()
+    except OSError:
+        return
+    try:
+        process.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
         return
 
 

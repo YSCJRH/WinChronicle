@@ -8,7 +8,8 @@ from winchronicle.cli import main
 from winchronicle.paths import ensure_state
 from winchronicle.redaction import scan_for_unredacted_secrets
 from winchronicle.session import monitor_events
-from winchronicle.workday import format_workday_text_summary
+import winchronicle.workday as workday_module
+from winchronicle.workday import _write_json, format_workday_text_summary
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -758,6 +759,132 @@ def test_workday_status_does_not_mark_checkpoint_available_without_checkpoint_su
     assert status["checkpoint_available"] is False
 
 
+def test_workday_json_state_write_preserves_previous_payload_when_temp_replace_fails(
+    tmp_path, monkeypatch
+):
+    target = tmp_path / "checkpoint.json"
+    target.write_text('{"status": "old"}\n', encoding="utf-8")
+    original_replace = Path.replace
+
+    def fail_replace(self: Path, target_path: Path) -> Path:
+        if target_path == target:
+            raise OSError("simulated replace failure")
+        return original_replace(self, target_path)
+
+    monkeypatch.setattr(Path, "replace", fail_replace)
+
+    try:
+        _write_json(target, {"status": "new"})
+    except OSError:
+        pass
+    else:
+        raise AssertionError("expected simulated replace failure")
+
+    assert json.loads(target.read_text(encoding="utf-8")) == {"status": "old"}
+    assert list(tmp_path.glob("*.tmp")) == []
+
+
+def test_workday_start_cleans_up_runner_when_active_marker_write_fails(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    watcher_pid_file = tmp_path / "watcher.pid"
+    fake_watcher = _write_sentinel_sleeping_watcher(tmp_path, watcher_pid_file)
+    original_write_json = workday_module._write_json
+    original_terminate = workday_module._terminate_process_tree
+    terminated_pids: list[int] = []
+
+    def fail_active_write(path: Path, payload: dict[str, object]) -> None:
+        if path.name == "workday-active.json":
+            for _ in range(50):
+                if watcher_pid_file.exists():
+                    break
+                _sleep(0.1)
+            raise OSError("simulated active marker write failure")
+        original_write_json(path, payload)
+
+    def record_terminate(pid: int) -> None:
+        terminated_pids.append(pid)
+        original_terminate(pid)
+
+    monkeypatch.setattr(workday_module, "_write_json", fail_active_write)
+    monkeypatch.setattr(workday_module, "_terminate_process_tree", record_terminate)
+
+    assert (
+        main(
+            [
+                "workday",
+                "start",
+                "--watcher",
+                sys.executable,
+                "--watcher-arg",
+                str(fake_watcher),
+                "--duration",
+                "60",
+                "--session-id",
+                "active-write-failure",
+            ]
+        )
+        == 1
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert payload["active"] is False
+    assert payload["error"] == "workday_active_state_write_failed"
+    assert terminated_pids
+    assert _wait_for_pid_exit(terminated_pids[-1])
+    assert watcher_pid_file.exists()
+    assert _wait_for_pid_exit(int(watcher_pid_file.read_text(encoding="utf-8")))
+    assert not (home / "workday-active.json").exists()
+
+
+def test_workday_run_cleans_up_watcher_when_checkpoint_write_fails(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    fake_watcher = _write_slow_repeating_watcher(tmp_path)
+    logs = home / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    original_write_checkpoint = workday_module._write_checkpoint
+    original_terminate = workday_module._terminate_process_tree
+    terminated_pids: list[int] = []
+
+    def fail_checkpoint_once(*args, **kwargs):
+        raise OSError("simulated checkpoint write failure")
+
+    def record_terminate(pid: int) -> None:
+        terminated_pids.append(pid)
+        original_terminate(pid)
+
+    monkeypatch.setattr(workday_module, "_write_checkpoint", fail_checkpoint_once)
+    monkeypatch.setattr(workday_module, "_terminate_process_tree", record_terminate)
+
+    try:
+        workday_module.run_workday(
+            watcher_command=[sys.executable, str(fake_watcher)],
+            helper_command=None,
+            stop_file=logs / "checkpoint-failure.stop",
+            result_file=logs / "checkpoint-failure.result.json",
+            checkpoint_file=logs / "checkpoint-failure.checkpoint.json",
+            home=home,
+            session_id="checkpoint-failure",
+            duration_seconds=60,
+            depth=8,
+            debounce_ms=100,
+            heartbeat_ms=250,
+            checkpoint_seconds=1,
+            capture_on_start=False,
+            exclude_apps=[],
+        )
+    except OSError:
+        pass
+    else:
+        raise AssertionError("expected simulated checkpoint write failure")
+
+    assert terminated_pids
+    assert _wait_for_pid_exit(terminated_pids[-1])
+    monkeypatch.setattr(workday_module, "_write_checkpoint", original_write_checkpoint)
+
+
 def test_workday_stop_recovers_summary_from_capture_buffer_when_result_is_missing(
     tmp_path, monkeypatch, capsys
 ):
@@ -1228,6 +1355,26 @@ def _write_sleeping_watcher(tmp_path: Path) -> Path:
     return fake_watcher
 
 
+def _write_sentinel_sleeping_watcher(tmp_path: Path, pid_file: Path) -> Path:
+    fake_watcher = tmp_path / "fake_workday_watcher.py"
+    fake_watcher.write_text(
+        "\n".join(
+            [
+                "from pathlib import Path",
+                "import os",
+                "import sys",
+                "import time",
+                f"Path({str(pid_file)!r}).write_text(str(os.getpid()), encoding='utf-8')",
+                f"sys.stdout.write(Path({str(WATCHER_FIXTURE)!r}).read_text(encoding='utf-8'))",
+                "sys.stdout.flush()",
+                "time.sleep(60)",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    return fake_watcher
+
+
 def _write_slow_repeating_watcher(tmp_path: Path) -> Path:
     fake_watcher = tmp_path / "fake_slow_workday_watcher.py"
     fake_watcher.write_text(
@@ -1271,6 +1418,14 @@ def _sleep(seconds: float) -> None:
     import time
 
     time.sleep(seconds)
+
+
+def _wait_for_pid_exit(pid: int) -> bool:
+    for _ in range(30):
+        if not workday_module._is_process_running(pid):
+            return True
+        _sleep(0.1)
+    return False
 
 
 def _wait_for_checkpoint(capsys) -> dict[str, object]:
