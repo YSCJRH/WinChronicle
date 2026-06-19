@@ -362,7 +362,7 @@ def test_current_release_validator_rejects_unpublished_status(tmp_path):
 def test_release_evidence_guide_published_section_passes_current_release_validator(tmp_path):
     project = tmp_path / "pyproject.toml"
     project.write_text(
-        '[project]\nname = "winchronicle"\nversion = "0.2.54"\n',
+        '[project]\nname = "winchronicle"\nversion = "0.2.55"\n',
         encoding="utf-8",
     )
     completed = _run_validator_args(
@@ -535,38 +535,23 @@ def test_release_evidence_guide_passes_release_state_validator():
     assert completed.returncode == 0, completed.stdout
 
 
-def test_release_evidence_guide_records_published_current_release_and_next_preflight():
+def test_release_evidence_guide_records_published_current_release_without_preflight():
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
 
-    assert "## Next Package Release Preflight" in evidence
-    assert "| Release | `v0.2.54` |" in evidence
-    assert "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.54 |" in evidence
-    assert "| Tag target SHA | `e4a3459fab9bd264ad27d06dbd8dd8b17a8fab8b` |" in evidence
-    assert (
-        "| Publication status | Published, not a draft, not a prerelease; published at `2026-06-19T18:12:21Z` |"
-        in evidence
-    )
-    assert (
-        "| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27841471512, head `e4a3459fab9bd264ad27d06dbd8dd8b17a8fab8b` |"
-        in evidence
-    )
-    assert (
-        "| Manual smoke relationship | `v0.2.54` does not refresh manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md). |"
-        in evidence
-    )
+    assert "## Next Package Release Preflight" not in evidence
     assert "| Release | `v0.2.55` |" in evidence
+    assert "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.55 |" in evidence
+    assert "| Tag target SHA | `278874c2be5a466494ac98c1514c6be32c1146d6` |" in evidence
     assert (
-        "| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.55 |"
+        "| Publication status | Published, not a draft, not a prerelease; published at `2026-06-19T18:56:02Z` |"
         in evidence
     )
-    assert "| Publication status | Not published; pending post-publication reconciliation |" in evidence
+    assert (
+        "| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27843204938, head `278874c2be5a466494ac98c1514c6be32c1146d6` |"
+        in evidence
+    )
     assert (
         "| Manual smoke relationship | `v0.2.55` does not refresh manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md). |"
-        in evidence
-    )
-    assert "| Required deterministic gate | `python harness/scripts/run_harness.py` |" in evidence
-    assert (
-        "| Post-publication reconciliation | Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA. |"
         in evidence
     )
 
