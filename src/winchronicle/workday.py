@@ -83,7 +83,7 @@ def start_workday(
             "capture_surface": CAPTURE_SURFACE,
         }
     if existing:
-        active_path.unlink(missing_ok=True)
+        _unlink_or_workday_error(active_path, "workday_active_state_cleanup_failed")
 
     session = _slug(session_id or f"workday-{_local_timestamp()}")
     stop_file = paths["logs"] / f"{session}.stop"
@@ -92,7 +92,7 @@ def start_workday(
     stdout_path = paths["logs"] / f"{session}.workday-stdout.json"
     stderr_path = paths["logs"] / f"{session}.workday-stderr.txt"
     for path in (stop_file, result_file, checkpoint_file):
-        path.unlink(missing_ok=True)
+        _unlink_or_workday_error(path, "workday_start_artifact_cleanup_failed")
 
     runner_args = [
         sys.executable,
@@ -369,7 +369,13 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
     paths = state_paths(home)
     active = _read_json(paths["workday_active"])
     if not active:
-        return {"active": False, "trust": ACTIVE_TRUST, "capture_surface": CAPTURE_SURFACE}
+        return {
+            "active": False,
+            "active_marker_present": False,
+            "recoverable_stale_session": False,
+            "trust": ACTIVE_TRUST,
+            "capture_surface": CAPTURE_SURFACE,
+        }
     running = _is_process_running(_safe_int(active.get("pid")))
     result = _read_json(Path(active.get("result_file", "")))
     checkpoint_path = Path(active.get("checkpoint_file", ""))
@@ -385,6 +391,8 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
         **active,
         "active": running,
         "running": running,
+        "active_marker_present": True,
+        "recoverable_stale_session": bool(not running and summary is not None),
         "summary_available": summary is not None,
         "checkpoint_available": checkpoint_available,
         "checkpoint_updated_at": _checkpoint_updated_at(checkpoint_path),
@@ -397,14 +405,16 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
 def format_workday_status_text(status: dict[str, Any]) -> str:
     active = bool(status.get("active", False))
     running = bool(status.get("running", False))
-    if active and running:
+    active_marker_present = bool(status.get("active_marker_present", active))
+    recoverable_stale_session = bool(status.get("recoverable_stale_session", False))
+    if running:
         state = "运行中"
-    elif active:
+    elif active_marker_present:
         state = "已记录但进程未运行"
     else:
         state = "未在记录"
     lines = ["# 工作记录状态", ""]
-    if active:
+    if running:
         started = _safe_text(status.get("started_at", "")) or "未知时间"
         duration = _format_duration(_safe_int(status.get("duration_seconds")))
         summary_hint = "已有阶段性总结" if status.get("summary_available") else "阶段性总结还在生成中"
@@ -416,6 +426,19 @@ def format_workday_status_text(status: dict[str, Any]) -> str:
                 f"- 从 {started} 开始，最长记录 {duration}。",
                 f"- 当前总结: {summary_hint}。",
                 "- 结束时直接说：停止工作并总结。",
+            ]
+        )
+    elif recoverable_stale_session:
+        session_id = _safe_text(status.get("session_id", "")) or "<session-id>"
+        summary_hint = "本地仍有阶段性总结" if status.get("summary_available") else "本地可能有阶段性总结"
+        lines.extend(
+            [
+                "上一段工作记录的进程已不在运行。",
+                "",
+                f"- 当前状态: {state}",
+                f"- 当前总结: {summary_hint}。",
+                f"- 可直接查看：winchronicle workday summarize {session_id} --format text --language zh-CN。",
+                "- 如需收尾，也可以说：停止工作并总结。",
             ]
         )
     else:
@@ -661,6 +684,13 @@ def _cleanup_active_marker(active_path: Path) -> dict[str, Any]:
             "active_state_cleanup_error": "workday_active_state_cleanup_failed",
         }
     return {}
+
+
+def _unlink_or_workday_error(path: Path, error: str) -> None:
+    try:
+        path.unlink(missing_ok=True)
+    except OSError as exc:
+        raise WorkdayError(error) from exc
 
 
 def summarize_workday(

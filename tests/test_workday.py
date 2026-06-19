@@ -759,6 +759,55 @@ def test_workday_status_does_not_mark_checkpoint_available_without_checkpoint_su
     assert status["checkpoint_available"] is False
 
 
+def test_workday_status_text_reports_recoverable_stale_checkpoint_summary(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "stale-checkpoint-status"
+    checkpoint_file = paths["logs"] / f"{session_id}.workday-checkpoint.json"
+    _write_json(
+        checkpoint_file,
+        {
+            "active": True,
+            "summary_available": True,
+            "summary_source": "checkpoint",
+            "summary": {
+                "session_id": session_id,
+                "mode": "workday",
+                "captures_written": 1,
+                "trust": "untrusted_observed_content",
+            },
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, pid="not-a-pid", checkpoint_file=checkpoint_file),
+    )
+
+    assert main(["workday", "intent", "查看工作记录状态", "--execute"]) == 0
+    text_status = capsys.readouterr().out
+
+    assert "上一段工作记录的进程已不在运行" in text_status
+    assert "本地仍有阶段性总结" in text_status
+    assert f"winchronicle workday summarize {session_id} --format text --language zh-CN" in text_status
+    assert "要开始时说：开始记录工作" not in text_status
+    assert "Watcher burst should write one deterministic capture" not in text_status
+    assert "visible_text" not in text_status
+
+    assert main(["workday", "status"]) == 0
+    status = json.loads(capsys.readouterr().out)
+    assert status["active"] is False
+    assert status["running"] is False
+    assert status["active_marker_present"] is True
+    assert status["recoverable_stale_session"] is True
+    assert status["summary_available"] is True
+    assert status["summary_source"] == "checkpoint"
+
+
 def test_workday_status_treats_malformed_active_pid_as_not_running(
     tmp_path, monkeypatch, capsys
 ):
@@ -818,6 +867,86 @@ def test_workday_start_replaces_stale_marker_with_malformed_pid(
 
     assert main(["workday", "stop", "--wait-seconds", "10"]) == 0
     capsys.readouterr()
+
+
+def test_workday_start_reports_fixed_error_when_stale_marker_cleanup_fails(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    fake_watcher = _write_sleeping_watcher(tmp_path)
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, "stale-cleanup-blocked", pid="not-a-pid"),
+    )
+    _fail_path_unlink(monkeypatch, paths["workday_active"])
+
+    assert (
+        main(
+            [
+                "workday",
+                "start",
+                "--watcher",
+                sys.executable,
+                "--watcher-arg",
+                str(fake_watcher),
+                "--duration",
+                "60",
+                "--session-id",
+                "blocked-stale-cleanup",
+            ]
+        )
+        == 1
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert payload["active"] is False
+    assert payload["error"] == "workday_active_state_cleanup_failed"
+    assert json.loads(paths["workday_active"].read_text(encoding="utf-8"))["session_id"] == (
+        "stale-cleanup-blocked"
+    )
+    assert not (paths["logs"] / "blocked-stale-cleanup.workday-stdout.json").exists()
+    assert not (paths["logs"] / "blocked-stale-cleanup.workday-stderr.txt").exists()
+
+
+def test_workday_start_reports_fixed_error_when_start_artifact_cleanup_fails(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    fake_watcher = _write_sleeping_watcher(tmp_path)
+    session_id = "blocked-artifact-cleanup"
+    result_file = paths["logs"] / f"{session_id}.workday-result.json"
+    _write_json(result_file, {"stale": True})
+    _fail_path_unlink(monkeypatch, result_file)
+
+    assert (
+        main(
+            [
+                "workday",
+                "start",
+                "--watcher",
+                sys.executable,
+                "--watcher-arg",
+                str(fake_watcher),
+                "--duration",
+                "60",
+                "--session-id",
+                session_id,
+            ]
+        )
+        == 1
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert payload["active"] is False
+    assert payload["error"] == "workday_start_artifact_cleanup_failed"
+    assert result_file.exists()
+    assert not paths["workday_active"].exists()
+    assert not (paths["logs"] / f"{session_id}.workday-stdout.json").exists()
+    assert not (paths["logs"] / f"{session_id}.workday-stderr.txt").exists()
 
 
 def test_workday_stop_uses_checkpoint_when_active_pid_is_malformed(
@@ -1620,11 +1749,15 @@ def _workday_active_marker(
 
 
 def _fail_active_marker_unlink(monkeypatch, active_path: Path) -> None:
+    _fail_path_unlink(monkeypatch, active_path)
+
+
+def _fail_path_unlink(monkeypatch, failed_path: Path) -> None:
     original_unlink = Path.unlink
 
     def fail_active_unlink(self: Path, missing_ok: bool = False) -> None:
-        if self == active_path:
-            raise OSError("simulated active marker cleanup failure")
+        if self == failed_path:
+            raise OSError("simulated cleanup failure")
         original_unlink(self, missing_ok=missing_ok)
 
     monkeypatch.setattr(Path, "unlink", fail_active_unlink)
