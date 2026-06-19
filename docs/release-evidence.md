@@ -104,6 +104,18 @@ post-v0.1.12 maintenance cursor is recorded in
 [Post-v0.1.12 maintenance plan](next-round-plan-post-v0.1.12.md), and the
 post-v0.1.10 cursor is completed historical evidence.
 
+## Current Package Release Evidence
+
+| Field | Value |
+| --- | --- |
+| Release | `v0.2.51` |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.51 |
+| Tag target SHA | `53ad63a79ec088100999a64cca803ed53f04504d` |
+| Publication status | Published, not a draft, not a prerelease; published at `2026-06-19T15:16:52Z` |
+| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101, head `53ad63a79ec088100999a64cca803ed53f04504d` |
+| Manual smoke relationship | `v0.2.51` does not refresh manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md). |
+| Next active execution cursor | [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md) |
+
 ## Evidence Location
 
 Release evidence should live in the release-candidate record, final release
@@ -524,6 +536,7 @@ file:
 
 ```powershell
 python harness/scripts/check_release_evidence.py <release-notes-or-evidence.md>
+python harness/scripts/check_release_evidence.py --project pyproject.toml --require-current-release docs/release-evidence.md
 ```
 
 Before publishing a package/tag release or updating the manual smoke ledger,
@@ -537,7 +550,10 @@ The static validator suite stays local and read-only. The URL validator checks
 for a GitHub release URL and a GitHub Actions run URL from the expected
 repository, rejects unexpected-repository GitHub release or Actions URLs, and
 requires the Windows Harness label to appear on the same evidence line as the
-matching Actions run URL. The freshness validator checks that the latest
+matching Actions run URL. The strict current-release mode also binds
+`pyproject.toml` version to the current release URL, tag target SHA, Windows
+Harness Actions URL, and matching run head SHA recorded in
+`docs/release-evidence.md`. The freshness validator checks that the latest
 package/tag release and latest full manual UIA smoke source are explicitly
 separated. The validators do not call GitHub and do not inspect observed
 content, and they do not replace the `gh release view` or `gh run view`

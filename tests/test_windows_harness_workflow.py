@@ -104,6 +104,7 @@ def test_harness_readme_documents_timeout_defaults_and_ci_budget():
     assert "observed content" in normalized
     assert "does not expand capture surfaces" in normalized
     assert "static release-evidence validator" in normalized
+    assert "strict current-release validator" in normalized
     assert "manual-smoke freshness validator" in normalized
     assert "does not call GitHub" in normalized
     assert "python harness/scripts/run_harness.py --list-commands" in normalized
@@ -177,6 +178,14 @@ def test_run_harness_includes_static_release_validators(monkeypatch):
     ] in commands
     assert [
         sys.executable,
+        "harness/scripts/check_release_evidence.py",
+        "--project",
+        "pyproject.toml",
+        "--require-current-release",
+        "docs/release-evidence.md",
+    ] in commands
+    assert [
+        sys.executable,
         "harness/scripts/check_manual_smoke_freshness.py",
         "--project",
         "pyproject.toml",
@@ -205,6 +214,10 @@ def test_run_harness_lists_commands_without_running(monkeypatch, capsys):
     assert "1. " in output
     assert "python.exe -m pytest -q" in output or "python -m pytest -q" in output
     assert "harness/scripts/check_release_evidence.py docs/release-v0.2.0.md" in output
+    assert (
+        "harness/scripts/check_release_evidence.py --project pyproject.toml "
+        "--require-current-release docs/release-evidence.md"
+    ) in output
     assert "harness/scripts/check_manual_smoke_freshness.py" in output
     assert "dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo" in output
     assert "harness/scripts/run_install_cli_smoke.py" in output

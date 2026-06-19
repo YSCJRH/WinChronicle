@@ -556,6 +556,7 @@ post-push reconciliation evidence:
 
 ```powershell
 python harness/scripts/check_release_evidence.py <release-notes-or-evidence.md>
+python harness/scripts/check_release_evidence.py --project pyproject.toml --require-current-release docs/release-evidence.md
 ```
 
 Run the static freshness validator before publishing a package/tag release or
@@ -569,7 +570,10 @@ The static validator suite stays local and read-only. The URL validator checks
 for a GitHub release URL and a GitHub Actions run URL from the expected
 repository, rejects unexpected-repository GitHub release or Actions URLs, and
 requires the Windows Harness label to appear on the same evidence line as the
-matching Actions run URL. The freshness validator checks that the latest
+matching Actions run URL. The strict current-release mode also binds
+`pyproject.toml` version to the current release URL, tag target SHA, Windows
+Harness Actions URL, and matching run head SHA recorded in
+`docs/release-evidence.md`. The freshness validator checks that the latest
 package/tag release and latest full manual UIA smoke source are explicitly
 separated. The validators do not call GitHub and do not inspect observed
 content.

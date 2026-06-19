@@ -69,6 +69,14 @@ def _harness_commands() -> list[list[str]]:
         ],
         [
             sys.executable,
+            "harness/scripts/check_release_evidence.py",
+            "--project",
+            "pyproject.toml",
+            "--require-current-release",
+            "docs/release-evidence.md",
+        ],
+        [
+            sys.executable,
             "harness/scripts/check_manual_smoke_freshness.py",
             "--project",
             "pyproject.toml",

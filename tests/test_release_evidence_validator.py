@@ -171,9 +171,212 @@ def test_v020_release_record_passes_release_evidence_validator():
     assert completed.returncode == 0, completed.stdout
 
 
+def test_current_release_validator_accepts_bound_project_release(tmp_path):
+    project = tmp_path / "pyproject.toml"
+    project.write_text(
+        '[project]\nname = "winchronicle"\nversion = "0.2.51"\n',
+        encoding="utf-8",
+    )
+    evidence = tmp_path / "release-evidence.md"
+    head_sha = "53ad63a79ec088100999a64cca803ed53f04504d"
+    evidence.write_text(
+        "\n".join(
+            [
+                "# Release Evidence",
+                "",
+                "## Current Package Release Evidence",
+                "",
+                "| Field | Value |",
+                "| --- | --- |",
+                "| Release | `v0.2.51` |",
+                "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.51 |",
+                f"| Tag target SHA | `{head_sha}` |",
+                "| Publication status | Published, not a draft, not a prerelease |",
+                f"| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101, head `{head_sha}` |",
+                "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+                "",
+                "## Other Evidence",
+                "",
+                "Historical Windows Harness: https://github.com/YSCJRH/WinChronicle/actions/runs/25947270522",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator_args(
+        "--project",
+        str(project),
+        "--require-current-release",
+        str(evidence),
+    )
+
+    assert completed.returncode == 0, completed.stdout
+    assert "PASS" in completed.stdout
+
+
+def test_current_release_validator_rejects_wrong_current_version_url(tmp_path):
+    project = tmp_path / "pyproject.toml"
+    project.write_text(
+        '[project]\nname = "winchronicle"\nversion = "0.2.51"\n',
+        encoding="utf-8",
+    )
+    evidence = tmp_path / "release-evidence.md"
+    head_sha = "53ad63a79ec088100999a64cca803ed53f04504d"
+    evidence.write_text(
+        "\n".join(
+            [
+                "## Current Package Release Evidence",
+                "| Field | Value |",
+                "| --- | --- |",
+                "| Release | `v0.2.50` |",
+                "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.50 |",
+                f"| Tag target SHA | `{head_sha}` |",
+                "| Publication status | Published, not a draft, not a prerelease |",
+                f"| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101, head `{head_sha}` |",
+                "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator_args(
+        "--project",
+        str(project),
+        "--require-current-release",
+        str(evidence),
+    )
+
+    assert completed.returncode == 1
+    assert "missing current release URL" in completed.stdout
+
+
+def test_current_release_validator_rejects_mismatched_tag_and_harness_sha(tmp_path):
+    project = tmp_path / "pyproject.toml"
+    project.write_text(
+        '[project]\nname = "winchronicle"\nversion = "0.2.51"\n',
+        encoding="utf-8",
+    )
+    evidence = tmp_path / "release-evidence.md"
+    tag_sha = "53ad63a79ec088100999a64cca803ed53f04504d"
+    run_sha = "4c61f81aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    evidence.write_text(
+        "\n".join(
+            [
+                "## Current Package Release Evidence",
+                "| Field | Value |",
+                "| --- | --- |",
+                "| Release | `v0.2.51` |",
+                "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.51 |",
+                f"| Tag target SHA | `{tag_sha}` |",
+                "| Publication status | Published, not a draft, not a prerelease |",
+                f"| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101, head `{run_sha}` |",
+                "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator_args(
+        "--project",
+        str(project),
+        "--require-current-release",
+        str(evidence),
+    )
+
+    assert completed.returncode == 1
+    assert "Windows Harness head SHA does not match tag target SHA" in completed.stdout
+
+
+def test_current_release_validator_requires_explicit_harness_head_sha(tmp_path):
+    project = tmp_path / "pyproject.toml"
+    project.write_text(
+        '[project]\nname = "winchronicle"\nversion = "0.2.51"\n',
+        encoding="utf-8",
+    )
+    evidence = tmp_path / "release-evidence.md"
+    tag_sha = "53ad63a79ec088100999a64cca803ed53f04504d"
+    evidence.write_text(
+        "\n".join(
+            [
+                "## Current Package Release Evidence",
+                "| Field | Value |",
+                "| --- | --- |",
+                "| Release | `v0.2.51` |",
+                "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.51 |",
+                f"| Tag target SHA | `{tag_sha}` |",
+                "| Publication status | Published, not a draft, not a prerelease |",
+                f"| Windows Harness | Passed, tag `{tag_sha}`, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101 |",
+                "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator_args(
+        "--project",
+        str(project),
+        "--require-current-release",
+        str(evidence),
+    )
+
+    assert completed.returncode == 1
+    assert "missing current Windows Harness head SHA" in completed.stdout
+
+
+def test_current_release_validator_rejects_unpublished_status(tmp_path):
+    project = tmp_path / "pyproject.toml"
+    project.write_text(
+        '[project]\nname = "winchronicle"\nversion = "0.2.51"\n',
+        encoding="utf-8",
+    )
+    evidence = tmp_path / "release-evidence.md"
+    head_sha = "53ad63a79ec088100999a64cca803ed53f04504d"
+    evidence.write_text(
+        "\n".join(
+            [
+                "## Current Package Release Evidence",
+                "| Field | Value |",
+                "| --- | --- |",
+                "| Release | `v0.2.51` |",
+                "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.51 |",
+                f"| Tag target SHA | `{head_sha}` |",
+                "| Publication status | Unpublished, not a draft, not a prerelease |",
+                f"| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101, head `{head_sha}` |",
+                "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    completed = _run_validator_args(
+        "--project",
+        str(project),
+        "--require-current-release",
+        str(evidence),
+    )
+
+    assert completed.returncode == 1
+    assert "current release status must say published" in completed.stdout
+
+
+def test_release_evidence_guide_passes_current_release_validator():
+    completed = _run_validator_args(
+        "--project",
+        str(ROOT / "pyproject.toml"),
+        "--require-current-release",
+        str(ROOT / "docs" / "release-evidence.md"),
+    )
+
+    assert completed.returncode == 0, completed.stdout
+
+
 def _run_validator(path: Path) -> subprocess.CompletedProcess[str]:
+    return _run_validator_args(str(path))
+
+
+def _run_validator_args(*args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        [sys.executable, str(SCRIPT), str(path)],
+        [sys.executable, str(SCRIPT), *args],
         cwd=ROOT,
         text=True,
         stdout=subprocess.PIPE,
