@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 from winchronicle.capture import capture_once_from_fixture
+import winchronicle.cli as cli_module
 from winchronicle.cli import main
 from winchronicle.paths import ensure_state
 from winchronicle.redaction import scan_for_unredacted_secrets
@@ -590,6 +591,81 @@ def test_workday_intent_execute_stop_without_active_session_prints_human_text(
     assert "summary_available" not in stop_text
     assert "capture_surface" not in stop_text
     assert "visible_text" not in stop_text
+    assert not (home / "workday-active.json").exists()
+
+
+def test_workday_start_reports_safe_json_when_default_build_output_is_missing(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    def missing_default_watcher() -> list[str]:
+        raise workday_module.WorkdayError(
+            "default watcher build output is missing; run dotnet build first"
+        )
+
+    monkeypatch.setattr(cli_module, "default_watcher_command", missing_default_watcher)
+
+    assert main(["workday", "start", "--session-id", "missing-default-build"]) == 1
+    payload = json.loads(capsys.readouterr().out)
+
+    assert payload == {
+        "active": False,
+        "error": "default watcher build output is missing; run dotnet build first",
+    }
+    assert not (home / "workday-active.json").exists()
+
+
+def test_workday_start_reports_safe_json_when_default_helper_build_output_is_missing(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    def existing_default_watcher() -> list[str]:
+        return ["dotnet", "watcher.dll"]
+
+    def missing_default_helper() -> list[str]:
+        raise workday_module.WorkdayError(
+            "default helper build output is missing; run dotnet build first"
+        )
+
+    monkeypatch.setattr(cli_module, "default_watcher_command", existing_default_watcher)
+    monkeypatch.setattr(cli_module, "default_helper_command", missing_default_helper)
+
+    assert main(["workday", "start", "--session-id", "missing-default-helper-build"]) == 1
+    payload = json.loads(capsys.readouterr().out)
+
+    assert payload == {
+        "active": False,
+        "error": "default helper build output is missing; run dotnet build first",
+    }
+    assert not (home / "workday-active.json").exists()
+
+
+def test_workday_intent_execute_start_reports_safe_text_when_default_build_output_is_missing(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    def missing_default_watcher() -> list[str]:
+        raise workday_module.WorkdayError(
+            "default watcher build output is missing; run dotnet build first"
+        )
+
+    monkeypatch.setattr(cli_module, "default_watcher_command", missing_default_watcher)
+
+    assert main(["workday", "intent", "开始记录工作", "--execute"]) == 1
+    start_text = capsys.readouterr().out
+
+    assert "工作记录未开始" in start_text
+    assert "default watcher build output is missing" in start_text
+    assert "WorkdayError" not in start_text
+    assert "Traceback" not in start_text
+    assert "capture_surface" not in start_text
+    assert "visible_text" not in start_text
     assert not (home / "workday-active.json").exists()
 
 

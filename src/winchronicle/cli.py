@@ -1447,11 +1447,11 @@ def _execute_workday_start(
         parser.error("--depth must be between 0 and 80")
     if args.duration < 0 or args.duration > MAX_DURATION_SECONDS:
         parser.error(f"--duration must be between 0 and {MAX_DURATION_SECONDS}")
-    watcher_command = [args.watcher, *args.watcher_arg] if args.watcher else default_watcher_command()
-    helper_command = [args.helper, *args.helper_arg] if args.helper else None
-    if args.helper is None and not args.watcher:
-        helper_command = default_helper_command()
     try:
+        watcher_command = [args.watcher, *args.watcher_arg] if args.watcher else default_watcher_command()
+        helper_command = [args.helper, *args.helper_arg] if args.helper else None
+        if args.helper is None and not args.watcher:
+            helper_command = default_helper_command()
         payload = start_workday(
             watcher_command=watcher_command,
             helper_command=helper_command,
@@ -1466,7 +1466,11 @@ def _execute_workday_start(
             operator_focus=[*args.focus, *_focus_notes_from_phrase(getattr(args, "phrase", ""))],
         )
     except WorkdayError as exc:
-        print(json.dumps({"active": False, "error": str(exc)}, indent=2, sort_keys=True))
+        payload = {"active": False, "error": str(exc)}
+        if output_format == "text":
+            print(format_workday_start_text(payload), end="")
+            return 1
+        print(json.dumps(payload, indent=2, sort_keys=True))
         return 1
     if output_format == "text":
         print(format_workday_start_text(payload), end="")

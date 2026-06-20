@@ -7,7 +7,7 @@ For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest package/tag release is `v0.2.62`
 ([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.62));
-the latest full manual UIA smoke source remains [v0.2.62 release record](release-v0.2.62.md).
+the latest full manual UIA smoke source remains [v0.2.63 release record](release-v0.2.63.md).
 The previous stable release record is [v0.1.19 maintenance release record](release-v0.1.19.md).
 The earlier stable release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
 closed post-v0.1.18 execution evidence lives in
@@ -132,10 +132,14 @@ evidence from inherited historical manual-smoke evidence:
 
 - the latest package/tag release is `v0.2.62`, recorded in the
   [v0.2.62 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.62);
-- the latest full manual UIA smoke source remains [v0.2.62 release record](release-v0.2.62.md);
-- `v0.2.62` records fresh deterministic preflight gates, fresh Notepad and Edge
+- the latest full manual UIA smoke source remains [v0.2.63 release record](release-v0.2.63.md);
+- `v0.2.63` records fresh deterministic preflight gates, fresh Notepad and Edge
   manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke for the pending
+  Workday safe-failure release;
+- `v0.2.62` records fresh deterministic preflight gates, fresh Notepad and Edge
+  manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
+  diagnostic failure, and fake-helper monitor watcher smoke for the published
   redaction hardening release;
 - the current published manual-smoke baseline is `v0.2.0`, recorded in
   [v0.2.0 release record](release-v0.2.0.md);
