@@ -17,10 +17,13 @@ Publication status: pre-publication package preflight.
 | Field | Value |
 | --- | --- |
 | Release | `v0.2.62` |
-| Stage | `v0.2.62` redaction hardening preflight |
+| Stage | `v0.2.62` redaction hardening release |
 | Evidence date | 2026-06-20, Asia/Shanghai |
-| Publication status | Not published; pending post-publication reconciliation |
-| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.62 |
+| Publication status | Published final release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.62 |
+| Published at | `2026-06-20T04:52:36Z` |
+| Final tag target | `f42528c52e5e61b602671382617e97ca5c94ad69` |
+| Windows Harness | https://github.com/YSCJRH/WinChronicle/actions/runs/27860594785, head `f42528c52e5e61b602671382617e97ca5c94ad69`, conclusion `success` |
 | Previous package/tag release | `v0.2.61` |
 | Previous package/tag release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.61 |
 | Manual smoke artifact root | `C:\Users\34793\AppData\Local\Temp\winchronicle-v0262-smoke-8382047382604e3590ec4074c8a260e2` |
@@ -83,8 +86,9 @@ files; they may contain observed screen content.
 
 ## Publication Reconciliation
 
-After publication, update `docs/release-evidence.md`,
-`docs/release-checklist.md`, and `docs/manual-smoke-evidence-ledger.md` with the
-published `v0.2.62` release URL, tag target SHA, Windows Harness run URL, and
-publication timestamp. Remove the `Next Package Release Preflight` section once
-the project version matches the published current release evidence.
+Publication was verified against the `v0.2.62` GitHub release, remote tag target,
+and Windows Harness run. `docs/release-evidence.md`,
+`docs/release-checklist.md`, and `docs/manual-smoke-evidence-ledger.md` now
+record `v0.2.62` as the latest package/tag release, and no
+`Next Package Release Preflight` section remains for the published project
+version.

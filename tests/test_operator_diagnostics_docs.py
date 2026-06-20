@@ -2829,7 +2829,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "latest package/tag release is `v0.2.61`",
+        "latest package/tag release is `v0.2.62`",
         "latest full manual UIA smoke source remains [v0.2.62 release record]",
         "`v0.2.62` records fresh deterministic preflight gates",
         "pending\n  redaction hardening release",
@@ -2915,7 +2915,7 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "latest package/tag release is `v0.2.61`",
+        "latest package/tag release is `v0.2.62`",
         "latest full manual UIA smoke source remains [v0.2.62 release record]",
         "`v0.2.62` records fresh deterministic preflight gates",
         "pending\n  redaction hardening release",
@@ -3025,8 +3025,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
 
     for expected in (
         "Stable release baseline | `v0.2.0`",
-        "Latest package/tag release | `v0.2.61`",
-        "Manual smoke relationship for latest package/tag | `v0.2.61` does not refresh manual UIA smoke",
+        "Latest package/tag release | `v0.2.62`",
+        "Manual smoke relationship for latest package/tag | `v0.2.62` refreshes manual UIA smoke",
         "Current roadmap | [Roadmap]",
         "Historical post-v0.1.18 maintenance plan | [Post-v0.1.18 maintenance plan]",
         "Current public metadata audit | [Public metadata audit after v0.1.18]",
@@ -3055,7 +3055,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Latest full manual-smoke release record | [v0.2.62 release record]",
         "Previous stable release record | [v0.1.19 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.2.62 release record]",
-        "Last freshness decision | For the pending `v0.2.62` redaction hardening release",
+        "Last freshness decision | For the published `v0.2.62` redaction hardening release",
         "fresh hard-gate manual UIA smoke was rerun because privacy/redaction behavior changed after `v0.2.61`",
         "Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning",
         "VS Code strict remains a diagnostic non-blocking failure",
@@ -3071,7 +3071,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Heartbeat-only liveness diagnostic; `captures_written: 0`, `heartbeats: 9`, `duplicates_skipped: 0`, `denylisted_skipped: 0`",
         "Fresh for the published `v0.1.19` maintenance release",
         "Fresh for the published `v0.2.0` monitor-session release",
-        "Fresh for the pending `v0.2.62` redaction hardening release",
+        "Fresh for the published `v0.2.62` redaction hardening release",
         "Fake-helper monitor watcher",
         "`captures_written: 1`, `heartbeats: 3`",
         "`captures_written: 1`, `heartbeats: 4`",
@@ -3121,7 +3121,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "privacy-output and read-only MCP response behavior changed",
         "The `v0.2.0` release record reran fresh hard-gate manual UIA",
         "product CLI/MCP shape and monitor-session output changed",
-        "pending `v0.2.62` release record reran fresh hard-gate manual UIA",
+        "published `v0.2.62` release record reran fresh hard-gate manual UIA",
         "privacy/redaction behavior changed after `v0.2.61`",
         "VS Code strict remains diagnostic and\n  non-blocking",
         "Deterministic harness smoke changes require fresh deterministic gate",
