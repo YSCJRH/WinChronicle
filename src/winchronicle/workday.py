@@ -214,15 +214,18 @@ def run_workday(
     lines: list[str] = []
     stdout_queue: queue.Queue[str] = queue.Queue()
     stderr_queue: queue.Queue[str] = queue.Queue()
-    process = subprocess.Popen(
-        command,
-        cwd=_repo_root(),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        bufsize=1,
-        creationflags=_creation_flags(),
-    )
+    try:
+        process = subprocess.Popen(
+            command,
+            cwd=_repo_root(),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+            creationflags=_creation_flags(),
+        )
+    except OSError:
+        raise WorkdayError("workday_watcher_start_failed") from None
     try:
         _start_reader(process.stdout, stdout_queue)
         _start_reader(process.stderr, stderr_queue)
@@ -324,6 +327,7 @@ def recover_workday_runner_failure(
     checkpoint_file: Path | None = None,
     home: Path | str | None = None,
     stopped: bool = False,
+    runner_error: str = "workday_runner_failed_before_final_result",
 ) -> dict[str, Any]:
     paths = ensure_state(home)
     summary_source = None
@@ -362,7 +366,7 @@ def recover_workday_runner_failure(
         "recovered_from_capture_buffer": recovered,
         "summary": summary,
         "runner_status": "failed_recovered" if summary is not None else "failed_unrecovered",
-        "runner_error": "workday_runner_failed_before_final_result",
+        "runner_error": runner_error,
         "trust": ACTIVE_TRUST,
         "capture_surface": CAPTURE_SURFACE,
     }
@@ -694,12 +698,17 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
 
     cleanup_metadata = _cleanup_active_marker(active_path)
     if result:
+        summary_source = result.get("summary_source")
+        if summary_source is None and (
+            result.get("summary_available") or isinstance(result.get("summary"), dict)
+        ):
+            summary_source = "final_result"
         _attach_focus_to_payload(result, _safe_focus_notes(active.get("operator_focus", [])))
         return {
             **result,
             "active": False,
             "stopped": True,
-            "summary_source": result.get("summary_source") or "final_result",
+            "summary_source": summary_source,
             "recovered_from_capture_buffer": bool(result.get("recovered_from_capture_buffer", False)),
             **cleanup_metadata,
         }

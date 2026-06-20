@@ -172,6 +172,9 @@ smoke. These command patterns are evidence shapes only; replace
   [v0.2.64 release record](release-v0.2.64.md) until a later release record
   explicitly accepts inherited evidence for that package/tag or reruns manual
   smoke.
+- `v0.2.64` does not refresh manual UIA smoke for the pending `v0.2.65`
+  release; `v0.2.65` reruns manual UIA smoke in
+  [v0.2.65 release record](release-v0.2.65.md) before publication.
 - Fresh manual smoke must use the
   [Manual smoke evidence template](manual-smoke-evidence-template.md).
 - Inherited evidence can provide context, but it is not current evidence unless

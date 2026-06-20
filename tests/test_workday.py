@@ -1603,6 +1603,50 @@ def test_workday_stop_uses_checkpoint_when_stop_marker_parent_is_missing(
     assert not paths["workday_active"].exists()
 
 
+def test_workday_stop_preserves_unrecovered_runner_failure_source(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "unrecovered-runner-failure"
+    result_file = paths["logs"] / f"{session_id}.workday-result.json"
+    _write_json(
+        result_file,
+        {
+            "active": False,
+            "stopped": False,
+            "summary_available": False,
+            "summary_source": None,
+            "summary": None,
+            "runner_status": "failed_unrecovered",
+            "runner_error": "workday_watcher_start_failed",
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(paths, session_id, result_file=result_file),
+    )
+
+    assert main(["workday", "stop", "--wait-seconds", "0"]) == 0
+    stopped = json.loads(capsys.readouterr().out)
+    serialized = json.dumps(stopped)
+
+    assert stopped["active"] is False
+    assert stopped["stopped"] is True
+    assert stopped["summary_available"] is False
+    assert stopped["summary_source"] is None
+    assert stopped["summary"] is None
+    assert stopped["runner_status"] == "failed_unrecovered"
+    assert stopped["runner_error"] == "workday_watcher_start_failed"
+    assert "final_result" not in serialized
+    assert "Traceback" not in serialized
+    assert "visible_text" not in serialized
+    assert not paths["workday_active"].exists()
+
+
 def test_workday_stop_returns_final_result_when_active_marker_cleanup_fails(
     tmp_path, monkeypatch, capsys
 ):
@@ -1812,6 +1856,95 @@ def test_workday_run_cleans_up_watcher_when_checkpoint_write_fails(tmp_path, mon
     assert terminated_pids
     assert _wait_for_pid_exit(terminated_pids[-1])
     monkeypatch.setattr(workday_module, "_write_checkpoint", original_write_checkpoint)
+
+
+def test_workday_run_reports_safe_error_when_watcher_launch_fails(tmp_path, monkeypatch):
+    home = tmp_path / "state"
+    paths = ensure_state(home)
+
+    def fail_watcher_launch(*args, **kwargs):
+        raise OSError("simulated watcher launch failure ghp_runwatchercanary1234567890ABCD")
+
+    monkeypatch.setattr(workday_module.subprocess, "Popen", fail_watcher_launch)
+
+    try:
+        workday_module.run_workday(
+            watcher_command=["missing-watcher"],
+            helper_command=None,
+            stop_file=paths["logs"] / "watcher-launch-failure.stop",
+            result_file=paths["logs"] / "watcher-launch-failure.result.json",
+            checkpoint_file=paths["logs"] / "watcher-launch-failure.checkpoint.json",
+            home=home,
+            session_id="watcher-launch-failure",
+            duration_seconds=60,
+            depth=8,
+            debounce_ms=100,
+            heartbeat_ms=250,
+            checkpoint_seconds=1,
+            capture_on_start=False,
+            exclude_apps=[],
+        )
+    except workday_module.WorkdayError as exc:
+        assert str(exc) == "workday_watcher_start_failed"
+        assert exc.__cause__ is None
+    else:
+        raise AssertionError("expected safe WorkdayError for watcher launch failure")
+
+
+def test_workday_run_cli_writes_safe_result_when_watcher_launch_fails(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    result_file = paths["logs"] / "cli-watcher-launch-failure.result.json"
+    checkpoint_file = paths["logs"] / "cli-watcher-launch-failure.checkpoint.json"
+    stop_file = paths["logs"] / "cli-watcher-launch-failure.stop"
+
+    def fail_watcher_launch(*args, **kwargs):
+        raise OSError("simulated watcher launch failure ghp_runwatchercanary1234567890ABCD")
+
+    monkeypatch.setattr(workday_module.subprocess, "Popen", fail_watcher_launch)
+
+    assert (
+        main(
+            [
+                "workday",
+                "run",
+                "--session-id",
+                "cli-watcher-launch-failure",
+                "--stop-file",
+                str(stop_file),
+                "--result-file",
+                str(result_file),
+                "--checkpoint-file",
+                str(checkpoint_file),
+                "--watcher-arg",
+                "missing-watcher",
+                "--duration",
+                "60",
+                "--depth",
+                "8",
+                "--heartbeat-ms",
+                "250",
+            ]
+        )
+        == 1
+    )
+    output = capsys.readouterr().out
+    payload = json.loads(result_file.read_text(encoding="utf-8"))
+    serialized = json.dumps(payload)
+
+    assert "ERROR: workday runner could not write a safe session summary" in output
+    assert payload["runner_status"] == "failed_unrecovered"
+    assert payload["runner_error"] == "workday_watcher_start_failed"
+    assert payload["summary_available"] is False
+    assert "ghp_runwatchercanary" not in output
+    assert "ghp_runwatchercanary" not in serialized
+    assert "OSError" not in output
+    assert "Traceback" not in output
+    assert "capture_surface" not in output
+    assert "visible_text" not in output
 
 
 def test_workday_stop_recovers_summary_from_capture_buffer_when_result_is_missing(

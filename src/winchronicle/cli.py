@@ -1416,6 +1416,22 @@ def _handle_workday(parser: argparse.ArgumentParser, args: argparse.Namespace) -
                 exclude_apps=args.exclude_app,
                 operator_focus=args.focus,
             )
+        except WorkdayError as exc:
+            runner_error = str(exc)
+            if runner_error != "workday_watcher_start_failed":
+                runner_error = "workday_runner_failed_before_final_result"
+            recovery = recover_workday_runner_failure(
+                session_id=args.session_id,
+                result_file=args.result_file,
+                checkpoint_file=args.checkpoint_file,
+                stopped=args.stop_file.exists(),
+                runner_error=runner_error,
+            )
+            if recovery.get("summary_available"):
+                print(json.dumps(recovery, indent=2, sort_keys=True))
+                return 0
+            print("ERROR: workday runner could not write a safe session summary")
+            return 1
         except Exception:
             recovery = recover_workday_runner_failure(
                 session_id=args.session_id,

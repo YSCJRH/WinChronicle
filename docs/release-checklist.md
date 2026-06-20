@@ -137,6 +137,9 @@ evidence from inherited historical manual-smoke evidence:
   manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke for the published
   Workday runner-launch safe-failure release;
+- `v0.2.64` does not refresh manual UIA smoke for the pending `v0.2.65`
+  release; `v0.2.65` reruns manual UIA smoke in
+  [v0.2.65 release record](release-v0.2.65.md) before publication;
 - `v0.2.63` records fresh deterministic preflight gates, fresh Notepad and Edge
   manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke for the published
