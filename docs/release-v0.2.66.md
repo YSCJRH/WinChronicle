@@ -16,7 +16,7 @@ observed-content-like fields such as `visible_text`, `focused_text`, instruction
 text, bad status metadata, or marker-controlled external summary files through
 `winchronicle workday status`.
 
-Publication status: pre-publication candidate.
+Publication status: published.
 
 ## Candidate Metadata
 
@@ -25,11 +25,11 @@ Publication status: pre-publication candidate.
 | Release | `v0.2.66` |
 | Stage | `v0.2.66` Workday status privacy-boundary release |
 | Evidence date | 2026-06-20, Asia/Shanghai |
-| Publication status | Pre-publication candidate |
-| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.66 |
-| Published at | Pending |
-| Final tag target | Pending |
-| Windows Harness | Pending |
+| Publication status | Published, not a draft, not a prerelease |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.66 |
+| Published at | `2026-06-20T08:23:20Z` |
+| Final tag target | `aef5a89d94707c11b7a2e63a7fdddce46649e4b7` |
+| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27865327396, head `aef5a89d94707c11b7a2e63a7fdddce46649e4b7` |
 | Previous package/tag release | `v0.2.65` |
 | Previous package/tag release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.65 |
 | Manual smoke artifact root | `C:\Users\34793\AppData\Local\Temp\winchronicle-v0266-smoke-5e9cd6f495e14e5c80143c7520f224a7` |
@@ -50,8 +50,8 @@ Environment:
 | `python -m pytest tests/test_workday.py -q` | Pass | `63 passed` |
 | `python -m pytest tests/test_cli.py tests/test_codex_workday_plugin.py tests/test_privacy_check.py tests/test_mcp_tools.py -q` | Pass | `59 passed` |
 | `python -m pytest tests/test_version_identity.py tests/test_release_evidence_validator.py tests/test_manual_smoke_freshness_validator.py tests/test_operator_diagnostics_docs.py -q` | Pass | `77 passed` |
-| `python harness\scripts\check_release_evidence.py --project pyproject.toml --require-release-state docs\release-evidence.md` | Pass | release evidence accepted current `v0.2.65` plus `v0.2.66` preflight |
-| `python harness\scripts\check_manual_smoke_freshness.py --project pyproject.toml --ledger docs\manual-smoke-evidence-ledger.md --guide docs\release-evidence.md --checklist docs\release-checklist.md` | Pass | package/tag release and manual UIA smoke source are separated |
+| `python harness\scripts\check_release_evidence.py --project pyproject.toml --require-release-state docs\release-evidence.md` | Pass | pre-publication run accepted current `v0.2.65` plus `v0.2.66` preflight; post-publication rerun accepted current `v0.2.66` release evidence without preflight |
+| `python harness\scripts\check_manual_smoke_freshness.py --project pyproject.toml --ledger docs\manual-smoke-evidence-ledger.md --guide docs\release-evidence.md --checklist docs\release-checklist.md` | Pass | package/tag release and manual UIA smoke source are separated before and after publication |
 | `python -m pytest -q` | Pass | `432 passed in 149.38s` |
 | `python harness\scripts\run_harness.py` | Pass | `WinChronicle harness passed`; internal pytest `432 passed in 133.04s`; release validators, manual-smoke freshness validator, .NET helper/watcher builds, quick demo, MCP smoke, watcher smokes, productization self-eval, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and fake-helper watcher smoke passed |
 
@@ -98,7 +98,11 @@ JSON files; they may contain observed screen content.
 
 ## Publication Reconciliation
 
-Pending publication. After the GitHub release is published, update this record,
+Published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.66.
+Remote tag `v0.2.66` points to
+`aef5a89d94707c11b7a2e63a7fdddce46649e4b7`. GitHub Windows Harness run
+https://github.com/YSCJRH/WinChronicle/actions/runs/27865327396 passed on the
+same head SHA. Post-publication reconciliation updates
 `docs/release-evidence.md`, `docs/release-checklist.md`, and
-`docs/manual-smoke-evidence-ledger.md` with the final release URL, published
-timestamp, tag target SHA, and Windows Harness run.
+`docs/manual-smoke-evidence-ledger.md` so `v0.2.66` is the current package/tag
+release and latest full manual UIA smoke source.
