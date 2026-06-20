@@ -387,29 +387,65 @@ def status_workday(home: Path | str | None = None) -> dict[str, Any]:
             "capture_surface": CAPTURE_SURFACE,
         }
     running = _is_process_running(_safe_int(active.get("pid")))
-    result = _read_json(Path(active.get("result_file", "")))
-    checkpoint_path = Path(active.get("checkpoint_file", ""))
-    checkpoint = _read_json(checkpoint_path)
+    session_id = _active_status_session_id(active)
+    result_path = _active_status_artifact_path(paths["logs"], session_id, "workday-result")
+    checkpoint_path = _active_status_artifact_path(paths["logs"], session_id, "workday-checkpoint")
+    result = _read_json(result_path) if result_path else None
+    checkpoint = _read_json(checkpoint_path) if checkpoint_path else None
     checkpoint_available = _summary_from_payload(checkpoint) is not None
     summary, summary_source = _active_summary_details(
         result=result,
         checkpoint=checkpoint,
-        session_id=active.get("session_id", ""),
+        session_id=session_id,
         home=paths["home"],
     )
     return {
-        **active,
+        **_active_status_metadata(active, session_id=session_id),
         "active": running,
         "running": running,
         "active_marker_present": True,
         "recoverable_stale_session": bool(not running and summary is not None),
         "summary_available": summary is not None,
         "checkpoint_available": checkpoint_available,
-        "checkpoint_updated_at": _checkpoint_updated_at(checkpoint_path),
-        "checkpoint_age_seconds": _checkpoint_age_seconds(checkpoint_path),
+        "checkpoint_updated_at": _checkpoint_updated_at(checkpoint_path) if checkpoint_path else "",
+        "checkpoint_age_seconds": _checkpoint_age_seconds(checkpoint_path) if checkpoint_path else None,
         "summary_source": summary_source,
         "summary": summary,
+        "trust": ACTIVE_TRUST,
+        "capture_surface": CAPTURE_SURFACE,
     }
+
+
+def _active_status_metadata(active: dict[str, Any], *, session_id: str) -> dict[str, Any]:
+    metadata: dict[str, Any] = {
+        "session_id": session_id,
+        "pid": _safe_int(active.get("pid")),
+        "started_at": _safe_status_text(active.get("started_at", "")),
+        "duration_seconds": _safe_int(active.get("duration_seconds")),
+        "bounded": active.get("bounded") is True,
+    }
+    if "schema_version" in active:
+        metadata["schema_version"] = _safe_int(active.get("schema_version"))
+    focus_notes = _safe_focus_notes(active.get("operator_focus", []))
+    if focus_notes:
+        metadata["operator_focus"] = focus_notes
+    return metadata
+
+
+def _active_status_session_id(active: dict[str, Any]) -> str:
+    text = _safe_status_text(active.get("session_id", ""))
+    return _slug(text) if text else ""
+
+
+def _active_status_artifact_path(logs_dir: Path, session_id: str, kind: str) -> Path | None:
+    if not session_id:
+        return None
+    return logs_dir / f"{session_id}.{kind}.json"
+
+
+def _safe_status_text(value: Any) -> str:
+    redacted, _counts = redact_text(" ".join(str(value or "").split()))
+    return (redacted or "")[:240]
 
 
 def format_workday_status_text(status: dict[str, Any]) -> str:

@@ -133,6 +133,9 @@ evidence from inherited historical manual-smoke evidence:
 - the latest package/tag release is `v0.2.65`, recorded in the
   [v0.2.65 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.65);
 - the latest full manual UIA smoke source remains [v0.2.65 release record](release-v0.2.65.md);
+- `v0.2.65` does not refresh manual UIA smoke for the pending `v0.2.66`
+  release; `v0.2.66` reruns manual UIA smoke in
+  [v0.2.66 release record](release-v0.2.66.md) before publication;
 - `v0.2.65` records fresh deterministic preflight gates, fresh Notepad and Edge
   manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke for the published
