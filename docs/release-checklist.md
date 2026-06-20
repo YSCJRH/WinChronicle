@@ -5,9 +5,9 @@ releases.
 
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
-The latest package/tag release is `v0.2.64`
-([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.64));
-the latest full manual UIA smoke source remains [v0.2.64 release record](release-v0.2.64.md).
+The latest package/tag release is `v0.2.65`
+([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.65));
+the latest full manual UIA smoke source remains [v0.2.65 release record](release-v0.2.65.md).
 The previous stable release record is [v0.1.19 maintenance release record](release-v0.1.19.md).
 The earlier stable release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
 closed post-v0.1.18 execution evidence lives in
@@ -130,16 +130,17 @@ values does not authorize new capture surfaces.
 Before release, confirm the evidence record distinguishes current package/tag
 evidence from inherited historical manual-smoke evidence:
 
-- the latest package/tag release is `v0.2.64`, recorded in the
-  [v0.2.64 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.64);
-- the latest full manual UIA smoke source remains [v0.2.64 release record](release-v0.2.64.md);
+- the latest package/tag release is `v0.2.65`, recorded in the
+  [v0.2.65 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.65);
+- the latest full manual UIA smoke source remains [v0.2.65 release record](release-v0.2.65.md);
+- `v0.2.65` records fresh deterministic preflight gates, fresh Notepad and Edge
+  manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
+  diagnostic failure, and fake-helper monitor watcher smoke for the published
+  Workday watcher-launch safe-failure release;
 - `v0.2.64` records fresh deterministic preflight gates, fresh Notepad and Edge
   manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke for the published
   Workday runner-launch safe-failure release;
-- `v0.2.64` does not refresh manual UIA smoke for the pending `v0.2.65`
-  release; `v0.2.65` reruns manual UIA smoke in
-  [v0.2.65 release record](release-v0.2.65.md) before publication;
 - `v0.2.63` records fresh deterministic preflight gates, fresh Notepad and Edge
   manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke for the published

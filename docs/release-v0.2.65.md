@@ -14,7 +14,7 @@ path writes that stable runner error into the local result payload, and
 `workday stop` preserves unrecovered runner-failure state instead of relabeling
 missing summaries as `final_result`.
 
-Publication status: pre-publication candidate.
+Publication status: published final release.
 
 ## Candidate Metadata
 
@@ -23,11 +23,11 @@ Publication status: pre-publication candidate.
 | Release | `v0.2.65` |
 | Stage | `v0.2.65` Workday watcher-launch safe-failure release |
 | Evidence date | 2026-06-20, Asia/Shanghai |
-| Publication status | Pre-publication candidate |
-| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.65 |
-| Published at | Pending |
-| Final tag target | Pending |
-| Windows Harness | Pending |
+| Publication status | Published final release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.65 |
+| Published at | `2026-06-20T07:15:05Z` |
+| Final tag target | `de6e37ad386ba299f9ee82e6a8b4e0d0ff876884` |
+| Windows Harness | https://github.com/YSCJRH/WinChronicle/actions/runs/27863842793, head `de6e37ad386ba299f9ee82e6a8b4e0d0ff876884`, conclusion `success` |
 | Previous package/tag release | `v0.2.64` |
 | Previous package/tag release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.64 |
 | Manual smoke artifact root | `C:\Users\34793\AppData\Local\Temp\winchronicle-v0265-smoke-546c79c9bfff47c9a8469fd09ae85196` |
@@ -94,7 +94,9 @@ files; they may contain observed screen content.
 
 ## Publication Reconciliation
 
-Pending publication. After the GitHub release is published, update this record,
-`docs/release-evidence.md`, `docs/release-checklist.md`, and
-`docs/manual-smoke-evidence-ledger.md` with the final release URL, published
-timestamp, tag target SHA, and Windows Harness run.
+Publication was verified against the `v0.2.65` GitHub release, remote tag
+target, and Windows Harness run. `docs/release-evidence.md`,
+`docs/release-checklist.md`, and `docs/manual-smoke-evidence-ledger.md` now
+record `v0.2.65` as the latest package/tag release, and no
+`Next Package Release Preflight` section remains for the published project
+version.
