@@ -2829,10 +2829,10 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "## Evidence Freshness",
-        "latest package/tag release is `v0.2.62`",
+        "latest package/tag release is `v0.2.63`",
         "latest full manual UIA smoke source remains [v0.2.63 release record]",
         "`v0.2.63` records fresh deterministic preflight gates",
-        "pending\n  Workday safe-failure release",
+        "published\n  Workday safe-failure release",
         "`v0.2.62` records fresh deterministic preflight gates",
         "published\n  redaction hardening release",
         "current published manual-smoke baseline is `v0.2.0`",
@@ -2917,10 +2917,10 @@ def test_release_evidence_freshness_guard_labels_inherited_manual_smoke():
 
     for expected in (
         "Release evidence must name which facts are current",
-        "latest package/tag release is `v0.2.62`",
+        "latest package/tag release is `v0.2.63`",
         "latest full manual UIA smoke source remains [v0.2.63 release record]",
         "`v0.2.63` records fresh deterministic preflight gates",
-        "pending\n  Workday safe-failure release",
+        "published\n  Workday safe-failure release",
         "`v0.2.62` records fresh deterministic preflight gates",
         "published\n  redaction hardening release",
         "`v0.2.0` is the current published manual-smoke baseline",
@@ -3029,8 +3029,8 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
 
     for expected in (
         "Stable release baseline | `v0.2.0`",
-        "Latest package/tag release | `v0.2.62`",
-        "Manual smoke relationship for latest package/tag | `v0.2.62` refreshes manual UIA smoke",
+        "Latest package/tag release | `v0.2.63`",
+        "Manual smoke relationship for latest package/tag | `v0.2.63` refreshes manual UIA smoke",
         "Current roadmap | [Roadmap]",
         "Historical post-v0.1.18 maintenance plan | [Post-v0.1.18 maintenance plan]",
         "Current public metadata audit | [Public metadata audit after v0.1.18]",
@@ -3059,7 +3059,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Latest full manual-smoke release record | [v0.2.63 release record]",
         "Previous stable release record | [v0.1.19 maintenance release record]",
         "Latest full manual UIA smoke source | [v0.2.63 release record]",
-        "Last freshness decision | For the pending `v0.2.63` Workday safe-failure release",
+        "Last freshness decision | For the published `v0.2.63` Workday safe-failure release",
         "fresh hard-gate manual UIA smoke was rerun because product CLI error-output behavior changed after `v0.2.62`",
         "Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning",
         "VS Code strict remains a diagnostic non-blocking failure",
@@ -3076,7 +3076,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "Fresh for the published `v0.1.19` maintenance release",
         "Fresh for the published `v0.2.0` monitor-session release",
         "Fresh for the published `v0.2.62` redaction hardening release",
-        "Fresh for the pending `v0.2.63` Workday safe-failure release",
+        "Fresh for the published `v0.2.63` Workday safe-failure release",
         "Fake-helper monitor watcher",
         "`captures_written: 1`, `heartbeats: 3`",
         "`captures_written: 1`, `heartbeats: 4`",
@@ -3128,7 +3128,7 @@ def test_manual_smoke_ledger_tracks_freshness_without_observed_artifacts():
         "product CLI/MCP shape and monitor-session output changed",
         "published `v0.2.62` release record reran fresh hard-gate manual UIA",
         "privacy/redaction behavior changed after `v0.2.61`",
-        "The pending `v0.2.63` release record reran fresh hard-gate manual UIA",
+        "The published `v0.2.63` release record reran fresh hard-gate manual UIA",
         "Workday product CLI error-output behavior changed after `v0.2.62`",
         "VS Code strict remains diagnostic and\n  non-blocking",
         "Deterministic harness smoke changes require fresh deterministic gate",

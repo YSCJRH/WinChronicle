@@ -10,17 +10,20 @@ commit observed screen-content artifacts.
 output resolution now fails through the existing safe Workday error path instead
 of raising an uncaught traceback before runner startup.
 
-Publication status: pre-publication package preflight.
+Publication status: published final release.
 
 ## Candidate Metadata
 
 | Field | Value |
 | --- | --- |
 | Release | `v0.2.63` |
-| Stage | `v0.2.63` Workday safe-failure preflight |
+| Stage | `v0.2.63` Workday safe-failure release |
 | Evidence date | 2026-06-20, Asia/Shanghai |
-| Publication status | Not published; pending post-publication reconciliation |
-| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.63 |
+| Publication status | Published final release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.63 |
+| Published at | `2026-06-20T05:38:57Z` |
+| Final tag target | `f2746bd281b40c030938aa611e07e13c1d726961` |
+| Windows Harness | https://github.com/YSCJRH/WinChronicle/actions/runs/27861662880, head `f2746bd281b40c030938aa611e07e13c1d726961`, conclusion `success` |
 | Previous package/tag release | `v0.2.62` |
 | Previous package/tag release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.62 |
 | Manual smoke artifact root | `C:\Users\34793\AppData\Local\Temp\winchronicle-v0263-smoke-43cc5695faf04420a57f2db6606ed7a3` |
@@ -83,8 +86,9 @@ files; they may contain observed screen content.
 
 ## Publication Reconciliation
 
-After publication, update `docs/release-evidence.md`,
-`docs/release-checklist.md`, and `docs/manual-smoke-evidence-ledger.md` with the
-published `v0.2.63` release URL, tag target SHA, Windows Harness run URL, and
-publication timestamp. Remove the `Next Package Release Preflight` section once
-the project version matches the published current release evidence.
+Publication was verified against the `v0.2.63` GitHub release, remote tag target,
+and Windows Harness run. `docs/release-evidence.md`,
+`docs/release-checklist.md`, and `docs/manual-smoke-evidence-ledger.md` now
+record `v0.2.63` as the latest package/tag release, and no
+`Next Package Release Preflight` section remains for the published project
+version.
