@@ -42,7 +42,7 @@ Expected diagnostics:
 
 | Scenario | Expected operator signal | Content handling |
 | --- | --- | --- |
-| Watcher exits nonzero | `ERROR: watcher failed with exit code <code>` | Suppress watcher stderr/stdout so observed content is not echoed. |
+| Watcher exits nonzero | `ERROR: watcher failed with exit code <code>`; high Windows status codes add `windows_status=0xC0000409` style hex | Suppress watcher stderr/stdout so observed content is not echoed. |
 | Helper failure surfaced by watcher | The watcher exits nonzero and Python reports the watcher exit code. | Treat helper stderr/stdout as observed-adjacent; do not copy it into evidence. |
 | Malformed watcher JSONL | `ERROR: watcher JSONL line <n> is malformed` | Do not save or paste the malformed raw line. |
 | Invalid embedded helper payload | `ERROR: watcher output could not be captured safely` | Do not paste schema validation output or invalid helper payloads; they may contain observed content. |

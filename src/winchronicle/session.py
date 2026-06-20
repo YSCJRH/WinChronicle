@@ -18,6 +18,7 @@ from .capture import normalize_uia_helper_output, persist_capture
 from .memory import TRUST, TRUST_BOUNDARY_INSTRUCTION
 from .paths import ensure_state, state_paths
 from .privacy import denylist_reason
+from .process_diagnostics import format_process_exit_failure
 from .redaction import redact_text
 from .schema import validate_capture, validate_session_report, validate_uia_helper_output, validate_watcher_event
 from .storage import capture_fingerprint_exists
@@ -306,7 +307,7 @@ def run_monitor_watcher_command(
     except subprocess.TimeoutExpired as exc:
         raise RuntimeError("watcher timed out") from exc
     if completed.returncode != 0:
-        raise RuntimeError(f"watcher failed with exit code {completed.returncode}")
+        raise RuntimeError(format_process_exit_failure("watcher", completed.returncode))
     try:
         return monitor_event_lines(
             completed.stdout.splitlines(),

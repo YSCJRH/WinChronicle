@@ -8,6 +8,7 @@ from typing import Any, Iterable, Sequence
 
 from .capture import normalize_uia_helper_output, persist_capture
 from .privacy import denylist_reason
+from .process_diagnostics import format_process_exit_failure
 from .schema import validate_uia_helper_output, validate_watcher_event
 from .storage import capture_fingerprint_exists
 
@@ -151,7 +152,7 @@ def run_watcher_command(
     except subprocess.TimeoutExpired as exc:
         raise RuntimeError("watcher timed out") from exc
     if completed.returncode != 0:
-        raise RuntimeError(f"watcher failed with exit code {completed.returncode}")
+        raise RuntimeError(format_process_exit_failure("watcher", completed.returncode))
 
     try:
         return dispatch_watcher_event_lines(completed.stdout.splitlines(), home)

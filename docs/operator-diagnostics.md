@@ -57,7 +57,7 @@ Expected operator signals:
 | Scenario | Stable signal | Meaning | What to record |
 | --- | --- | --- | --- |
 | Heartbeat-only live run | JSON with `captures_written: 0` and `heartbeats > 0` | The watcher was alive, but no capturable event produced a persisted capture. This is diagnostic liveness evidence, not a hard failure by itself. | JSON counts, command, duration, and environment notes. |
-| Watcher exits nonzero | `ERROR: watcher failed with exit code <code>` | The watcher or surfaced helper path failed. Raw stdout/stderr is suppressed. | Exit code and command. |
+| Watcher exits nonzero | `ERROR: watcher failed with exit code <code>`; high Windows status codes also include `windows_status=0xC0000409` style hex | The watcher or surfaced helper path failed. Raw stdout/stderr is suppressed. | Exit code, hex status if present, and command. |
 | Watcher emits malformed JSONL | `ERROR: watcher JSONL line <n> is malformed` | The dispatcher rejected an event line without saving raw JSONL. | Line number and command. |
 | Watcher emits an invalid helper payload | `ERROR: watcher output could not be captured safely` | The dispatcher failed closed because validation details may include observed content. | Command and reproduction notes only; do not record schema output or payload text. |
 | Watcher timeout | `ERROR: watcher timed out` | The watcher command exceeded the wrapper timeout. | Command, duration, and environment notes. |

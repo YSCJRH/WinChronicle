@@ -1,4 +1,5 @@
 import json
+import subprocess
 import sys
 from copy import deepcopy
 from pathlib import Path
@@ -17,6 +18,7 @@ from winchronicle.session import (
     create_monitor_session_state,
     monitor_events,
     read_session,
+    run_monitor_watcher_command,
     write_monitor_session_state,
 )
 from test_watcher_events import _assert_raw_terms_not_indexed, _write_privacy_parity_events
@@ -626,6 +628,29 @@ def test_monitor_cli_real_watcher_slow_helper_writes_session_without_leak(
     assert canary not in session_text
     assert canary not in report_text
     assert list((home / "capture-buffer").glob("*.json")) == []
+
+
+def test_run_monitor_watcher_command_formats_windows_status_without_output_leak(monkeypatch):
+    def fake_run(command, **_kwargs):
+        return subprocess.CompletedProcess(
+            command,
+            3221226505,
+            stdout="monitor stdout observed text must not echo",
+            stderr="monitor stderr observed text must not echo",
+        )
+
+    monkeypatch.setattr("winchronicle.session.subprocess.run", fake_run)
+
+    try:
+        run_monitor_watcher_command([sys.executable])
+    except RuntimeError as exc:
+        message = str(exc)
+    else:
+        raise AssertionError("monitor watcher status failure did not raise")
+
+    assert message == "watcher failed with exit code 3221226505 (windows_status=0xC0000409)"
+    assert "monitor stdout observed text" not in message
+    assert "monitor stderr observed text" not in message
 
 
 def test_read_session_accepts_session_id_only(tmp_path, monkeypatch):

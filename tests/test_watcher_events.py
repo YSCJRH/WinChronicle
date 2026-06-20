@@ -757,6 +757,29 @@ def test_run_watcher_command_reports_timeout_without_stdout_leak(tmp_path):
         raise AssertionError("watcher timeout did not raise")
 
 
+def test_run_watcher_command_formats_windows_status_without_output_leak(monkeypatch):
+    def fake_run(command, **_kwargs):
+        return subprocess.CompletedProcess(
+            command,
+            3221226505,
+            stdout="Watcher stdout observed text must not echo",
+            stderr="Lock screen content must not echo",
+        )
+
+    monkeypatch.setattr("winchronicle.events.subprocess.run", fake_run)
+
+    try:
+        run_watcher_command([sys.executable])
+    except RuntimeError as exc:
+        message = str(exc)
+    else:
+        raise AssertionError("watcher status failure did not raise")
+
+    assert message == "watcher failed with exit code 3221226505 (windows_status=0xC0000409)"
+    assert "Watcher stdout observed text" not in message
+    assert "Lock screen content" not in message
+
+
 def test_watch_cli_reports_timeout_without_stdout_leak(
     tmp_path, monkeypatch, capsys
 ):
