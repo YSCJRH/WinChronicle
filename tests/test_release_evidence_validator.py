@@ -535,10 +535,9 @@ def test_release_evidence_guide_passes_release_state_validator():
     assert completed.returncode == 0, completed.stdout
 
 
-def test_release_evidence_guide_records_published_current_release_without_preflight():
+def test_release_evidence_guide_records_published_current_release_and_next_preflight():
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
 
-    assert "## Next Package Release Preflight" not in evidence
     assert "| Release | `v0.2.63` |" in evidence
     assert "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.63 |" in evidence
     assert "| Tag target SHA | `f2746bd281b40c030938aa611e07e13c1d726961` |" in evidence
@@ -552,6 +551,17 @@ def test_release_evidence_guide_records_published_current_release_without_prefli
     )
     assert (
         "| Manual smoke relationship | `v0.2.63` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.63 release record](release-v0.2.63.md). |"
+        in evidence
+    )
+    assert "## Next Package Release Preflight" in evidence
+    assert "| Release | `v0.2.64` |" in evidence
+    assert (
+        "| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.64 |"
+        in evidence
+    )
+    assert "| Publication status | Not published; pending post-publication reconciliation |" in evidence
+    assert (
+        "| Manual smoke relationship | `v0.2.64` refreshes manual UIA smoke; the latest full manual UIA smoke source will be [v0.2.64 release record](release-v0.2.64.md). |"
         in evidence
     )
 

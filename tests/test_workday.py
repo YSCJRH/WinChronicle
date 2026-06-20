@@ -669,6 +669,132 @@ def test_workday_intent_execute_start_reports_safe_text_when_default_build_outpu
     assert not (home / "workday-active.json").exists()
 
 
+def test_workday_start_reports_safe_json_when_runner_launch_fails(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    def fail_runner_launch(*args, **kwargs):
+        raise OSError("simulated launch failure ghp_winchroniclecanary1234567890ABCD")
+
+    monkeypatch.setattr(workday_module.subprocess, "Popen", fail_runner_launch)
+
+    assert (
+        main(
+            [
+                "workday",
+                "start",
+                "--watcher",
+                sys.executable,
+                "--watcher-arg",
+                "fake-watcher.py",
+                "--session-id",
+                "runner-launch-fails",
+            ]
+        )
+        == 1
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert payload == {
+        "active": False,
+        "error": "workday_runner_start_failed",
+    }
+    assert "ghp_winchroniclecanary" not in json.dumps(payload)
+    assert not (home / "workday-active.json").exists()
+    assert not list((home / "logs").glob("runner-launch-fails*"))
+
+
+def test_workday_start_keeps_safe_error_when_runner_launch_cleanup_fails(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    def fail_runner_launch(*args, **kwargs):
+        raise OSError("simulated launch failure ghp_winchroniclecanary1234567890ABCD")
+
+    original_unlink = Path.unlink
+
+    def fail_launch_log_cleanup(self: Path, missing_ok: bool = False):
+        if self.name.endswith((".workday-stdout.json", ".workday-stderr.txt")):
+            raise OSError("simulated cleanup failure ghp_cleanupcanary1234567890ABCD")
+        return original_unlink(self, missing_ok=missing_ok)
+
+    monkeypatch.setattr(workday_module.subprocess, "Popen", fail_runner_launch)
+    monkeypatch.setattr(Path, "unlink", fail_launch_log_cleanup)
+
+    assert (
+        main(
+            [
+                "workday",
+                "start",
+                "--watcher",
+                sys.executable,
+                "--watcher-arg",
+                "fake-watcher.py",
+                "--session-id",
+                "runner-launch-cleanup-fails",
+            ]
+        )
+        == 1
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert payload == {
+        "active": False,
+        "error": "workday_runner_start_failed",
+    }
+    serialized = json.dumps(payload)
+    assert "ghp_winchroniclecanary" not in serialized
+    assert "ghp_cleanupcanary" not in serialized
+    assert not (home / "workday-active.json").exists()
+
+
+def test_workday_intent_execute_start_reports_safe_text_when_runner_launch_fails(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    def fail_runner_launch(*args, **kwargs):
+        raise OSError("simulated launch failure ghp_winchroniclecanary1234567890ABCD")
+
+    monkeypatch.setattr(workday_module.subprocess, "Popen", fail_runner_launch)
+
+    assert (
+        main(
+            [
+                "workday",
+                "intent",
+                "开始记录工作",
+                "--execute",
+                "--watcher",
+                sys.executable,
+                "--watcher-arg",
+                "fake-watcher.py",
+                "--session-id",
+                "intent-runner-launch-fails",
+            ]
+        )
+        == 1
+    )
+    start_text = capsys.readouterr().out
+
+    assert "工作记录未开始" in start_text
+    assert "本地工作记录进程启动失败" in start_text
+    assert "winchronicle doctor" in start_text
+    assert "workday_runner_start_failed" not in start_text
+    assert "ghp_winchroniclecanary" not in start_text
+    assert "OSError" not in start_text
+    assert "Traceback" not in start_text
+    assert "capture_surface" not in start_text
+    assert "visible_text" not in start_text
+    assert not (home / "workday-active.json").exists()
+    assert not list((home / "logs").glob("intent-runner-launch-fails*"))
+
+
 def test_workday_intent_start_phrase_can_carry_focus_note(tmp_path, monkeypatch, capsys):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))

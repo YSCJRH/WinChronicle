@@ -145,6 +145,12 @@ def start_workday(
             stderr=stderr_handle,
             creationflags=_creation_flags(),
         )
+    except OSError as exc:
+        stdout_handle.close()
+        stderr_handle.close()
+        _unlink_best_effort(stdout_path)
+        _unlink_best_effort(stderr_path)
+        raise WorkdayError("workday_runner_start_failed") from exc
     finally:
         stdout_handle.close()
         stderr_handle.close()
@@ -520,7 +526,10 @@ def format_workday_start_text(payload: dict[str, Any]) -> str:
     lines = ["# 工作记录未开始", "", "这次没有启动工作记录。"]
     error = _safe_text(payload.get("error", ""))
     if error:
-        lines.append(f"- 原因: {error}")
+        if error == "workday_runner_start_failed":
+            lines.append("- 原因: 本地工作记录进程启动失败；请先运行 winchronicle doctor。")
+        else:
+            lines.append(f"- 原因: {error}")
     lines.append("- 可以稍后再说：开始记录工作。")
     return "\n".join(lines).rstrip() + "\n"
 
@@ -747,6 +756,13 @@ def _unlink_or_workday_error(path: Path, error: str) -> None:
         path.unlink(missing_ok=True)
     except OSError as exc:
         raise WorkdayError(error) from exc
+
+
+def _unlink_best_effort(path: Path) -> None:
+    try:
+        path.unlink(missing_ok=True)
+    except OSError:
+        return
 
 
 def summarize_workday(
