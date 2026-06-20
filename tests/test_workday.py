@@ -241,6 +241,45 @@ def test_workday_stop_text_command_names_checkpoint_fallback_source(
     assert "visible_text" not in text_summary
 
 
+def test_workday_stop_text_command_names_capture_buffer_recovery_source(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    result = capture_once_from_fixture(
+        ROOT / "harness" / "fixtures" / "uia" / "terminal_error.json",
+        home,
+    )
+    assert result.path is not None
+
+    session_id = "capture-buffer-stop-text-command"
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(
+            paths,
+            session_id,
+            result_file=paths["logs"] / "missing-result.json",
+        ),
+    )
+
+    assert (
+        main(["workday", "stop", "--wait-seconds", "0", "--format", "text", "--language", "zh-CN"])
+        == 0
+    )
+    text_summary = capsys.readouterr().out
+
+    assert "今日工作复盘" in text_summary
+    assert "复盘来源: 本地恢复记录" in text_summary
+    assert "capture_buffer_recovery" not in text_summary
+    assert "summary_source" not in text_summary
+    assert "visible_text" not in text_summary
+    assert (home / "sessions" / f"{session_id}.json").is_file()
+    assert (home / "reports" / f"{session_id}.html").is_file()
+    assert not (home / "workday-active.json").exists()
+    assert list(home.rglob("*.jsonl")) == []
+
+
 def test_workday_stop_text_command_keeps_source_notice_in_technical_style(
     tmp_path, monkeypatch, capsys
 ):
