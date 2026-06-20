@@ -3,9 +3,9 @@
 Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
-artifacts. The latest package/tag release is `v0.2.63`
-([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.63));
-the latest full manual UIA smoke source remains [v0.2.63 release record](release-v0.2.63.md).
+artifacts. The latest package/tag release is `v0.2.64`
+([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.64));
+the latest full manual UIA smoke source remains [v0.2.64 release record](release-v0.2.64.md).
 The previous stable release record is [v0.1.19 maintenance release record](release-v0.1.19.md).
 The earlier stable release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
 closed post-v0.1.18 maintenance evidence is recorded in
@@ -108,24 +108,13 @@ post-v0.1.10 cursor is completed historical evidence.
 
 | Field | Value |
 | --- | --- |
-| Release | `v0.2.63` |
-| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.63 |
-| Tag target SHA | `f2746bd281b40c030938aa611e07e13c1d726961` |
-| Publication status | Published, not a draft, not a prerelease; published at `2026-06-20T05:38:57Z` |
-| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27861662880, head `f2746bd281b40c030938aa611e07e13c1d726961` |
-| Manual smoke relationship | `v0.2.63` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.63 release record](release-v0.2.63.md). |
-| Current roadmap | [Roadmap](roadmap.md); post-v0.1.18 maintenance evidence is closed historical context. |
-
-## Next Package Release Preflight
-
-| Field | Value |
-| --- | --- |
 | Release | `v0.2.64` |
-| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.64 |
-| Publication status | Not published; pending post-publication reconciliation |
-| Required deterministic gate | `python harness/scripts/run_harness.py` |
-| Manual smoke relationship | `v0.2.64` refreshes manual UIA smoke; the latest full manual UIA smoke source will be [v0.2.64 release record](release-v0.2.64.md). |
-| Post-publication reconciliation | Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA. |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.64 |
+| Tag target SHA | `c78839cdfc464e5eff9c927033875bb95e73f6e0` |
+| Publication status | Published, not a draft, not a prerelease; published at `2026-06-20T06:26:32Z` |
+| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27862752420, head `c78839cdfc464e5eff9c927033875bb95e73f6e0` |
+| Manual smoke relationship | `v0.2.64` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.64 release record](release-v0.2.64.md). |
+| Current roadmap | [Roadmap](roadmap.md); post-v0.1.18 maintenance evidence is closed historical context. |
 
 ## Evidence Location
 
@@ -150,9 +139,13 @@ Release evidence must name which facts are current and which are inherited from
 historical records. For the current package/tag release and latest full manual
 UIA smoke source:
 
-- the latest package/tag release is `v0.2.63`, recorded in the
-  [v0.2.63 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.63);
-- the latest full manual UIA smoke source remains [v0.2.63 release record](release-v0.2.63.md);
+- the latest package/tag release is `v0.2.64`, recorded in the
+  [v0.2.64 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.64);
+- the latest full manual UIA smoke source remains [v0.2.64 release record](release-v0.2.64.md);
+- `v0.2.64` records fresh deterministic preflight gates, fresh Notepad and Edge
+  manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
+  diagnostic failure, and fake-helper monitor watcher smoke for the published
+  Workday runner-launch safe-failure release;
 - `v0.2.63` records fresh deterministic preflight gates, fresh Notepad and Edge
   manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke for the published

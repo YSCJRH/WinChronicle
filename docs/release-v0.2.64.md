@@ -13,7 +13,7 @@ error before any active session marker is written. Natural-language
 leaking raw local exception text, paths, tracebacks, or token-canary-like
 strings.
 
-Publication status: pre-publication candidate.
+Publication status: published final release.
 
 ## Candidate Metadata
 
@@ -22,11 +22,11 @@ Publication status: pre-publication candidate.
 | Release | `v0.2.64` |
 | Stage | `v0.2.64` Workday runner-launch safe-failure release |
 | Evidence date | 2026-06-20, Asia/Shanghai |
-| Publication status | Pre-publication candidate |
-| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.64 |
-| Published at | Pending |
-| Final tag target | Pending |
-| Windows Harness | Pending |
+| Publication status | Published final release |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.64 |
+| Published at | `2026-06-20T06:26:32Z` |
+| Final tag target | `c78839cdfc464e5eff9c927033875bb95e73f6e0` |
+| Windows Harness | https://github.com/YSCJRH/WinChronicle/actions/runs/27862752420, head `c78839cdfc464e5eff9c927033875bb95e73f6e0`, conclusion `success` |
 | Previous package/tag release | `v0.2.63` |
 | Previous package/tag release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.63 |
 | Manual smoke artifact root | `C:\Users\34793\AppData\Local\Temp\winchronicle-v0264-smoke-9df8021e9178494bb198dcb41871d39e` |
@@ -91,7 +91,9 @@ files; they may contain observed screen content.
 
 ## Publication Reconciliation
 
-Pending publication. After the GitHub release is published, update this record,
-`docs/release-evidence.md`, `docs/release-checklist.md`, and
-`docs/manual-smoke-evidence-ledger.md` with the final release URL, published
-timestamp, tag target SHA, and Windows Harness run.
+Publication was verified against the `v0.2.64` GitHub release, remote tag target,
+and Windows Harness run. `docs/release-evidence.md`,
+`docs/release-checklist.md`, and `docs/manual-smoke-evidence-ledger.md` now
+record `v0.2.64` as the latest package/tag release, and no
+`Next Package Release Preflight` section remains for the published project
+version.
