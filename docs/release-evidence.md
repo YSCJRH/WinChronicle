@@ -5,10 +5,10 @@ evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
 artifacts. The latest package/tag release is `v0.2.61`
 ([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.61));
-the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md).
+the latest full manual UIA smoke source remains [v0.2.62 release record](release-v0.2.62.md).
 The previous stable release record is [v0.1.19 maintenance release record](release-v0.1.19.md).
 The earlier stable release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
-active post-v0.1.18 maintenance cursor is recorded in
+closed post-v0.1.18 maintenance evidence is recorded in
 [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md), and the
 completed post-v0.1.18 public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md). The
@@ -114,7 +114,18 @@ post-v0.1.10 cursor is completed historical evidence.
 | Publication status | Published, not a draft, not a prerelease; published at `2026-06-20T04:06:48Z` |
 | Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27859521988, head `201c0f965a3605d318631795152eb0c8a782a2bb` |
 | Manual smoke relationship | `v0.2.61` does not refresh manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md). |
-| Next active execution cursor | [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md) |
+| Current roadmap | [Roadmap](roadmap.md); post-v0.1.18 maintenance evidence is closed historical context. |
+
+## Next Package Release Preflight
+
+| Field | Value |
+| --- | --- |
+| Release | `v0.2.62` |
+| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.62 |
+| Publication status | Not published; pending post-publication reconciliation |
+| Required deterministic gate | `python harness/scripts/run_harness.py` |
+| Manual smoke relationship | `v0.2.62` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.62 release record](release-v0.2.62.md). |
+| Post-publication reconciliation | Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA. |
 
 ## Evidence Location
 
@@ -141,7 +152,11 @@ UIA smoke source:
 
 - the latest package/tag release is `v0.2.61`, recorded in the
   [v0.2.61 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.61);
-- the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md);
+- the latest full manual UIA smoke source remains [v0.2.62 release record](release-v0.2.62.md);
+- `v0.2.62` records fresh deterministic preflight gates, fresh Notepad and Edge
+  manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
+  diagnostic failure, and fake-helper monitor watcher smoke for the pending
+  redaction hardening release;
 - `v0.2.0` is the current published manual-smoke baseline, recorded in
   [v0.2.0 release record](release-v0.2.0.md);
 - `v0.2.0` records fresh deterministic gates, fresh Notepad and Edge manual
@@ -165,7 +180,7 @@ UIA smoke source:
   published timestamp remain recorded in the final release record;
 - `v0.1.16-rc.0` is historical prerelease evidence, not the latest published
   final release;
-- the active post-v0.1.18 execution cursor records `v0.1.18` publication,
+- the closed post-v0.1.18 execution record documents `v0.1.18` publication,
   `v0.1.18` publication reconciliation, PR #187, PR #188, PR Windows Harness
   runs `25612336939` and `25612920731`, post-merge Windows Harness runs
   `25612391276` and `25612977738`, the immutable final tag target

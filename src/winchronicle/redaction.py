@@ -6,6 +6,25 @@ from collections import Counter
 from typing import Any
 
 
+_API_KEY_LABELS = (
+    "API_KEY",
+    "OPENAI_API_KEY",
+    "SERVICE_API_KEY",
+    "SECRET_KEY",
+    "ACCESS_TOKEN",
+    "AUTH_TOKEN",
+    "SERVICE_TOKEN",
+    "BEARER_TOKEN",
+)
+_API_KEY_ASSIGNMENT_SEPARATORS = ("=", " = ", ":", ": ")
+_API_KEY_VALUE_PATTERN = r"[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
+_LABELED_API_KEY_VALUE_PATTERN = "|".join(
+    rf"(?<={re.escape(label + separator)}){_API_KEY_VALUE_PATTERN}"
+    for label in _API_KEY_LABELS
+    for separator in _API_KEY_ASSIGNMENT_SEPARATORS
+)
+
+
 REDACTION_RULES = [
     ("password_field", re.compile(r"CorrectHorseBatteryStaple!")),
     (
@@ -23,14 +42,7 @@ REDACTION_RULES = [
         "api_key",
         re.compile(
             r"sk-[A-Za-z0-9_-]{20,}"
-            r"|(?i:(?<=API_KEY=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
-            r"|(?<=OPENAI_API_KEY=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
-            r"|(?<=SERVICE_API_KEY=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
-            r"|(?<=SECRET_KEY=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
-            r"|(?<=ACCESS_TOKEN=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
-            r"|(?<=AUTH_TOKEN=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
-            r"|(?<=SERVICE_TOKEN=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,}"
-            r"|(?<=BEARER_TOKEN=)[A-Za-z0-9][A-Za-z0-9._~+/=-]{15,})"
+            r"|(?i:" + _LABELED_API_KEY_VALUE_PATTERN + r")"
         ),
     ),
     (

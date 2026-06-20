@@ -95,10 +95,11 @@ def _next_release_preflight_failures(path: Path, text: str, version: str) -> lis
         return [f"{path}: missing next release preflight for project version `{tag}`"]
     if "Not published" not in section:
         failures.append(f"{path}: next release preflight for `{tag}` must say not published")
-    relationship = f"`{tag}` does not refresh manual UIA smoke"
-    if relationship not in section:
+    inherited_relationship = f"`{tag}` does not refresh manual UIA smoke"
+    fresh_relationship = f"`{tag}` refreshes manual UIA smoke"
+    if inherited_relationship not in section and fresh_relationship not in section:
         failures.append(
-            f"{path}: next release preflight must state `{tag}` does not refresh manual UIA smoke"
+            f"{path}: next release preflight must state whether `{tag}` refreshes or does not refresh manual UIA smoke"
         )
     return failures
 

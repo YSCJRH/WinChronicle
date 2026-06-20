@@ -193,7 +193,7 @@ def test_current_release_validator_accepts_bound_project_release(tmp_path):
                 f"| Tag target SHA | `{head_sha}` |",
                 "| Publication status | Published, not a draft, not a prerelease |",
                 f"| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101, head `{head_sha}` |",
-                "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+                "| Current roadmap | docs/roadmap.md |",
                 "",
                 "## Other Evidence",
                 "",
@@ -233,7 +233,7 @@ def test_current_release_validator_rejects_wrong_current_version_url(tmp_path):
                 f"| Tag target SHA | `{head_sha}` |",
                 "| Publication status | Published, not a draft, not a prerelease |",
                 f"| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101, head `{head_sha}` |",
-                "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+                "| Current roadmap | docs/roadmap.md |",
             ]
         ),
         encoding="utf-8",
@@ -270,7 +270,7 @@ def test_current_release_validator_rejects_mismatched_tag_and_harness_sha(tmp_pa
                 f"| Tag target SHA | `{tag_sha}` |",
                 "| Publication status | Published, not a draft, not a prerelease |",
                 f"| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101, head `{run_sha}` |",
-                "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+                "| Current roadmap | docs/roadmap.md |",
             ]
         ),
         encoding="utf-8",
@@ -306,7 +306,7 @@ def test_current_release_validator_requires_explicit_harness_head_sha(tmp_path):
                 f"| Tag target SHA | `{tag_sha}` |",
                 "| Publication status | Published, not a draft, not a prerelease |",
                 f"| Windows Harness | Passed, tag `{tag_sha}`, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101 |",
-                "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+                "| Current roadmap | docs/roadmap.md |",
             ]
         ),
         encoding="utf-8",
@@ -342,7 +342,7 @@ def test_current_release_validator_rejects_unpublished_status(tmp_path):
                 f"| Tag target SHA | `{head_sha}` |",
                 "| Publication status | Unpublished, not a draft, not a prerelease |",
                 f"| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101, head `{head_sha}` |",
-                "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+                "| Current roadmap | docs/roadmap.md |",
             ]
         ),
         encoding="utf-8",
@@ -535,10 +535,9 @@ def test_release_evidence_guide_passes_release_state_validator():
     assert completed.returncode == 0, completed.stdout
 
 
-def test_release_evidence_guide_records_published_current_release_without_preflight():
+def test_release_evidence_guide_records_published_current_release_with_v0262_preflight():
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
 
-    assert "## Next Package Release Preflight" not in evidence
     assert "| Release | `v0.2.61` |" in evidence
     assert "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.61 |" in evidence
     assert "| Tag target SHA | `201c0f965a3605d318631795152eb0c8a782a2bb` |" in evidence
@@ -552,6 +551,19 @@ def test_release_evidence_guide_records_published_current_release_without_prefli
     )
     assert (
         "| Manual smoke relationship | `v0.2.61` does not refresh manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md). |"
+        in evidence
+    )
+    assert "## Next Package Release Preflight" in evidence
+    assert "| Release | `v0.2.62` |" in evidence
+    assert "| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.62 |" in evidence
+    assert "| Publication status | Not published; pending post-publication reconciliation |" in evidence
+    assert "| Required deterministic gate | `python harness/scripts/run_harness.py` |" in evidence
+    assert (
+        "| Manual smoke relationship | `v0.2.62` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.62 release record](release-v0.2.62.md). |"
+        in evidence
+    )
+    assert (
+        "| Post-publication reconciliation | Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA. |"
         in evidence
     )
 
@@ -571,7 +583,7 @@ def _published_release_evidence() -> str:
             f"| Tag target SHA | `{head_sha}` |",
             "| Publication status | Published, not a draft, not a prerelease |",
             f"| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27833755101, head `{head_sha}` |",
-            "| Next active execution cursor | Post-v0.1.18 maintenance plan |",
+            "| Current roadmap | docs/roadmap.md |",
         ]
     )
 

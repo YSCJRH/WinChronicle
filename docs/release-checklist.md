@@ -7,10 +7,10 @@ For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
 The latest package/tag release is `v0.2.61`
 ([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.61));
-the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md).
+the latest full manual UIA smoke source remains [v0.2.62 release record](release-v0.2.62.md).
 The previous stable release record is [v0.1.19 maintenance release record](release-v0.1.19.md).
 The earlier stable release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
-active post-v0.1.18 execution cursor lives in
+closed post-v0.1.18 execution evidence lives in
 [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md), and the
 completed post-v0.1.18 public metadata/evidence freshness audit is
 [Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md). The
@@ -132,7 +132,11 @@ evidence from inherited historical manual-smoke evidence:
 
 - the latest package/tag release is `v0.2.61`, recorded in the
   [v0.2.61 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.61);
-- the latest full manual UIA smoke source remains [v0.2.0 release record](release-v0.2.0.md);
+- the latest full manual UIA smoke source remains [v0.2.62 release record](release-v0.2.62.md);
+- `v0.2.62` records fresh deterministic preflight gates, fresh Notepad and Edge
+  manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
+  diagnostic failure, and fake-helper monitor watcher smoke for the pending
+  redaction hardening release;
 - the current published manual-smoke baseline is `v0.2.0`, recorded in
   [v0.2.0 release record](release-v0.2.0.md);
 - `v0.2.0` records fresh deterministic gates, fresh Notepad and Edge manual
@@ -156,7 +160,7 @@ evidence from inherited historical manual-smoke evidence:
   published timestamp remain recorded in the final release record;
 - `v0.1.16-rc.0` is historical prerelease evidence, not the latest published
   final release;
-- the active post-v0.1.18 execution cursor records `v0.1.18` publication,
+- the closed post-v0.1.18 execution record documents `v0.1.18` publication,
   `v0.1.18` publication reconciliation, PR #187, PR #188, PR Windows Harness
   runs `25612336939` and `25612920731`, post-merge Windows Harness runs
   `25612391276` and `25612977738`, the immutable final tag target

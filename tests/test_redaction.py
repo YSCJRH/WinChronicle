@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from winchronicle.capture import load_json, normalize_fixture
 from winchronicle.redaction import redact_text, scan_for_unredacted_secrets
 
@@ -36,6 +38,31 @@ abc123
     assert counts["slack_token"] == 2
     assert counts["jwt"] == 1
     assert counts["private_key"] == 1
+    assert scan_for_unredacted_secrets(redacted) == []
+
+
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    (
+        (
+            "SECRET_KEY: abc123456789012345",
+            "SECRET_KEY: [REDACTED:api_key]",
+        ),
+        (
+            "ACCESS_TOKEN = access-1234567890abcdef",
+            "ACCESS_TOKEN = [REDACTED:api_key]",
+        ),
+        (
+            "bearer_token: bearer-1234567890abcdef",
+            "bearer_token: [REDACTED:api_key]",
+        ),
+    ),
+)
+def test_redact_text_removes_labeled_secret_values_with_common_separators(raw, expected):
+    redacted, counts = redact_text(raw)
+
+    assert redacted == expected
+    assert counts["api_key"] == 1
     assert scan_for_unredacted_secrets(redacted) == []
 
 

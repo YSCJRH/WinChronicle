@@ -61,8 +61,8 @@ Redaction runs before schema validation, file writes, and SQLite indexing.
 Current text patterns:
 
 - `api_key`: OpenAI-style `sk-[A-Za-z0-9_-]{20,}` tokens and long values
-  assigned to obvious key labels such as `API_KEY`, `SECRET_KEY`, or
-  `SERVICE_TOKEN`
+  assigned with common `=` or `:` assignment syntax to obvious key labels such
+  as `API_KEY`, `SECRET_KEY`, or `SERVICE_TOKEN`
 - `github_token`: classic `ghp_`, OAuth/action/user/server `gho_`, `ghu_`,
   `ghs_`, `ghr_`, and fine-grained `github_pat_` tokens
 - `slack_token`: `xox[baprs]-` tokens and Slack app-level `xapp-` tokens

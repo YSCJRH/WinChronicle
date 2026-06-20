@@ -252,9 +252,9 @@ def _current_release_failures(
         elif tag_sha is not None and harness_sha.lower() != tag_sha.lower():
             failures.append(f"{path}: Windows Harness head SHA does not match tag target SHA")
 
-    cursor_line = _first_matching_line(section, "Next active execution cursor")
-    if cursor_line is None or not _table_value(cursor_line):
-        failures.append(f"{path}: missing next active execution cursor")
+    roadmap_line = _first_matching_line(section, "Current roadmap")
+    if roadmap_line is None or not _table_value(roadmap_line):
+        failures.append(f"{path}: missing current roadmap")
 
     return failures
 

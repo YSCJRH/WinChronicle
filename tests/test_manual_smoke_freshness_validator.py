@@ -69,7 +69,48 @@ def test_manual_smoke_freshness_validator_rejects_preflight_without_manual_smoke
     completed = _run_validator(project=project, ledger=ledger, guide=guide, checklist=checklist)
 
     assert completed.returncode == 1
-    assert "next release preflight must state `v9.9.9` does not refresh manual UIA smoke" in completed.stdout
+    assert (
+        "next release preflight must state whether `v9.9.9` refreshes or does not refresh manual UIA smoke"
+        in completed.stdout
+    )
+
+
+def test_manual_smoke_freshness_validator_accepts_preflight_that_refreshes_manual_smoke(tmp_path):
+    project = tmp_path / "pyproject.toml"
+    project.write_text("[project]\nversion = \"9.9.9\"\n", encoding="utf-8")
+    ledger = tmp_path / "manual-smoke-evidence-ledger.md"
+    guide = tmp_path / "release-evidence.md"
+    checklist = tmp_path / "release-checklist.md"
+    ledger.write_text(
+        "\n".join(
+            [
+                "| Field | Value |",
+                "| --- | --- |",
+                "| Latest package/tag release | `v9.9.8` ([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v9.9.8)) |",
+                "| Manual smoke relationship for latest package/tag | `v9.9.8` does not refresh manual UIA smoke; it is separate from the latest full manual UIA smoke source. |",
+                "| Latest full manual UIA smoke source | [v9.9.9 release record](release-v9.9.9.md) |",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    guide_text = "\n".join(
+        [
+            "- the latest package/tag release is `v9.9.8`, recorded in the release.",
+            "- the latest full manual UIA smoke source remains [v9.9.9 release record](release-v9.9.9.md);",
+            "## Next Package Release Preflight",
+            "| Field | Value |",
+            "| --- | --- |",
+            "| Release | `v9.9.9` |",
+            "| Publication status | Not published; pending post-publication reconciliation |",
+            "| Manual smoke relationship | `v9.9.9` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v9.9.9 release record](release-v9.9.9.md). |",
+        ]
+    )
+    guide.write_text(guide_text, encoding="utf-8")
+    checklist.write_text(guide_text, encoding="utf-8")
+
+    completed = _run_validator(project=project, ledger=ledger, guide=guide, checklist=checklist)
+
+    assert completed.returncode == 0, completed.stdout
 
 
 def _run_validator(

@@ -121,6 +121,7 @@ def test_privacy_policy_redaction_rules_match_runtime_non_goal():
     assert "Credit-card Luhn-positive redaction" in spec
     assert "not implemented in v0.1" in spec
     assert "standalone private-key boundary markers" in spec
+    assert "common `=` or `:` assignment syntax" in spec
     assert "credit_card" not in rule_names
 
 
