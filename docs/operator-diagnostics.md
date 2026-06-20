@@ -37,7 +37,7 @@ Expected operator signals:
 | Helper returns no stdout | `SKIPPED: helper returned no capture` | The helper did not find a capturable foreground target. This can happen in hosted desktops or when no accessible foreground window is available. | Command, timestamp, environment, and `WINCHRONICLE_HOME`. |
 | Helper times out | `ERROR: helper timed out` | UIA traversal or process startup exceeded the wrapper timeout. | Command, timeout context, and environment notes. |
 | Helper returns malformed JSON | `ERROR: helper returned invalid JSON` | The wrapper failed closed and did not store or print helper output. | Command and helper version/build notes. |
-| Helper exits nonzero | `ERROR: helper failed with exit code <code>` | The helper failed before producing an accepted capture. | Exit code and helper build notes. |
+| Helper exits nonzero | `ERROR: helper failed with exit code <code>`; high Windows status codes also include `windows_status=0xC0000409` style hex | The helper failed before producing an accepted capture. Raw stdout/stderr is suppressed. | Exit code, hex status if present, and helper build notes. |
 | Unexpected wrapper failure | `ERROR: helper output could not be captured safely` | The wrapper suppressed raw output because it may contain observed content. | Command and reproduction notes only. |
 
 Never work around a no-capture or timeout by adding product `--hwnd`, `--pid`,

@@ -208,6 +208,29 @@ def test_capture_frontmost_wrapper_reports_timeout_without_stdout_leak(tmp_path)
         )
 
 
+def test_capture_frontmost_wrapper_formats_windows_status_without_output_leak(monkeypatch):
+    def fake_run(*args, **_kwargs):
+        return subprocess.CompletedProcess(
+            args=args[0],
+            returncode=3221226505,
+            stdout="observed stdout must not echo",
+            stderr="observed stderr must not echo",
+        )
+
+    monkeypatch.setattr("winchronicle.capture.subprocess.run", fake_run)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        capture_frontmost_with_helper(
+            [sys.executable, "fake_helper.py"],
+            timeout_seconds=1,
+        )
+
+    message = str(exc_info.value)
+    assert message == "helper failed with exit code 3221226505 (windows_status=0xC0000409)"
+    assert "observed stdout" not in message
+    assert "observed stderr" not in message
+
+
 def test_uia_helper_title_denylist_reason_is_content_free():
     source = (ROOT / "resources" / "win-uia-helper" / "Program.cs").read_text(
         encoding="utf-8"

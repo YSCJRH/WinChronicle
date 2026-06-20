@@ -46,7 +46,7 @@ def test_uia_helper_quality_matrix_preserves_gate_statuses():
         "Notepad": "Hard manual release gate.",
         "Microsoft Edge": "Hard manual release gate.",
         "VS Code metadata": "Conditional hard manual release gate when `code.cmd` is available.",
-        "VS Code strict Monaco marker": "Diagnostic, non-blocking for v0.1.",
+        "VS Code strict Monaco marker": "Diagnostic, non-blocking for v0.2.",
         "Operator-selected foreground app": "Diagnostic/manual confidence gate.",
         "Any additional app": "Diagnostic by default unless a future scorecard promotes it.",
     }
@@ -77,19 +77,20 @@ def test_uia_helper_quality_matrix_uses_latest_manual_smoke_evidence():
     assert "For compatible maintenance releases after `v0.1.9`" in text
     assert "Historical\nmaintenance records from `v0.1.4` onward" in text
     assert "current\n`v0.1.3` readiness round" not in text
-    assert "Latest full manual `v0.1.18` release: pass" in rows["Notepad"][
+    assert "Latest full manual `v0.2.0` release: pass" in rows["Notepad"][
         "Current result"
     ]
-    assert "Latest full manual `v0.1.18` release: pass" in rows["Microsoft Edge"][
+    assert "Latest full manual `v0.2.0` release: pass" in rows["Microsoft Edge"][
         "Current result"
     ]
-    assert "Latest full manual `v0.1.18` release: pass with diagnostic warning" in rows[
+    assert "Latest full manual `v0.2.0` release: pass with diagnostic warning" in rows[
         "VS Code metadata"
     ]["Current result"]
-    assert "Latest full manual `v0.1.18` release: diagnostic failure" in rows[
+    assert "Latest full manual `v0.2.0` release: diagnostic failure" in rows[
         "VS Code strict Monaco marker"
     ]["Current result"]
-    assert "docs/release-v0.1.18.md" in text
+    assert "docs/release-v0.2.0.md" in text
+    assert "Latest full manual `v0.1.18`" not in text
     assert "docs/manual-smoke-evidence-ledger.md" in text
     assert "Fixture/privacy parity matrix after v0.1.18" in text
     assert "Frontmost-only diagnostic last recorded `v0.1.0` final" in rows[
@@ -106,7 +107,8 @@ def test_windows_uia_smoke_points_to_latest_manual_smoke_source():
     text = WINDOWS_SMOKE.read_text(encoding="utf-8")
 
     assert "For the latest full manual UIA smoke source" in text
-    assert "[v0.1.18 maintenance release record](release-v0.1.18.md)" in text
+    assert "[v0.2.0 release record](release-v0.2.0.md)" in text
+    assert "[v0.1.18 maintenance release record](release-v0.1.18.md)" not in text
     assert "last recorded final-release smoke evidence" not in text
     assert "[v0.1.0 final release readiness record]" not in text
 

@@ -11,6 +11,7 @@ from typing import Any, Sequence
 from .atomic import atomic_write_text, restore_or_remove
 from .paths import ensure_state
 from .privacy import denylist_reason
+from .process_diagnostics import format_process_exit_failure
 from .redaction import redact_capture, scan_for_unredacted_secrets
 from .schema import validate_capture, validate_uia_helper_output
 from .storage import index_capture
@@ -192,7 +193,7 @@ def capture_frontmost_with_helper(
     except subprocess.TimeoutExpired as exc:
         raise RuntimeError("helper timed out") from exc
     if completed.returncode != 0:
-        raise RuntimeError(f"helper failed with exit code {completed.returncode}")
+        raise RuntimeError(format_process_exit_failure("helper", completed.returncode))
     if not completed.stdout.strip():
         return CaptureResult(
             path=None,

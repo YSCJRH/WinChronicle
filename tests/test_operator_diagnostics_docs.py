@@ -12,6 +12,7 @@ def test_operator_diagnostics_covers_stable_failure_modes_without_content_echo()
         "ERROR: helper timed out",
         "ERROR: helper returned invalid JSON",
         "ERROR: helper failed with exit code <code>",
+        "Helper exits nonzero | `ERROR: helper failed with exit code <code>`; high Windows status codes also include",
         "ERROR: watcher failed with exit code <code>",
         "windows_status=0xC0000409",
         "ERROR: watcher JSONL line <n> is malformed",
