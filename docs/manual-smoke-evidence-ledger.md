@@ -14,8 +14,8 @@ or token canaries.
 | Field | Value |
 | --- | --- |
 | Stable release baseline | `v0.2.0` |
-| Latest package/tag release | `v0.2.59` ([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.59)) |
-| Manual smoke relationship for latest package/tag | `v0.2.59` does not refresh manual UIA smoke; it is separate from the latest full manual UIA smoke source unless a release record explicitly accepts or reruns manual smoke. |
+| Latest package/tag release | `v0.2.60` ([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.60)) |
+| Manual smoke relationship for latest package/tag | `v0.2.60` does not refresh manual UIA smoke; it is separate from the latest full manual UIA smoke source unless a release record explicitly accepts or reruns manual smoke. |
 | Current maintenance plan | [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md) |
 | Current public metadata audit | [Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md) |
 | Current helper/watcher diagnostics sweep | [Helper and watcher diagnostics sweep after v0.1.18](helper-watcher-diagnostics-sweep-post-v0.1.18.md) |
@@ -135,7 +135,7 @@ smoke. These command patterns are evidence shapes only; replace
   Notepad and Edge passed, VS Code metadata passed with the known Monaco
   diagnostic warning, VS Code strict remains diagnostic and non-blocking, and
   fake-helper monitor watcher smoke passed with local session/report paths.
-- The latest package/tag release is `v0.2.59`, but `v0.2.59` does not refresh
+- The latest package/tag release is `v0.2.60`, but `v0.2.60` does not refresh
   manual UIA smoke. The latest full manual UIA smoke source remains
   [v0.2.0 release record](release-v0.2.0.md) until a later release record
   explicitly accepts inherited evidence for that package/tag or reruns manual
