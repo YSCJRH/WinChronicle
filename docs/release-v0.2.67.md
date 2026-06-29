@@ -12,7 +12,7 @@ sanitized active-marker `session_id` under the local WinChronicle state layout.
 A contaminated or stale `workday-active.json` can no longer redirect stop to
 marker-controlled external files or make stop summarize marker-controlled JSON.
 
-Publication status: pre-publication candidate.
+Publication status: published.
 
 ## Candidate Metadata
 
@@ -21,8 +21,11 @@ Publication status: pre-publication candidate.
 | Release | `v0.2.67` |
 | Stage | `v0.2.67` Workday stop path-boundary release |
 | Evidence date | 2026-06-29, Asia/Shanghai |
-| Publication status | Not published; pending post-publication reconciliation |
-| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67 |
+| Publication status | Published, not a draft, not a prerelease |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67 |
+| Published at | `2026-06-29T01:26:14Z` |
+| Final tag target | `557cc6d6f804efd6fc26b89cd3e27e0ded2b9bff` |
+| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/28342791863, head `557cc6d6f804efd6fc26b89cd3e27e0ded2b9bff` |
 | Previous package/tag release | `v0.2.66` |
 | Previous package/tag release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.66 |
 | Previous package/tag Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27865327396, head `aef5a89d94707c11b7a2e63a7fdddce46649e4b7` |
@@ -45,11 +48,11 @@ Environment:
 | `python -m pytest tests/test_workday.py -q` | Pass | `64 passed`; run with escalated process-control access after the sandbox blocked the pre-existing runner-cleanup process-tree test |
 | `python -m pytest tests/test_cli.py tests/test_codex_workday_plugin.py tests/test_privacy_check.py tests/test_mcp_tools.py -q` | Pass | `59 passed` |
 | `python -m pytest tests/test_version_identity.py tests/test_release_evidence_validator.py tests/test_manual_smoke_freshness_validator.py tests/test_operator_diagnostics_docs.py -q` | Pass | `77 passed` |
-| `python harness\scripts\check_release_evidence.py --project pyproject.toml --require-release-state docs\release-evidence.md` | Pass | release evidence accepted current `v0.2.66` plus `v0.2.67` preflight |
-| `python harness\scripts\check_manual_smoke_freshness.py --project pyproject.toml --ledger docs\manual-smoke-evidence-ledger.md --guide docs\release-evidence.md --checklist docs\release-checklist.md` | Pass | package/tag release and manual UIA smoke source are explicitly separated |
+| `python harness\scripts\check_release_evidence.py --project pyproject.toml --require-release-state docs\release-evidence.md` | Pass | pre-publication run accepted current `v0.2.66` plus `v0.2.67` preflight; post-publication rerun accepted current `v0.2.67` release evidence without preflight |
+| `python harness\scripts\check_manual_smoke_freshness.py --project pyproject.toml --ledger docs\manual-smoke-evidence-ledger.md --guide docs\release-evidence.md --checklist docs\release-checklist.md` | Pass | package/tag release and manual UIA smoke source are separated before and after publication |
 | `git diff --check` | Pass | no whitespace errors |
-| `python -m pytest -q` | Pass | `433 passed in 198.00s`; run with escalated process-control access |
-| `python harness\scripts\run_harness.py` | Pass | `WinChronicle harness passed`; internal pytest `433 passed in 169.52s`; release validators, manual-smoke freshness validator, .NET helper/watcher builds, quick demo, MCP smoke, watcher smokes, productization self-eval, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and fake-helper watcher smoke passed |
+| `python -m pytest -q` | Pass | pre-publication run `433 passed in 198.00s`; post-publication reconciliation rerun `433 passed in 246.53s`; both used escalated process-control access |
+| `python harness\scripts\run_harness.py` | Pass | pre-publication `WinChronicle harness passed` with internal pytest `433 passed in 169.52s`; post-publication reconciliation rerun passed with internal pytest `433 passed in 226.32s`; release validators, manual-smoke freshness validator, .NET helper/watcher builds, quick demo, MCP smoke, watcher smokes, productization self-eval, install CLI smoke, privacy check, fixture capture/search/memory, deterministic watcher fixture, and fake-helper watcher smoke passed |
 
 ## Manual UIA Smoke Gates
 
@@ -92,8 +95,11 @@ JSON files; they may contain observed screen content.
 
 ## Publication Reconciliation
 
-Pending. After publication, verify the `v0.2.67` GitHub release, remote tag
-target, and Windows Harness run. Then update `docs/release-evidence.md`,
-`docs/release-checklist.md`, and `docs/manual-smoke-evidence-ledger.md` so
-`v0.2.67` is the latest package/tag release and latest full manual UIA smoke
-source, and remove the `Next Package Release Preflight` section.
+Published at https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67.
+Remote tag `v0.2.67` points to
+`557cc6d6f804efd6fc26b89cd3e27e0ded2b9bff`. GitHub Windows Harness run
+https://github.com/YSCJRH/WinChronicle/actions/runs/28342791863 passed on the
+same head SHA. Post-publication reconciliation updates
+`docs/release-evidence.md`, `docs/release-checklist.md`, and
+`docs/manual-smoke-evidence-ledger.md` so `v0.2.67` is the current package/tag
+release and latest full manual UIA smoke source.

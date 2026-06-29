@@ -5,9 +5,9 @@ releases.
 
 For operator setup and the current documentation map, start with
 [Operator quickstart](operator-quickstart.md).
-The latest package/tag release is `v0.2.66`
-([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.66));
-the latest full manual UIA smoke source remains [v0.2.66 release record](release-v0.2.66.md).
+The latest package/tag release is `v0.2.67`
+([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67));
+the latest full manual UIA smoke source remains [v0.2.67 release record](release-v0.2.67.md).
 The previous stable release record is [v0.1.19 maintenance release record](release-v0.1.19.md).
 The earlier stable release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
 closed post-v0.1.18 execution evidence lives in
@@ -130,12 +130,13 @@ values does not authorize new capture surfaces.
 Before release, confirm the evidence record distinguishes current package/tag
 evidence from inherited historical manual-smoke evidence:
 
-- the latest package/tag release is `v0.2.66`, recorded in the
-  [v0.2.66 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.66);
-- the latest full manual UIA smoke source remains [v0.2.66 release record](release-v0.2.66.md);
-- `v0.2.67` is the next package release preflight, not yet published; it will
-  refresh manual UIA smoke in [v0.2.67 release record](release-v0.2.67.md)
-  before publication because Workday stop active-marker path handling changed;
+- the latest package/tag release is `v0.2.67`, recorded in the
+  [v0.2.67 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67);
+- the latest full manual UIA smoke source remains [v0.2.67 release record](release-v0.2.67.md);
+- `v0.2.67` records fresh deterministic preflight gates, fresh Notepad and Edge
+  manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
+  diagnostic failure, and fake-helper monitor watcher smoke for the published
+  Workday stop path-boundary release;
 - `v0.2.66` records fresh deterministic preflight gates, fresh Notepad and Edge
   manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke for the published

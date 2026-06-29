@@ -362,7 +362,7 @@ def test_current_release_validator_rejects_unpublished_status(tmp_path):
 def test_release_evidence_guide_published_section_passes_current_release_validator(tmp_path):
     project = tmp_path / "pyproject.toml"
     project.write_text(
-        '[project]\nname = "winchronicle"\nversion = "0.2.66"\n',
+        '[project]\nname = "winchronicle"\nversion = "0.2.67"\n',
         encoding="utf-8",
     )
     completed = _run_validator_args(
@@ -535,30 +535,23 @@ def test_release_evidence_guide_passes_release_state_validator():
     assert completed.returncode == 0, completed.stdout
 
 
-def test_release_evidence_guide_records_published_current_release_with_next_preflight():
+def test_release_evidence_guide_records_published_current_release_without_preflight():
     evidence = (ROOT / "docs" / "release-evidence.md").read_text(encoding="utf-8")
 
-    assert "## Next Package Release Preflight" in evidence
-    assert "| Release | `v0.2.66` |" in evidence
-    assert "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.66 |" in evidence
-    assert "| Tag target SHA | `aef5a89d94707c11b7a2e63a7fdddce46649e4b7` |" in evidence
-    assert (
-        "| Publication status | Published, not a draft, not a prerelease; published at `2026-06-20T08:23:20Z` |"
-        in evidence
-    )
-    assert (
-        "| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/27865327396, head `aef5a89d94707c11b7a2e63a7fdddce46649e4b7` |"
-        in evidence
-    )
-    assert (
-        "| Manual smoke relationship | `v0.2.66` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.66 release record](release-v0.2.66.md). |"
-        in evidence
-    )
+    assert "## Next Package Release Preflight" not in evidence
     assert "| Release | `v0.2.67` |" in evidence
-    assert "| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67 |" in evidence
-    assert "| Publication status | Not published; pending post-publication reconciliation |" in evidence
+    assert "| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67 |" in evidence
+    assert "| Tag target SHA | `557cc6d6f804efd6fc26b89cd3e27e0ded2b9bff` |" in evidence
     assert (
-        "| Manual smoke relationship | `v0.2.67` refreshes manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.66 release record](release-v0.2.66.md) until [v0.2.67 release record](release-v0.2.67.md) is completed and published. |"
+        "| Publication status | Published, not a draft, not a prerelease; published at `2026-06-29T01:26:14Z` |"
+        in evidence
+    )
+    assert (
+        "| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/28342791863, head `557cc6d6f804efd6fc26b89cd3e27e0ded2b9bff` |"
+        in evidence
+    )
+    assert (
+        "| Manual smoke relationship | `v0.2.67` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.67 release record](release-v0.2.67.md). |"
         in evidence
     )
 

@@ -14,8 +14,8 @@ or token canaries.
 | Field | Value |
 | --- | --- |
 | Stable release baseline | `v0.2.0` |
-| Latest package/tag release | `v0.2.66` ([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.66)) |
-| Manual smoke relationship for latest package/tag | `v0.2.66` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.66 release record](release-v0.2.66.md). |
+| Latest package/tag release | `v0.2.67` ([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67)) |
+| Manual smoke relationship for latest package/tag | `v0.2.67` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.67 release record](release-v0.2.67.md). |
 | Current roadmap | [Roadmap](roadmap.md) |
 | Historical post-v0.1.18 maintenance plan | [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md) |
 | Current public metadata audit | [Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md) |
@@ -29,7 +29,7 @@ or token canaries.
 | Completed fixture/privacy parity matrix | [Fixture/privacy parity matrix after v0.1.18](privacy-fixture-parity-matrix-post-v0.1.18.md) |
 | Completed fixture/privacy residual gap audit | [Fixture/privacy residual gap audit after v0.1.18](privacy-residual-gap-audit-post-v0.1.18.md) |
 | Current privacy-output release-readiness decision | [Privacy-output release-readiness decision after v0.1.18](privacy-output-release-readiness-decision-post-v0.1.18.md) |
-| Current full manual-smoke release record | [v0.2.66 release record](release-v0.2.66.md) |
+| Current full manual-smoke release record | [v0.2.67 release record](release-v0.2.67.md) |
 | Previous release-readiness decision | [v0.1.18 maintenance release record](release-v0.1.18.md) |
 | Previous pre-v0.1.18 release-readiness decision | [Privacy-check release-readiness decision after v0.1.17](privacy-check-release-readiness-decision-post-v0.1.17.md) |
 | Previous maintenance plan | [Post-v0.1.17 maintenance plan](next-round-plan-post-v0.1.17.md) |
@@ -41,13 +41,12 @@ or token canaries.
 | Previous prerelease record | [v0.1.16-rc.0 release candidate record](release-candidate-v0.1.16-rc.0.md) |
 | Previous pre-v0.1.16 maintenance plan | [Post-v0.1.15 maintenance plan](next-round-plan-post-v0.1.15.md) |
 | Published full manual-smoke release record | [v0.2.0 release record](release-v0.2.0.md) |
-| Latest full manual-smoke release record | [v0.2.66 release record](release-v0.2.66.md) |
+| Latest full manual-smoke release record | [v0.2.67 release record](release-v0.2.67.md) |
 | Previous stable release record | [v0.1.19 maintenance release record](release-v0.1.19.md) |
-| Latest full manual UIA smoke source | [v0.2.66 release record](release-v0.2.66.md) |
+| Latest full manual UIA smoke source | [v0.2.67 release record](release-v0.2.67.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
-| Last freshness decision | For the published `v0.2.66` Workday status privacy-boundary release, fresh hard-gate manual UIA smoke was rerun because Workday status active-marker output and status JSON behavior changed after `v0.2.65`. Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning, VS Code strict remains a diagnostic non-blocking failure, and fake-helper monitor watcher smoke passed. Artifact paths are local only. |
-| Pending freshness decision | `v0.2.66` does not refresh manual UIA smoke for the pending `v0.2.67` Workday stop path-boundary release. `v0.2.67` must rerun fresh hard-gate manual UIA smoke in [v0.2.67 release record](release-v0.2.67.md) before publication. |
-| Previous freshness decision | For the published `v0.2.65` Workday watcher-launch safe-failure release, fresh hard-gate manual UIA smoke was rerun because product CLI/result error-output behavior changed after `v0.2.64`. |
+| Last freshness decision | For the published `v0.2.67` Workday stop path-boundary release, fresh hard-gate manual UIA smoke was rerun because Workday stop active-marker path handling changed after `v0.2.66`. Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning, VS Code strict remains a diagnostic non-blocking failure, and fake-helper monitor watcher smoke passed. Artifact paths are local only. |
+| Previous freshness decision | For the published `v0.2.66` Workday status privacy-boundary release, fresh hard-gate manual UIA smoke was rerun because Workday status active-marker output and status JSON behavior changed after `v0.2.65`. |
 
 ## Latest Known Manual Evidence
 
@@ -93,6 +92,11 @@ or token canaries.
 | VS Code metadata smoke | Conditional hard manual release gate when `code.cmd` is available | Pass with diagnostic warning | Fresh for the published `v0.2.66` Workday status privacy-boundary release | [v0.2.66 release record](release-v0.2.66.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change again | Local JSON artifact only; do not commit editor contents |
 | VS Code strict Monaco marker | Diagnostic, non-blocking for v0.2 | Diagnostic failure, known Monaco/UIA limitation | Fresh diagnostic for the published `v0.2.66` Workday status privacy-boundary release | [v0.2.66 release record](release-v0.2.66.md) | Refresh only if investigating Monaco/UIA exposure, changing smoke scripts, or release approval requires a new diagnostic | Local diagnostic artifact path only |
 | Fake-helper monitor watcher | Product monitor-session confidence gate | Pass; `captures_written: 1`, `heartbeats: 4`, local session/report paths only | Fresh for the published `v0.2.66` Workday status privacy-boundary release | [v0.2.66 release record](release-v0.2.66.md) and `python harness/scripts/run_harness.py` | Refresh if monitor-session behavior, watcher preview behavior, deterministic watcher gates, or release approval requirements change | Do not save or commit raw watcher JSONL |
+| Notepad targeted UIA smoke | Hard manual release gate | Pass | Fresh for the published `v0.2.67` Workday stop path-boundary release | [v0.2.67 release record](release-v0.2.67.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change again | Local JSON artifact path only; do not commit capture JSON |
+| Edge targeted UIA smoke | Hard manual release gate | Pass | Fresh for the published `v0.2.67` Workday stop path-boundary release | [v0.2.67 release record](release-v0.2.67.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change again | Local JSON artifact path only; do not commit local HTML or capture JSON |
+| VS Code metadata smoke | Conditional hard manual release gate when `code.cmd` is available | Pass with diagnostic warning | Fresh for the published `v0.2.67` Workday stop path-boundary release | [v0.2.67 release record](release-v0.2.67.md) | Refresh if helper behavior, manual smoke scripts, capture behavior, privacy behavior, product CLI/MCP shape, capture surfaces, or release approval requirements change again | Local JSON artifact only; do not commit editor contents |
+| VS Code strict Monaco marker | Diagnostic, non-blocking for v0.2 | Diagnostic failure, known Monaco/UIA limitation | Fresh diagnostic for the published `v0.2.67` Workday stop path-boundary release | [v0.2.67 release record](release-v0.2.67.md) | Refresh only if investigating Monaco/UIA exposure, changing smoke scripts, or release approval requires a new diagnostic | Local diagnostic artifact path only |
+| Fake-helper monitor watcher | Product monitor-session confidence gate | Pass; `captures_written: 1`, `heartbeats: 1`, local session/report paths only | Fresh for the published `v0.2.67` Workday stop path-boundary release | [v0.2.67 release record](release-v0.2.67.md) and `python harness/scripts/run_harness.py` | Refresh if monitor-session behavior, watcher preview behavior, deterministic watcher gates, or release approval requirements change | Do not save or commit raw watcher JSONL |
 
 ## Command Patterns
 
@@ -188,16 +192,17 @@ smoke. These command patterns are evidence shapes only; replace
   known Monaco diagnostic warning, VS Code strict remains diagnostic and
   non-blocking, and fake-helper monitor watcher smoke passed with local
   session/report paths.
-- The latest package/tag release is `v0.2.66`, and `v0.2.66` refreshes manual
-  UIA smoke for its published Workday status privacy-boundary release. The
-  latest full manual UIA smoke source remains
-  [v0.2.66 release record](release-v0.2.66.md) until a later release record
+- The published `v0.2.67` release record reran fresh hard-gate manual UIA smoke
+  because Workday stop active-marker path handling changed after `v0.2.66`.
+  Notepad and Edge passed, VS Code metadata passed with the known Monaco
+  diagnostic warning, VS Code strict remains diagnostic and non-blocking, and
+  fake-helper monitor watcher smoke passed with local session/report paths.
+- The latest package/tag release is `v0.2.67`, and `v0.2.67` refreshes manual
+  UIA smoke for its published Workday stop path-boundary release. The latest
+  full manual UIA smoke source remains
+  [v0.2.67 release record](release-v0.2.67.md) until a later release record
   explicitly accepts inherited evidence for that package/tag or reruns manual
   smoke.
-- `v0.2.66` does not refresh manual UIA smoke for the pending `v0.2.67`
-  Workday stop path-boundary release. `v0.2.67` must rerun fresh hard-gate
-  manual UIA smoke in [v0.2.67 release record](release-v0.2.67.md) before
-  publication.
 - Fresh manual smoke must use the
   [Manual smoke evidence template](manual-smoke-evidence-template.md).
 - Inherited evidence can provide context, but it is not current evidence unless
