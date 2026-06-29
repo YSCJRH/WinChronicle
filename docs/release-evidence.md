@@ -3,9 +3,9 @@
 Use this guide when preparing maintenance, release-candidate, and final release
 evidence. It consolidates what must be recorded for deterministic gates, manual
 smoke, and post-publication reconciliation without committing observed-content
-artifacts. The latest package/tag release is `v0.2.67`
-([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67));
-the latest full manual UIA smoke source remains [v0.2.67 release record](release-v0.2.67.md).
+artifacts. The latest package/tag release is `v0.2.68`
+([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.68));
+the latest full manual UIA smoke source remains [v0.2.68 release record](release-v0.2.68.md).
 The previous stable release record is [v0.1.19 maintenance release record](release-v0.1.19.md).
 The earlier stable release record is [v0.1.18 maintenance release record](release-v0.1.18.md). The
 closed post-v0.1.18 maintenance evidence is recorded in
@@ -108,24 +108,13 @@ post-v0.1.10 cursor is completed historical evidence.
 
 | Field | Value |
 | --- | --- |
-| Release | `v0.2.67` |
-| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67 |
-| Tag target SHA | `557cc6d6f804efd6fc26b89cd3e27e0ded2b9bff` |
-| Publication status | Published, not a draft, not a prerelease; published at `2026-06-29T01:26:14Z` |
-| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/28342791863, head `557cc6d6f804efd6fc26b89cd3e27e0ded2b9bff` |
-| Manual smoke relationship | `v0.2.67` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.67 release record](release-v0.2.67.md). |
-| Current roadmap | [Roadmap](roadmap.md); post-v0.1.18 maintenance evidence is closed historical context. |
-
-## Next Package Release Preflight
-
-| Field | Value |
-| --- | --- |
 | Release | `v0.2.68` |
-| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.68 |
-| Publication status | Not published; pending post-publication reconciliation |
+| Release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.68 |
+| Tag target SHA | `8ad9a5790395a70e2b8569b43d61292ec2f5a586` |
+| Publication status | Published, not a draft, not a prerelease; published at `2026-06-29T03:35:33Z` |
+| Windows Harness | Passed, https://github.com/YSCJRH/WinChronicle/actions/runs/28346732386, head `8ad9a5790395a70e2b8569b43d61292ec2f5a586` |
 | Manual smoke relationship | `v0.2.68` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.68 release record](release-v0.2.68.md). |
-| Required deterministic gate | `python harness/scripts/run_harness.py` |
-| Post-publication reconciliation | Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA after publication. |
+| Current roadmap | [Roadmap](roadmap.md); post-v0.1.18 maintenance evidence is closed historical context. |
 
 ## Evidence Location
 
@@ -150,9 +139,13 @@ Release evidence must name which facts are current and which are inherited from
 historical records. For the current package/tag release and latest full manual
 UIA smoke source:
 
-- the latest package/tag release is `v0.2.67`, recorded in the
-  [v0.2.67 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67);
-- the latest full manual UIA smoke source remains [v0.2.67 release record](release-v0.2.67.md);
+- the latest package/tag release is `v0.2.68`, recorded in the
+  [v0.2.68 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.68);
+- the latest full manual UIA smoke source remains [v0.2.68 release record](release-v0.2.68.md);
+- `v0.2.68` records fresh deterministic preflight gates, fresh Notepad and Edge
+  manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
+  diagnostic failure, and fake-helper monitor watcher smoke for the published
+  Workday start privacy-boundary release;
 - `v0.2.67` records fresh deterministic preflight gates, fresh Notepad and Edge
   manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke for the published
