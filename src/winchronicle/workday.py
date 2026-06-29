@@ -443,6 +443,12 @@ def _active_status_artifact_path(logs_dir: Path, session_id: str, kind: str) -> 
     return logs_dir / f"{session_id}.{kind}.json"
 
 
+def _active_stop_file_path(logs_dir: Path, session_id: str) -> Path | None:
+    if not session_id:
+        return None
+    return logs_dir / f"{session_id}.stop"
+
+
 def _safe_status_text(value: Any) -> str:
     redacted, _counts = redact_text(" ".join(str(value or "").split()))
     return (redacted or "")[:240]
@@ -706,31 +712,37 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
             "capture_surface": CAPTURE_SURFACE,
         }
 
-    stop_file = Path(active["stop_file"])
-    result_file = Path(active["result_file"])
+    session_id = _active_status_session_id(active)
+    stop_file = _active_stop_file_path(paths["logs"], session_id)
+    result_file = _active_status_artifact_path(paths["logs"], session_id, "workday-result")
+    checkpoint_file = _active_status_artifact_path(paths["logs"], session_id, "workday-checkpoint")
     pid = _safe_int(active.get("pid"))
-    try:
-        atomic_write_text(
-            stop_file,
-            datetime.now().astimezone().isoformat(timespec="seconds"),
-            encoding="utf-8",
-        )
-    except Exception:
-        if _is_process_running(pid):
-            _terminate_process_tree(pid)
-            time.sleep(0.2)
+    if stop_file is not None:
+        try:
+            atomic_write_text(
+                stop_file,
+                datetime.now().astimezone().isoformat(timespec="seconds"),
+                encoding="utf-8",
+            )
+        except Exception:
+            if _is_process_running(pid):
+                _terminate_process_tree(pid)
+                time.sleep(0.2)
+    elif _is_process_running(pid):
+        _terminate_process_tree(pid)
+        time.sleep(0.2)
     deadline = time.monotonic() + max(0, wait_seconds)
-    result = _read_json(result_file)
+    result = _read_json(result_file) if result_file else None
     while time.monotonic() < deadline and not result:
         if _is_process_running(pid):
             time.sleep(0.2)
         else:
             time.sleep(0.1)
-        result = _read_json(result_file)
+        result = _read_json(result_file) if result_file else None
     if not result and _is_process_running(pid):
         _terminate_process_tree(pid)
         time.sleep(0.2)
-        result = _read_json(result_file)
+        result = _read_json(result_file) if result_file else None
 
     cleanup_metadata = _cleanup_active_marker(active_path)
     if result:
@@ -749,11 +761,11 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
             **cleanup_metadata,
         }
     summary_source = None
-    checkpoint_summary = _summary_from_payload(_read_json(Path(active.get("checkpoint_file", ""))))
+    checkpoint_summary = _summary_from_payload(_read_json(checkpoint_file)) if checkpoint_file else None
     if checkpoint_summary is not None:
         summary_source = "checkpoint"
     if checkpoint_summary is None:
-        checkpoint_summary = _read_session_or_none(active["session_id"], paths["home"])
+        checkpoint_summary = _read_session_or_none(session_id, paths["home"])
         if checkpoint_summary is not None:
             summary_source = "session_file"
     minimum_captures = int(checkpoint_summary.get("captures_written", 0)) if checkpoint_summary else 0
@@ -762,8 +774,8 @@ def stop_workday(home: Path | str | None = None, *, wait_seconds: int = 30) -> d
     try:
         recovered_result = recover_session_from_capture_buffer(
             paths["home"],
-            session_id=active["session_id"],
-            started_at=str(active.get("started_at", "")),
+            session_id=session_id,
+            started_at=_safe_status_text(active.get("started_at", "")),
             ended_at=datetime.now().astimezone().isoformat(timespec="seconds"),
             minimum_captures=minimum_captures,
         )

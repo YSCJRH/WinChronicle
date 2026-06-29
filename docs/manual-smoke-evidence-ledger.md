@@ -46,6 +46,7 @@ or token canaries.
 | Latest full manual UIA smoke source | [v0.2.66 release record](release-v0.2.66.md) |
 | Freshness policy | Manual smoke inherited from older releases is inherited/stale unless rerun and recorded for the current release. |
 | Last freshness decision | For the published `v0.2.66` Workday status privacy-boundary release, fresh hard-gate manual UIA smoke was rerun because Workday status active-marker output and status JSON behavior changed after `v0.2.65`. Notepad and Edge passed, VS Code metadata passed with the known Monaco diagnostic warning, VS Code strict remains a diagnostic non-blocking failure, and fake-helper monitor watcher smoke passed. Artifact paths are local only. |
+| Pending freshness decision | `v0.2.66` does not refresh manual UIA smoke for the pending `v0.2.67` Workday stop path-boundary release. `v0.2.67` must rerun fresh hard-gate manual UIA smoke in [v0.2.67 release record](release-v0.2.67.md) before publication. |
 | Previous freshness decision | For the published `v0.2.65` Workday watcher-launch safe-failure release, fresh hard-gate manual UIA smoke was rerun because product CLI/result error-output behavior changed after `v0.2.64`. |
 
 ## Latest Known Manual Evidence
@@ -193,6 +194,10 @@ smoke. These command patterns are evidence shapes only; replace
   [v0.2.66 release record](release-v0.2.66.md) until a later release record
   explicitly accepts inherited evidence for that package/tag or reruns manual
   smoke.
+- `v0.2.66` does not refresh manual UIA smoke for the pending `v0.2.67`
+  Workday stop path-boundary release. `v0.2.67` must rerun fresh hard-gate
+  manual UIA smoke in [v0.2.67 release record](release-v0.2.67.md) before
+  publication.
 - Fresh manual smoke must use the
   [Manual smoke evidence template](manual-smoke-evidence-template.md).
 - Inherited evidence can provide context, but it is not current evidence unless

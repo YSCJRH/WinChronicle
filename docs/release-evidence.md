@@ -116,6 +116,17 @@ post-v0.1.10 cursor is completed historical evidence.
 | Manual smoke relationship | `v0.2.66` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.66 release record](release-v0.2.66.md). |
 | Current roadmap | [Roadmap](roadmap.md); post-v0.1.18 maintenance evidence is closed historical context. |
 
+## Next Package Release Preflight
+
+| Field | Value |
+| --- | --- |
+| Release | `v0.2.67` |
+| Expected release URL | https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67 |
+| Publication status | Not published; pending post-publication reconciliation |
+| Manual smoke relationship | `v0.2.67` refreshes manual UIA smoke; the latest full manual UIA smoke source remains [v0.2.66 release record](release-v0.2.66.md) until [v0.2.67 release record](release-v0.2.67.md) is completed and published. |
+| Required deterministic gate | `python harness/scripts/run_harness.py` |
+| Post-publication reconciliation | Update Current Package Release Evidence with tag target SHA and Windows Harness head SHA, remove this preflight, and update the manual smoke ledger to make `v0.2.67` the current package/tag release. |
+
 ## Evidence Location
 
 Release evidence should live in the release-candidate record, final release
@@ -142,6 +153,9 @@ UIA smoke source:
 - the latest package/tag release is `v0.2.66`, recorded in the
   [v0.2.66 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.66);
 - the latest full manual UIA smoke source remains [v0.2.66 release record](release-v0.2.66.md);
+- `v0.2.67` is the next package release preflight, not yet published; it will
+  refresh manual UIA smoke in [v0.2.67 release record](release-v0.2.67.md)
+  before publication because Workday stop active-marker path handling changed;
 - `v0.2.66` records fresh deterministic preflight gates, fresh Notepad and Edge
   manual UIA smoke, VS Code metadata pass with diagnostic warning, VS Code strict
   diagnostic failure, and fake-helper monitor watcher smoke for the published

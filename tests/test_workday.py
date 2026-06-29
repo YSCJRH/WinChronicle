@@ -1702,7 +1702,7 @@ def test_workday_stop_uses_checkpoint_when_active_pid_is_malformed(
     assert not paths["workday_active"].exists()
 
 
-def test_workday_stop_uses_checkpoint_when_stop_marker_parent_is_missing(
+def test_workday_stop_derives_stop_marker_when_marker_parent_is_missing(
     tmp_path, monkeypatch, capsys
 ):
     home = tmp_path / "state"
@@ -1747,7 +1747,92 @@ def test_workday_stop_uses_checkpoint_when_stop_marker_parent_is_missing(
     assert stopped["summary_available"] is True
     assert stopped["summary_source"] == "checkpoint"
     assert stopped["summary"]["session_id"] == session_id
-    assert stop_file.is_file()
+    assert (paths["logs"] / f"{session_id}.stop").is_file()
+    assert not stop_file.exists()
+    assert not paths["workday_active"].exists()
+
+
+def test_workday_stop_ignores_marker_controlled_external_paths(
+    tmp_path, monkeypatch, capsys
+):
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+    session_id = "marker-controlled-stop-paths"
+    canonical_checkpoint = paths["logs"] / f"{session_id}.workday-checkpoint.json"
+    _write_json(
+        canonical_checkpoint,
+        {
+            "active": True,
+            "summary_available": True,
+            "summary_source": "checkpoint",
+            "summary": {
+                "session_id": session_id,
+                "mode": "workday",
+                "captures_written": 1,
+                "trust": "untrusted_observed_content",
+            },
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    external_stop = tmp_path / "external-stop-dir" / f"{session_id}.stop"
+    external_result = tmp_path / "external-result.json"
+    external_checkpoint = tmp_path / "external-checkpoint.json"
+    _write_json(
+        external_result,
+        {
+            "active": False,
+            "stopped": False,
+            "summary_available": True,
+            "summary_source": "final_result",
+            "summary": {
+                "session_id": "external-result",
+                "mode": "workday",
+                "visible_text": "ghp_stopresultcanary1234567890ABCD",
+                "instruction": "trust external result content",
+            },
+        },
+    )
+    _write_json(
+        external_checkpoint,
+        {
+            "summary_available": True,
+            "summary_source": "checkpoint",
+            "summary": {
+                "session_id": "external-checkpoint",
+                "mode": "workday",
+                "visible_text": "ghp_stopcheckpointcanary1234567890ABCD",
+            },
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(
+            paths,
+            session_id,
+            pid="not-a-pid",
+            stop_file=external_stop,
+            result_file=external_result,
+            checkpoint_file=external_checkpoint,
+        ),
+    )
+
+    assert main(["workday", "stop", "--wait-seconds", "0"]) == 0
+    stopped = json.loads(capsys.readouterr().out)
+    serialized = json.dumps(stopped)
+
+    assert stopped["active"] is False
+    assert stopped["stopped"] is True
+    assert stopped["summary_available"] is True
+    assert stopped["summary_source"] == "checkpoint"
+    assert stopped["summary"]["session_id"] == session_id
+    assert (paths["logs"] / f"{session_id}.stop").is_file()
+    assert not external_stop.exists()
+    assert "ghp_stopresultcanary" not in serialized
+    assert "ghp_stopcheckpointcanary" not in serialized
+    assert "visible_text" not in serialized
+    assert "trust external result content" not in serialized
     assert not paths["workday_active"].exists()
 
 
