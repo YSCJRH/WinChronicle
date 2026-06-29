@@ -130,6 +130,8 @@ values does not authorize new capture surfaces.
 Before release, confirm the evidence record distinguishes current package/tag
 evidence from inherited historical manual-smoke evidence:
 
+- pending `v0.2.68` refreshes manual UIA smoke and will record the latest full
+  manual UIA smoke source in [v0.2.68 release record](release-v0.2.68.md);
 - the latest package/tag release is `v0.2.67`, recorded in the
   [v0.2.67 GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67);
 - the latest full manual UIA smoke source remains [v0.2.67 release record](release-v0.2.67.md);

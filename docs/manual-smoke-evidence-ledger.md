@@ -16,6 +16,7 @@ or token canaries.
 | Stable release baseline | `v0.2.0` |
 | Latest package/tag release | `v0.2.67` ([GitHub release](https://github.com/YSCJRH/WinChronicle/releases/tag/v0.2.67)) |
 | Manual smoke relationship for latest package/tag | `v0.2.67` refreshes manual UIA smoke; the latest full manual UIA smoke source is [v0.2.67 release record](release-v0.2.67.md). |
+| Pending release manual smoke relationship | `v0.2.67` does not refresh manual UIA smoke for pending `v0.2.68`; `v0.2.68` must rerun and record fresh manual UIA smoke before publication. |
 | Current roadmap | [Roadmap](roadmap.md) |
 | Historical post-v0.1.18 maintenance plan | [Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md) |
 | Current public metadata audit | [Public metadata audit after v0.1.18](public-metadata-audit-post-v0.1.18.md) |

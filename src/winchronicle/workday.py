@@ -77,8 +77,8 @@ def start_workday(
         return {
             "active": True,
             "error": "workday_session_already_active",
-            "session_id": existing.get("session_id", ""),
-            "pid": existing.get("pid", 0),
+            "session_id": _active_status_session_id(existing),
+            "pid": _safe_int(existing.get("pid")),
             "trust": ACTIVE_TRUST,
             "capture_surface": CAPTURE_SURFACE,
         }
@@ -1933,6 +1933,7 @@ def _terminate_process_tree(pid: int) -> None:
     if pid <= 0:
         return
     if os.name == "nt":
+        descendant_pids = _windows_descendant_pids(pid)
         try:
             subprocess.run(
                 ["taskkill", "/PID", str(pid), "/T", "/F"],
@@ -1943,15 +1944,101 @@ def _terminate_process_tree(pid: int) -> None:
                 timeout=2,
             )
         except subprocess.TimeoutExpired:
-            try:
-                os.kill(pid, signal.SIGTERM)
-            except OSError:
-                pass
+            _kill_process(pid)
+            for descendant_pid in reversed(descendant_pids):
+                _kill_process(descendant_pid)
+        if _wait_for_process_exit([pid, *descendant_pids], timeout=5.0):
+            return
+        for descendant_pid in reversed(descendant_pids):
+            _kill_process(descendant_pid)
+        _kill_process(pid)
+        _wait_for_process_exit([pid, *descendant_pids], timeout=2.0)
         return
     try:
         os.kill(pid, signal.SIGTERM)
     except OSError:
         return
+
+
+def _kill_process(pid: int) -> None:
+    try:
+        os.kill(pid, signal.SIGTERM)
+    except OSError:
+        pass
+
+
+def _wait_for_process_exit(pids: Sequence[int], *, timeout: float) -> bool:
+    watched = tuple(dict.fromkeys(pid for pid in pids if pid > 0))
+    deadline = time.monotonic() + max(0.0, timeout)
+    while time.monotonic() < deadline:
+        if all(not _is_process_running(pid) for pid in watched):
+            return True
+        time.sleep(0.05)
+    return all(not _is_process_running(pid) for pid in watched)
+
+
+def _windows_descendant_pids(pid: int) -> list[int]:
+    if os.name != "nt" or pid <= 0:
+        return []
+    import ctypes
+    from ctypes import wintypes
+
+    class PROCESSENTRY32W(ctypes.Structure):
+        _fields_ = [
+            ("dwSize", wintypes.DWORD),
+            ("cntUsage", wintypes.DWORD),
+            ("th32ProcessID", wintypes.DWORD),
+            ("th32DefaultHeapID", ctypes.c_size_t),
+            ("th32ModuleID", wintypes.DWORD),
+            ("cntThreads", wintypes.DWORD),
+            ("th32ParentProcessID", wintypes.DWORD),
+            ("pcPriClassBase", ctypes.c_long),
+            ("dwFlags", wintypes.DWORD),
+            ("szExeFile", wintypes.WCHAR * 260),
+        ]
+
+    th32cs_snapprocess = 0x00000002
+    kernel32 = ctypes.windll.kernel32
+    kernel32.CreateToolhelp32Snapshot.argtypes = [wintypes.DWORD, wintypes.DWORD]
+    kernel32.CreateToolhelp32Snapshot.restype = wintypes.HANDLE
+    kernel32.Process32FirstW.argtypes = [wintypes.HANDLE, ctypes.POINTER(PROCESSENTRY32W)]
+    kernel32.Process32FirstW.restype = wintypes.BOOL
+    kernel32.Process32NextW.argtypes = [wintypes.HANDLE, ctypes.POINTER(PROCESSENTRY32W)]
+    kernel32.Process32NextW.restype = wintypes.BOOL
+    kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+    kernel32.CloseHandle.restype = wintypes.BOOL
+
+    handle = kernel32.CreateToolhelp32Snapshot(th32cs_snapprocess, 0)
+    if handle == wintypes.HANDLE(-1).value:
+        return []
+    children_by_parent: dict[int, list[int]] = {}
+    try:
+        entry = PROCESSENTRY32W()
+        entry.dwSize = ctypes.sizeof(PROCESSENTRY32W)
+        if not kernel32.Process32FirstW(handle, ctypes.byref(entry)):
+            return []
+        while True:
+            process_id = int(entry.th32ProcessID)
+            parent_id = int(entry.th32ParentProcessID)
+            children_by_parent.setdefault(parent_id, []).append(process_id)
+            entry.dwSize = ctypes.sizeof(PROCESSENTRY32W)
+            if not kernel32.Process32NextW(handle, ctypes.byref(entry)):
+                break
+    finally:
+        kernel32.CloseHandle(handle)
+
+    descendants: list[int] = []
+    seen = {pid}
+    stack = [pid]
+    while stack:
+        parent_id = stack.pop()
+        for child_pid in children_by_parent.get(parent_id, []):
+            if child_pid in seen:
+                continue
+            seen.add(child_pid)
+            descendants.append(child_pid)
+            stack.append(child_pid)
+    return descendants
 
 
 def _terminate_and_wait(process: subprocess.Popen[Any], *, timeout: float = 5.0) -> None:
