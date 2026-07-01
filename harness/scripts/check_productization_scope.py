@@ -63,6 +63,71 @@ RELEASE_METADATA_FILES = {
     "tests/test_version_identity.py",
 }
 
+CLOSEOUT_BRANCHES = {
+    "codex/winchronicle-closeout",
+}
+
+CLOSEOUT_FILES = set().union(*PHASE_FILES.values(), RELEASE_METADATA_FILES) | {
+    ".github/ISSUE_TEMPLATE/feature_proposal.yml",
+    ".github/ISSUE_TEMPLATE/harness_first_task.yml",
+    ".github/ISSUE_TEMPLATE/privacy_boundary_review.yml",
+    ".github/pull_request_template.md",
+    "CONTRIBUTING.md",
+    "docs/codex-app-plugin-install.md",
+    "docs/codex-app-workday-guide.md",
+    "docs/codex-long-term-goal.md",
+    "docs/codex-workday-plugin.md",
+    "docs/demo-promotion-kit.md",
+    "docs/deterministic-demo.md",
+    "docs/mcp-readonly-examples.md",
+    "docs/mcp-result-metadata.md",
+    "docs/operator-quickstart.md",
+    "docs/productization-self-eval.md",
+    "docs/quick-demo.md",
+    "docs/release-checklist.md",
+    "docs/release-evidence.md",
+    "docs/windows-first-run.md",
+    "docs/workday-session.md",
+    "harness/README.md",
+    "harness/fixtures/workday/daily_dry_run_text_contract.json",
+    "harness/fixtures/workday/plugin_dry_run_text_contract.json",
+    "harness/fixtures/workday/plugin_entrypoint_contract.json",
+    "harness/fixtures/workday/setup_dry_run_text_contract.json",
+    "harness/fixtures/workday/status_text_contract.json",
+    "harness/fixtures/workday/stop_human_summary_contract.json",
+    "harness/scorecards/mcp-quality.md",
+    "harness/scorecards/memory-quality.md",
+    "harness/scripts/run_harness.py",
+    "harness/scripts/run_install_cli_smoke.py",
+    "harness/scripts/run_productization_self_eval.py",
+    "harness/scripts/run_watcher_slow_helper_smoke.py",
+    "harness/specs/harness-command-plan.schema.json",
+    "harness/specs/mcp-tool-result.schema.json",
+    "harness/specs/workday-dry-run-text-contract.schema.json",
+    "harness/specs/workday-stop-summary-contract.schema.json",
+    "plugins/winchronicle-workday/skills/workday-recorder/SKILL.md",
+    "src/winchronicle/cli.py",
+    "src/winchronicle/codex_plugins/winchronicle-workday/skills/workday-recorder/SKILL.md",
+    "src/winchronicle/mcp/server.py",
+    "src/winchronicle/workday.py",
+    "tests/test_cli.py",
+    "tests/test_codex_long_term_goal_docs.py",
+    "tests/test_codex_workday_plugin.py",
+    "tests/test_compatibility_contracts.py",
+    "tests/test_compatibility_evidence_docs.py",
+    "tests/test_mcp_result_metadata_docs.py",
+    "tests/test_mcp_tools.py",
+    "tests/test_operator_diagnostics_docs.py",
+    "tests/test_productization_scope.py",
+    "tests/test_productization_self_eval.py",
+    "tests/test_readme_daily_workflow.py",
+    "tests/test_watcher_events.py",
+    "tests/test_windows_first_run_docs.py",
+    "tests/test_windows_harness_workflow.py",
+    "tests/test_workday.py",
+    "tests/test_workday_docs.py",
+}
+
 REQUIRED_BY_PHASE = {
     "p0": {
         "docs/productization-blueprint.md",
@@ -127,6 +192,14 @@ def main() -> int:
         _print_list("Generated or local-state artifacts must not be committed:", generated)
         return 1
 
+    if _is_closeout_branch(branch):
+        forbidden = [path for path in changed if path not in CLOSEOUT_FILES]
+        if forbidden:
+            _print_list("Closeout integration changed files outside scope:", forbidden)
+            return 1
+        print(f"Closeout integration scope check passed for {len(changed)} changed file(s).")
+        return 0
+
     if phase is None:
         touched_productization = [
             path
@@ -135,7 +208,10 @@ def main() -> int:
         ]
         if touched_productization:
             print(f"Productization files changed on unrecognized branch {branch!r}.")
-            print("Use a branch named codex/p0-*, codex/p1-*, ..., or codex/p5-*.")
+            print(
+                "Use a branch named codex/p0-*, codex/p1-*, ..., codex/p5-*, "
+                "or codex/winchronicle-closeout for the approved integration closeout."
+            )
             _print_list("Changed productization files:", touched_productization)
             return 1
         print(f"No productization scope check required for branch {branch!r}.")
@@ -161,6 +237,10 @@ def _phase_from_branch(branch: str) -> str | None:
         if f"/{candidate}-" in branch or branch.startswith(f"codex/{candidate}-"):
             return candidate
     return None
+
+
+def _is_closeout_branch(branch: str) -> bool:
+    return branch in CLOSEOUT_BRANCHES
 
 
 def _changed_files() -> list[str]:
