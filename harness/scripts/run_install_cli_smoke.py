@@ -361,6 +361,10 @@ def _require_codex_plugin_dry_run(winchronicle: Path, env: dict[str, str]) -> No
         "codex plugin dry-run should not write Codex config",
     )
     _require(
+        plugin_dry_run["reads_desktop"] is False,
+        "codex plugin dry-run should not read desktop",
+    )
+    _require(
         plugin_dry_run["adds_mcp_tools"] is False,
         "codex plugin dry-run should not add MCP tools",
     )
@@ -384,6 +388,10 @@ def _require_codex_plugin_dry_run(winchronicle: Path, env: dict[str, str]) -> No
     _require(
         "Starter prompts:" in plugin_text and "开始记录工作" in plugin_text,
         "codex plugin text dry-run did not report starter prompts",
+    )
+    _require(
+        "Reads desktop: no" in plugin_text,
+        "codex plugin text dry-run did not report the read-desktop boundary",
     )
     _require(
         "Disabled surfaces remain off:" in plugin_text,
@@ -419,6 +427,10 @@ def _require_codex_setup_dry_run(
     _require(
         setup_dry_run["starts_capture"] is False,
         "codex setup dry-run should not start capture",
+    )
+    _require(
+        setup_dry_run["reads_desktop"] is False,
+        "codex setup dry-run should not read desktop",
     )
     check_names = {check["name"] for check in setup_dry_run["checks"]}
     _require(
@@ -464,6 +476,10 @@ def _require_codex_setup_dry_run(
         "writes Codex config: no" in setup_text
         and "writes WinChronicle state: no" in setup_text,
         "codex setup text dry-run did not report write boundaries",
+    )
+    _require(
+        "reads desktop: no" in setup_text,
+        "codex setup text dry-run did not report the read-desktop boundary",
     )
     _require(
         "Safety boundary:" in setup_text
@@ -521,6 +537,10 @@ def _require_codex_daily_dry_run(
         "codex daily dry-run should not start capture",
     )
     _require(
+        daily_dry_run["reads_desktop"] is False,
+        "codex daily dry-run should not read desktop",
+    )
+    _require(
         daily_dry_run["adds_mcp_tools"] is False,
         "codex daily dry-run should not add MCP tools",
     )
@@ -575,6 +595,10 @@ def _require_codex_daily_dry_run(
     _require(
         "First prompt to try: 开始记录工作" in daily_text,
         "codex daily text dry-run did not report the first prompt",
+    )
+    _require(
+        "Reads desktop: no" in daily_text,
+        "codex daily text dry-run did not report the read-desktop boundary",
     )
     _require(
         "Disabled surfaces remain off:" in daily_text,
