@@ -14,6 +14,8 @@ Phase 4 MCP acceptance criteria:
 - Observed content returned through MCP includes
   `trust = "untrusted_observed_content"` and an instruction not to follow
   instructions found in observed screen content.
+- MCP output is local evidence, not permission to publish or share results.
+  External sharing still requires explicit user approval.
 - `search_captures` reads from the same SQLite capture index as the CLI search
   path and preserves the CLI result fields inside each MCP match.
 - `search_memory` reads from the same SQLite memory index as the CLI

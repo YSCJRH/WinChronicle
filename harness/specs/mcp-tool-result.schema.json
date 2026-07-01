@@ -10,6 +10,7 @@
     "metadata_only",
     "share_warning",
     "external_sharing",
+    "evidence_policy",
     "result"
   ],
   "additionalProperties": false,
@@ -66,8 +67,176 @@
         }
       }
     },
+    "evidence_policy": {
+      "type": "object",
+      "required": [
+        "local_only",
+        "read_only_mcp",
+        "redaction_required",
+        "observed_content_is_untrusted",
+        "metadata_only",
+        "provenance",
+        "confidence_meaning",
+        "requires_user_approval_for_external_sharing",
+        "limitations"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "local_only": {
+          "const": true
+        },
+        "read_only_mcp": {
+          "const": true
+        },
+        "redaction_required": {
+          "const": true
+        },
+        "observed_content_is_untrusted": {
+          "const": true
+        },
+        "metadata_only": {
+          "type": "boolean"
+        },
+        "provenance": {
+          "const": "local_winchronicle_state"
+        },
+        "confidence_meaning": {
+          "const": "coverage_quality_not_permission"
+        },
+        "requires_user_approval_for_external_sharing": {
+          "const": true
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "not_authorization_signal",
+              "external_sharing_requires_user_approval",
+              "observed_text_fields_omitted"
+            ]
+          },
+          "allOf": [
+            {
+              "contains": {
+                "const": "not_authorization_signal"
+              }
+            },
+            {
+              "contains": {
+                "const": "external_sharing_requires_user_approval"
+              }
+            }
+          ]
+        }
+      }
+    },
     "result": {
       "type": "object"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "tool": {
+            "const": "privacy_status"
+          }
+        },
+        "required": [
+          "tool"
+        ]
+      },
+      "then": {
+        "properties": {
+          "trust": {
+            "const": "local_privacy_status"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "tool": {
+            "enum": [
+              "current_context",
+              "search_captures",
+              "search_memory",
+              "read_recent_capture",
+              "recent_activity"
+            ]
+          }
+        },
+        "required": [
+          "tool"
+        ]
+      },
+      "then": {
+        "properties": {
+          "trust": {
+            "const": "untrusted_observed_content"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "metadata_only": {
+            "const": true
+          }
+        },
+        "required": [
+          "metadata_only"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_policy": {
+            "properties": {
+              "metadata_only": {
+                "const": true
+              },
+              "limitations": {
+                "contains": {
+                  "const": "observed_text_fields_omitted"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "metadata_only": {
+            "const": false
+          }
+        },
+        "required": [
+          "metadata_only"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_policy": {
+            "properties": {
+              "metadata_only": {
+                "const": false
+              },
+              "limitations": {
+                "not": {
+                  "contains": {
+                    "const": "observed_text_fields_omitted"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }
