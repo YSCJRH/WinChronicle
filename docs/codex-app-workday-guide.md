@@ -2,6 +2,8 @@
 
 This guide is for an ordinary user who wants Codex app to call WinChronicle as a
 daily work recorder. It is separate from developing the WinChronicle repository.
+Use it as a record-only flow: the default daily review is based on
+summary-level evidence and does not send raw observed text.
 
 ## Setup
 
@@ -61,9 +63,12 @@ For a shorter copyable guide, use:
 winchronicle codex daily --dry-run --format text
 ```
 
-The daily dry-run prints `what_to_say_next` and `first_prompt_to_try` in JSON
-or text form so you can use the plugin without reading the full JSON. After
-adding the local plugin source, try:
+The daily dry-run prints `what_to_say_next`, `first_prompt_to_try`, and
+`summary_boundary` in JSON or text form so you can use the plugin without
+reading the full JSON. The `summary_boundary` field says the record-only
+summary uses summary-level evidence, does not send raw observed text, and is
+not a telemetry or log-counter report. Technical counters belong only in the
+explicit technical/debugging view. After adding the local plugin source, try:
 
 ```text
 开始记录工作
@@ -90,7 +95,8 @@ error-signal summaries, and explicit user context already in the current chat.
 It does not send raw observed text, does not read file contents, does not add a
 new CLI command, and does not add MCP tools.
 
-The default report should read like a work assistant, not a log report:
+The default report should read like a work assistant, not a telemetry or
+log-counter report:
 
 - 今天主要做了什么
 - 进展如何

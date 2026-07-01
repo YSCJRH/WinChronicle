@@ -1,0 +1,162 @@
+{
+  "summary_source": "checkpoint",
+  "summary": {
+    "session_schema_version": 1,
+    "session_id": "golden-human-stop",
+    "mode": "workday",
+    "started_at": "2026-04-25T09:00:00+08:00",
+    "ended_at": "2026-04-25T10:00:00+08:00",
+    "duration_seconds": 3600,
+    "trust": "untrusted_observed_content",
+    "instruction": "Monitor a bounded local workday session",
+    "untrusted_observed_content": true,
+    "captures_written": 42,
+    "duplicates_skipped": 7,
+    "denylisted_skipped": 1,
+    "excluded_skipped": 0,
+    "heartbeats": 12,
+    "app_segments": [
+      {
+        "app_name": "Codex",
+        "title": "WinChronicle - Workday summary",
+        "capture_count": 24
+      },
+      {
+        "app_name": "chrome",
+        "title": "Research Notes - Google Chrome",
+        "capture_count": 18
+      }
+    ],
+    "suggestions": [
+      "Multiple apps appeared in the session; review context switches."
+    ],
+    "source_capture_paths": [
+      "capture-alpha",
+      "capture-beta"
+    ],
+    "storage_policy": {
+      "raw_watcher_jsonl_saved": false,
+      "html_report_contains_visible_text": false,
+      "max_app_segments": 500,
+      "max_title_chars": 120,
+      "source_capture_paths_limit": 1000
+    },
+    "storage_usage": {
+      "session_json_bytes": 4096,
+      "html_report_bytes": 2048
+    },
+    "error_signals": {
+      "schema_version": 1,
+      "trust": "untrusted_observed_content",
+      "contains_observed_text": false,
+      "total_count": 12,
+      "sample_limit": 25,
+      "by_app": [
+        {
+          "app_name": "Codex",
+          "count": 12
+        }
+      ],
+      "by_field": [
+        {
+          "field": "visible_text",
+          "count": 12
+        }
+      ],
+      "by_keyword": [
+        {
+          "keyword": "failed",
+          "count": 12
+        }
+      ],
+      "time_buckets": [
+        {
+          "bucket_start": "2026-04-25T09:30+08:00",
+          "count": 12
+        }
+      ],
+      "samples": [
+        {
+          "timestamp": "2026-04-25T09:30:00+08:00",
+          "time_bucket": "2026-04-25T09:30+08:00",
+          "app_name": "Codex",
+          "fields": [
+            "visible_text"
+          ],
+          "keywords": [
+            "failed"
+          ],
+          "source_id": "capture-alpha"
+        }
+      ]
+    },
+    "report_path": "golden-human-stop.html"
+  },
+  "expected_contains": [
+    "# 今日工作复盘",
+    "复盘来源: 本地阶段性记录",
+    "来源说明: 最终结果暂不可用，本次复盘使用已保存的本地阶段性记录。",
+    "## 今日工作结论",
+    "本次复盘基于约 1 小时的本地记录",
+    "根据本地记录",
+    "今天主要使用了 Codex、浏览器",
+    "今日工作线索",
+    "## 工作进行情况",
+    "今天已经记录到工作活动",
+    "## 明天改进建议",
+    "如果希望日报更像项目复盘",
+    "如果今天有真正卡住的事，可以顺手记一句处理结果",
+    "## 可考虑方向",
+    "这次先保留软件名：浏览器",
+    "明天先处理真正影响推进的事项"
+  ],
+  "forbidden_substrings": [
+    "工作概览",
+    "数据看板",
+    "技术证据视图",
+    "默认日报不会显示这些计数器",
+    "捕获数量",
+    "跳过数量",
+    "观察来源记录数",
+    "Session JSON",
+    "HTML report",
+    "数据依据",
+    "隐私边界",
+    "capture_count",
+    "captures_written",
+    "source_capture_paths",
+    "storage_usage",
+    "session_json_bytes",
+    "html_report_bytes",
+    "error_signals",
+    "命中次数",
+    "12 次错误",
+    "capture-alpha",
+    "visible_text",
+    "failed",
+    "untrusted_observed_content",
+    "raw_watcher_jsonl_saved"
+  ],
+  "human_summary_forbidden_markers": [
+    "工作概览",
+    "数据看板",
+    "技术证据视图",
+    "默认日报不会显示这些计数器",
+    "捕获数量",
+    "跳过数量",
+    "观察来源记录数",
+    "Session JSON",
+    "HTML report",
+    "capture_count"
+  ],
+  "technical_summary_required_markers": [
+    "工作概览",
+    "技术证据视图",
+    "默认日报不会显示这些计数器",
+    "捕获数量",
+    "跳过数量",
+    "观察来源记录数",
+    "Session JSON",
+    "HTML report"
+  ]
+}

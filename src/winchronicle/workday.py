@@ -470,6 +470,7 @@ def format_workday_status_text(status: dict[str, Any]) -> str:
         started = _safe_text(status.get("started_at", "")) or "未知时间"
         duration = _format_duration(_safe_int(status.get("duration_seconds")))
         summary_hint = "已有阶段性总结" if status.get("summary_available") else "阶段性总结还在生成中"
+        review_hint = _running_status_review_hint(status)
         lines.extend(
             [
                 "正在记录今天的工作。",
@@ -477,6 +478,8 @@ def format_workday_status_text(status: dict[str, Any]) -> str:
                 f"- 当前状态: {state}",
                 f"- 从 {started} 开始，最长记录 {duration}。",
                 f"- 当前总结: {summary_hint}。",
+                f"- 阶段性复盘: {review_hint}。",
+                "- 记录边界: 正在记录中；未保存或未登记的工作会保持保守表达。",
                 "- 结束时直接说：停止工作并总结。",
             ]
         )
@@ -489,6 +492,7 @@ def format_workday_status_text(status: dict[str, Any]) -> str:
                 "",
                 f"- 当前状态: {state}",
                 f"- 当前总结: {summary_hint}。",
+                "- 复盘边界: 可从本地阶段性记录继续查看；进程已停止，未保存或未登记的工作会保持保守表达。",
                 f"- 可直接查看：winchronicle workday summarize {session_id} --format text --language zh-CN。",
                 "- 如需收尾，也可以说：停止工作并总结。",
             ]
@@ -498,6 +502,7 @@ def format_workday_status_text(status: dict[str, Any]) -> str:
             [
                 "当前没有在记录。",
                 "",
+                "- 状态边界: 这里只查看本地记录状态，不会启动 watcher/helper/UIA capture，也不会读取桌面内容。",
                 "- 要开始时说：开始记录工作。",
                 "- 要查看状态时说：查看工作记录状态。",
             ]
@@ -507,11 +512,19 @@ def format_workday_status_text(status: dict[str, Any]) -> str:
             "",
             "## 安全说明",
             "",
-            "- 该状态视图只读取本地 session metadata，不启动 watcher/helper/UIA capture 或桌面读取。",
+            "- 该状态视图只读取本地记录状态信息，不启动 watcher/helper/UIA capture 或桌面读取。",
             "- 记录仍是本地、有限时长、只读；未新增 截图/" "O" "CR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具。",
         ]
     )
     return "\n".join(lines).rstrip() + "\n"
+
+
+def _running_status_review_hint(status: dict[str, Any]) -> str:
+    if not status.get("summary_available"):
+        return "尚未生成；当前仍在记录，结束时会基于当时已保存的本地记录保守复盘"
+    if status.get("checkpoint_available") or status.get("summary_source") == "checkpoint":
+        return "已有本地阶段性记录；结束时会基于已保存记录生成保守总结"
+    return "已有本地总结线索；结束时会基于已保存记录生成保守总结"
 
 
 def _stale_status_summary_hint(status: dict[str, Any]) -> str:
@@ -594,7 +607,11 @@ def format_workday_stop_text(
         )
         source_notice = _stop_summary_source_notice(payload)
         if source_notice:
-            return _insert_after_first_heading(summary_text, f"复盘来源: {source_notice}")
+            source_lines = [f"复盘来源: {source_notice}"]
+            source_explanation = _stop_summary_source_explanation(payload)
+            if source_explanation:
+                source_lines.append(f"来源说明: {source_explanation}")
+            return _insert_after_first_heading(summary_text, source_lines)
         return summary_text
 
     if not payload.get("stopped"):
@@ -632,12 +649,28 @@ def _stop_summary_source_notice(payload: dict[str, Any]) -> str:
     return ""
 
 
-def _insert_after_first_heading(text: str, line: str) -> str:
+def _stop_summary_source_explanation(payload: dict[str, Any]) -> str:
+    source = payload.get("summary_source")
+    if source == "checkpoint":
+        return "最终结果暂不可用，本次复盘使用已保存的本地阶段性记录。"
+    if source == "session_file":
+        return "本次复盘使用已保存的本地工作记录。"
+    if source == "capture_buffer_recovery" or payload.get("recovered_from_capture_buffer"):
+        return "最终结果不可用，本次复盘由已脱敏的本地记录恢复生成。"
+    return ""
+
+
+def _insert_after_first_heading(text: str, inserted: Sequence[str] | str) -> str:
     lines = text.rstrip("\n").splitlines()
+    if isinstance(inserted, str):
+        inserted_lines = [inserted.rstrip()]
+    else:
+        inserted_lines = [line.rstrip() for line in inserted if line.rstrip()]
     if not lines:
-        return line.rstrip() + "\n"
-    lines.insert(1, "")
-    lines.insert(2, line.rstrip())
+        return "\n".join(inserted_lines).rstrip() + "\n"
+    if not inserted_lines:
+        return "\n".join(lines).rstrip() + "\n"
+    lines[1:1] = ["", *inserted_lines]
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -907,6 +940,7 @@ def _format_workday_technical_text_summary(
     lines = [
         "# 工作概览",
         "",
+        "- 摘要样式: 技术证据视图，仅用于调试或排查底层证据计数；默认日报不会显示这些计数器。",
         f"- 会话: {_safe_text(session.get('session_id', ''))}",
         f"- 模式: {_safe_text(session.get('mode', 'workday'))}",
         f"- 信任边界: {_safe_text(session.get('trust', 'untrusted_observed_content'))}",
@@ -1077,6 +1111,12 @@ def _format_work_conclusions(session: dict[str, Any], project_snapshot: Any) -> 
 
     if focus_notes:
         lines.append(f"- 今日关注事项: {'；'.join(focus_notes)}。")
+
+    duration = _safe_int(session.get("duration_seconds"))
+    if duration > 0:
+        lines.append(
+            f"- 本次复盘基于约 {_format_duration(duration)}的本地记录；未登记项目或未保存的工作会保持保守表达。"
+        )
 
     if changed_projects:
         for project in changed_projects[:3]:
@@ -1947,6 +1987,7 @@ def _terminate_process_tree(pid: int) -> None:
             _kill_process(pid)
             for descendant_pid in reversed(descendant_pids):
                 _kill_process(descendant_pid)
+        descendant_pids = _merge_pids(descendant_pids, _windows_descendant_pids(pid))
         if _wait_for_process_exit([pid, *descendant_pids], timeout=5.0):
             return
         for descendant_pid in reversed(descendant_pids):
@@ -1958,6 +1999,10 @@ def _terminate_process_tree(pid: int) -> None:
         os.kill(pid, signal.SIGTERM)
     except OSError:
         return
+
+
+def _merge_pids(first: Sequence[int], second: Sequence[int]) -> list[int]:
+    return list(dict.fromkeys(pid for pid in (*first, *second) if pid > 0))
 
 
 def _kill_process(pid: int) -> None:

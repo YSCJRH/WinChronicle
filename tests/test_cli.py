@@ -12,6 +12,10 @@ from winchronicle.privacy import DISABLED_SURFACE_STATUS, TRUST
 
 
 ROOT = Path(__file__).resolve().parents[1]
+WORKDAY_FIXTURES = ROOT / "harness" / "fixtures" / "workday"
+WORKDAY_DRY_RUN_TEXT_SCHEMA = (
+    ROOT / "harness" / "specs" / "workday-dry-run-text-contract.schema.json"
+)
 
 SEARCH_RESULT_KEYS = {"timestamp", "app_name", "title", "snippet", "path", "trust"}
 CODEX_ENABLED_TOOL_ORDER = [
@@ -37,6 +41,48 @@ FORBIDDEN_CODEX_TOOL_NAMES = {
     "write_memory",
     "read_file",
 }
+
+
+def test_workday_dry_run_text_contract_fixtures_match_schema():
+    schema = json.loads(WORKDAY_DRY_RUN_TEXT_SCHEMA.read_text(encoding="utf-8"))
+    fixture_paths = sorted(WORKDAY_FIXTURES.glob("*_dry_run_text_contract.json"))
+
+    assert [path.name for path in fixture_paths] == [
+        "daily_dry_run_text_contract.json",
+        "plugin_dry_run_text_contract.json",
+        "setup_dry_run_text_contract.json",
+    ]
+
+    required_keys = set(schema["required"])
+    allowed_keys = set(schema["properties"])
+
+    for path in fixture_paths:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+
+        assert set(payload) == allowed_keys
+        assert required_keys <= set(payload)
+        assert all(isinstance(item, str) and item for item in payload["command"])
+        assert all(
+            isinstance(item, str) and item for item in payload["expected_contains"]
+        )
+        assert all(
+            isinstance(item, str) and item for item in payload["forbidden_substrings"]
+        )
+        assert all(
+            isinstance(pair, list)
+            and len(pair) == 2
+            and all(isinstance(item, str) and item for item in pair)
+            for pair in payload["ordered_pairs"]
+        )
+        assert any(
+            "desktop" in item.lower() and ": no" in item.lower()
+            for item in payload["expected_contains"]
+        )
+        assert any(
+            "desktop" in item.lower() and ": yes" in item.lower()
+            for item in payload["forbidden_substrings"]
+        )
+        assert '"command":' in payload["forbidden_substrings"]
 
 
 def test_status_cli_matches_mcp_privacy_contract(tmp_path, monkeypatch, capsys):
@@ -230,6 +276,7 @@ def test_codex_plugin_dry_run_prints_local_plugin_source_without_state_write(
     assert payload["command"] == "codex plugin"
     assert payload["dry_run"] is True
     assert payload["writes_config"] is False
+    assert payload["reads_desktop"] is False
     assert payload["plugin_name"] == "winchronicle-workday"
     assert payload["plugin_available"] is True
     assert Path(payload["plugin_path"]).is_dir()
@@ -268,6 +315,11 @@ def test_codex_plugin_dry_run_prints_local_plugin_source_without_state_write(
     assert payload["record_only_prompt_command"] == (
         "winchronicle codex daily --dry-run --format text"
     )
+    assert payload["summary_boundary"] == (
+        "The record-only summary uses summary-level evidence, does not send raw observed text, "
+        "and is not a telemetry or log-counter report. Technical counters belong only in the "
+        "explicit technical/debugging view."
+    )
     assert "add this local plugin source path" in payload["install_hint"].lower()
     assert "screenshots" in payload["disabled_surfaces"]
     assert "mcp_write_tools" in payload["disabled_surfaces"]
@@ -290,6 +342,8 @@ def test_codex_plugin_dry_run_text_format_prints_copyable_source_without_state_w
     assert output.startswith("WinChronicle Codex plugin dry-run")
     assert "Dry run only: yes" in output
     assert "Writes config: no" in output
+    assert "Starts capture: no" in output
+    assert "Reads desktop: no" in output
     assert "Adds MCP tools: no" in output
     assert "Observed content trust: untrusted_observed_content" in output
     assert "Plugin source:" in output
@@ -313,6 +367,11 @@ def test_codex_plugin_dry_run_text_format_prints_copyable_source_without_state_w
         in output
     )
     assert "winchronicle codex daily --dry-run --format text" in output
+    assert "Summary boundary:" in output
+    assert "record-only" in output
+    assert "summary-level evidence" in output
+    assert "does not send raw observed text" in output
+    assert "not a telemetry or log-counter report" in output
     assert "Disabled surfaces remain off:" in output
     assert "- screenshots" in output
     assert "- ocr" in output
@@ -322,6 +381,50 @@ def test_codex_plugin_dry_run_text_format_prints_copyable_source_without_state_w
     assert "visible_text" not in output
     assert "focused_text" not in output
     assert '"command":' not in output
+
+
+def test_codex_plugin_dry_run_text_matches_golden_fixture_contract(
+    tmp_path, monkeypatch, capsys
+):
+    contract_path = WORKDAY_FIXTURES / "plugin_dry_run_text_contract.json"
+    contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(contract["command"]) == 0
+    output = capsys.readouterr().out
+
+    for expected in contract["expected_contains"]:
+        assert expected in output
+    for forbidden in contract["forbidden_substrings"]:
+        assert forbidden not in output
+
+    for before, after in contract["ordered_pairs"]:
+        assert output.index(before) < output.index(after)
+
+    assert not home.exists()
+
+
+def test_codex_setup_dry_run_text_matches_golden_fixture_contract(
+    tmp_path, monkeypatch, capsys
+):
+    contract_path = WORKDAY_FIXTURES / "setup_dry_run_text_contract.json"
+    contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(contract["command"]) == 0
+    output = capsys.readouterr().out
+
+    for expected in contract["expected_contains"]:
+        assert expected in output
+    for forbidden in contract["forbidden_substrings"]:
+        assert forbidden not in output
+
+    for before, after in contract["ordered_pairs"]:
+        assert output.index(before) < output.index(after)
+
+    assert not home.exists()
 
 
 def test_codex_setup_dry_run_prints_readiness_report_without_state_write(
@@ -339,6 +442,7 @@ def test_codex_setup_dry_run_prints_readiness_report_without_state_write(
     assert payload["writes_config"] is False
     assert payload["writes_state"] is False
     assert payload["starts_capture"] is False
+    assert payload["reads_desktop"] is False
     assert payload["observed_content_trust"] == TRUST
 
     check_names = {check["name"] for check in payload["checks"]}
@@ -358,6 +462,11 @@ def test_codex_setup_dry_run_prints_readiness_report_without_state_write(
     assert server["enabled_tools"] == CODEX_ENABLED_TOOL_ORDER
     assert set(server["enabled_tools"]) == set(TOOL_NAMES)
     assert payload["mcp"]["writes_config"] is False
+    assert payload["summary_boundary"] == (
+        "The record-only summary uses summary-level evidence, does not send raw observed text, "
+        "and is not a telemetry or log-counter report. Technical counters belong only in the "
+        "explicit technical/debugging view."
+    )
 
     assert payload["plugin"]["plugin_name"] == "winchronicle-workday"
     assert payload["plugin"]["plugin_available"] is True
@@ -393,10 +502,13 @@ def test_codex_setup_dry_run_text_format_prints_readiness_without_state_write(
     assert "- 查看工作记录状态" in output
     assert "- 停止工作并总结" in output
     assert "Safety boundary:" in output
+    assert "Summary boundary:" in output
+    assert "not a telemetry or log-counter report" in output
     assert "dry run only: yes" in output
     assert "writes Codex config: no" in output
     assert "writes WinChronicle state: no" in output
     assert "starts capture now: no" in output
+    assert "reads desktop: no" in output
     assert "Observed content trust: untrusted_observed_content" in output
     assert "no screenshots, OCR, clipboard, desktop control, or MCP write tools" in output
     assert "For diagnostics: winchronicle doctor" in output
@@ -428,6 +540,7 @@ def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
     assert payload["writes_config"] is False
     assert payload["writes_state"] is False
     assert payload["starts_capture"] is False
+    assert payload["reads_desktop"] is False
     assert payload["adds_mcp_tools"] is False
     assert payload["observed_content_trust"] == TRUST
 
@@ -478,11 +591,38 @@ def test_codex_daily_dry_run_prints_record_only_workflow_without_state_write(
     assert "git status" in payload["recording_mode_boundary"]
     assert "rg" in payload["recording_mode_boundary"]
     assert "Get-Content" in payload["recording_mode_boundary"]
+    assert payload["summary_boundary"] == (
+        "The record-only summary uses summary-level evidence, does not send raw observed text, "
+        "and is not a telemetry or log-counter report. Technical counters belong only in the "
+        "explicit technical/debugging view."
+    )
 
     assert not home.exists()
     assert "visible_text" not in output
     assert "focused_text" not in output
     assert "password" not in output.lower()
+
+
+def test_codex_daily_dry_run_text_matches_golden_fixture_contract(
+    tmp_path, monkeypatch, capsys
+):
+    contract_path = WORKDAY_FIXTURES / "daily_dry_run_text_contract.json"
+    contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+
+    assert main(contract["command"]) == 0
+    output = capsys.readouterr().out
+
+    for expected in contract["expected_contains"]:
+        assert expected in output
+    for forbidden in contract["forbidden_substrings"]:
+        assert forbidden not in output
+
+    for before, after in contract["ordered_pairs"]:
+        assert output.index(before) < output.index(after)
+
+    assert not home.exists()
 
 
 def test_codex_daily_dry_run_text_format_prints_copyable_user_path_without_state_write(
@@ -499,6 +639,7 @@ def test_codex_daily_dry_run_text_format_prints_copyable_user_path_without_state
     assert "Writes config: no" in output
     assert "Writes state: no" in output
     assert "Starts capture: no" in output
+    assert "Reads desktop: no" in output
     assert "Adds MCP tools: no" in output
     assert "Observed content trust: untrusted_observed_content" in output
     assert "Add local plugin source:" in output
@@ -508,6 +649,8 @@ def test_codex_daily_dry_run_text_format_prints_copyable_user_path_without_state
     assert "- 查看工作记录状态" in output
     assert "- 停止工作并总结" in output
     assert "Disabled surfaces remain off:" in output
+    assert "Summary boundary:" in output
+    assert "not a telemetry or log-counter report" in output
     assert "- screenshots" in output
     assert "- ocr" in output
     assert "- clipboard" in output

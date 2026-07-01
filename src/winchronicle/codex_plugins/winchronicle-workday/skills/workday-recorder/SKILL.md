@@ -37,7 +37,9 @@ winchronicle workday intent "结束工作并总结" --execute --wait-seconds 60
 After the stop command returns, do not answer with raw counters first. Use the local CLI output as evidence, then write a Codex-assisted Chinese daily report.
 Use only summary-level evidence from the local CLI output and explicit context
 already present in the conversation. Do not paste telemetry counters as the main
-answer. The default summary is a human daily review, not a telemetry report.
+answer. Technical counters belong only in the explicit technical/debugging view,
+not in the default daily report. The default summary is a human daily review,
+not a telemetry or log-counter report.
 If no session is active, the CLI prints a short Chinese status message. Pass that
 through and do not expose internal JSON fields.
 Lead with plain-language answers to:

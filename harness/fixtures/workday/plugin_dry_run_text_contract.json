@@ -1,0 +1,78 @@
+{
+  "command": [
+    "codex",
+    "plugin",
+    "--dry-run",
+    "--format",
+    "text"
+  ],
+  "expected_contains": [
+    "WinChronicle Codex plugin dry-run",
+    "Dry run only: yes",
+    "Writes config: no",
+    "Starts capture: no",
+    "Reads desktop: no",
+    "Adds MCP tools: no",
+    "Observed content trust: untrusted_observed_content",
+    "Plugin available: yes",
+    "Plugin source:",
+    "Codex App -> Plugins -> Add local plugin source ->",
+    "Starter prompts:",
+    "- 开始记录工作",
+    "- 停止工作并总结",
+    "- 查看工作记录状态",
+    "Post-install self-check:",
+    "After adding the plugin source, open a new Codex App thread in the folder you want to record.",
+    "Say: 查看工作记录状态",
+    "Expected local command: winchronicle workday intent \"查看工作记录状态\" --execute",
+    "If Codex starts scanning files instead, paste the record-only prompt from:",
+    "winchronicle codex daily --dry-run --format text",
+    "Summary boundary:",
+    "record-only summary uses summary-level evidence",
+    "does not send raw observed text",
+    "not a telemetry or log-counter report",
+    "Technical counters belong only in the explicit technical/debugging view",
+    "Disabled surfaces remain off:",
+    "- screenshots",
+    "- ocr",
+    "- clipboard",
+    "- desktop_control",
+    "- mcp_write_tools",
+    "Add this local plugin source path in the Codex app plugin UI or local plugin source settings",
+    "do not paste summaries into chat unless the user explicitly asks for chat output"
+  ],
+  "forbidden_substrings": [
+    "Writes config: yes",
+    "Starts capture: yes",
+    "Reads desktop: yes",
+    "Adds MCP tools: yes",
+    "\"command\":",
+    "visible_text",
+    "focused_text",
+    "password",
+    "desktop-observation",
+    "raw JSON"
+  ],
+  "ordered_pairs": [
+    [
+      "WinChronicle Codex plugin dry-run",
+      "Plugin source:"
+    ],
+    [
+      "Plugin source:",
+      "Starter prompts:"
+    ],
+    [
+      "Starter prompts:",
+      "Post-install self-check:"
+    ],
+    [
+      "Post-install self-check:",
+      "Summary boundary:"
+    ],
+    [
+      "Summary boundary:",
+      "Disabled surfaces remain off:"
+    ]
+  ]
+}

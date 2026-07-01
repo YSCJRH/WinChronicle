@@ -3,6 +3,8 @@ import os
 import sys
 from pathlib import Path
 
+from jsonschema import Draft202012Validator
+
 from winchronicle.capture import capture_once_from_fixture
 import winchronicle.cli as cli_module
 from winchronicle.cli import main
@@ -10,11 +12,92 @@ from winchronicle.paths import ensure_state
 from winchronicle.redaction import scan_for_unredacted_secrets
 from winchronicle.session import monitor_events
 import winchronicle.workday as workday_module
-from winchronicle.workday import _write_json, format_workday_stop_text, format_workday_text_summary
+from winchronicle.workday import (
+    _write_json,
+    format_workday_status_text,
+    format_workday_stop_text,
+    format_workday_text_summary,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
 WATCHER_FIXTURE = ROOT / "harness" / "fixtures" / "watcher" / "notepad_burst.jsonl"
+WORKDAY_STOP_HUMAN_SUMMARY_CONTRACT = (
+    ROOT / "harness" / "fixtures" / "workday" / "stop_human_summary_contract.json"
+)
+WORKDAY_STOP_SUMMARY_SCHEMA = ROOT / "harness" / "specs" / "workday-stop-summary-contract.schema.json"
+
+
+def _workday_summary_marker_contract() -> dict[str, tuple[str, ...]]:
+    contract = json.loads(WORKDAY_STOP_HUMAN_SUMMARY_CONTRACT.read_text(encoding="utf-8"))
+    return {
+        "human_summary_forbidden_markers": tuple(contract["human_summary_forbidden_markers"]),
+        "technical_summary_required_markers": tuple(contract["technical_summary_required_markers"]),
+    }
+
+
+def _assert_human_summary_hides_technical_evidence(text_summary: str) -> None:
+    markers = _workday_summary_marker_contract()["human_summary_forbidden_markers"]
+    for marker in markers:
+        assert marker not in text_summary
+
+
+def _assert_technical_summary_shows_evidence_boundary(technical_summary: str) -> None:
+    markers = _workday_summary_marker_contract()["technical_summary_required_markers"]
+    for marker in markers:
+        assert marker in technical_summary
+
+
+def test_workday_summary_marker_contract_fixture_defines_human_and_technical_boundaries():
+    contract = json.loads(WORKDAY_STOP_HUMAN_SUMMARY_CONTRACT.read_text(encoding="utf-8"))
+
+    assert contract["human_summary_forbidden_markers"] == [
+        "工作概览",
+        "数据看板",
+        "技术证据视图",
+        "默认日报不会显示这些计数器",
+        "捕获数量",
+        "跳过数量",
+        "观察来源记录数",
+        "Session JSON",
+        "HTML report",
+        "capture_count",
+    ]
+    assert contract["technical_summary_required_markers"] == [
+        "工作概览",
+        "技术证据视图",
+        "默认日报不会显示这些计数器",
+        "捕获数量",
+        "跳过数量",
+        "观察来源记录数",
+        "Session JSON",
+        "HTML report",
+    ]
+    assert set(contract["human_summary_forbidden_markers"]) <= set(
+        contract["forbidden_substrings"]
+    )
+
+
+def test_workday_stop_summary_contract_fixture_matches_schema():
+    schema = json.loads(WORKDAY_STOP_SUMMARY_SCHEMA.read_text(encoding="utf-8"))
+    contract = json.loads(WORKDAY_STOP_HUMAN_SUMMARY_CONTRACT.read_text(encoding="utf-8"))
+
+    Draft202012Validator.check_schema(schema)
+    Draft202012Validator(schema).validate(contract)
+    assert schema["required"] == [
+        "summary_source",
+        "summary",
+        "expected_contains",
+        "forbidden_substrings",
+        "human_summary_forbidden_markers",
+        "technical_summary_required_markers",
+    ]
+    assert schema["properties"]["human_summary_forbidden_markers"]["description"].startswith(
+        "Markers that must stay out of the default human Workday summary"
+    )
+    assert schema["properties"]["technical_summary_required_markers"]["description"].startswith(
+        "Markers that must be present in the explicit technical Workday summary"
+    )
 
 
 def test_workday_start_stop_writes_summary_without_raw_jsonl(tmp_path, monkeypatch, capsys):
@@ -65,7 +148,7 @@ def test_workday_start_stop_writes_summary_without_raw_jsonl(tmp_path, monkeypat
     assert "capture_surface" not in text_status
     assert "local_workday_session_status" not in text_status
     assert "explicit_finite_monitor_session" not in text_status
-    assert "只读取本地 session metadata" in text_status
+    assert "只读取本地记录状态信息" in text_status
     assert "Watcher burst should write one deterministic capture" not in text_status
     assert "visible_text" not in text_status
     _wait_for_checkpoint(capsys)
@@ -205,6 +288,76 @@ def test_workday_stop_text_names_capture_buffer_recovery_source():
     assert "visible_text" not in text_summary
 
 
+def test_workday_stop_text_source_matrix_keeps_user_copy_and_privacy_boundaries():
+    cases = [
+        (
+            "final_result",
+            False,
+            (),
+        ),
+        (
+            "checkpoint",
+            False,
+            (
+                "复盘来源: 本地阶段性记录",
+                "来源说明: 最终结果暂不可用，本次复盘使用已保存的本地阶段性记录。",
+            ),
+        ),
+        (
+            "session_file",
+            False,
+            (
+                "复盘来源: 本地已保存记录",
+                "来源说明: 本次复盘使用已保存的本地工作记录。",
+            ),
+        ),
+        (
+            "capture_buffer_recovery",
+            True,
+            (
+                "复盘来源: 本地恢复记录",
+                "来源说明: 最终结果不可用，本次复盘由已脱敏的本地记录恢复生成。",
+            ),
+        ),
+    ]
+
+    for source, recovered, expected_lines in cases:
+        text_summary = format_workday_stop_text(
+            {
+                "stopped": True,
+                "summary_available": True,
+                "summary_source": source,
+                "recovered_from_capture_buffer": recovered,
+                "checkpoint_updated_at": "2026-06-08T07:55:00+08:00",
+                "checkpoint_age_seconds": 60,
+                "summary": _minimal_workday_summary(f"{source}-source-matrix"),
+            }
+        )
+
+        assert "今日工作复盘" in text_summary
+        for expected_line in expected_lines:
+            assert expected_line in text_summary
+        if source == "final_result":
+            assert "复盘来源" not in text_summary
+            assert "来源说明" not in text_summary
+
+        for forbidden in (
+            "summary_source",
+            "recovered_from_capture_buffer",
+            "captures_written",
+            "source_capture_paths",
+            "visible_text",
+            "focused_text",
+            "untrusted_observed_content",
+            "capture_buffer_recovery",
+            "session_file",
+            "checkpoint_updated_at",
+            "checkpoint_age_seconds",
+            "storage_usage",
+        ):
+            assert forbidden not in text_summary
+
+
 def test_workday_stop_text_command_names_checkpoint_fallback_source(
     tmp_path, monkeypatch, capsys
 ):
@@ -281,6 +434,58 @@ def test_workday_stop_text_command_names_capture_buffer_recovery_source(
     assert list(home.rglob("*.jsonl")) == []
 
 
+def test_workday_stop_text_command_matches_human_summary_golden_fixture(
+    tmp_path, monkeypatch, capsys
+):
+    fixture = json.loads(WORKDAY_STOP_HUMAN_SUMMARY_CONTRACT.read_text(encoding="utf-8"))
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+
+    session = dict(fixture["summary"])
+    session_id = str(session["session_id"])
+    checkpoint_file = paths["logs"] / f"{session_id}.workday-checkpoint.json"
+    _write_json(
+        checkpoint_file,
+        {
+            "active": True,
+            "summary_available": True,
+            "summary_source": fixture["summary_source"],
+            "summary": session,
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(
+            paths,
+            session_id,
+            pid="not-a-pid",
+            checkpoint_file=checkpoint_file,
+        ),
+    )
+
+    assert (
+        main(["workday", "stop", "--wait-seconds", "0", "--format", "text", "--language", "zh-CN"])
+        == 0
+    )
+    text_summary = capsys.readouterr().out
+
+    for expected in fixture["expected_contains"]:
+        assert expected in text_summary
+    for forbidden in fixture["forbidden_substrings"]:
+        assert forbidden not in text_summary
+
+    assert text_summary.index("今日工作结论") < text_summary.index("工作进行情况")
+    assert text_summary.index("工作进行情况") < text_summary.index("明天改进建议")
+    assert text_summary.index("明天改进建议") < text_summary.index("可考虑方向")
+    assert "工作概览" not in text_summary
+    assert "数据看板" not in text_summary
+    assert not (home / "workday-active.json").exists()
+    assert list(home.rglob("*.jsonl")) == []
+
+
 def test_workday_stop_text_command_keeps_source_notice_in_technical_style(
     tmp_path, monkeypatch, capsys
 ):
@@ -324,9 +529,14 @@ def test_workday_stop_text_command_keeps_source_notice_in_technical_style(
     )
     technical_summary = capsys.readouterr().out
 
-    assert "工作概览" in technical_summary
+    _assert_technical_summary_shows_evidence_boundary(technical_summary)
     assert "复盘来源: 本地阶段性记录" in technical_summary
+    assert "捕获数量: 1" in technical_summary
+    assert "跳过数量: 0" in technical_summary
+    assert "观察来源记录数: 0" in technical_summary
     assert "应用活动" in technical_summary
+    assert "Session JSON: 2048 bytes" in technical_summary
+    assert "HTML report: 1024 bytes" in technical_summary
     assert "checkpoint" not in technical_summary
     assert "visible_text" not in technical_summary
 
@@ -486,6 +696,288 @@ def test_workday_intent_execute_status_phrase_prints_text_status_without_capture
     assert "visible_text" not in text_status
     assert "focused_text" not in text_status
     assert not (home / "workday-active.json").exists()
+
+
+def test_workday_status_text_command_matches_status_golden_fixture(
+    tmp_path, monkeypatch, capsys
+):
+    fixture_path = ROOT / "harness" / "fixtures" / "workday" / "status_text_contract.json"
+    fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+    home = tmp_path / "state"
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
+    paths = ensure_state(home)
+
+    setup = fixture["status_setup"]
+    session_id = str(setup["session_id"])
+    checkpoint_file = paths["logs"] / f"{session_id}.workday-checkpoint.json"
+    _write_json(
+        checkpoint_file,
+        {
+            "active": True,
+            "summary_available": True,
+            "summary_source": setup["summary_source"],
+            "summary": dict(setup["summary"]),
+            "trust": "local_workday_session_status",
+            "capture_surface": "explicit_finite_monitor_session",
+        },
+    )
+    _write_json(
+        paths["workday_active"],
+        _workday_active_marker(
+            paths,
+            session_id,
+            pid=setup["pid"],
+            checkpoint_file=checkpoint_file,
+        ),
+    )
+
+    assert main(["workday", "status", "--format", "text", "--language", "zh-CN"]) == 0
+    text_status = capsys.readouterr().out
+
+    for expected in fixture["expected_contains"]:
+        assert expected in text_status
+    for forbidden in fixture["forbidden_substrings"]:
+        assert forbidden not in text_status
+
+    assert text_status.index("# 工作记录状态") < text_status.index("## 安全说明")
+    assert text_status.index("当前状态") < text_status.index("当前总结")
+    assert list(home.rglob("*.jsonl")) == []
+
+
+def test_workday_no_active_status_text_explains_read_only_boundary_without_raw_fields():
+    text_status = format_workday_status_text(
+        {
+            "active": False,
+            "running": False,
+            "active_marker_present": False,
+            "recoverable_stale_session": False,
+            "session_id": "inactive-status",
+            "summary_available": False,
+            "summary": {
+                "captures_written": 36,
+                "source_capture_paths": ["capture-a"],
+                "visible_text": "raw observed text must not leak",
+            },
+            "visible_text": "top-level raw text must not leak",
+            "focused_text": "focused raw text must not leak",
+        }
+    )
+
+    assert "当前没有在记录" in text_status
+    assert "状态边界: 这里只查看本地记录状态" in text_status
+    assert "不会启动 watcher/helper/UIA capture" in text_status
+    assert "也不会读取桌面内容" in text_status
+    assert "开始记录工作" in text_status
+    assert "36" not in text_status
+    assert "captures_written" not in text_status
+    assert "source_capture_paths" not in text_status
+    assert "capture-a" not in text_status
+    assert "visible_text" not in text_status
+    assert "focused_text" not in text_status
+    assert "raw observed text" not in text_status
+
+
+def test_workday_status_text_state_matrix_keeps_user_copy_and_privacy_boundaries():
+    common_required = (
+        "# 工作记录状态",
+        "## 安全说明",
+        "只读取本地记录状态信息",
+        "未新增 截图/OCR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具",
+    )
+    common_forbidden = (
+        "36",
+        "captures_written",
+        "source_capture_paths",
+        "capture-a",
+        "visible_text",
+        "focused_text",
+        "raw observed text",
+        "session metadata",
+        "summary_source",
+        "checkpoint_updated_at",
+        "checkpoint_age_seconds",
+        "local_workday_session_status",
+        "explicit_finite_monitor_session",
+        "untrusted_observed_content",
+    )
+    cases = [
+        (
+            "no-active",
+            {
+                "active": False,
+                "running": False,
+                "active_marker_present": False,
+                "recoverable_stale_session": False,
+                "summary_available": False,
+                "summary": {
+                    "captures_written": 36,
+                    "source_capture_paths": ["capture-a"],
+                    "visible_text": "raw observed text must not leak",
+                },
+            },
+            (
+                "当前没有在记录",
+                "状态边界: 这里只查看本地记录状态",
+                "不会启动 watcher/helper/UIA capture",
+            ),
+        ),
+        (
+            "running-no-checkpoint",
+            {
+                "active": True,
+                "running": True,
+                "active_marker_present": True,
+                "started_at": "2026-06-08T06:00:00+08:00",
+                "duration_seconds": 7200,
+                "summary_available": False,
+                "checkpoint_available": False,
+                "summary_source": None,
+                "checkpoint_updated_at": "",
+                "checkpoint_age_seconds": None,
+                "summary": {
+                    "captures_written": 36,
+                    "source_capture_paths": ["capture-a"],
+                    "visible_text": "raw observed text must not leak",
+                },
+            },
+            (
+                "正在记录今天的工作",
+                "阶段性复盘: 尚未生成",
+                "结束时会基于当时已保存的本地记录保守复盘",
+            ),
+        ),
+        (
+            "running-checkpoint",
+            {
+                "active": True,
+                "running": True,
+                "active_marker_present": True,
+                "started_at": "2026-06-08T06:00:00+08:00",
+                "duration_seconds": 7200,
+                "summary_available": True,
+                "checkpoint_available": True,
+                "summary_source": "checkpoint",
+                "checkpoint_updated_at": "2026-06-08T07:55:00+08:00",
+                "checkpoint_age_seconds": 60,
+                "summary": {
+                    "captures_written": 36,
+                    "source_capture_paths": ["capture-a"],
+                    "visible_text": "raw observed text must not leak",
+                },
+            },
+            (
+                "正在记录今天的工作",
+                "阶段性复盘: 已有本地阶段性记录",
+                "结束时会基于已保存记录生成保守总结",
+            ),
+        ),
+        (
+            "stale-recoverable",
+            {
+                "active": False,
+                "running": False,
+                "active_marker_present": True,
+                "recoverable_stale_session": True,
+                "session_id": "stale-checkpoint-status",
+                "summary_available": True,
+                "checkpoint_available": True,
+                "summary_source": "checkpoint",
+                "checkpoint_updated_at": "2026-06-08T07:55:00+08:00",
+                "checkpoint_age_seconds": 60,
+                "summary": {
+                    "captures_written": 36,
+                    "source_capture_paths": ["capture-a"],
+                    "visible_text": "raw observed text must not leak",
+                },
+            },
+            (
+                "上一段工作记录的进程已不在运行",
+                "复盘边界: 可从本地阶段性记录继续查看",
+                "未保存或未登记的工作会保持保守表达",
+            ),
+        ),
+    ]
+
+    for label, status, required in cases:
+        text_status = format_workday_status_text(status)
+        for expected in (*common_required, *required):
+            assert expected in text_status, label
+        for forbidden in common_forbidden:
+            assert forbidden not in text_status, label
+
+
+def test_workday_running_status_text_explains_checkpoint_summary_without_counters():
+    text_status = format_workday_status_text(
+        {
+            "active": True,
+            "running": True,
+            "active_marker_present": True,
+            "session_id": "running-checkpoint",
+            "started_at": "2026-06-08T06:00:00+08:00",
+            "duration_seconds": 7200,
+            "summary_available": True,
+            "checkpoint_available": True,
+            "summary_source": "checkpoint",
+            "checkpoint_updated_at": "2026-06-08T07:55:00+08:00",
+            "checkpoint_age_seconds": 60,
+            "summary": {
+                "session_id": "running-checkpoint",
+                "captures_written": 36,
+                "source_capture_paths": ["capture-a"],
+                "visible_text": "raw observed text must not leak",
+            },
+        }
+    )
+
+    assert "正在记录今天的工作" in text_status
+    assert "阶段性复盘: 已有本地阶段性记录" in text_status
+    assert "结束时会基于已保存记录生成保守总结" in text_status
+    assert "未保存或未登记的工作会保持保守表达" in text_status
+    assert "停止工作并总结" in text_status
+    assert "36" not in text_status
+    assert "captures_written" not in text_status
+    assert "source_capture_paths" not in text_status
+    assert "capture-a" not in text_status
+    assert "visible_text" not in text_status
+    assert "raw observed text" not in text_status
+    assert "checkpoint_age_seconds" not in text_status
+
+
+def test_workday_running_status_text_explains_missing_checkpoint_without_counters():
+    text_status = format_workday_status_text(
+        {
+            "active": True,
+            "running": True,
+            "active_marker_present": True,
+            "session_id": "running-no-checkpoint",
+            "started_at": "2026-06-08T06:00:00+08:00",
+            "duration_seconds": 7200,
+            "summary_available": False,
+            "checkpoint_available": False,
+            "summary_source": None,
+            "checkpoint_updated_at": "",
+            "checkpoint_age_seconds": None,
+            "summary": {
+                "captures_written": 36,
+                "source_capture_paths": ["capture-a"],
+                "visible_text": "raw observed text must not leak",
+            },
+        }
+    )
+
+    assert "正在记录今天的工作" in text_status
+    assert "阶段性复盘: 尚未生成" in text_status
+    assert "当前仍在记录" in text_status
+    assert "结束时会基于当时已保存的本地记录保守复盘" in text_status
+    assert "停止工作并总结" in text_status
+    assert "36" not in text_status
+    assert "captures_written" not in text_status
+    assert "source_capture_paths" not in text_status
+    assert "capture-a" not in text_status
+    assert "visible_text" not in text_status
+    assert "raw observed text" not in text_status
+    assert "checkpoint_updated_at" not in text_status
+    assert "checkpoint_age_seconds" not in text_status
 
 
 def test_workday_intent_execute_runs_existing_bounded_commands(tmp_path, monkeypatch, capsys):
@@ -1039,6 +1531,7 @@ def test_workday_summarize_reads_named_session(tmp_path, monkeypatch, capsys):
     assert "截图/OCR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具" not in text_summary
     assert "Watcher burst should write one deterministic capture" not in text_summary
     assert "visible_text" not in text_summary
+    _assert_human_summary_hides_technical_evidence(text_summary)
 
     assert (
         main(
@@ -1057,7 +1550,8 @@ def test_workday_summarize_reads_named_session(tmp_path, monkeypatch, capsys):
         == 0
     )
     technical_summary = capsys.readouterr().out
-    assert "工作概览" in technical_summary
+    _assert_technical_summary_shows_evidence_boundary(technical_summary)
+    assert "捕获数量: 1" in technical_summary
     assert "应用活动" in technical_summary
     assert "数据看板" in technical_summary
 
@@ -1258,10 +1752,14 @@ def test_workday_status_text_reports_recoverable_stale_checkpoint_summary(
 
     assert "上一段工作记录的进程已不在运行" in text_status
     assert "本地 checkpoint 阶段性总结仍可查看" in text_status
+    assert "复盘边界: 可从本地阶段性记录继续查看" in text_status
+    assert "未保存或未登记的工作会保持保守表达" in text_status
     assert "session 文件总结" not in text_status
     assert f"winchronicle workday summarize {session_id} --format text --language zh-CN" in text_status
     assert "要开始时说：开始记录工作" not in text_status
     assert "Watcher burst should write one deterministic capture" not in text_status
+    assert "captures_written" not in text_status
+    assert "source_capture_paths" not in text_status
     assert "visible_text" not in text_status
 
     assert main(["workday", "status"]) == 0
@@ -1292,10 +1790,14 @@ def test_workday_status_text_reports_recoverable_stale_session_file_summary(
 
     assert "上一段工作记录的进程已不在运行" in text_status
     assert "本地 session 文件总结仍可查看" in text_status
+    assert "复盘边界: 可从本地阶段性记录继续查看" in text_status
+    assert "未保存或未登记的工作会保持保守表达" in text_status
     assert "checkpoint 阶段性总结" not in text_status
     assert f"winchronicle workday summarize {session_id} --format text --language zh-CN" in text_status
     assert "要开始时说：开始记录工作" not in text_status
     assert "Watcher burst should write one deterministic capture" not in text_status
+    assert "captures_written" not in text_status
+    assert "source_capture_paths" not in text_status
     assert "visible_text" not in text_status
 
     assert main(["workday", "status"]) == 0
@@ -2048,18 +2550,13 @@ def test_workday_start_cleans_up_runner_when_active_marker_write_fails(
 ):
     home = tmp_path / "state"
     monkeypatch.setenv("WINCHRONICLE_HOME", str(home))
-    watcher_pid_file = tmp_path / "watcher.pid"
-    fake_watcher = _write_sentinel_sleeping_watcher(tmp_path, watcher_pid_file)
+    fake_watcher = _write_slow_repeating_watcher(tmp_path)
     original_write_json = workday_module._write_json
     original_terminate = workday_module._terminate_process_tree
     terminated_pids: list[int] = []
 
     def fail_active_write(path: Path, payload: dict[str, object]) -> None:
         if path.name == "workday-active.json":
-            for _ in range(50):
-                if watcher_pid_file.exists():
-                    break
-                _sleep(0.1)
             raise OSError("simulated active marker write failure")
         original_write_json(path, payload)
 
@@ -2093,9 +2590,45 @@ def test_workday_start_cleans_up_runner_when_active_marker_write_fails(
     assert payload["error"] == "workday_active_state_write_failed"
     assert terminated_pids
     assert _wait_for_pid_exit(terminated_pids[-1])
-    assert watcher_pid_file.exists()
-    assert _wait_for_pid_exit(int(watcher_pid_file.read_text(encoding="utf-8")))
     assert not (home / "workday-active.json").exists()
+
+
+def test_windows_terminate_process_tree_rescans_descendants_after_taskkill(monkeypatch):
+    if os.name != "nt":
+        return
+
+    parent_pid = 41000
+    child_pid = 41001
+    descendant_snapshots = [[], [child_pid]]
+    killed_pids: list[int] = []
+    waited_pid_sets: list[tuple[int, ...]] = []
+
+    def fake_descendant_pids(pid: int) -> list[int]:
+        assert pid == parent_pid
+        if descendant_snapshots:
+            return descendant_snapshots.pop(0)
+        return [child_pid]
+
+    def fake_taskkill(*args, **kwargs):
+        return None
+
+    def fake_wait_for_process_exit(pids, *, timeout: float) -> bool:
+        waited_pid_sets.append(tuple(pids))
+        return False
+
+    def fake_kill_process(pid: int) -> None:
+        killed_pids.append(pid)
+
+    monkeypatch.setattr(workday_module, "_windows_descendant_pids", fake_descendant_pids)
+    monkeypatch.setattr(workday_module.subprocess, "run", fake_taskkill)
+    monkeypatch.setattr(workday_module, "_wait_for_process_exit", fake_wait_for_process_exit)
+    monkeypatch.setattr(workday_module, "_kill_process", fake_kill_process)
+
+    workday_module._terminate_process_tree(parent_pid)
+
+    assert child_pid in killed_pids
+    assert parent_pid in killed_pids
+    assert any(child_pid in waited_pids for waited_pids in waited_pid_sets)
 
 
 def test_workday_run_cleans_up_watcher_when_checkpoint_write_fails(tmp_path, monkeypatch):
@@ -2626,6 +3159,48 @@ def test_workday_text_summary_adds_title_derived_workstream_clues_without_raw_ti
     assert "user@example.com" not in text
     assert "Inbox (95)" not in text
     assert "Google Chrome" not in text
+
+
+def test_workday_human_summary_sets_record_coverage_expectation_without_counters():
+    session = {
+        "session_id": "coverage-expectation",
+        "mode": "workday",
+        "trust": "untrusted_observed_content",
+        "captures_written": 36,
+        "duplicates_skipped": 4,
+        "denylisted_skipped": 1,
+        "excluded_skipped": 0,
+        "started_at": "2026-06-08T06:00:00+08:00",
+        "ended_at": "2026-06-08T08:00:00+08:00",
+        "duration_seconds": 7200,
+        "source_capture_paths": ["capture-a", "capture-b"],
+        "app_segments": [
+            {"app_name": "Codex", "title": "Codex", "capture_count": 20},
+            {"app_name": "chrome", "title": "Research", "capture_count": 16},
+        ],
+        "suggestions": [],
+        "storage_policy": {
+            "raw_watcher_jsonl_saved": False,
+            "html_report_contains_visible_text": False,
+            "max_app_segments": 500,
+            "source_capture_paths_limit": 1000,
+        },
+        "storage_usage": {"session_json_bytes": 4096, "html_report_bytes": 2048},
+        "error_signals": {"total_count": 0},
+    }
+
+    text = format_workday_text_summary(session, project_snapshot={"projects": []})
+
+    assert "本次复盘基于约 2 小时的本地记录" in text
+    assert "保持保守表达" in text
+    assert "36 条" not in text
+    assert "captures" not in text
+    assert "capture-a" not in text
+    assert "source_capture_paths" not in text
+    assert "storage" not in text
+    assert "数据依据" not in text
+    assert "隐私边界" not in text
+    assert "untrusted_observed_content" not in text
 
 
 def test_workday_human_summary_avoids_project_jargon_in_default_text():
