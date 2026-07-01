@@ -854,6 +854,14 @@ def test_watcher_slow_helper_smoke_allows_heartbeat_after_helper_timeout():
         run_watcher_slow_helper_smoke.MAX_WATCHER_EXIT_SECONDS
         > run_watcher_slow_helper_smoke.SLOW_HELPER_DURATION_MS / 1000
     )
+    assert (
+        run_watcher_slow_helper_smoke.MAX_WATCHER_EXIT_SECONDS
+        >= run_watcher_slow_helper_smoke.SLOW_HELPER_DURATION_MS / 1000 + 3
+    )
+    assert (
+        run_watcher_slow_helper_smoke.WATCHER_TIMEOUT_SECONDS
+        > run_watcher_slow_helper_smoke.MAX_WATCHER_EXIT_SECONDS
+    )
     assert run_watcher_slow_helper_smoke.WATCHER_TIMEOUT_SECONDS < 10
 
 

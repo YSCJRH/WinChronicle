@@ -78,8 +78,7 @@ commit subjects, diff metadata, and git errors have passed through the same
 redaction pipeline used for captures. This is still metadata, not a guarantee
 that semantic customer or project identifiers are anonymous.
 
-The default Chinese workday text summary is a human daily review, not a
-telemetry report. It leads with:
+The default Chinese workday text summary is a human daily review, not a telemetry or log-counter report. It leads with:
 
 - what work appears to have been done today
 - how that work appears to be progressing
@@ -166,8 +165,22 @@ marked stale because of a single delayed write.
 
 `winchronicle workday status --format text --language zh-CN` prints a compact
 operator view headed `工作记录状态`. The status text view is read-only: it only
-uses local session metadata and does not start the watcher, helper, UIA capture,
-or desktop reading.
+uses local status metadata and does not start the watcher, helper, UIA capture,
+or desktop reading. Its safety note says it only reads
+`本地记录状态信息`. When no workday session is active, the text includes
+`状态边界: 这里只查看本地记录状态` and says it
+`不会启动 watcher/helper/UIA capture` and `也不会读取桌面内容`. While a
+runner is active but no checkpoint summary is available yet, the text includes
+`阶段性复盘: 尚未生成` and says that the current session is still being
+recorded: `结束时会基于当时已保存的本地记录保守复盘`. While a runner is
+active and a checkpoint summary is available, the text includes
+`阶段性复盘: 已有本地阶段性记录` and says that ending the session will use
+saved local records conservatively:
+`结束时会基于已保存记录生成保守总结`. When a stale workday marker has a
+recoverable local summary, the text includes
+`复盘边界: 可从本地阶段性记录继续查看` and states that unsaved or
+unregistered work will keep conservative wording:
+`未保存或未登记的工作会保持保守表达`.
 
 The default command uses built helper/watcher outputs when they are present. A
 caller can still pass explicit `--watcher`, `--watcher-arg`, `--helper`, and
@@ -192,6 +205,10 @@ deterministic Chinese daily review headed `今日工作复盘` when a stop summa
 available. If stop falls back to a local checkpoint, saved session file, or
 recovered local summary, the stop text adds a concise `复盘来源` line such as
 `复盘来源: 本地阶段性记录`; normal final runner summaries do not add that line.
+Fallback summaries also add a user-facing `来源说明` line, for example
+`来源说明: 最终结果暂不可用，本次复盘使用已保存的本地阶段性记录。`,
+`来源说明: 本次复盘使用已保存的本地工作记录。`, or
+`来源说明: 最终结果不可用，本次复盘由已脱敏的本地记录恢复生成。`.
 `winchronicle workday summarize <session-id>` keeps the existing JSON output for
 tools and scripts. Add `--format text --language zh-CN` to print the saved
 summary in the same human-review form. Add `--summary-style technical` to print

@@ -17,6 +17,8 @@ Phase 5 memory acceptance criteria:
 - Memory generation must have manifest golden coverage for entry ordering,
   entry types, titles, time ranges, paths, capture counts, trust,
   `untrusted_observed_content`, and the observed-content instruction boundary.
+- Memory output is local evidence, not permission to publish or share results.
+  External sharing still requires explicit user approval.
 - SQLite creates `entries` and, when FTS5 is available, `entries_fts`.
 - `search-memory` searches durable entries without changing raw
   `search-captures` behavior.

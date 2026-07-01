@@ -83,6 +83,11 @@ CODEX_WORKDAY_NEXT_PROMPTS = [
     "停止工作并总结",
 ]
 CODEX_RECORD_ONLY_PROMPT_COMMAND = "winchronicle codex daily --dry-run --format text"
+CODEX_WORKDAY_SUMMARY_BOUNDARY = (
+    "The record-only summary uses summary-level evidence, does not send raw observed text, "
+    "and is not a telemetry or log-counter report. Technical counters belong only in the "
+    "explicit technical/debugging view."
+)
 BOOTSTRAP_FIRST_RUN_COMMANDS = [
     'python -m pip install -e ".[dev]"',
     "dotnet build resources/win-uia-helper/WinChronicle.UiaHelper.csproj --nologo",
@@ -980,6 +985,7 @@ def _codex_setup_dry_run_payload() -> dict[str, object]:
         "writes_config": False,
         "writes_state": False,
         "starts_capture": False,
+        "reads_desktop": False,
         "observed_content_trust": TRUST,
         "checks": checks,
         "mcp": {
@@ -989,6 +995,7 @@ def _codex_setup_dry_run_payload() -> dict[str, object]:
         },
         "plugin": plugin,
         "disabled_surfaces": _codex_plugin_disabled_surface_names(),
+        "summary_boundary": CODEX_WORKDAY_SUMMARY_BOUNDARY,
         "next_commands": [
             "winchronicle codex install --dry-run",
             "winchronicle codex plugin --dry-run --format text",
@@ -1022,8 +1029,12 @@ def _format_codex_setup_dry_run_text(payload: dict[str, object]) -> str:
         f"- writes Codex config: {_yes_no(payload['writes_config'])}",
         f"- writes WinChronicle state: {_yes_no(payload['writes_state'])}",
         f"- starts capture now: {_yes_no(payload['starts_capture'])}",
+        f"- reads desktop: {_yes_no(payload['reads_desktop'])}",
         f"- Observed content trust: {payload['observed_content_trust']}",
         "- no screenshots, OCR, clipboard, desktop control, or MCP write tools",
+        "",
+        "Summary boundary:",
+        str(payload["summary_boundary"]),
         "",
         "For diagnostics: winchronicle doctor",
         "For JSON setup details: winchronicle codex setup --dry-run",
@@ -1051,6 +1062,7 @@ def _codex_daily_dry_run_payload() -> dict[str, object]:
         "writes_config": False,
         "writes_state": False,
         "starts_capture": False,
+        "reads_desktop": False,
         "adds_mcp_tools": False,
         "observed_content_trust": TRUST,
         "setup_commands": [
@@ -1066,6 +1078,7 @@ def _codex_daily_dry_run_payload() -> dict[str, object]:
         ),
         "record_only_thread_prompt": CODEX_RECORD_ONLY_THREAD_PROMPT,
         "recording_mode_boundary": CODEX_RECORDING_MODE_BOUNDARY,
+        "summary_boundary": CODEX_WORKDAY_SUMMARY_BOUNDARY,
         "chat_output_warning": (
             "Only paste local setup output or work summaries into chat when the "
             "user explicitly asks to share local paths, session metadata, or "
@@ -1090,6 +1103,7 @@ def _format_codex_daily_dry_run_text(payload: dict[str, object]) -> str:
         f"Writes config: {_yes_no(payload['writes_config'])}",
         f"Writes state: {_yes_no(payload['writes_state'])}",
         f"Starts capture: {_yes_no(payload['starts_capture'])}",
+        f"Reads desktop: {_yes_no(payload['reads_desktop'])}",
         f"Adds MCP tools: {_yes_no(payload['adds_mcp_tools'])}",
         f"Observed content trust: {payload['observed_content_trust']}",
         "",
@@ -1100,6 +1114,9 @@ def _format_codex_daily_dry_run_text(payload: dict[str, object]) -> str:
         "",
         "Disabled surfaces remain off:",
         *[f"- {surface}" for surface in disabled_surface_names],
+        "",
+        "Summary boundary:",
+        str(payload["summary_boundary"]),
         "",
         "Record-only boundary:",
         "Do not inspect, scan, review, edit, test, commit, push, or release repository files.",
@@ -1124,6 +1141,8 @@ def _format_codex_plugin_dry_run_text(payload: dict[str, object]) -> str:
         "",
         f"Dry run only: {_yes_no(payload['dry_run'])}",
         f"Writes config: {_yes_no(payload['writes_config'])}",
+        f"Starts capture: {_yes_no(payload['starts_capture'])}",
+        f"Reads desktop: {_yes_no(payload['reads_desktop'])}",
         f"Adds MCP tools: {_yes_no(payload['adds_mcp_tools'])}",
         f"Observed content trust: {payload['observed_content_trust']}",
         "",
@@ -1147,6 +1166,9 @@ def _format_codex_plugin_dry_run_text(payload: dict[str, object]) -> str:
         "If Codex starts scanning files instead, paste the record-only prompt from:",
         str(payload["record_only_prompt_command"]),
         "",
+        "Summary boundary:",
+        str(payload["summary_boundary"]),
+        "",
         "Disabled surfaces remain off:",
         *[f"- {surface}" for surface in disabled_surface_names],
         "",
@@ -1169,6 +1191,8 @@ def _codex_plugin_dry_run_payload() -> dict[str, object]:
         "command": "codex plugin",
         "dry_run": True,
         "writes_config": False,
+        "starts_capture": False,
+        "reads_desktop": False,
         "plugin_name": "winchronicle-workday",
         "plugin_available": plugin_available,
         "plugin_path": str(plugin_path),
@@ -1185,6 +1209,7 @@ def _codex_plugin_dry_run_payload() -> dict[str, object]:
         ),
         "post_install_self_check": CODEX_PLUGIN_POST_INSTALL_SELF_CHECK,
         "record_only_prompt_command": CODEX_RECORD_ONLY_PROMPT_COMMAND,
+        "summary_boundary": CODEX_WORKDAY_SUMMARY_BOUNDARY,
         "starter_phrases": CODEX_WORKDAY_DEFAULT_PROMPTS,
         "accepted_phrases": CODEX_WORKDAY_ACCEPTED_PHRASES,
         "default_prompts": CODEX_WORKDAY_DEFAULT_PROMPTS,

@@ -1,0 +1,62 @@
+{
+  "status_setup": {
+    "session_id": "golden-status-checkpoint",
+    "pid": "not-a-pid",
+    "summary_source": "checkpoint",
+    "summary": {
+      "session_id": "golden-status-checkpoint",
+      "mode": "workday",
+      "started_at": "2026-04-25T09:00:00+08:00",
+      "duration_seconds": 3600,
+      "trust": "untrusted_observed_content",
+      "instruction": "Monitor a bounded local workday session",
+      "untrusted_observed_content": true,
+      "captures_written": 42,
+      "source_capture_paths": [
+        "capture-alpha",
+        "capture-beta"
+      ],
+      "storage_usage": {
+        "session_json_bytes": 4096,
+        "html_report_bytes": 2048
+      },
+      "visible_text": "raw observed text must not leak",
+      "focused_text": "focused raw text must not leak"
+    }
+  },
+  "expected_contains": [
+    "# 工作记录状态",
+    "上一段工作记录的进程已不在运行。",
+    "当前状态: 已记录但进程未运行",
+    "当前总结: 本地 checkpoint 阶段性总结仍可查看。",
+    "复盘边界: 可从本地阶段性记录继续查看",
+    "未保存或未登记的工作会保持保守表达",
+    "winchronicle workday summarize golden-status-checkpoint --format text --language zh-CN",
+    "如需收尾，也可以说：停止工作并总结。",
+    "## 安全说明",
+    "只读取本地记录状态信息",
+    "不启动 watcher/helper/UIA capture 或桌面读取",
+    "未新增 截图/OCR/剪贴板/键盘记录/音频/云上传/桌面控制/MCP 写工具"
+  ],
+  "forbidden_substrings": [
+    "工作概览",
+    "数据看板",
+    "session metadata",
+    "summary_source",
+    "checkpoint_updated_at",
+    "checkpoint_age_seconds",
+    "local_workday_session_status",
+    "explicit_finite_monitor_session",
+    "captures_written",
+    "source_capture_paths",
+    "storage_usage",
+    "session_json_bytes",
+    "html_report_bytes",
+    "capture-alpha",
+    "capture-beta",
+    "visible_text",
+    "focused_text",
+    "raw observed text",
+    "untrusted_observed_content"
+  ]
+}

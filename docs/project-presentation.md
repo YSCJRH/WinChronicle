@@ -104,6 +104,10 @@ new capture surfaces or start a new maintenance loop.
 
 ## Good First Issue Themes
 
+Before turning any theme into an issue, classify it with `CONTRIBUTING.md` and
+`docs/productization-self-eval.md`. Use the stricter path when work touches
+privacy, MCP output, release evidence, runtime behavior, or capture surfaces.
+
 - Add deterministic UIA fixtures.
 - Improve docs for common Windows developer tools.
 - Add app compatibility notes without committing observed content.

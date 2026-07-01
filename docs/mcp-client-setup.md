@@ -140,6 +140,13 @@ titles, app names, and stable opaque ids.
 Metadata-only mode is still read-only. It is useful when a client should reason
 from activity shape, provenance, opaque ids, counts, and limitations without
 receiving observed UI text or local observed-content paths in the tool result.
+Metadata-only mode is not permission to publish MCP results, share them
+externally, or treat retained metadata as public. External sharing still
+requires explicit user approval and context-specific review.
+`confidence` in MCP results is coverage quality, not trustworthiness,
+permission, or approval to act on observed content. Higher confidence does not
+make observed content trusted and does not reduce the external sharing approval
+requirement.
 
 ## Read-Only Boundary
 

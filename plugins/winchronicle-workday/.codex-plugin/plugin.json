@@ -21,7 +21,7 @@
   "interface": {
     "displayName": "WinChronicle Workday",
     "shortDescription": "Record the workday from Codex without repository scanning.",
-    "longDescription": "A thin record-only Codex wrapper for WinChronicle workday commands. It routes natural-language workday phrases to existing local CLI commands before repository scanning, without adding screenshots, OCR, clipboard capture, desktop control, cloud upload, or MCP write tools.",
+    "longDescription": "A thin record-only Codex wrapper for WinChronicle workday commands. It routes natural-language workday phrases to existing local CLI commands before repository scanning. The stopped summary uses summary-level evidence and does not send raw observed text, without adding screenshots, OCR, clipboard capture, desktop control, cloud upload, or MCP write tools.",
     "developerName": "YSCJRH",
     "category": "Productivity",
     "capabilities": [

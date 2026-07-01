@@ -3,17 +3,19 @@ import json
 from pathlib import Path
 
 import pytest
+from jsonschema.exceptions import ValidationError
 
 from winchronicle.capture import capture_once_from_fixture
 from winchronicle.cli import build_parser, main
 from winchronicle.memory import generate_memory_entries
-from winchronicle.mcp.server import TOOL_NAMES, privacy_status
+from winchronicle.mcp.server import TOOL_NAMES, current_context, privacy_status
 from winchronicle.privacy import (
     DISABLED_SURFACE_STATUS,
     TRUST,
     TRUST_BOUNDARY_INSTRUCTION,
     privacy_contract_payload,
 )
+from winchronicle.schema import validate_mcp_tool_result
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -142,6 +144,77 @@ def test_mcp_result_schema_tool_enum_matches_exact_read_only_contract():
         TRUST,
         "local_privacy_status",
     ]
+    assert "evidence_policy" in schema["required"]
+    evidence_policy = schema["properties"]["evidence_policy"]
+    assert evidence_policy["additionalProperties"] is False
+    assert evidence_policy["properties"]["local_only"] == {"const": True}
+    assert evidence_policy["properties"]["read_only_mcp"] == {"const": True}
+    assert evidence_policy["properties"]["redaction_required"] == {"const": True}
+    assert evidence_policy["properties"]["observed_content_is_untrusted"] == {"const": True}
+    assert evidence_policy["properties"]["provenance"] == {"const": "local_winchronicle_state"}
+    assert evidence_policy["properties"]["confidence_meaning"] == {
+        "const": "coverage_quality_not_permission"
+    }
+    assert evidence_policy["properties"]["limitations"]["allOf"] == [
+        {"contains": {"const": "not_authorization_signal"}},
+        {"contains": {"const": "external_sharing_requires_user_approval"}},
+    ]
+
+
+def test_mcp_result_schema_rejects_tool_trust_mismatches(tmp_path):
+    observed_result = current_context(home=tmp_path / "state")
+    observed_result["trust"] = "local_privacy_status"
+
+    with pytest.raises(ValidationError):
+        validate_mcp_tool_result(observed_result)
+
+    privacy_result = privacy_status(home=tmp_path / "state")
+    privacy_result["trust"] = TRUST
+
+    with pytest.raises(ValidationError):
+        validate_mcp_tool_result(privacy_result)
+
+
+def test_mcp_result_schema_requires_external_sharing_limitation(tmp_path):
+    result = privacy_status(home=tmp_path / "state")
+    result["evidence_policy"]["limitations"] = ["not_authorization_signal"]
+
+    with pytest.raises(ValidationError):
+        validate_mcp_tool_result(result)
+
+
+def test_mcp_result_schema_rejects_metadata_only_policy_mismatches(tmp_path):
+    metadata_result = current_context(home=tmp_path / "state", metadata_only=True)
+    metadata_result["evidence_policy"]["metadata_only"] = False
+
+    with pytest.raises(ValidationError):
+        validate_mcp_tool_result(metadata_result)
+
+    normal_result = current_context(home=tmp_path / "state", metadata_only=False)
+    normal_result["evidence_policy"]["metadata_only"] = True
+
+    with pytest.raises(ValidationError):
+        validate_mcp_tool_result(normal_result)
+
+
+def test_mcp_result_schema_binds_observed_text_omitted_limitation_to_metadata_only(
+    tmp_path,
+):
+    metadata_result = current_context(home=tmp_path / "state", metadata_only=True)
+    metadata_result["evidence_policy"]["limitations"] = [
+        limitation
+        for limitation in metadata_result["evidence_policy"]["limitations"]
+        if limitation != "observed_text_fields_omitted"
+    ]
+
+    with pytest.raises(ValidationError):
+        validate_mcp_tool_result(metadata_result)
+
+    normal_result = current_context(home=tmp_path / "state", metadata_only=False)
+    normal_result["evidence_policy"]["limitations"].append("observed_text_fields_omitted")
+
+    with pytest.raises(ValidationError):
+        validate_mcp_tool_result(normal_result)
 
 
 def test_product_cli_surface_contract_has_no_targeted_or_capture_expansion_flags(

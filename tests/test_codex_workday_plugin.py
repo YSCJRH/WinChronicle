@@ -2,6 +2,8 @@ import json
 import tomllib
 from pathlib import Path
 
+from winchronicle.cli import main
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "plugins" / "winchronicle-workday"
@@ -10,6 +12,7 @@ SKILL = PLUGIN / "skills" / "workday-recorder" / "SKILL.md"
 PACKAGED_PLUGIN = ROOT / "src" / "winchronicle" / "codex_plugins" / "winchronicle-workday"
 PACKAGED_MANIFEST = PACKAGED_PLUGIN / ".codex-plugin" / "plugin.json"
 PACKAGED_SKILL = PACKAGED_PLUGIN / "skills" / "workday-recorder" / "SKILL.md"
+ENTRYPOINT_CONTRACT = ROOT / "harness" / "fixtures" / "workday" / "plugin_entrypoint_contract.json"
 
 
 def test_codex_workday_plugin_manifest_is_repo_scoped_and_versioned():
@@ -40,6 +43,82 @@ def test_codex_workday_plugin_default_prompts_are_daily_user_actions():
     assert len(manifest["interface"]["defaultPrompt"]) <= 3
     assert "record-only" in manifest["interface"]["longDescription"]
     assert "repository scanning" in manifest["interface"]["longDescription"]
+
+
+def test_codex_workday_plugin_entrypoints_match_fixture_contract(
+    tmp_path, monkeypatch, capsys
+):
+    contract = json.loads(ENTRYPOINT_CONTRACT.read_text(encoding="utf-8"))
+    manifests = [
+        json.loads(MANIFEST.read_text(encoding="utf-8")),
+        json.loads(PACKAGED_MANIFEST.read_text(encoding="utf-8")),
+    ]
+    skill_texts = [
+        SKILL.read_text(encoding="utf-8"),
+        PACKAGED_SKILL.read_text(encoding="utf-8"),
+    ]
+
+    for manifest in manifests:
+        interface = manifest["interface"]
+        visible_copy = " ".join(
+            [
+                interface["shortDescription"],
+                interface["longDescription"],
+                *interface["defaultPrompt"],
+            ]
+        )
+        assert interface["defaultPrompt"] == contract["visible_default_prompts"]
+        for expected in contract["manifest_must_contain"]:
+            assert expected in visible_copy
+        for forbidden in contract["manifest_forbidden_substrings"]:
+            assert forbidden not in visible_copy
+
+    for text in skill_texts:
+        normalized = " ".join(text.split())
+        for expected in contract["skill_must_contain"]:
+            assert " ".join(expected.split()) in normalized
+        for forbidden in contract["skill_forbidden_substrings"]:
+            assert forbidden not in normalized
+
+    monkeypatch.setenv("WINCHRONICLE_HOME", str(tmp_path / "state"))
+    for case in contract["intent_cases"]:
+        assert main(["workday", "intent", case["phrase"]]) == 0
+        plan = json.loads(capsys.readouterr().out)
+        assert plan["matched"] is True
+        assert plan["execute"] is False
+        assert plan["intent"] == case["intent"]
+        assert plan["command"] == case["command"]
+        assert plan["bounded"] is True
+        assert plan["capture_surface"] == case["capture_surface"]
+        assert plan["trust"] == "local_workday_intent_mapping"
+        assert plan["dry_run_by_default"] is True
+        assert plan.get("operator_focus", []) == case.get("operator_focus", [])
+
+    assert not (tmp_path / "state" / "workday-active.json").exists()
+
+
+def test_codex_workday_plugin_manifest_visible_copy_names_summary_boundary():
+    manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    packaged_manifest = json.loads(PACKAGED_MANIFEST.read_text(encoding="utf-8"))
+
+    for current_manifest in (manifest, packaged_manifest):
+        interface = current_manifest["interface"]
+        visible_copy = " ".join(
+            [
+                interface["shortDescription"],
+                interface["longDescription"],
+                *interface["defaultPrompt"],
+            ]
+        )
+        normalized = " ".join(visible_copy.split())
+
+        for expected in (
+            "record-only",
+            "summary-level evidence",
+            "does not send raw observed text",
+            "without repository scanning",
+        ):
+            assert expected in normalized
 
 
 def test_codex_workday_plugin_is_packaged_for_non_editable_installs():
@@ -77,8 +156,9 @@ def test_codex_workday_plugin_skill_is_a_thin_existing_cli_wrapper():
         "Use the local CLI output as evidence, then write a Codex-assisted Chinese daily report",
         "Use only summary-level evidence",
         "Do not paste telemetry counters as the main answer",
+        "Technical counters belong only in the explicit technical/debugging view, not in the default daily report.",
         "Do not show capture counts, skipped counts, raw JSON, source ids, storage policy, privacy boundary paragraphs, allowlist, metadata, or capture surface terminology in the default report body.",
-        "human daily review, not a telemetry report",
+        "human daily review, not a telemetry or log-counter report",
         "今日完成了什么",
         "进展如何",
         "明天怎样更高效",
@@ -183,8 +263,11 @@ def test_codex_workday_plugin_doc_warns_before_chat_output():
     assert "winchronicle codex setup --dry-run" in text
     assert "winchronicle codex plugin --dry-run" in text
     assert "winchronicle codex plugin --dry-run --format text" in text
+    assert "`summary_boundary`" in text
+    assert "not a telemetry or log-counter report" in text
     assert "Codex-assisted report" in text
     assert "local evidence package" in text
+    assert "not a telemetry or log-counter report" in normalized
     assert "summary-level evidence" in normalized
     assert "does not send raw observed text" in normalized
     assert "does not read file contents" in normalized
@@ -233,6 +316,8 @@ def test_codex_app_guide_documents_assisted_summary_boundary():
         "Codex-assisted daily review",
         "summary-level evidence",
         "does not send raw observed text",
+        "`summary_boundary`",
+        "not a telemetry or log-counter report",
         "does not read file contents",
         "does not add a new CLI command",
         "does not add MCP tools",

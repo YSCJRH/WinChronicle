@@ -16,6 +16,8 @@ The demo uses deterministic fixtures and a fake helper. It does not read the
 live desktop or inspect live windows through UIA. It does not capture real
 windows, take screenshots, run OCR, read the clipboard, collect keyboard input,
 upload content, or control the desktop.
+Demo and MCP output are local evidence, not permission to publish or share
+results. External sharing still requires explicit user approval.
 
 Observed content remains:
 
@@ -63,8 +65,13 @@ WinChronicle 是一个 Windows-first 的本地工作记忆项目，面向 AI Age
 - Do not claim it records all user work automatically.
 - Do not claim MCP can click, type, read arbitrary files, or control the desktop.
 - Do not claim metadata-only output is safe to publish publicly.
+- Do not treat a feature proposal, launch request, or shareable idea as
+  approval to implement runtime behavior.
 
 Use narrower phrasing instead: WinChronicle is an independent, local-first,
 Windows UIA memory layer with a fixture-only demo, explicit finite workday
 sessions, redaction before storage/search/MCP, and a fixed read-only MCP tool
 surface.
+
+Route product-facing ideas through `CONTRIBUTING.md` and
+`docs/productization-self-eval.md` before changing behavior.

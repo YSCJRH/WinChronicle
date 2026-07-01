@@ -1,8 +1,9 @@
 # 5-Minute Demo
 
-This demo shows the product shape without reading the live desktop. It uses
-fixture captures, a deterministic fake UIA helper, local temporary state,
-deterministic search, a finite monitor session, and a read-only MCP smoke path.
+This fixture-only demo shows the product shape. It does not read the live
+desktop and does not upload content. It uses fixture captures, a deterministic
+fake UIA helper, local temporary state, deterministic search, a finite monitor
+session, and a read-only MCP smoke path.
 
 ## What You Will See
 
@@ -12,6 +13,9 @@ deterministic search, a finite monitor session, and a read-only MCP smoke path.
 - A finite monitor session from deterministic watcher/helper output.
 - A saved session JSON file and local HTML report.
 - Read-only MCP tools that expose local context without write or control tools.
+
+MCP output is local evidence, not permission to publish or share results.
+External sharing still requires explicit user approval.
 
 ## Run It
 

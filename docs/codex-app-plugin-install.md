@@ -3,6 +3,11 @@
 This is the shortest path for ordinary users who want Codex App to start,
 check, stop, and summarize a local WinChronicle workday session.
 
+Use it as a record-only install path: the stopped summary is based on
+summary-level evidence, does not send raw observed text, and is not a telemetry
+or log-counter report. Technical counters belong only in the explicit
+technical/debugging view.
+
 ## 1. Print The First-Run Checklist
 
 From the WinChronicle checkout or installed environment, run:
@@ -12,9 +17,16 @@ winchronicle codex setup --dry-run --format text
 ```
 
 This prints a three-step Codex App path with the packaged plugin source path,
-the daily phrases to say, and a short safety boundary. It does not write Codex config;
-it does not write WinChronicle state; it does not start capture. For diagnostics,
-run `winchronicle doctor` or the JSON form: `winchronicle codex setup --dry-run`.
+the daily phrases to say, a short safety boundary, and this summary boundary:
+
+```text
+Summary boundary:
+The record-only summary uses summary-level evidence, does not send raw observed text, and is not a telemetry or log-counter report. Technical counters belong only in the explicit technical/debugging view.
+```
+
+It does not write Codex config; it does not write WinChronicle state; it does not start capture.
+For diagnostics, run `winchronicle doctor` or the JSON form:
+`winchronicle codex setup --dry-run`.
 
 ## 2. Copy The Plugin Source Path
 
@@ -64,6 +76,13 @@ When the day ends:
 ```text
 停止工作并总结
 ```
+
+The default stopped summary should read like a human daily review, not a
+telemetry or log-counter report. It should lead with what appears to have
+happened, how the work progressed, what needs light follow-up, and one or two
+ways to make tomorrow smoother. Use technical counters only for explicit
+debugging, not as the main answer. It stays based on summary-level evidence and
+does not send raw observed text.
 
 The plugin is designed to call local `winchronicle workday ...` commands before
 repository scanning when the user only asks for recording.

@@ -4,6 +4,12 @@ This is a synthetic example of the intended WinChronicle Workday end-of-day
 summary. It is not generated from a real desktop, real captures, real local
 paths, or real document contents.
 
+The default review should read like a work assistant summary, not a telemetry
+or log-counter report. Do not turn capture counts, skipped counts, storage
+sizes, or error-signal counts into the main narrative. Those counters belong
+only in the explicit technical style. The default review should stay focused on
+outcomes, progress, tomorrow's next steps, and confirmation directions.
+
 ## Workday Review
 
 ### What Happened Today

@@ -20,6 +20,82 @@ SEARCH_FIXTURES = [
     ("harness/fixtures/uia/edge_browser.json", "OpenChronicle"),
 ]
 
+CONTRACT_COVERAGE = [
+    {
+        "id": "workday_dry_run_text_contracts",
+        "command_index": 1,
+        "spec": "harness/specs/workday-dry-run-text-contract.schema.json",
+        "fixtures": [
+            "harness/fixtures/workday/plugin_dry_run_text_contract.json",
+            "harness/fixtures/workday/setup_dry_run_text_contract.json",
+            "harness/fixtures/workday/daily_dry_run_text_contract.json",
+        ],
+        "tests": [
+            "tests/test_cli.py::test_workday_dry_run_text_contract_fixtures_match_schema",
+            "tests/test_cli.py::test_codex_plugin_dry_run_text_matches_golden_fixture_contract",
+            "tests/test_cli.py::test_codex_setup_dry_run_text_matches_golden_fixture_contract",
+            "tests/test_cli.py::test_codex_daily_dry_run_text_matches_golden_fixture_contract",
+        ],
+        "privacy_boundary": {
+            "reads_desktop_expected": False,
+            "forbids_desktop_yes_text": True,
+            "observed_content": "not_read_by_dry_run",
+        },
+    },
+    {
+        "id": "workday_stop_summary_contract",
+        "command_index": 1,
+        "spec": "harness/specs/workday-stop-summary-contract.schema.json",
+        "fixtures": [
+            "harness/fixtures/workday/stop_human_summary_contract.json",
+        ],
+        "tests": [
+            "tests/test_workday.py::test_workday_stop_summary_contract_fixture_matches_schema",
+            "tests/test_workday.py::test_workday_summary_marker_contract_fixture_defines_human_and_technical_boundaries",
+            "tests/test_workday.py::test_workday_stop_text_command_matches_human_summary_golden_fixture",
+            "tests/test_workday.py::test_workday_stop_text_command_keeps_source_notice_in_technical_style",
+            "tests/test_workday.py::test_workday_summarize_reads_named_session",
+        ],
+        "privacy_boundary": {
+            "summary_level_evidence_only": True,
+            "default_human_summary_hides_technical_markers": True,
+            "technical_summary_explicit_only": True,
+            "raw_observed_text_expected": False,
+            "adds_capture_source": False,
+        },
+    },
+    {
+        "id": "mcp_read_only_metadata_contracts",
+        "command_index": 1,
+        "spec": "harness/specs/mcp-tool-result.schema.json",
+        "tests": [
+            "tests/test_compatibility_contracts.py::test_mcp_result_schema_tool_enum_matches_exact_read_only_contract",
+            "tests/test_compatibility_contracts.py::test_mcp_result_schema_requires_external_sharing_limitation",
+            "tests/test_compatibility_contracts.py::test_mcp_result_schema_rejects_metadata_only_policy_mismatches",
+            "tests/test_compatibility_contracts.py::test_mcp_result_schema_binds_observed_text_omitted_limitation_to_metadata_only",
+            "tests/test_mcp_tools.py::test_mcp_tool_results_include_evidence_policy_matrix",
+            "tests/test_mcp_tools.py::test_mcp_metadata_only_mode_omits_observed_text_without_tool_list_change",
+            "tests/test_mcp_tools.py::test_mcp_metadata_only_redacts_retained_observed_metadata_fields",
+        ],
+        "tools": [
+            "current_context",
+            "search_captures",
+            "search_memory",
+            "read_recent_capture",
+            "recent_activity",
+            "privacy_status",
+        ],
+        "privacy_boundary": {
+            "read_only_mcp_expected": True,
+            "metadata_only_available": True,
+            "observed_text_omitted_when_metadata_only": True,
+            "provenance": "local_winchronicle_state",
+            "confidence_meaning": "coverage_quality_not_permission",
+            "external_sharing_requires_user_approval": True,
+        },
+    },
+]
+
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the deterministic WinChronicle harness.")
@@ -196,6 +272,7 @@ def _command_plan_payload(commands: list[list[str]]) -> dict[str, object]:
             "reads_observed_content": False,
         },
         "command_count": len(commands),
+        "contract_coverage": CONTRACT_COVERAGE,
         "commands": [
             {
                 "index": index,

@@ -48,6 +48,10 @@ EXTERNAL_SHARING = {
     "metadata_only_available": True,
     "mcp_read_only": True,
 }
+BASE_EVIDENCE_POLICY_LIMITATIONS = [
+    "not_authorization_signal",
+    "external_sharing_requires_user_approval",
+]
 METADATA_ONLY_OMITTED_KEYS = {
     "visible_text",
     "focused_text",
@@ -322,7 +326,25 @@ def _tool_result(
         "metadata_only": bool(metadata_only),
         "share_warning": SHARE_WARNING,
         "external_sharing": dict(EXTERNAL_SHARING),
+        "evidence_policy": _evidence_policy(metadata_only=metadata_only),
         "result": result,
+    }
+
+
+def _evidence_policy(*, metadata_only: bool = False) -> dict[str, Any]:
+    limitations = list(BASE_EVIDENCE_POLICY_LIMITATIONS)
+    if metadata_only:
+        limitations.append("observed_text_fields_omitted")
+    return {
+        "local_only": True,
+        "read_only_mcp": True,
+        "redaction_required": True,
+        "observed_content_is_untrusted": True,
+        "metadata_only": bool(metadata_only),
+        "provenance": "local_winchronicle_state",
+        "confidence_meaning": "coverage_quality_not_permission",
+        "requires_user_approval_for_external_sharing": True,
+        "limitations": limitations,
     }
 
 
@@ -332,17 +354,20 @@ def _observed_search_result(
     source: str,
     metadata_only: bool = False,
 ) -> dict[str, Any]:
-    snippet = result.get("snippet", "")
+    payload = _redacted_observed_strings(
+        result,
+        ("app_name", "title", "snippet", "body"),
+    )
+    snippet = str(payload.get("snippet", ""))
     metadata = _observed_metadata(
         source=source,
         source_ids=[result["path"]] if result.get("path") else [],
-        title=result.get("title", ""),
+        title=str(payload.get("title", "")),
         visible_text=snippet,
         focused_text="",
-        app_name=result.get("app_name", result.get("entry_type", "")),
+        app_name=str(payload.get("app_name", payload.get("entry_type", ""))),
         metadata_only=metadata_only,
     )
-    payload = dict(result)
     if metadata_only:
         _drop_observed_text_fields(payload)
     return {
@@ -361,23 +386,27 @@ def _observed_capture(
 ) -> dict[str, Any] | None:
     if capture is None:
         return None
+    redacted_capture = _redacted_observed_strings(
+        capture,
+        ("app_name", "title", "visible_text", "focused_text", "url"),
+    )
     metadata = _observed_metadata(
         source="capture_store",
         source_ids=[capture["path"]] if capture.get("path") else [],
-        title=capture.get("title", ""),
-        visible_text=capture.get("visible_text", ""),
-        focused_text=capture.get("focused_text", ""),
-        app_name=capture.get("app_name", ""),
-        url=capture.get("url", ""),
+        title=str(redacted_capture.get("title", "")),
+        visible_text=str(redacted_capture.get("visible_text", "")),
+        focused_text=str(redacted_capture.get("focused_text", "")),
+        app_name=str(redacted_capture.get("app_name", "")),
+        url=redacted_capture.get("url", ""),
         metadata_only=metadata_only,
     )
     payload = {
         "timestamp": capture["timestamp"],
-        "app_name": capture["app_name"],
-        "title": capture["title"],
-        "visible_text": capture["visible_text"],
-        "focused_text": capture["focused_text"],
-        "url": capture["url"],
+        "app_name": redacted_capture["app_name"],
+        "title": redacted_capture["title"],
+        "visible_text": redacted_capture["visible_text"],
+        "focused_text": redacted_capture["focused_text"],
+        "url": redacted_capture["url"],
         "path": capture["path"],
         "trust": TRUST,
         "untrusted_observed_content": True,
@@ -452,7 +481,11 @@ def _observed_metadata(
         url=url,
     )
     if metadata_only:
-        limitations = [*limitations, "metadata_only"]
+        limitations = [
+            *limitations,
+            "metadata_only",
+            "observed_text_fields_omitted",
+        ]
     return {
         "redacted": True,
         "source": source or "unknown",
@@ -575,6 +608,19 @@ def _bounded_limit(limit: int) -> int:
 def _redacted_query(query: str) -> str:
     redacted, _ = redact_text(query)
     return redacted or ""
+
+
+def _redacted_observed_strings(
+    payload: dict[str, Any],
+    keys: tuple[str, ...],
+) -> dict[str, Any]:
+    redacted_payload = dict(payload)
+    for key in keys:
+        value = redacted_payload.get(key)
+        if isinstance(value, str):
+            redacted, _ = redact_text(value)
+            redacted_payload[key] = redacted or ""
+    return redacted_payload
 
 
 def _drop_observed_text_fields(payload: dict[str, Any]) -> None:

@@ -3,6 +3,9 @@
 The `winchronicle-workday` plugin is a thin Codex entry point for ordinary users
 who want the natural-language flow:
 
+Use it as a record-only plugin entry: the default stopped summary is based on
+summary-level evidence and does not send raw observed text.
+
 - `开始工作`
 - `开始记录工作`
 - `开始记录今天的工作`
@@ -43,6 +46,8 @@ have been done, how that work is progressing, and what would make tomorrow more
 efficient. It should use only summary-level evidence, does not send raw observed text,
 does not read file contents, and does not add a CLI command, MCP tool, capture
 source, or evidence schema. Do not paste telemetry counters as the main answer.
+The default report should read like a human daily review, not a telemetry or
+log-counter report.
 Use `--summary-style technical` only when debugging the recorder or reviewing
 the underlying evidence counters.
 
@@ -69,6 +74,11 @@ winchronicle codex setup --dry-run --format text
 It prints the local plugin source, first prompt, status command, and summary
 boundary. It does not write Codex config, does not write WinChronicle state,
 and does not start capture.
+
+The JSON form also exposes the same boundary as `summary_boundary`: the
+record-only summary uses summary-level evidence, does not send raw observed
+text, and is not a telemetry or log-counter report. Technical counters belong
+only in the explicit technical/debugging view.
 
 To print only the plugin-source instruction:
 
@@ -163,7 +173,8 @@ For a shorter user-facing guide with the same dry-run boundary:
 winchronicle codex plugin --dry-run --format text
 ```
 
-The dry-run JSON includes a copyable plugin-source instruction:
+The dry-run JSON includes a copyable plugin-source instruction and the
+`summary_boundary` field:
 
 ```text
 Codex App -> Plugins -> Add local plugin source -> <plugin_path>

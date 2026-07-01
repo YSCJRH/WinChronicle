@@ -32,7 +32,11 @@ def test_workday_session_docs_define_natural_language_and_storage_boundaries():
         "开始记录工作：今天主要做",
         "今日工作复盘",
         "human daily review",
+        "not a telemetry or log-counter report",
         "复盘来源: 本地阶段性记录",
+        "来源说明: 最终结果暂不可用，本次复盘使用已保存的本地阶段性记录。",
+        "来源说明: 本次复盘使用已保存的本地工作记录。",
+        "来源说明: 最终结果不可用，本次复盘由已脱敏的本地记录恢复生成。",
         "operator focus",
         "operator focus after obvious-secret redaction",
         "未登记工作线索",
@@ -58,6 +62,16 @@ def test_workday_session_docs_define_natural_language_and_storage_boundaries():
         "intent mapping is a local deterministic allowlist",
         "dry-run by default",
         "status text view is read-only",
+        "本地记录状态信息",
+        "状态边界: 这里只查看本地记录状态",
+        "不会启动 watcher/helper/UIA capture",
+        "也不会读取桌面内容",
+        "阶段性复盘: 尚未生成",
+        "结束时会基于当时已保存的本地记录保守复盘",
+        "阶段性复盘: 已有本地阶段性记录",
+        "结束时会基于已保存记录生成保守总结",
+        "复盘边界: 可从本地阶段性记录继续查看",
+        "未保存或未登记的工作会保持保守表达",
         "final_result",
         "capture_buffer_recovery",
         "recovered_from_capture_buffer",
@@ -88,6 +102,7 @@ def test_codex_app_workday_guide_keeps_user_flow_record_only():
     for expected in (
         "Codex App Workday Guide",
         "ordinary user",
+        "not a telemetry or log-counter report",
         "开始工作",
         "结束工作并总结",
         "开始记录工作",
@@ -121,6 +136,50 @@ def test_codex_app_workday_guide_keeps_user_flow_record_only():
 
     assert "[Codex App workday guide](docs/codex-app-workday-guide.md)" in readme
     assert "[Codex App 工作日指南](docs/codex-app-workday-guide.md)" in readme_zh
+
+
+def test_chinese_workday_summary_example_sets_local_record_coverage_expectation():
+    text = (ROOT / "docs" / "examples" / "workday-summary.zh-CN.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "本次复盘基于约 2 小时的本地记录" in text
+    assert "保持保守表达" in text
+
+    for forbidden in (
+        "36 条",
+        "captures_written",
+        "source_capture_paths",
+        "capture-a",
+    ):
+        assert forbidden not in text
+
+
+def test_workday_summary_examples_keep_assistant_review_shape_not_counter_report():
+    english = (ROOT / "docs" / "examples" / "workday-summary.en.md").read_text(
+        encoding="utf-8"
+    )
+    chinese = (ROOT / "docs" / "examples" / "workday-summary.zh-CN.md").read_text(
+        encoding="utf-8"
+    )
+    english_normalized = " ".join(english.split())
+    chinese_normalized = " ".join(chinese.split())
+
+    for expected in (
+        "The default review should read like a work assistant summary, not a telemetry or log-counter report.",
+        "Do not turn capture counts, skipped counts, storage sizes, or error-signal counts into the main narrative.",
+        "Those counters belong only in the explicit technical style.",
+        "The default review should stay focused on outcomes, progress, tomorrow's next steps, and confirmation directions.",
+    ):
+        assert expected in english_normalized
+
+    for expected in (
+        "默认复盘应读起来像工作助理式复盘，不是遥测或日志计数报告。",
+        "不要把 capture 数、skipped 数、storage 大小或 error-signal 计数写成主线。",
+        "这些计数只属于显式 technical style。",
+        "默认复盘应围绕产出、进展、明天行动和可确认方向。",
+    ):
+        assert expected in chinese_normalized
 
 
 def test_agents_report_format_exempts_recording_only_workday_turns():

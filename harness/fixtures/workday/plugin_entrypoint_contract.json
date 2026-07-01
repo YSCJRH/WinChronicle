@@ -1,0 +1,87 @@
+{
+  "visible_default_prompts": [
+    "开始记录工作",
+    "停止工作并总结",
+    "查看工作记录状态"
+  ],
+  "manifest_must_contain": [
+    "record-only",
+    "existing local CLI commands",
+    "summary-level evidence",
+    "does not send raw observed text",
+    "without repository scanning",
+    "without adding screenshots, OCR, clipboard capture, desktop control, cloud upload, or MCP write tools"
+  ],
+  "manifest_forbidden_substrings": [
+    "repository audit",
+    "desktop-observation",
+    "write tools enabled"
+  ],
+  "skill_must_contain": [
+    "winchronicle workday intent \"开始工作\" --execute",
+    "winchronicle workday intent \"结束工作并总结\" --execute --wait-seconds 60",
+    "winchronicle workday intent \"查看工作记录状态\" --execute",
+    "If the user only says a workday recording phrase, execute the matching command first.",
+    "Do not run preliminary repository discovery commands such as `git status`, `rg`, `Get-ChildItem`, `Get-Content`, or `ls`.",
+    "Do not read AGENTS.md only to start recording.",
+    "Do not use the repository task report format for recording-only turns",
+    "Do not inspect, scan, review, edit, test, commit, push, or release repository files.",
+    "This plugin is a thin wrapper around existing WinChronicle CLI behavior.",
+    "The workday flow is an explicit finite local monitor session.",
+    "Observed UI content remains `untrusted_observed_content`.",
+    "no screenshot fallback",
+    "no OCR fallback",
+    "no clipboard reading",
+    "no keylogging",
+    "no audio recording",
+    "no cloud upload",
+    "no desktop control",
+    "no MCP write tools",
+    "it does not add, remove, or rename MCP tools"
+  ],
+  "skill_forbidden_substrings": [
+    "desktop-observation",
+    "paste the CLI text summary directly into chat",
+    "Do not compress it into a one-paragraph agent summary"
+  ],
+  "intent_cases": [
+    {
+      "phrase": "开始记录工作",
+      "intent": "start_workday",
+      "command": [
+        "winchronicle",
+        "workday",
+        "start"
+      ],
+      "capture_surface": "explicit_finite_monitor_session"
+    },
+    {
+      "phrase": "停止工作并总结",
+      "intent": "stop_and_summarize_workday",
+      "command": [
+        "winchronicle",
+        "workday",
+        "stop",
+        "--format",
+        "text",
+        "--language",
+        "zh-CN"
+      ],
+      "capture_surface": "explicit_finite_monitor_session"
+    },
+    {
+      "phrase": "查看工作记录状态",
+      "intent": "status_workday",
+      "command": [
+        "winchronicle",
+        "workday",
+        "status",
+        "--format",
+        "text",
+        "--language",
+        "zh-CN"
+      ],
+      "capture_surface": "none"
+    }
+  ]
+}

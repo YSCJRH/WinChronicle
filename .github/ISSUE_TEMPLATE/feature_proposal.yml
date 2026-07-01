@@ -6,8 +6,24 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this for product-facing ideas. Runtime expansion, new capture
-        surfaces, LLM summarization, background capture, or MCP tool changes
+        Use this to discuss product-facing ideas before implementation.
+        A feature proposal is not approval to implement.
+        Reading `docs/codex-long-term-goal.md` gives direction only; it is not
+        release authorization, not automatic maintenance authorization, and
+        not approval for broad evidence sweeps, release or publish actions, or
+        capture-surface expansion.
+        Before implementation, read `AGENTS.md`, `docs/roadmap.md`,
+        `README.md`, `docs/codex-long-term-goal.md`, and the files, tests,
+        fixtures, schemas, scorecards, or docs affected by the task.
+
+        If the idea is deterministic docs, tests, fixtures, scorecards, CI,
+        or compatible metadata, use the harness-first task template instead.
+        If the idea touches capture surfaces, observed content, storage, MCP
+        output, memory output, redaction, or release evidence, open a privacy
+        boundary review before implementation.
+
+        Runtime expansion, new capture surfaces, release or publish actions,
+        broad evidence sweeps, or continuation of the closed maintenance loop
         require explicit human product approval before implementation.
   - type: textarea
     id: problem
@@ -49,4 +65,6 @@ body:
       label: Boundary confirmation
       options:
         - label: This proposal does not by itself authorize new capture surfaces, default background capture, daemon/service install, polling loops, screenshots, OCR, audio, keyboard capture, clipboard capture, cloud upload, desktop control, MCP write tools, arbitrary file reads, or LLM calls.
+          required: true
+        - label: This issue classifies the idea only; implementation starts only after the required harness-first task, privacy-boundary review, or explicit human product decision defines scope.
           required: true

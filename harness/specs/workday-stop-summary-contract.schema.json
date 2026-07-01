@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WinChronicle workday stop summary contract fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "summary_source",
+    "summary",
+    "expected_contains",
+    "forbidden_substrings",
+    "human_summary_forbidden_markers",
+    "technical_summary_required_markers"
+  ],
+  "properties": {
+    "summary_source": {
+      "type": "string",
+      "enum": [
+        "final_result",
+        "checkpoint",
+        "session_file",
+        "capture_buffer_recovery"
+      ]
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "session_id",
+        "mode",
+        "trust",
+        "untrusted_observed_content",
+        "storage_policy",
+        "error_signals"
+      ],
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "const": "workday"
+        },
+        "trust": {
+          "const": "untrusted_observed_content"
+        },
+        "untrusted_observed_content": {
+          "const": true
+        },
+        "storage_policy": {
+          "type": "object",
+          "required": [
+            "raw_watcher_jsonl_saved",
+            "html_report_contains_visible_text"
+          ],
+          "properties": {
+            "raw_watcher_jsonl_saved": {
+              "const": false
+            },
+            "html_report_contains_visible_text": {
+              "const": false
+            }
+          }
+        },
+        "error_signals": {
+          "type": "object",
+          "required": [
+            "trust",
+            "contains_observed_text"
+          ],
+          "properties": {
+            "trust": {
+              "const": "untrusted_observed_content"
+            },
+            "contains_observed_text": {
+              "const": false
+            }
+          }
+        }
+      }
+    },
+    "expected_contains": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "forbidden_substrings": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "human_summary_forbidden_markers": {
+      "description": "Markers that must stay out of the default human Workday summary.",
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "allOf": [
+        {
+          "contains": {
+            "const": "工作概览"
+          }
+        },
+        {
+          "contains": {
+            "const": "数据看板"
+          }
+        },
+        {
+          "contains": {
+            "const": "技术证据视图"
+          }
+        },
+        {
+          "contains": {
+            "const": "默认日报不会显示这些计数器"
+          }
+        },
+        {
+          "contains": {
+            "const": "捕获数量"
+          }
+        },
+        {
+          "contains": {
+            "const": "跳过数量"
+          }
+        },
+        {
+          "contains": {
+            "const": "观察来源记录数"
+          }
+        },
+        {
+          "contains": {
+            "const": "Session JSON"
+          }
+        },
+        {
+          "contains": {
+            "const": "HTML report"
+          }
+        },
+        {
+          "contains": {
+            "const": "capture_count"
+          }
+        }
+      ]
+    },
+    "technical_summary_required_markers": {
+      "description": "Markers that must be present in the explicit technical Workday summary.",
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "allOf": [
+        {
+          "contains": {
+            "const": "工作概览"
+          }
+        },
+        {
+          "contains": {
+            "const": "技术证据视图"
+          }
+        },
+        {
+          "contains": {
+            "const": "默认日报不会显示这些计数器"
+          }
+        },
+        {
+          "contains": {
+            "const": "捕获数量"
+          }
+        },
+        {
+          "contains": {
+            "const": "跳过数量"
+          }
+        },
+        {
+          "contains": {
+            "const": "观察来源记录数"
+          }
+        },
+        {
+          "contains": {
+            "const": "Session JSON"
+          }
+        },
+        {
+          "contains": {
+            "const": "HTML report"
+          }
+        }
+      ]
+    }
+  }
+}
