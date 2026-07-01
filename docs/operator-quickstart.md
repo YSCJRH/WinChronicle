@@ -142,6 +142,8 @@ See [Read-only MCP compatibility examples](mcp-readonly-examples.md) for
 request and response shapes. There are no MCP tools for click, type, key press,
 clipboard, screenshot, OCR, audio, arbitrary file read, network calls, writes,
 or desktop control.
+MCP output is local evidence, not permission to publish or share results.
+External sharing still requires explicit user approval.
 
 ## Current Docs
 

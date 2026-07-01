@@ -6,7 +6,28 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this template for work that stays inside the current v0.2 baseline.
+        Use this for `Harness-first task` work.
+        Use this template for deterministic docs, fixtures, tests,
+        scorecards, CI, or compatible metadata that stays inside the current
+        v0.2 baseline.
+
+        Before implementation, read `AGENTS.md`, `docs/roadmap.md`,
+        `README.md`, `docs/codex-long-term-goal.md`, and the files, tests,
+        fixtures, schemas, scorecards, or docs affected by the task.
+        Reading `docs/codex-long-term-goal.md` gives direction only; it is not
+        release authorization, not automatic maintenance authorization, and
+        not approval for broad evidence sweeps, release or publish actions, or
+        capture-surface expansion.
+
+        If the work is a product-facing idea rather than deterministic
+        evidence work, use the feature proposal template. If the work touches
+        capture surfaces, observed content, storage, MCP output, memory output,
+        redaction, or release evidence, open a privacy boundary review before
+        implementation.
+
+        This template does not authorize runtime expansion, new capture
+        surfaces, release or publish actions, broad evidence sweeps, or
+        continuation of the closed maintenance loop.
         Do not attach or paste observed-content artifacts.
   - type: dropdown
     id: lane
@@ -36,6 +57,12 @@ body:
       label: Validation plan
       description: List tests, harness scripts, docs checks, or manual smoke evidence expected for this task.
       placeholder: |
+        If this changes `README.md` or `README.zh-CN.md` Workday guidance, include `python -m pytest tests/test_readme_daily_workflow.py -q` and `python harness/scripts/run_productization_self_eval.py --format json` in validation.
+        For MCP examples or compatible metadata, include the focused MCP docs/schema tests in the validation plan.
+        - python -m pytest tests/test_mcp_result_metadata_docs.py tests/test_compatibility_contracts.py::test_mcp_result_schema_tool_enum_matches_exact_read_only_contract -q
+        - python -m pytest tests/test_mcp_tools.py tests/test_mcp_result_metadata_docs.py tests/test_compatibility_contracts.py -q
+        If this adds or changes `contract_coverage`, cite `CONTRIBUTING.md` `Command Plan Contract Coverage` instead of copying its commands here; that shared paragraph owns the command plan JSON check plus the workflow test that runs the schema, pytest-node, and artifact-path gates.
+        New `contract_coverage` entries must update the README navigation, the Current coverage examples table, the JSON command plan, and at least one focused pytest node in the same change.
         - python -m pytest -q
         - python harness/scripts/run_harness.py
         - git diff --check
@@ -47,6 +74,8 @@ body:
       label: Boundary confirmation
       options:
         - label: This does not add screenshot capture, OCR, audio recording, keyboard capture, clipboard capture, network upload, LLM calls, desktop control, daemon/service install, polling capture, default background capture, MCP write tools, arbitrary file reads, or product targeted capture.
+          required: true
+        - label: MCP examples and compatible metadata keep the fixed read-only tool list, trust labels, metadata-only binding, and evidence-policy guardrails.
           required: true
         - label: This does not require committing local state, raw helper JSON, raw watcher JSONL, generated captures, generated memory, screenshots, OCR output, secrets, passwords, or observed-content diagnostics.
           required: true

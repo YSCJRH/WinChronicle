@@ -87,6 +87,19 @@ def test_operator_quickstart_links_diagnostics_playbook():
     assert "[Post-v0.1.18 maintenance plan](docs/next-round-plan-post-v0.1.18.md)" not in readme
     assert "[Post-v0.1.18 maintenance plan](next-round-plan-post-v0.1.18.md)" not in quickstart
 
+
+def test_operator_quickstart_clarifies_mcp_output_is_not_sharing_authorization():
+    quickstart = " ".join(
+        (ROOT / "docs" / "operator-quickstart.md").read_text(encoding="utf-8").split()
+    )
+
+    for expected in (
+        "MCP output is local evidence, not permission to publish or share results.",
+        "External sharing still requires explicit user approval.",
+    ):
+        assert expected in quickstart
+
+
 def test_operator_entry_points_distinguish_current_cursor_from_history():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     quickstart = (ROOT / "docs" / "operator-quickstart.md").read_text(encoding="utf-8")
@@ -2270,6 +2283,7 @@ def test_deterministic_demo_is_fixture_only_and_covers_operator_route():
         "python -m winchronicle generate-memory --date 2026-04-25",
         "python -m winchronicle search-memory \"AssertionError\"",
         "python -m winchronicle search-memory \"OpenChronicle\"",
+        "Memory output is local evidence, not permission to publish or share results.",
         "python -m winchronicle watch --events harness/fixtures/watcher/notepad_burst.jsonl",
         "python -m winchronicle search-captures \"Watcher burst\"",
         "python harness/scripts/run_mcp_smoke.py",

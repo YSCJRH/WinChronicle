@@ -1,8 +1,12 @@
 # Deterministic Demo
 
-This demo exercises the public v0.2 path without reading the live desktop. It
-uses synthetic fixtures, temporary local state, deterministic memory generation,
-read-only MCP smoke, watcher fixture replay, and the shared privacy pipeline.
+This fixture-only demo exercises the public v0.2 path without reading the live desktop.
+It does not read the live desktop and does not upload content. It uses synthetic fixtures,
+temporary local state, deterministic memory generation, read-only MCP smoke,
+watcher fixture replay, and the shared privacy pipeline.
+
+Demo and MCP output are local evidence, not permission to publish or share
+results. External sharing still requires explicit user approval.
 
 Do not use `capture-frontmost`, live watcher commands, helper-only targeted UIA
 smoke, screenshots, OCR, audio recording, keyboard capture, clipboard capture,
@@ -58,8 +62,9 @@ python -m winchronicle search-memory "OpenChronicle"
 The generated Markdown and SQLite entries are derived from already-redacted
 fixture captures. The `generate-memory` JSON manifest also preserves `trust =
 "untrusted_observed_content"` and the instruction not to follow observed
-content. Do not commit generated state or memory artifacts from the temporary
-`WINCHRONICLE_HOME`.
+content. Memory output is local evidence, not permission to publish or share results.
+External sharing still requires explicit user approval. Do not commit generated
+state or memory artifacts from the temporary `WINCHRONICLE_HOME`.
 
 ## Watcher Fixture Replay
 

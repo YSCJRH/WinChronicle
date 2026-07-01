@@ -19,6 +19,8 @@ def test_readmes_surface_codex_daily_workflow_first_run_path():
     assert "At the end you should get a short daily review" in english
     assert "Codex-assisted daily review" in english_normalized
     assert "summary-level evidence" in english_normalized
+    assert "not a telemetry or log-counter report" in english_normalized
+    assert "`summary_boundary`" in english
     assert "## 如果你只想让 Codex App 记录工作" in chinese
     assert chinese.index("## 如果你只想让 Codex App 记录工作") < chinese.index("## 5 分钟试用")
     assert "最快路径是本地 Workday 插件" in chinese
@@ -26,6 +28,8 @@ def test_readmes_surface_codex_daily_workflow_first_run_path():
     assert "结束时应该得到一份简短日报" in chinese
     assert "Codex-assisted daily review" in chinese_normalized
     assert "摘要级 evidence" in chinese_normalized
+    assert "不是遥测或日志计数报告" in chinese_normalized
+    assert "`summary_boundary`" in chinese
 
     for text in (english, chinese):
         assert "winchronicle codex daily --dry-run" in text
@@ -45,6 +49,23 @@ def test_readmes_surface_codex_daily_workflow_first_run_path():
     assert "[Codex App 本地插件安装](docs/codex-app-plugin-install.md)" in chinese
 
 
+def test_chinese_readme_workday_path_sets_assistant_review_expectation():
+    chinese = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    section = chinese.split("## 如果你只想让 Codex App 记录工作", 1)[1].split(
+        "\n## 5 分钟试用",
+        1,
+    )[0]
+    compact = "".join(section.split())
+
+    for expected in (
+        "默认停止总结应读起来像工作助理式复盘，不是遥测或日志计数报告。",
+        "它应优先说明今天大概做了什么、进展如何、哪些地方值得轻量回看，以及明天怎样更顺手。",
+        "capture 数、skipped 数、storage 大小或 error-signal 计数只应在显式技术排查时出现，不应成为默认日报主线。",
+        "默认日报继续基于摘要级 evidence，并且 does not send raw observed text by default。",
+    ):
+        assert "".join(expected.split()) in compact
+
+
 def test_codex_app_plugin_install_guide_is_plain_user_path():
     guide = (ROOT / "docs" / "codex-app-plugin-install.md").read_text(encoding="utf-8")
 
@@ -61,6 +82,8 @@ def test_codex_app_plugin_install_guide_is_plain_user_path():
         "Post-install self-check",
         'winchronicle workday intent "查看工作记录状态" --execute',
         "winchronicle codex daily --dry-run --format text",
+        "Summary boundary:",
+        "summary-level evidence, does not send raw observed text, and is not a telemetry or log-counter report",
         "does not write Codex config",
         "does not write WinChronicle state",
         "does not start capture",
@@ -73,3 +96,34 @@ def test_codex_app_plugin_install_guide_is_plain_user_path():
     ]
     for text in required:
         assert text in guide
+
+
+def test_codex_app_plugin_install_guide_opens_with_summary_boundary():
+    guide = (ROOT / "docs" / "codex-app-plugin-install.md").read_text(encoding="utf-8")
+    intro = guide.split("\n## 1. Print The First-Run Checklist", 1)[0]
+    normalized = " ".join(intro.split())
+
+    for expected in (
+        "record-only",
+        "summary-level evidence",
+        "does not send raw observed text",
+        "not a telemetry or log-counter report",
+    ):
+        assert expected in normalized
+
+
+def test_codex_app_plugin_install_guide_sets_assistant_review_expectation():
+    guide = (ROOT / "docs" / "codex-app-plugin-install.md").read_text(encoding="utf-8")
+    section = guide.split("## 3. Use The Daily Phrases", 1)[1].split(
+        "\n## 4. Post-install self-check",
+        1,
+    )[0]
+    normalized = " ".join(section.split())
+
+    for expected in (
+        "The default stopped summary should read like a human daily review, not a telemetry or log-counter report.",
+        "It should lead with what appears to have happened, how the work progressed, what needs light follow-up, and one or two ways to make tomorrow smoother.",
+        "Use technical counters only for explicit debugging, not as the main answer.",
+        "It stays based on summary-level evidence and does not send raw observed text.",
+    ):
+        assert expected in normalized

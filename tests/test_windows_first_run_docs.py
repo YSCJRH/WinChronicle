@@ -44,3 +44,36 @@ def test_windows_first_run_docs_link_bootstrap_without_expanding_capture_surface
 
     assert "[Windows first run](docs/windows-first-run.md)" in readme
     assert "[Windows 首次运行](docs/windows-first-run.md)" in readme_zh
+
+
+def test_windows_first_run_opens_with_workday_summary_boundary():
+    doc = (ROOT / "docs" / "windows-first-run.md").read_text(encoding="utf-8")
+    intro = doc.split("\n## Install And Check", 1)[0]
+    normalized = " ".join(intro.split())
+
+    for expected in (
+        "record-only",
+        "summary-level evidence",
+        "does not send raw observed text",
+        "not a telemetry or log-counter report",
+        "`summary_boundary`",
+    ):
+        assert expected in normalized
+
+
+def test_first_run_and_quick_demo_clarify_mcp_output_is_not_sharing_authorization():
+    first_run = " ".join(
+        (ROOT / "docs" / "windows-first-run.md").read_text(encoding="utf-8").split()
+    )
+    quick_demo = " ".join(
+        (ROOT / "docs" / "quick-demo.md").read_text(encoding="utf-8").split()
+    )
+
+    for doc in (first_run, quick_demo):
+        assert (
+            "MCP output is local evidence, not permission to publish or share results."
+            in doc
+        )
+        assert "External sharing still requires explicit user approval." in doc
+
+    assert "`metadata-only`" in first_run
