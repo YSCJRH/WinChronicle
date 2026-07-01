@@ -648,6 +648,8 @@ Before release, record that:
 - MCP tool list remains exactly `current_context`, `search_captures`,
   `search_memory`, `read_recent_capture`, `recent_activity`, and
   `privacy_status`;
+- Memory output is local evidence, not permission to publish or share results.
+  External sharing still requires explicit user approval.
 - MCP remains read-only with no write tools, arbitrary file reads, desktop
   control tools, screenshot/OCR tools, audio tools, keyboard tools, clipboard
   tools, network tools, or product targeted capture flags;

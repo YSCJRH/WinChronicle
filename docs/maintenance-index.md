@@ -4,11 +4,26 @@ This index keeps historical maintenance, audit, readiness, and release evidence
 reachable without making the README a ledger. It is historical reference only;
 it does not start a new maintenance loop or authorize new release work.
 
+## Codex Maintenance Task Intake
+
+This index is historical reference, not a task queue. For Codex development or
+maintenance tasks, first read `AGENTS.md`, `docs/roadmap.md`, `README.md`,
+`docs/codex-long-term-goal.md`, and the files, tests, fixtures, schemas,
+scorecards, or docs affected by the task.
+
+The PR and harness issue template Required Intake guard is documented in
+[Contributor Required Intake Checks](productization-self-eval.md#contributor-required-intake-checks)
+and enforced by `CONTRIBUTOR_TEMPLATE_INTAKE_CHECKS`.
+
+Do not treat historical release records as authorization for release, upload,
+publish, broad evidence sweeps, or automatic maintenance loops.
+
 ## Current User Navigation
 
 - [Windows first run](windows-first-run.md)
 - [5-minute demo](quick-demo.md)
 - [Codex App workday guide](codex-app-workday-guide.md)
+- [Codex long-term optimization goal](codex-long-term-goal.md) - direction only; not release authorization; not automatic maintenance authorization.
 - [MCP client setup](mcp-client-setup.md)
 - [Privacy architecture](privacy-architecture.md)
 - [Roadmap](roadmap.md)
@@ -18,6 +33,7 @@ it does not start a new maintenance loop or authorize new release work.
 ## Productization And Product Docs
 
 - [v0.2 monitor session](v0.2-monitor-session.md)
+- [Codex long-term optimization goal](codex-long-term-goal.md) - direction only; not release authorization; not automatic maintenance authorization.
 - [v0.2.0 release record](release-v0.2.0.md)
 - [v0.1 closure note](goal-closure-v0.1.md)
 - [Operator quickstart](operator-quickstart.md)
